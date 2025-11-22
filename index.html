@@ -9,8 +9,8 @@
     <style>
         /* ===== COLOR & TYPOGRAPHY VARIABLES ===== */
         :root {
-            --sidebar-width: 250px;
-            --sidebar-collapsed-width: 80px;
+            --sidebar-width: 290px;
+            --sidebar-collapsed-width: 70px;
             --bg-primary: #000000;
             --bg-secondary: #111111;
             --text-primary: #ffffff;
@@ -36,6 +36,182 @@
             --sidebar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 245, 0.6) 100%);
             --sidebar-border: rgba(0, 0, 0, 0.05);
         }
+
+         /* === LOADING SCREEN === */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
+      background-size: 400% 400%;
+      animation: bgShift 5s ease-in-out infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      color: var(--accent);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hidden {
+      opacity: 0;
+    }
+
+    .slide-left {
+      transform: translateX(-100%);
+    }
+
+    .slide-right {
+      transform: translateX(100%);
+    }
+
+    .scale-in {
+      transform: scale(0);
+    }
+
+    .fade-in {
+      opacity: 0;
+    }
+
+    .fall {
+      transform: translateY(-200px);
+    }
+
+    .animate-slide-left {
+      animation: slideLeft 0.8s ease-out forwards;
+    }
+
+    .animate-slide-right {
+      animation: slideRight 0.8s ease-out forwards;
+    }
+
+    .animate-scale-in {
+      animation: scaleIn 0.8s ease-out forwards;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    .animate-fall {
+      animation: fall 0.8s ease-out forwards;
+    }
+
+    @keyframes slideLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideRight {
+      0% {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-200px);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      animation: progressFill 5s ease-out forwards;
+    }
+
+    @keyframes progressFill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--accent-primary);
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
 
         /* ===== BASE STYLES ===== */
         * {
@@ -251,8 +427,8 @@
         /* ===== MAIN CONTENT AREA ===== */
         .main-content {
             padding: 2rem;
-            animation: fadeIn 0.6s ease-out;
-            transition: transform 0.28s ease, padding-left 0.28s ease, margin-right 0.28s ease;
+            animation: fadeIn 0.3s ease-out;
+            transition: transform 0.30s ease, padding-left 0.30s ease, margin-right 0.30s ease;
             transform-origin: top left;
         }
         body.sidebar-collapsed .main-content {
@@ -262,14 +438,15 @@
         .search-box {
             width: 100%;
             max-width: 600px;
-            margin: 0 auto 2rem;
-            padding: 0.8rem 1.2rem;
+            margin: 0 auto 1rem;
+            padding: 0.8rem 1.5rem;
             font-size: 1rem;
             border-radius: var(--border-radius);
-            border: 1px solid var(--glass-border);
+            border: 1% solid var(--glass-border);
             background: var(--glass-bg);
             color: var(--text-primary);
         }
+        
 
         /* ===== GALLERY SECTION ===== */
         .letter-section {
@@ -325,16 +502,30 @@
             display: flex;
         }
         .modal-dialog {
-            max-width: 920px;
-            width: 92%;
+            max-width: 930px;
+            width: 95%;
             background: var(--bg-secondary);
-            padding: 14px;
+            padding: 15px;
             border-radius: 14px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 20px rgba(255, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             align-items: center;
             animation: popIn .28s cubic-bezier(.2, .9, .3, 1);
+        }
+        .close-btn {
+            position: absolute;
+            right: 18px;
+            top: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .close-btn:hover {
+            transform: scale(1.9);
         }
         .modal-image {
             max-width: 100%;
@@ -363,20 +554,6 @@
             margin-top: 0.6rem;
             text-align: center;
         }
-        .close-btn {
-            position: absolute;
-            right: 18px;
-            top: 12px;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .close-btn:hover {
-            transform: scale(1.2);
-        }
         .download-btn {
             padding: 0.5rem 0.9rem;
             border-radius: 10px;
@@ -390,7 +567,7 @@
             overflow: hidden;
         }
         .download-btn:hover {
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 20px 15px rgba(255, 0, 0, 0.4);
             transform: translateY(-2px);
         }
         .download-btn:disabled {
@@ -427,7 +604,7 @@
             border: 2px solid rgba(255,255,255,0.25);
             border-top-color: #fff;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.9s linear infinite;
         }
 
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -467,6 +644,7 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 0, 0, 0.05));
             border-radius: 12px;
             text-align: center;
+            box-shadow: 0 20px 20px rgba(255, 0, 0, 0.4);
         }
         .sidebar-profile img {
             width: 120px;
@@ -486,6 +664,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--accent-primary);
+            box-shadow: 0 20px 20px rgba(177, 177, 177, 0.4);
         }
         .sidebar-profile p {
             color: var(--text-secondary);
@@ -511,8 +690,8 @@
         /* collapse button */
         .sidebar-collapse {
             position: absolute;
-            bottom: 18px;
-            left: 50%;
+            bottom: 25px;
+            left: 97%;
             transform: translateX(-50%);
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
@@ -522,9 +701,9 @@
             cursor: pointer;
             display: flex;
             gap: 8px;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.18s ease, background 0.18s ease;
+            align-items: top;
+            justify-content: top;
+            transition: transform 0.2s ease, background 0.2s ease;
             z-index: 1100;
         }
         .sidebar-collapse:hover { transform: translateX(-50%) scale(1.03); }
@@ -572,44 +751,66 @@
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
             .gallery-item img {
-                height: 140px;
+                height: 100px;
             }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="particles" id="particles"></div>
+        <div class="loading-content">
+            <i class="fa-solid fa-laptop-code fa-4x main-icon hidden slide-left"></i>
+            <h1 id="loading-text" class="hidden slide-right"></h1>
+            <div class="sub-icons">
+                <i class="fa-brands fa-github fa-2x hidden scale-in"></i>
+                <i class="fa-solid fa-code fa-2x hidden scale-in"></i>
+                <i class="fa-solid fa-user fa-2x hidden scale-in"></i>
+            </div>
+            <h2 id="designer-text2" class="hidden fade-in">-</h2>
+            <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- SIDEBAR TOGGLE (Mobile Menu) -->
     <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 
     <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" id="sidebar" role="navigation" aria-label="Sidebar Navigation">
         <div class="sidebar-logos">
-         <img src="https://i.ibb.co/WqYBq7g/Whats-App-Image-2025-11-16-at-12-05-04-211ead99.jpg" alt="Logo">
+         <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="">
         </div>
         <div class="sidebar-title">Togetherness TKJ OnE</div>
-        <div class="sidebar-subtitle">Kenangan yang terukir dalam kebersamaan</div>
+        <div class="sidebar-subtitle">Kenangan dari semua, untuk bersama</div>
         <nav>
             <a href="#" class="sidebar-nav-link" data-filter="all" data-tooltip="Semua Foto"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
             <div class="sidebar-submenu"><a href="#" class="sidebar-nav-link active" data-filter="group" data-tooltip="Foto Bersama"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a></div>
-            <a href="#" class="sidebar-nav-link" data-filter="male" data-tooltip="Foto Laki-laki"><i class="fas fa-mars"></i> <span class="label">FOTO LAKI-LAKI</span></a>
-            <a href="#" class="sidebar-nav-link" data-filter="female" data-tooltip="Foto Perempuan"><i class="fas fa-venus"></i> <span class="label">FOTO PEREMPUAN</span></a>
+            <a href="#" class="sidebar-nav-link" data-filter="male" data-tooltip="Foto Laki-laki"><i class="fas fa-mars"></i> <span class="label">FOTO COWOK</span></a>
+            <a href="#" class="sidebar-nav-link" data-filter="female" data-tooltip="Foto Perempuan"><i class="fas fa-venus"></i> <span class="label">FOTO CEWEK</span></a>
             <a href="#" class="sidebar-nav-link" data-filter="video" data-tooltip="Video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
-            <a href="#" class="sidebar-nav-link" data-target="about" data-tooltip="Developer"><i class="fas fa-user"></i> <span class="label">DEVELOPER</span></a>
+            <a href="#" class="sidebar-nav-link" data-target="about" data-tooltip="Developer"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
         </nav>
-        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;align-items:center;">
-            <button id="sidebarClearCache" style="width:90%;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text-secondary);cursor:pointer;">Bersihkan cache</button>
-        </div>
         <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Toggle sidebar" aria-expanded="true" title="Toggle sidebar"> <i class="fas fa-chevron-left"></i> </button>
     </aside>
 
     <!-- MAIN GALLERY SECTION -->
     <main class="main-content" id="section-all">
         <div id="searchWrapper">
-            <input type="text" id="searchInput" class="search-box" placeholder="Cari Berdasarkan Tanggal...">
+            <input type="number" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
+        </div>
+        <h2>SEKEDAR POINGEK</h2>
+        <div class="sidebar-subtitle">
+          <h4>Sado fitur sodang dalom tahap pongombangen,joku indo stabil,sabar yo kawen,maklum,sodang boaja🙏😊,boborapo fitur kadang di apuh,jo di ubah,bak bisa juo jalen di hp low-end</h4>
+          <h4><br>web ko pake sistem cache,bak lancar mombukak untuok sotoruhnyo, tapi lambek di bukak portamo kali, usahoken kawen-kawen ocok mongapuh cachenyo yo,bak dapek pembaruan foto baru,tombol apuhnyo di palieng bawah yo</h4>
         </div>
         <div id="noResultsMessage" style="text-align:center;margin:2rem 0;color:var(--text-secondary);display:none;">
-            Maaf yo kawen,Tanggal: "<span id="searchedTerm"></span>" Indo lai tudo di database,cubo cek baliek
+            Tanggal atau nomor foto: "<span id="searchedTerm"></span>" Indo Dapek,Typo Kawen Joku,Cubo Cek Baliek
         </div>
         <div id="galleryContainer"></div>
         <div class="stats-footer" id="statsFooter"></div>
@@ -619,16 +820,10 @@
     <main class="developer-content" id="section-about" style="display:none;">
         <div class="sidebar-profile">
             <img src="https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="">
-            <div>Zhyllan Fyllah</div>
-            <p>Website ini saya buat sebagai memori atas keseharian kami di kelas TKJ 1 SMK N 1 LEMBAH MELINTANG. Di dalamnya
-            tersimpan momen-momen yang mungkin terlihat sederhana, namun memiliki makna yang dalam bagi kami semua. Tawa, kerja
-            sama, perjuangan, dan kebersamaan yang kami lalui selama satu tahun menjadi fondasi utama dari lahirnya 'Togetherness
-            TKJ OnE'. Sebagai seorang siswa sekaligus pengembang, saya ingin menghadirkan ruang digital yang tidak hanya menyimpan
-            foto, tetapi juga menyimpan rasa.<blockquote><br> website ini dapat menjadi pengingat bahwa di balik setiap gambar, ada cerita
-            yang tak tergantikan.</blockquote></p> <p><br>Terima kasih kepada seluruh teman-teman yang telah menjadi bagian dari kisah ini. Semoga
-            kebersamaan kita tetap hidup, meski waktu terus berjalan.</p>
-            <a href="https://wa.me/6285165721384?text=Aku ondak mintak masuokken foto ko website album kito tu bulieh zhyllan ?" target="_blank">
-                <i class="fab fa-whatsapp"></i> Kirim via WhatsApp
+            <div>ZHYLLAN FYLLAH</div>
+            <p>Website ko,songajo aku buek untuok kawen-kawen ku sadonyo,bak bisa mondownload sado kenangen di smk tu,bak jangen tingga corito ajo<blockquote><br> Sado isi web iko dari bosamo,untuok bosamo,jangen sampe monyebarken link nyo yo,tosebar aib beko jadinyo.</blockquote></p> <p><br>Torimokasih untuok kawen-kawen non olah mongirim foto-nyo ko aku,kalau indok lai,joku web ko indo boisi tudo,kalau ondak mongirim foto,botanyo,jo nonlainnyo,klik tombol di bawahyo,baru beko di web portofolioku,klik tombol "chat di whatsapp",tosorahla ondak chat apo ajo,sekian yo,assalamualaikum.<blockquote>===ZHYLLAN FYLLAH===</blockquote></p>
+            <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
+                <i class="fas fa-user"></i> Buka Web Porto Developer
             </a>
         </div>
     </main>
@@ -637,7 +832,8 @@
     <div class="modal" id="imageModal" onclick="closeModal()">
         <div class="modal-dialog" onclick="event.stopPropagation()">
             <button class="close-btn" aria-label="Tutup" onclick="closeModal()">&times;</button>
-            <img id="modalImage" class="modal-image" src="" alt="Gambar">
+        <img id="modalImage" class="modal-image" src="" alt="Gambar">
+        <video id="modalVideo" class="modal-image" src="" alt="Video" controls style="display:none;"></video>
             <div class="modal-info">
                 <div id="modalName" class="modal-name"></div>
                 <div id="modalDate" class="modal-date"></div>
@@ -651,6 +847,76 @@
     </div>
 
     <script>
+            // === LOADING SCREEN ===
+                document.addEventListener("DOMContentLoaded", () => {
+                    const loadingText = document.getElementById("loading-text");
+                    const mainIcon = document.querySelector(".main-icon");
+                    const subIcons = document.querySelectorAll(".sub-icons i");
+                    const designerText = document.getElementById("designer-text");
+                    const designerText2 = document.getElementById("designer-tentang");
+                    const loadingScreen = document.getElementById("loading-screen");
+
+                    function showElement(el, delay) {
+                        setTimeout(() => {
+                            el.classList.remove("hidden");
+                            if (el.classList.contains("slide-left")) {
+                                el.classList.add("animate-slide-left");
+                            } else if (el.classList.contains("slide-right")) {
+                                el.classList.add("animate-slide-right");
+                            } else if (el.classList.contains("scale-in")) {
+                                el.classList.add("animate-scale-in");
+                            } else if (el.classList.contains("fade-in")) {
+                                el.classList.add("animate-fade-in");
+                            } else if (el.classList.contains("fall")) {
+                                el.classList.add("animate-fall");
+                            } else {
+                                el.classList.add("fall");
+                            }
+                        }, delay);
+                    }
+
+                    // Typewriter effect for loading text
+                    function typeWriter() {
+                        const text = "Togetherness TKJ OnE";
+                        const element = document.getElementById("loading-text");
+                        element.textContent = "";
+                        let i = 0;
+                        const timer = setInterval(() => {
+                            if (i < text.length) {
+                                element.textContent += text.charAt(i);
+                                i++;
+                            } else {
+                                clearInterval(timer);
+                            }
+                        }, 100);
+                    }
+                    typeWriter();
+                    showElement(loadingText, 0);
+                    showElement(mainIcon, 800);
+                    subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
+                    showElement(designerText2, 3200);
+                    showElement(designerText, 3600);
+                    // Create floating particles
+                    const particlesContainer = document.getElementById('particles');
+                    for (let i = 0; i < 20; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.width = Math.random() * 10 + 5 + 'px';
+                        particle.style.height = particle.style.width;
+                        particle.style.animationDelay = Math.random() * 6 + 's';
+                        particlesContainer.appendChild(particle);
+                    }
+
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => loadingScreen.style.display = 'none', 1000);
+                    }, 5500);
+                });
+        // ===== GLOBAL VARIABLES =====
+        let currentFilter = 'group'; // default filter
+        let selectedMedia = null; // currently selected photo/video for modal
+
         // ===== HELPER FUNCTIONS: DEVICE DETECTION & URL MANIPULATION =====
         function isLowEndDevice() {
             return (
@@ -854,21 +1120,34 @@
         }
 
         // ===== MODAL POPUP: OPEN, CLOSE, DOWNLOAD =====
-        function openModal(fullUrl, name, date) {
+        function openModal(fullUrl, name, date, gender) {
             const hdUrl = getHDUrl(fullUrl);
             const modal = document.getElementById('imageModal');
             const img = document.getElementById('modalImage');
+            const video = document.getElementById('modalVideo');
             document.getElementById('modalName').textContent = name || '';
             document.getElementById('modalDate').textContent = date ? formatDate(date) : '';
             // lock scroll
             document.body.style.overflow = 'hidden';
-            // set src after small delay to allow animation
+            // reset elements
+            img.style.display = 'none';
+            video.style.display = 'none';
             img.src = '';
+            video.src = '';
             modal.classList.add('show');
-            // ensure the image loads and animates
-            setTimeout(() => {
-                img.src = hdUrl;
-            }, 30);
+            // determine if video or image
+            const isVideo = gender === 'video' || /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(fullUrl);
+            if (isVideo) {
+                video.style.display = 'block';
+                setTimeout(() => {
+                    video.src = hdUrl;
+                }, 30);
+            } else {
+                img.style.display = 'block';
+                setTimeout(() => {
+                    img.src = hdUrl;
+                }, 30);
+            }
             document.getElementById('downloadBtn').disabled = false;
         }
 
@@ -876,11 +1155,13 @@
             const modal = document.getElementById('imageModal');
             modal.classList.remove('show');
             document.body.style.overflow = '';
-            // clear image after animation end to free memory
+            // clear media after animation end to free memory
             const img = document.getElementById('modalImage');
+            const video = document.getElementById('modalVideo');
             setTimeout(() => {
                 try {
                     img.src = '';
+                    video.src = '';
                 } catch (e) {}
             }, 300);
         }
@@ -903,7 +1184,7 @@
                 a.remove();
                 URL.revokeObjectURL(url);
             } catch (err) {
-                alert('Gagal mendownload gambar. Coba klik kanan > Simpan gambar.');
+                alert('Gagal mondownload,cubo tahen lamo di gambar > klik Simpan gambar.');
             } finally {
                 if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
             }
@@ -920,7 +1201,7 @@
                 const statsFooter = document.getElementById('statsFooter');
                 if (statsFooter) {
                     statsFooter.style.display = 'block';
-                    statsFooter.textContent = 'Memuat data baru...';
+                    statsFooter.textContent = 'Mongambiek Foto Baru...';
                 }
                 // reload photos bypassing cache
                 loadPhotosFromDB(true);
@@ -967,7 +1248,7 @@
             }
             statsFooter.style.display = 'block';
             const total = (photos && photos.length) ? photos.length : 0;
-            statsFooter.innerHTML = `<span>${displayedPhotos.length} foto ditampilkan dari ${total} total.</span> <button id="clearCacheBtn" style="margin-left:12px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text-secondary);cursor:pointer;">Bersihkan cache</button>`;
+            statsFooter.innerHTML = `<span>${displayedPhotos.length} Foto di Coliekken,Dari ${total} Total Sadonyo.</span> <button id="clearCacheBtn" style="margin-left:12px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text-secondary);cursor:pointer;">Apuih Cache</button>`;
             const btn = document.getElementById('clearCacheBtn');
             if (btn) btn.addEventListener('click', clearCache);
         }
@@ -1011,14 +1292,14 @@
             let results = [...photos];
             if (query && query.trim().length > 0) {
                 results = results.filter(p => {
-                    const matchesName = (p.name || '').toLowerCase().includes(query);
                     const matchesDate = matchesDateQuery(p.date || '', query);
-                    return matchesName || matchesDate;
+                    return matchesDate;
                 });
             }
             if (lastFilter && lastFilter !== 'all') {
                 if (lastFilter === 'group') results = results.filter(p => p.gender === 'all');
                 else if (lastFilter === 'male' || lastFilter === 'female') results = results.filter(p => p.gender === lastFilter);
+                if (lastFilter === 'video') results = results.filter(p => p.gender === 'video');
             }
             renderGallery(results);
         }
@@ -1032,7 +1313,7 @@
             saveSearchState(query);
             searchTimer = setTimeout(() => {
                 performSearch(query);
-            }, 120);
+            }, 400);
         });
 
         // ===== USER PREFERENCES MANAGEMENT =====
@@ -1066,20 +1347,6 @@
                 // fallback: click the first filter link (should exist)
                 const first = document.querySelector('.sidebar-nav-link[data-filter]');
                 if (first) first.click();
-            }
-        }
-
-        // ===== THEME MANAGEMENT =====
-        function loadTheme() {
-            const saved = localStorage.getItem('theme') || 'dark';
-            const html = document.documentElement;
-            const toggle = document.getElementById('themeToggle');
-            if (saved === 'light') {
-                html.classList.add('light-theme');
-                if (toggle) toggle.classList.add('active');
-            } else {
-                html.classList.remove('light-theme');
-                if (toggle) toggle.classList.remove('active');
             }
         }
 
@@ -1122,15 +1389,6 @@
 
         if (collapseBtn) collapseBtn.addEventListener('click', () => toggleSidebarCollapsed());
 
-        // sidebar clear cache button (bottom of sidebar)
-        const sidebarClearBtn = document.getElementById('sidebarClearCache');
-        if (sidebarClearBtn) {
-            sidebarClearBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                clearCache(true);
-            });
-        }
-
         // restore saved state
         (function restoreSidebar() {
             try {
@@ -1165,7 +1423,6 @@
 
         // ===== INITIALIZATION =====
         loadPhotosFromDB();
-        loadTheme();
     </script>
 </body>
 
