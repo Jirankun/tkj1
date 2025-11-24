@@ -769,9 +769,7 @@
             }
         }
     </style>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
-    <link rel="preconnect" href="https://challenges.cloudflare.com">
+
 </head>
 
 <body>
@@ -837,8 +835,10 @@
             <h3 style="color:var(--accent-primary);margin-bottom:1rem;">Verifikasi Keamanan</h3>
             <p style="color:var(--text-secondary);margin-bottom:1rem;">Untuk melanjutkan, selesaikan tantangan di bawah ini untuk memastikan Anda bukan bot.</p>
             <input type="text" id="honeypot" style="display:none;" autocomplete="off">
-            <div id="turnstile-container"></div>
-            <div id="captcha-error" style="color:#ff4444;margin-top:1rem;display:none;">Gagal memverifikasi. Coba lagi atau refresh halaman.</div>
+            <div id="math-question" style="margin-bottom:1rem;font-size:1.2rem;color:var(--text-primary);"></div>
+            <input type="number" id="math-answer" placeholder="Jawaban" style="padding:0.5rem;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);text-align:center;margin-bottom:1rem;">
+            <button id="verify-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Verifikasi</button>
+            <div id="captcha-error" style="color:#ff4444;margin-top:1rem;display:none;">Jawaban salah. Coba lagi.</div>
         </div>
         <div id="searchWrapper" style="display:none;">
             <input type="number" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
@@ -907,78 +907,54 @@
             if (!firstInteractionTime) firstInteractionTime = Date.now();
         });
 
-        const widgetId = turnstile.render("#turnstile-container", {
-                sitekey: "0x4AAAAAACClqxfwf2t70lzC",
-                callback: function (token) {
-                    console.log("Captcha Success:", token);
 
-                    // Check honeypot
-                    const honeypot = document.getElementById('honeypot').value;
-                    if (honeypot) {
-                        botDetectionScore += 100;
-                        console.error("Honeypot triggered");
-                    }
 
-                    // Check time to first interaction
-                    const timeToInteract = firstInteractionTime ? firstInteractionTime - pageLoadTime : Infinity;
-                    if (timeToInteract < 1000) { // Less than 1 second
-                        botDetectionScore += 20;
-                        console.warn("Too fast interaction");
-                    }
+        // Generate random math question
+        function generateMathQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const answer = num1 * num2;
+            document.getElementById('math-question').textContent = `Berapa ${num1} × ${num2}?`;
+            return answer;
+        }
 
-                    // Check mouse movements
-                    if (mouseMoves < 5) {
-                        botDetectionScore += 15;
-                        console.warn("Low mouse activity");
-                    }
+        let correctAnswer = generateMathQuestion();
 
-                    // Check user agent for bot strings
-                    const ua = navigator.userAgent.toLowerCase();
-                    const botStrings = ['bot', 'crawler', 'spider', 'scraper', 'selenium', 'headless'];
-                    if (botStrings.some(str => ua.includes(str))) {
-                        botDetectionScore += 50;
-                        console.warn("Bot string in UA");
-                    }
+        // Handle verification button
+        document.getElementById('verify-btn').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('math-answer').value);
+            const errorDiv = document.getElementById('captcha-error');
 
-                    // Additional bot check before allowing access
-                    if (botDetectionScore > 30) {
-                        console.error("High bot detection score, blocking access");
-                        document.getElementById('captcha-error').textContent = 'Aktivitas mencurigakan terdeteksi. Akses ditolak.';
-                        document.getElementById('captcha-error').style.display = 'block';
-                        // Reset captcha
-                        turnstile.reset(widgetId);
-                        return;
-                    }
+            if (userAnswer === correctAnswer) {
+                console.log("Math verification success");
+                captchaVerified = true;
+                // Cache verification for 24 hours
+                localStorage.setItem('math_verification', JSON.stringify({ timestamp: Date.now() }));
+                // Hide captcha section and show main content
+                document.getElementById('captcha-section').style.display = 'none';
+                document.getElementById('searchWrapper').style.display = 'block';
+                document.getElementById('main-title').style.display = 'block';
+                document.getElementById('main-subtitle').style.display = 'block';
+                // Load gallery after verification success
+                loadPhotosFromDB();
+            } else {
+                errorDiv.textContent = 'Jawaban salah. Coba lagi.';
+                errorDiv.style.display = 'block';
+                // Generate new question
+                correctAnswer = generateMathQuestion();
+                document.getElementById('math-answer').value = '';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+            }
+        });
 
-                    captchaVerified = true;
-                    // Hide captcha section and show main content
-                    document.getElementById('captcha-section').style.display = 'none';
-                    document.getElementById('searchWrapper').style.display = 'block';
-                    document.getElementById('main-title').style.display = 'block';
-                    document.getElementById('main-subtitle').style.display = 'block';
-                    // Load gallery after captcha success
-                    loadPhotosFromDB();
-                },
-                'error-callback': function() {
-                    console.error("Captcha Error");
-                    document.getElementById('captcha-error').textContent = 'Gagal memverifikasi. Periksa koneksi internet atau coba lagi.';
-                    document.getElementById('captcha-error').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('captcha-error').style.display = 'none';
-                    }, 5000);
-                },
-                'expired-callback': function() {
-                    console.warn("Captcha Expired");
-                    captchaVerified = false;
-                    // Reset to show captcha again
-                    document.getElementById('captcha-section').style.display = 'block';
-                    document.getElementById('searchWrapper').style.display = 'none';
-                    document.getElementById('main-title').style.display = 'none';
-                    document.getElementById('main-subtitle').style.display = 'none';
-                    document.getElementById('galleryContainer').innerHTML = '';
-                    document.getElementById('statsFooter').style.display = 'none';
-                }
-            });
+        // Allow Enter key to trigger verification on desktop
+        document.getElementById('math-answer').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('verify-btn').click();
+            }
+        });
             // === LOADING SCREEN ===
                 document.addEventListener("DOMContentLoaded", () => {
                     const loadingText = document.getElementById("loading-text");
