@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,18 +22,6 @@
             --transition-smooth: all 0.4s ease;
             --sidebar-bg: linear-gradient(180deg, rgba(17, 17, 17, 0.7) 0%, rgba(20, 20, 20, 0.5) 100%);
             --sidebar-border: rgba(255, 255, 255, 0.05);
-        }
-        :root.light-theme {
-            --bg-primary: #f5f5f5;
-            --bg-secondary: #ffffff;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent-primary: #e74c3c;
-            --accent-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            --glass-bg: rgba(0, 0, 0, 0.03);
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --sidebar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 245, 245, 0.6) 100%);
-            --sidebar-border: rgba(0, 0, 0, 0.05);
         }
 
          /* === LOADING SCREEN === */
@@ -60,6 +47,11 @@
     @keyframes bgShift {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
+    }
+
+    @keyframes progressFill {
+      0% { width: 0%; }
+      100% { width: 100%; }
     }
 
     .hidden {
@@ -161,11 +153,12 @@
       }
     }
 
+
     .progress-bar {
-      width: 300px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
+      width: 500px;
+      height: 5px;
+      background: rgb(255, 255, 255);
+      border-radius: 5px;
       margin-top: 20px;
       overflow: hidden;
     }
@@ -174,13 +167,85 @@
       height: 100%;
       background: var(--accent-gradient);
       width: 0%;
-      animation: progressFill 5s ease-out forwards;
+      animation: progressFill 3s ease-in-out forwards;
     }
 
-    @keyframes progressFill {
-      0% { width: 0%; }
-      100% { width: 100%; }
+    .loading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    gap: 5px;
+}
+
+.loading span{
+    width: 4px;
+    height: 60px;
+    background-color: #4cf9f9;
+    animation: scale 1.22s ease-in-out infinite;
+}
+.loading span:nth-child(1) {
+    background: #1aff00;
+    animation-delay: -1.29s;
+}
+.loading span:nth-child(2){
+    background: #006aff;
+    animation-delay: -1.28s;
+}
+.loading span:nth-child(3) {
+    background: #ff0000;
+    animation-delay: -1.27s;
+}
+.loading span:nth-child(4) {
+    background: #ff00f7;
+    animation-delay: -1.26s;
+}
+.loading span:nth-child(5) {
+    background: #fffb00;
+    animation-delay: -0.25s;
+}
+.loading span:nth-child(6) {
+    background: #00b7ff;
+    animation-delay: -0.24s;
+}
+.loading span:nth-child(7) {
+    background: #ff7b00;
+    animation-delay: -1.23s;
+}
+.loading span:nth-child(8) {
+    background: #00ff66;
+    animation-delay: -0.24s;
+}
+.loading span:nth-child(9) {
+    background: #1aff00;
+    animation-delay: -0.25s;
+}
+.loading span:nth-child(10){
+    background: #006aff;
+    animation-delay: -1.26s;
+}
+.loading span:nth-child(11) {
+    background: #ff0000;
+    animation-delay: -1.27s;
+}
+.loading span:nth-child(12) {
+    background: #ff00f7;
+    animation-delay: -1.28s;
+}
+.loading span:nth-child(13) {
+    background: #fffb00;
+    animation-delay: -1.29s;
+}
+
+@keyframes scale {
+    0%,10%,100%{
+        transform: scale(0.05);
     }
+    70%{
+        transform: scale(1);
+    }
+}
 
     .particles {
       position: absolute;
@@ -196,8 +261,8 @@
       position: absolute;
       background: var(--accent-primary);
       border-radius: 50%;
-      opacity: 0.7;
-      animation: float 6s linear infinite;
+      opacity: 0.5;
+      animation: float 3s linear infinite;
     }
 
     @keyframes float {
@@ -205,13 +270,16 @@
         transform: translateY(100vh) rotate(0deg);
         opacity: 0;
       }
-      10% { opacity: 0.7; }
-      90% { opacity: 0.7; }
+      10% { opacity: 10; }
+      90% { opacity: 0.15; }
       100% {
         transform: translateY(-100px) rotate(360deg);
         opacity: 0;
       }
     }
+
+
+
 
         /* ===== BASE STYLES ===== */
         * {
@@ -232,19 +300,7 @@
             --current-padding: var(--sidebar-collapsed-width);
         }
 
-        /* ===== KEYFRAME ANIMATIONS ===== */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes popIn {
-            from { transform: translateY(10px) scale(.98); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        @keyframes fadeInImg {
-            from { opacity: 0; transform: scale(.995); }
-            to { opacity: 1; transform: scale(1); }
-        }
+
 
         /* ===== SIDEBAR STYLES ===== */
         .sidebar {
@@ -262,7 +318,7 @@
             gap: 0.8rem;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow: inset 1px 0 1px rgba(255, 255, 255, 0.1), 2px 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 1px 0 1px rgb(255, 255, 255), 2px 0 20px rgba(75, 74, 74, 0.153);
         }
         .sidebar.collapsed {
             width: var(--sidebar-collapsed-width);
@@ -279,7 +335,7 @@
             height: 46px;
         }
         .sidebar .sidebar-nav-link { padding-left: 1rem; }
-        .sidebar.collapsed .sidebar-nav-link { justify-content: center; padding: 0.9rem 0; }
+        .sidebar.collapsed .sidebar-nav-link { justify-content: center; padding: 1rem 0; }
 
         /* tooltip when collapsed */
         .sidebar.collapsed .sidebar-nav-link::after {
@@ -353,17 +409,13 @@
         }
         .sidebar-nav-link:hover {
             color: var(--text-primary);
-            transform: translateX(5px);
-        }
-        .sidebar-nav-link:hover::before {
-            left: 0;
         }
         .sidebar-nav-link.active {
             background: var(--accent-gradient);
             color: var(--bg-primary);
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
         }
+
         .sidebar-nav-link i {
             width: 24px;
             text-align: center;
@@ -410,7 +462,6 @@
         }
         .sidebar-toggle:hover {
             box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
-            transform: translateY(-2px);
         }
         .sidebar-toggle i {
             width: 100%;
@@ -427,7 +478,6 @@
         /* ===== MAIN CONTENT AREA ===== */
         .main-content {
             padding: 2rem;
-            animation: fadeIn 0.3s ease-out;
             transition: transform 0.30s ease, padding-left 0.30s ease, margin-right 0.30s ease;
             transform-origin: top left;
         }
@@ -468,6 +518,15 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             cursor: pointer;
+            position: relative;
+        }
+        .gallery-item .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            display: none;
         }
         .gallery-item img {
             width: 100%;
@@ -511,7 +570,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: popIn .28s cubic-bezier(.2, .9, .3, 1);
+            position: relative;
         }
         .close-btn {
             position: absolute;
@@ -532,8 +591,6 @@
             max-height: 70vh;
             border-radius: 10px;
             object-fit: contain;
-            opacity: 0;
-            animation: fadeInImg .34s forwards .06s;
         }
         .modal-info {
             width: 100%;
@@ -568,29 +625,13 @@
         }
         .download-btn:hover {
             box-shadow: 0 20px 15px rgba(255, 0, 0, 0.4);
-            transform: translateY(-2px);
         }
         .download-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* animate download button when modal opens */
-        .modal.show .download-btn {
-            animation: btnPop .28s cubic-bezier(.2,.9,.3,1) both;
-        }
 
-        @keyframes btnPop {
-            0% { transform: translateY(8px) scale(.98); opacity: 0; }
-            60% { transform: translateY(-4px) scale(1.03); opacity: 1; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        /* disable button animation in performance mode */
-        .performance-mode .download-btn {
-            animation: none !important;
-            transition: none !important;
-        }
 
         /* spinner shown when button has .loading */
         .download-btn.loading::after {
@@ -609,23 +650,9 @@
 
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ripple effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.22);
-            transform: scale(0);
-            animation: ripple 0.6s ease-out;
-            pointer-events: none;
-        }
-        @keyframes ripple { from { opacity: 0.9; transform: scale(0); } to { opacity: 0; transform: scale(2.5); } }
 
-        /* disable spinner & ripple in performance-mode */
-        .performance-mode .download-btn.loading::after,
-        .performance-mode .download-btn .ripple {
-            display: none !important;
-            animation: none !important;
-        }
+
+
 
         /* ===== DEVELOPER SECTION ===== */
         .developer-content {
@@ -685,8 +712,12 @@
         }
         .sidebar-profile a:hover {
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            transform: translateY(-2px);
         }
+
+
+
+
+
         /* collapse button */
         .sidebar-collapse {
             position: absolute;
@@ -709,26 +740,9 @@
         .sidebar-collapse:hover { transform: translateX(-50%) scale(1.03); }
         .sidebar.collapsed .sidebar-collapse i { transform: rotate(180deg); }
 
-        /* ===== STATS & MESSAGES ===== */
-        .stats-footer {
-            display: none;
-            margin-top: 2rem;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.03), rgba(163, 0, 204, 0.03));
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            text-align: center;
-        }
 
-        /* ===== PERFORMANCE MODE (Low-End Device) ===== */
-        .performance-mode .modal-dialog {
-            animation: none !important;
-        }
-        .performance-mode .modal-image {
-            animation: none !important;
-            transition: none !important;
-            opacity: 1 !important;
-        }
+
+
 
         /* ===== RESPONSIVE DESIGN ===== */
         @media (max-width: 768px) {
@@ -772,9 +786,24 @@
             </div>
             <h2 id="designer-text2" class="hidden fade-in">-</h2>
             <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
+        </div>
+        <div class="loading">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
         </div>
     </div>
 
@@ -823,10 +852,14 @@
             <div>ZHYLLAN FYLLAH</div>
             <p>Website ko,songajo aku buek untuok kawen-kawen ku sadonyo,bak bisa mondownload sado kenangen di smk tu,bak jangen tingga corito ajo<blockquote><br> Sado isi web iko dari bosamo,untuok bosamo,jangen sampe monyebarken link nyo yo,tosebar aib beko jadinyo.</blockquote></p> <p><br>Torimokasih untuok kawen-kawen non olah mongirim foto-nyo ko aku,kalau indok lai,joku web ko indo boisi tudo,kalau ondak mongirim foto,botanyo,jo nonlainnyo,klik tombol di bawahyo,baru beko di web portofolioku,klik tombol "chat di whatsapp",tosorahla ondak chat apo ajo,sekian yo,assalamualaikum.<blockquote>===ZHYLLAN FYLLAH===</blockquote></p>
             <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
-                <i class="fas fa-user"></i> Buka Web Porto Developer
+                <i class="fas fa-user"></i> Buka Web folio Developer
             </a>
         </div>
     </main>
+
+
+
+
 
     <!-- IMAGE MODAL POPUP -->
     <div class="modal" id="imageModal" onclick="closeModal()">
@@ -853,7 +886,7 @@
                     const mainIcon = document.querySelector(".main-icon");
                     const subIcons = document.querySelectorAll(".sub-icons i");
                     const designerText = document.getElementById("designer-text");
-                    const designerText2 = document.getElementById("designer-tentang");
+                    const designerText2 = document.getElementById("designer-text2");
                     const loadingScreen = document.getElementById("loading-screen");
 
                     function showElement(el, delay) {
@@ -898,13 +931,13 @@
                     showElement(designerText, 3600);
                     // Create floating particles
                     const particlesContainer = document.getElementById('particles');
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 55; i++) {
                         const particle = document.createElement('div');
                         particle.className = 'particle';
-                        particle.style.left = Math.random() * 100 + '%';
-                        particle.style.width = Math.random() * 10 + 5 + 'px';
+                        particle.style.left = Math.random() * 110 + '%';
+                        particle.style.width = Math.random() * 120 + 5 + 'px';
                         particle.style.height = particle.style.width;
-                        particle.style.animationDelay = Math.random() * 6 + 's';
+                        particle.style.animationDelay = Math.random() * 13 + 's';
                         particlesContainer.appendChild(particle);
                     }
 
@@ -913,6 +946,7 @@
                         setTimeout(() => loadingScreen.style.display = 'none', 1000);
                     }, 5500);
                 });
+
         // ===== GLOBAL VARIABLES =====
         let currentFilter = 'group'; // default filter
         let selectedMedia = null; // currently selected photo/video for modal
@@ -979,11 +1013,11 @@
             try {
                 const url = './DB/photos.json' + (options.bust ? ('?_=' + Date.now()) : '');
                 const response = await fetch(url, { cache: options.noStore ? 'no-store' : 'default' });
-                if (!response.ok) throw new Error('File tidak ditemukan');
+                if (!response.ok) throw new Error('File Not Found');
                 const data = await response.json();
                 return data.photos;
             } catch (e) {
-                console.warn('Fallback ke data dummy', e);
+                console.warn('Fallback dummy', e);
                 return [{ name: "Zhyllan", gender: "male", url: "https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg", date: "2025-11-04" }];
             }
         }
@@ -1072,6 +1106,21 @@
                     const thumbUrl = isLowEndDevice() ? getThumbnailUrl(photo.url) : photo.url;
                     const formattedDate = formatDate(photo.date);
                     item.innerHTML = `
+                        <div class="loading">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
                         <img data-src="${thumbUrl}" alt="${photo.name}" class="lazy">
                         <div class="gallery-item-name">${photo.name}</div>
                         <div class="gallery-item-date">${formattedDate}</div>
@@ -1092,15 +1141,19 @@
                         if (entry.isIntersecting) {
                             const img = entry.target;
                             const src = img.dataset.src;
+                            const loadingDiv = img.parentElement.querySelector('.loading');
+                            if (loadingDiv) loadingDiv.style.display = 'flex';
                             const tempImg = new Image();
                             tempImg.onload = function() {
                                 img.src = src;
                                 img.classList.remove('lazy');
+                                if (loadingDiv) loadingDiv.style.display = 'none';
                                 observer.unobserve(img);
                             };
                             tempImg.onerror = function() {
                                 img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIj48cmVjdCBmaWxsPSIjMzMzIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIvPjwvc3ZnPg==';
                                 img.classList.add('error');
+                                if (loadingDiv) loadingDiv.style.display = 'none';
                                 observer.unobserve(img);
                             };
                             tempImg.src = src;
@@ -1144,7 +1197,35 @@
                 }, 30);
             } else {
                 img.style.display = 'block';
+                // Show loading animation in modal
+                const modalDialog = modal.querySelector('.modal-dialog');
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading';
+                loadingDiv.innerHTML = `
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                `;
+                loadingDiv.style.position = 'absolute';
+                loadingDiv.style.top = '50%';
+                loadingDiv.style.left = '50%';
+                loadingDiv.style.transform = 'translate(-50%, -50%)';
+                loadingDiv.style.zIndex = '1';
+                modalDialog.appendChild(loadingDiv);
                 setTimeout(() => {
+                    img.onload = function() {
+                        loadingDiv.remove();
+                    };
                     img.src = hdUrl;
                 }, 30);
             }
@@ -1184,9 +1265,9 @@
                 a.remove();
                 URL.revokeObjectURL(url);
             } catch (err) {
-                alert('Gagal mondownload,cubo tahen lamo di gambar > klik Simpan gambar.');
+                alert('Gagal mondownload,cubo tahen lamo di gambar > klik Simpan gambar,atau cubo cek internet kawen dulu,joku bomasalah.');
             } finally {
-                if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+                if (btn) { btn.classList.remove('loading'); btn.disabled = true; }
             }
         }
 
@@ -1218,25 +1299,30 @@
             }
         });
 
-        // ===== DOWNLOAD BUTTON INTERACTIONS (ripple + attach handler) =====
-        function createRipple(e) {
-            const btn = e.currentTarget;
-            if (!btn) return;
-            const rect = btn.getBoundingClientRect();
-            const circle = document.createElement('span');
-            circle.className = 'ripple';
-            const size = Math.max(rect.width, rect.height);
-            circle.style.width = circle.style.height = size + 'px';
-            circle.style.left = (e.clientX - rect.left - size / 2) + 'px';
-            circle.style.top = (e.clientY - rect.top - size / 2) + 'px';
-            btn.appendChild(circle);
-            setTimeout(() => { try { circle.remove(); } catch (e) {} }, 650);
-        }
+         // Download image with D key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'D' ||e.key === 'd') {
+                    const modal = document.getElementById('imageModal');
+                    if (modal && modal.classList.contains('show')) downloadImage();
+                }
+            });
 
-        const downloadBtn = document.getElementById('downloadBtn');
-        if (downloadBtn) {
-            downloadBtn.addEventListener('pointerdown', createRipple);
-        }
+             // Remove cache with A key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'a' ||e.key ==='A') {
+                        const modal = document.getElementById('statsFooter');
+                        clearCache();
+                    }
+                });
+
+                        // allow keyboard shortcut 'c' to toggle collapse (desktop)
+                            document.addEventListener('keydown', (e) => {
+                                if (e.key === 'c' || e.key === 'C') {
+                                    if (window.innerWidth > 768) toggleSidebarCollapsed();
+                                }
+                            });
+
+
 
         // ===== STATISTICS DISPLAY =====
         function updateStatistics(displayedPhotos) {
@@ -1261,8 +1347,13 @@
                 link.classList.add('active');
                 const target = link.dataset.target;
                 if (target) {
+                    // hide all sections
                     document.getElementById('section-all').style.display = 'none';
-                    document.getElementById('section-about').style.display = 'block';
+                    document.getElementById('section-about').style.display = 'none';
+                    // show only the targeted section
+                    if (target === 'about') {
+                        document.getElementById('section-about').style.display = 'block';
+                    }
                     if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
                     return;
                 }
@@ -1413,12 +1504,6 @@
                     if (toggleBtn) toggleBtn.style.display = (window.innerWidth <= 768) ? 'flex' : 'none';
                 }
             } catch (e) {}
-        });
-        // allow keyboard shortcut 'c' to toggle collapse (desktop)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'c' || e.key === 'C') {
-                if (window.innerWidth > 768) toggleSidebarCollapsed();
-            }
         });
 
         // ===== INITIALIZATION =====
