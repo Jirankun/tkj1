@@ -769,6 +769,9 @@
             }
         }
     </style>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+    <link rel="preconnect" href="https://challenges.cloudflare.com">
 </head>
 
 <body>
@@ -830,11 +833,18 @@
 
     <!-- MAIN GALLERY SECTION -->
     <main class="main-content" id="section-all">
-        <div id="searchWrapper">
+        <div id="captcha-section" style="text-align:center;margin:2rem 0;padding:2rem;background: var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--border-radius);">
+            <h3 style="color:var(--accent-primary);margin-bottom:1rem;">Verifikasi Keamanan</h3>
+            <p style="color:var(--text-secondary);margin-bottom:1rem;">Untuk melanjutkan, selesaikan tantangan di bawah ini untuk memastikan Anda bukan bot.</p>
+            <input type="text" id="honeypot" style="display:none;" autocomplete="off">
+            <div id="turnstile-container"></div>
+            <div id="captcha-error" style="color:#ff4444;margin-top:1rem;display:none;">Gagal memverifikasi. Coba lagi atau refresh halaman.</div>
+        </div>
+        <div id="searchWrapper" style="display:none;">
             <input type="number" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
         </div>
-        <h2>SEKEDAR POINGEK</h2>
-        <div class="sidebar-subtitle">
+        <h2 id="main-title" style="display:none;">SEKEDAR POINGEK</h2>
+        <div class="sidebar-subtitle" id="main-subtitle" style="display:none;">
           <h4>Sado fitur sodang dalom tahap pongombangen,joku indo stabil,sabar yo kawen,maklum,sodang boaja🙏😊,boborapo fitur kadang di apuh,jo di ubah,bak bisa juo jalen di hp low-end</h4>
           <h4><br>web ko pake sistem cache,bak lancar mombukak untuok sotoruhnyo, tapi lambek di bukak portamo kali, usahoken kawen-kawen ocok mongapuh cachenyo yo,bak dapek pembaruan foto baru,tombol apuhnyo di palieng bawah yo</h4>
         </div>
@@ -880,6 +890,95 @@
     </div>
 
     <script>
+        let captchaVerified = false;
+        let pageLoadTime = Date.now();
+        let mouseMoves = 0;
+        let firstInteractionTime = null;
+
+        // Enhanced bot detection
+        document.addEventListener('mousemove', () => {
+            mouseMoves++;
+            if (!firstInteractionTime) firstInteractionTime = Date.now();
+        });
+        document.addEventListener('click', () => {
+            if (!firstInteractionTime) firstInteractionTime = Date.now();
+        });
+        document.addEventListener('keydown', () => {
+            if (!firstInteractionTime) firstInteractionTime = Date.now();
+        });
+
+        const widgetId = turnstile.render("#turnstile-container", {
+                sitekey: "0x4AAAAAACClOtdUn7YftPDV",
+                callback: function (token) {
+                    console.log("Captcha Success:", token);
+
+                    // Check honeypot
+                    const honeypot = document.getElementById('honeypot').value;
+                    if (honeypot) {
+                        botDetectionScore += 100;
+                        console.error("Honeypot triggered");
+                    }
+
+                    // Check time to first interaction
+                    const timeToInteract = firstInteractionTime ? firstInteractionTime - pageLoadTime : Infinity;
+                    if (timeToInteract < 1000) { // Less than 1 second
+                        botDetectionScore += 20;
+                        console.warn("Too fast interaction");
+                    }
+
+                    // Check mouse movements
+                    if (mouseMoves < 5) {
+                        botDetectionScore += 15;
+                        console.warn("Low mouse activity");
+                    }
+
+                    // Check user agent for bot strings
+                    const ua = navigator.userAgent.toLowerCase();
+                    const botStrings = ['bot', 'crawler', 'spider', 'scraper', 'selenium', 'headless'];
+                    if (botStrings.some(str => ua.includes(str))) {
+                        botDetectionScore += 50;
+                        console.warn("Bot string in UA");
+                    }
+
+                    // Additional bot check before allowing access
+                    if (botDetectionScore > 30) {
+                        console.error("High bot detection score, blocking access");
+                        document.getElementById('captcha-error').textContent = 'Aktivitas mencurigakan terdeteksi. Akses ditolak.';
+                        document.getElementById('captcha-error').style.display = 'block';
+                        // Reset captcha
+                        turnstile.reset(widgetId);
+                        return;
+                    }
+
+                    captchaVerified = true;
+                    // Hide captcha section and show main content
+                    document.getElementById('captcha-section').style.display = 'none';
+                    document.getElementById('searchWrapper').style.display = 'block';
+                    document.getElementById('main-title').style.display = 'block';
+                    document.getElementById('main-subtitle').style.display = 'block';
+                    // Load gallery after captcha success
+                    loadPhotosFromDB();
+                },
+                'error-callback': function() {
+                    console.error("Captcha Error");
+                    document.getElementById('captcha-error').textContent = 'Gagal memverifikasi. Periksa koneksi internet atau coba lagi.';
+                    document.getElementById('captcha-error').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('captcha-error').style.display = 'none';
+                    }, 5000);
+                },
+                'expired-callback': function() {
+                    console.warn("Captcha Expired");
+                    captchaVerified = false;
+                    // Reset to show captcha again
+                    document.getElementById('captcha-section').style.display = 'block';
+                    document.getElementById('searchWrapper').style.display = 'none';
+                    document.getElementById('main-title').style.display = 'none';
+                    document.getElementById('main-subtitle').style.display = 'none';
+                    document.getElementById('galleryContainer').innerHTML = '';
+                    document.getElementById('statsFooter').style.display = 'none';
+                }
+            });
             // === LOADING SCREEN ===
                 document.addEventListener("DOMContentLoaded", () => {
                     const loadingText = document.getElementById("loading-text");
@@ -950,6 +1049,61 @@
         // ===== GLOBAL VARIABLES =====
         let currentFilter = 'group'; // default filter
         let selectedMedia = null; // currently selected photo/video for modal
+        let botDetectionScore = 0;
+
+        // ===== BOT DETECTION =====
+        function detectBotBehavior() {
+            // Check for rapid interactions
+            let clickCount = 0;
+            let lastClickTime = 0;
+
+            document.addEventListener('click', () => {
+                const now = Date.now();
+                if (now - lastClickTime < 100) clickCount++;
+                lastClickTime = now;
+
+                if (clickCount > 10) {
+                    botDetectionScore += 10;
+                    console.warn('Rapid clicking detected');
+                }
+            });
+
+            // Check for automated scrolling
+            let scrollCount = 0;
+            let lastScrollTime = 0;
+
+            window.addEventListener('scroll', () => {
+                const now = Date.now();
+                if (now - lastScrollTime < 50) scrollCount++;
+                lastScrollTime = now;
+
+                if (scrollCount > 20) {
+                    botDetectionScore += 5;
+                    console.warn('Rapid scrolling detected');
+                }
+            });
+
+            // Check for headless browser indicators
+            if (navigator.webdriver ||
+                !navigator.language ||
+                navigator.languages.length === 0 ||
+                window.outerHeight === 0 ||
+                window.outerWidth === 0) {
+                botDetectionScore += 50;
+                console.warn('Headless browser indicators detected');
+            }
+
+            // Check for missing plugins (common in bots)
+            if (!navigator.plugins || navigator.plugins.length === 0) {
+                botDetectionScore += 20;
+                console.warn('Missing browser plugins detected');
+            }
+
+            return botDetectionScore;
+        }
+
+        // Run bot detection on page load
+        detectBotBehavior();
 
         // ===== HELPER FUNCTIONS: DEVICE DETECTION & URL MANIPULATION =====
         function isLowEndDevice() {
@@ -1507,7 +1661,7 @@
         });
 
         // ===== INITIALIZATION =====
-        loadPhotosFromDB();
+        // Gallery will load after captcha verification
     </script>
 </body>
 
