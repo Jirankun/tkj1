@@ -6,22 +6,37 @@
     <title>Togetherness TKJ OnE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== COLOR & TYPOGRAPHY VARIABLES ===== */
+        /* ===== ROBOTIC CYBERPUNK VARIABLES ===== */
         :root {
-            --sidebar-width: 290px;
-            --sidebar-collapsed-width: 70px;
-            --bg-primary: #000000;
+            --sidebar-width: 320px;
+            --sidebar-collapsed-width: 80px;
+            --bg-primary: #0a0a0a;
             --bg-secondary: #111111;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent-primary: #ff0000;
-            --accent-gradient: linear-gradient(135deg, #ff0000 0%, #a300cc 100%);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --border-radius: 16px;
-            --transition-smooth: all 0.4s ease;
-            --sidebar-bg: linear-gradient(180deg, rgba(17, 17, 17, 0.7) 0%, rgba(20, 20, 20, 0.5) 100%);
-            --sidebar-border: rgba(255, 255, 255, 0.05);
+            --bg-tertiary: #1a1a1a;
+            --bg-panel: #0f0f0f;
+            --text-primary: #00ff88;
+            --text-secondary: #00cc66;
+            --text-accent: #ff0080;
+            --text-warning: #ffaa00;
+            --accent-primary: #00ffff;
+            --accent-secondary: #ff0080;
+            --accent-tertiary: #ffaa00;
+            --accent-gradient: linear-gradient(135deg, #00ffff 0%, #ff0080 50%, #ffaa00 100%);
+            --border-primary: #00ffff;
+            --border-secondary: #ff0080;
+            --border-tertiary: #ffaa00;
+            --glass-bg: rgba(0, 255, 136, 0.03);
+            --glass-border: rgba(0, 255, 136, 0.15);
+            --border-radius: 0px;
+            --transition-smooth: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-bg: linear-gradient(180deg, rgba(10, 10, 10, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+            --sidebar-border: rgba(0, 255, 136, 0.3);
+            --glow-primary: 0 0 8px rgba(0, 255, 136, 0.4), 0 0 16px rgba(0, 255, 136, 0.2);
+            --glow-secondary: 0 0 10px rgba(255, 0, 128, 0.5), 0 0 20px rgba(255, 0, 128, 0.2);
+            --glow-tertiary: 0 0 6px rgba(255, 170, 0, 0.3);
+            --scan-line: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
+            --grid-pattern: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
         }
 
          /* === LOADING SCREEN === */
@@ -29,8 +44,8 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
       background-size: 400% 400%;
       animation: bgShift 5s ease-in-out infinite;
@@ -42,6 +57,7 @@
       color: var(--accent);
       text-align: center;
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     @keyframes bgShift {
@@ -287,17 +303,85 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        /* Robotic Background with Grid Pattern */
+        #background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            background-image: var(--grid-pattern);
+            background-size: 20px 20px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Scan Lines Animation */
+        #background-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--scan-line);
+            animation: scan 2s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.4;
             --current-padding: var(--sidebar-width);
             padding-left: var(--current-padding);
-            transition: padding-left 0.28s ease, --current-padding 0.28s ease;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow-x: hidden;
         }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--scan-line);
+            animation: scan 3s linear infinite;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+
         body.sidebar-collapsed {
             --current-padding: var(--sidebar-collapsed-width);
+        }
+
+        /* Login form animation */
+        .login-section {
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: loginFadeIn 1s ease-out forwards;
+        }
+
+        @keyframes loginFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
 
@@ -811,8 +895,8 @@
     <!-- SIDEBAR TOGGLE (Mobile Menu) -->
     <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Sidebar Navigation">
+    <!-- NAVIGASI SIDEBAR -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navigasi Sidebar">
         <div class="sidebar-logos">
          <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="">
         </div>
@@ -826,22 +910,19 @@
             <a href="#" class="sidebar-nav-link" data-filter="video" data-tooltip="Video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
             <a href="#" class="sidebar-nav-link" data-target="about" data-tooltip="Developer"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
         </nav>
-        <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Toggle sidebar" aria-expanded="true" title="Toggle sidebar"> <i class="fas fa-chevron-left"></i> </button>
+        <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Alihkan sidebar" aria-expanded="true" title="Alihkan sidebar"> <i class="fas fa-chevron-left"></i> </button>
     </aside>
 
     <!-- MAIN GALLERY SECTION -->
     <main class="main-content" id="section-all">
-        <div id="captcha-section" style="text-align:center;margin:2rem 0;padding:2rem;background: var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--border-radius);">
-            <h3 style="color:var(--accent-primary);margin-bottom:1rem;">Verifikasi Keamanan</h3>
-            <p style="color:var(--text-secondary);margin-bottom:1rem;">Untuk melanjutkan, selesaikan tantangan di bawah ini untuk memastikan Anda bukan bot.</p>
-            <input type="text" id="honeypot" style="display:none;" autocomplete="off">
-            <div id="math-question" style="margin-bottom:1rem;font-size:1.2rem;color:var(--text-primary);"></div>
-            <input type="number" id="math-answer" placeholder="Jawaban" style="padding:0.5rem;border-radius:8px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);text-align:center;margin-bottom:1rem;">
-            <button id="verify-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Verifikasi</button>
-            <div id="captcha-error" style="color:#ff4444;margin-top:1rem;display:none;">Jawaban salah. Coba lagi.</div>
+        <div id="security-notice" class="security-notice" style="text-align:center;margin:2rem 0;padding:2rem;background: rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);">
+            <h3 style="color:var(--accent-primary);margin-bottom:1rem;">🔒 Keamanan Konten</h3>
+            <p style="color:var(--text-secondary);margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot, mendownload, atau menyebarkan tanpa izin.</p>
+            <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan dikenai sanksi hukum</p>
+            <button id="accept-security-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Saya Mengerti & Lanjutkan</button>
         </div>
         <div id="searchWrapper" style="display:none;">
-            <input type="number" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
+            <input type="text" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
         </div>
         <h2 id="main-title" style="display:none;">SEKEDAR POINGEK</h2>
         <div class="sidebar-subtitle" id="main-subtitle" style="display:none;">
@@ -890,70 +971,41 @@
     </div>
 
     <script>
-        let captchaVerified = false;
-        let pageLoadTime = Date.now();
-        let mouseMoves = 0;
-        let firstInteractionTime = null;
+        let securityAccepted = false;
 
-        // Enhanced bot detection
-        document.addEventListener('mousemove', () => {
-            mouseMoves++;
-            if (!firstInteractionTime) firstInteractionTime = Date.now();
-        });
-        document.addEventListener('click', () => {
-            if (!firstInteractionTime) firstInteractionTime = Date.now();
-        });
-        document.addEventListener('keydown', () => {
-            if (!firstInteractionTime) firstInteractionTime = Date.now();
-        });
-
-
-
-        // Generate random math question
-        function generateMathQuestion() {
-            const num1 = Math.floor(Math.random() * 10) + 1;
-            const num2 = Math.floor(Math.random() * 10) + 1;
-            const answer = num1 * num2;
-            document.getElementById('math-question').textContent = `Berapa ${num1} × ${num2}?`;
-            return answer;
+        // Check security acceptance cache on page load
+        function checkSecurityCache() {
+            const cached = localStorage.getItem('security_accepted');
+            if (cached) {
+                try {
+                    const { timestamp } = JSON.parse(cached);
+                    const now = Date.now();
+                    if (now - timestamp < 24 * 60 * 60 * 1000) { // 24 hours
+                        securityAccepted = true;
+                        document.getElementById('security-notice').style.display = 'none';
+                        document.getElementById('searchWrapper').style.display = 'block';
+                        document.getElementById('main-title').style.display = 'block';
+                        document.getElementById('main-subtitle').style.display = 'block';
+                        loadPhotosFromDB();
+                        return true;
+                    }
+                } catch (e) {}
+            }
+            return false;
         }
 
-        let correctAnswer = generateMathQuestion();
-
-        // Handle verification button
-        document.getElementById('verify-btn').addEventListener('click', function() {
-            const userAnswer = parseInt(document.getElementById('math-answer').value);
-            const errorDiv = document.getElementById('captcha-error');
-
-            if (userAnswer === correctAnswer) {
-                console.log("Math verification success");
-                captchaVerified = true;
-                // Cache verification for 24 hours
-                localStorage.setItem('math_verification', JSON.stringify({ timestamp: Date.now() }));
-                // Hide captcha section and show main content
-                document.getElementById('captcha-section').style.display = 'none';
-                document.getElementById('searchWrapper').style.display = 'block';
-                document.getElementById('main-title').style.display = 'block';
-                document.getElementById('main-subtitle').style.display = 'block';
-                // Load gallery after verification success
-                loadPhotosFromDB();
-            } else {
-                errorDiv.textContent = 'Jawaban salah. Coba lagi.';
-                errorDiv.style.display = 'block';
-                // Generate new question
-                correctAnswer = generateMathQuestion();
-                document.getElementById('math-answer').value = '';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 3000);
-            }
-        });
-
-        // Allow Enter key to trigger verification on desktop
-        document.getElementById('math-answer').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('verify-btn').click();
-            }
+        // Handle security acceptance button
+        document.getElementById('accept-security-btn').addEventListener('click', function() {
+            securityAccepted = true;
+            // Cache security acceptance for 24 hours
+            localStorage.setItem('security_accepted', JSON.stringify({ timestamp: Date.now() }));
+            // Hide security notice and show main content
+            document.getElementById('security-notice').style.display = 'none';
+            document.getElementById('searchWrapper').style.display = 'block';
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-subtitle').style.display = 'block';
+            // Load gallery after acceptance
+            loadPhotosFromDB();
         });
             // === LOADING SCREEN ===
                 document.addEventListener("DOMContentLoaded", () => {
@@ -1018,7 +1070,11 @@
 
                     setTimeout(() => {
                         loadingScreen.style.opacity = '0';
-                        setTimeout(() => loadingScreen.style.display = 'none', 1000);
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            // Check security acceptance cache after loading screen
+                            checkSecurityCache();
+                        }, 1000);
                     }, 5500);
                 });
 
@@ -1075,7 +1131,39 @@
                 console.warn('Missing browser plugins detected');
             }
 
+            // Check for suspicious user agent
+            if (/bot|crawler|spider|scraper/i.test(navigator.userAgent)) {
+                botDetectionScore += 30;
+                console.warn('Bot-like user agent detected');
+            }
+
+            // Check for missing referrer (bots often don't send referrer)
+            if (!document.referrer && window.location.protocol === 'http:') {
+                botDetectionScore += 15;
+                console.warn('Missing referrer detected');
+            }
+
             return botDetectionScore;
+        }
+
+        // Rate limiting for API calls
+        let apiCallCount = 0;
+        let lastApiCallTime = 0;
+
+        function checkRateLimit() {
+            const now = Date.now();
+            if (now - lastApiCallTime > 60000) { // Reset every minute
+                apiCallCount = 0;
+                lastApiCallTime = now;
+            }
+
+            if (apiCallCount > 10) { // Max 10 calls per minute
+                console.warn('Rate limit exceeded');
+                return false;
+            }
+
+            apiCallCount++;
+            return true;
         }
 
         // Run bot detection on page load
@@ -1135,14 +1223,38 @@
 
         // ===== DATA LOADING: LOCAL & CACHE =====
         let photos = [];
+        let accessToken = '';
+
+        // Generate access token after login
+        function generateAccessToken() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2);
+            accessToken = btoa(timestamp + random).replace(/[^a-zA-Z0-9]/g, '');
+            return accessToken;
+        }
+
+        // Validate access token
+        function validateAccessToken(token) {
+            if (!token || token !== accessToken) return false;
+            // Token expires after 1 hour
+            const timestamp = parseInt(atob(token.substring(0, 10)), 36);
+            return Date.now() - timestamp < 3600000;
+        }
 
         // loadFromLocal(options)
         // options.noStore -> fetch with cache: 'no-store'
         // options.bust -> append cache-busting query param
         async function loadFromLocal(options = {}) {
             try {
+                // Only load data if user has accepted security notice
+                if (!securityAccepted) {
+                    throw new Error('Security notice not accepted');
+                }
+
                 const url = './DB/photos.json' + (options.bust ? ('?_=' + Date.now()) : '');
-                const response = await fetch(url, { cache: options.noStore ? 'no-store' : 'default' });
+                const response = await fetch(url, {
+                    cache: options.noStore ? 'no-store' : 'default'
+                });
                 if (!response.ok) throw new Error('File Not Found');
                 const data = await response.json();
                 return data.photos;
@@ -1405,20 +1517,16 @@
         // If forceReload === true, fetch fresh JSON and re-render without full page reload.
         function clearCache(forceReload = true) {
             try {
+                // Clear all localStorage items
                 localStorage.removeItem(CACHE_KEY);
-                console.log('[photos] cache cleared');
+                localStorage.removeItem('security_accepted');
+                localStorage.removeItem('userPreferences');
+                localStorage.removeItem('sidebarCollapsed');
+                console.log('[all cache] cleared');
             } catch (e) { console.warn('Failed to clear cache', e); }
-            if (forceReload) {
-                const statsFooter = document.getElementById('statsFooter');
-                if (statsFooter) {
-                    statsFooter.style.display = 'block';
-                    statsFooter.textContent = 'Mongambiek Foto Baru...';
-                }
-                // reload photos bypassing cache
-                loadPhotosFromDB(true);
-            } else {
-                location.reload();
-            }
+
+            // Always reload the page to clear security acceptance and start fresh
+            location.reload();
         }
 
         // Close modal with Escape key
@@ -1508,13 +1616,20 @@
             return dateDigits.includes(queryDigits) || formatted.includes(searchQuery);
         }
 
+        function matchesNameQuery(photoName, searchQuery) {
+            if (!photoName) return false;
+            return photoName.toLowerCase().includes(searchQuery.toLowerCase());
+        }
+
         function performSearch(query) {
             const lastFilter = userPreferences.get('lastFilter') || 'group';
             let results = [...photos];
             if (query && query.trim().length > 0) {
+                const searchTerm = query.trim();
                 results = results.filter(p => {
-                    const matchesDate = matchesDateQuery(p.date || '', query);
-                    return matchesDate;
+                    const matchesDate = matchesDateQuery(p.date || '', searchTerm);
+                    const matchesName = matchesNameQuery(p.name || '', searchTerm);
+                    return matchesDate || matchesName;
                 });
             }
             if (lastFilter && lastFilter !== 'all') {
