@@ -38,273 +38,187 @@
             --grid-pattern: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
                            linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
         }
-
-         /* === LOADING SCREEN === */
-    #loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
-      background-size: 400% 400%;
-      animation: bgShift 5s ease-in-out infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 9999;
-      color: var(--accent);
-      text-align: center;
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-
-    @keyframes bgShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    @keyframes progressFill {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
-
-    .hidden {
-      opacity: 0;
-    }
-
-    .slide-left {
-      transform: translateX(-100%);
-    }
-
-    .slide-right {
-      transform: translateX(100%);
-    }
-
-    .scale-in {
-      transform: scale(0);
-    }
-
-    .fade-in {
-      opacity: 0;
-    }
-
-    .fall {
-      transform: translateY(-200px);
-    }
-
-    .animate-slide-left {
-      animation: slideLeft 0.8s ease-out forwards;
-    }
-
-    .animate-slide-right {
-      animation: slideRight 0.8s ease-out forwards;
-    }
-
-    .animate-scale-in {
-      animation: scaleIn 0.8s ease-out forwards;
-    }
-
-    .animate-fade-in {
-      animation: fadeIn 0.8s ease-out forwards;
-    }
-
-    .animate-fall {
-      animation: fall 0.8s ease-out forwards;
-    }
-
-    @keyframes slideLeft {
-      0% {
-        opacity: 0;
-        transform: translateX(-100%);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideRight {
-      0% {
-        opacity: 0;
-        transform: translateX(100%);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes scaleIn {
-      0% {
-        opacity: 0;
-        transform: scale(0);
-      }
-      60% {
-        opacity: 1;
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes fall {
-      0% {
-        opacity: 0;
-        transform: translateY(-200px);
-      }
-      60% {
-        opacity: 1;
-        transform: translateY(20px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
-
-
-    .progress-bar {
-      width: 500px;
-      height: 5px;
-      background: rgb(255, 255, 255);
-      border-radius: 5px;
-      margin-top: 20px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent-gradient);
-      width: 0%;
-      animation: progressFill 3s ease-in-out forwards;
-    }
-
-    .loading{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100px;
-    height: 100px;
-    gap: 5px;
-}
-
-.loading span{
-    width: 4px;
-    height: 60px;
-    background-color: #4cf9f9;
-    animation: scale 1.22s ease-in-out infinite;
-}
-.loading span:nth-child(1) {
-    background: #1aff00;
-    animation-delay: -1.29s;
-}
-.loading span:nth-child(2){
-    background: #006aff;
-    animation-delay: -1.28s;
-}
-.loading span:nth-child(3) {
-    background: #ff0000;
-    animation-delay: -1.27s;
-}
-.loading span:nth-child(4) {
-    background: #ff00f7;
-    animation-delay: -1.26s;
-}
-.loading span:nth-child(5) {
-    background: #fffb00;
-    animation-delay: -0.25s;
-}
-.loading span:nth-child(6) {
-    background: #00b7ff;
-    animation-delay: -0.24s;
-}
-.loading span:nth-child(7) {
-    background: #ff7b00;
-    animation-delay: -1.23s;
-}
-.loading span:nth-child(8) {
-    background: #00ff66;
-    animation-delay: -0.24s;
-}
-.loading span:nth-child(9) {
-    background: #1aff00;
-    animation-delay: -0.25s;
-}
-.loading span:nth-child(10){
-    background: #006aff;
-    animation-delay: -1.26s;
-}
-.loading span:nth-child(11) {
-    background: #ff0000;
-    animation-delay: -1.27s;
-}
-.loading span:nth-child(12) {
-    background: #ff00f7;
-    animation-delay: -1.28s;
-}
-.loading span:nth-child(13) {
-    background: #fffb00;
-    animation-delay: -1.29s;
-}
-
-@keyframes scale {
-    0%,10%,100%{
-        transform: scale(0.05);
-    }
-    70%{
-        transform: scale(1);
-    }
-}
-
-    .particles {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .particle {
-      position: absolute;
-      background: var(--accent-primary);
-      border-radius: 50%;
-      opacity: 0.5;
-      animation: float 3s linear infinite;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      10% { opacity: 10; }
-      90% { opacity: 0.15; }
-      100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-
-
-
+        /* === LOADING SCREEN === */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%);
+            background-size: 400% 400%;
+            animation: bgShift 5s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            color: var(--accent-primary);
+            text-align: center;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        @keyframes bgShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes progressFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .hidden {
+            opacity: 0;
+        }
+        .slide-left {
+            transform: translateX(-100%);
+        }
+        .slide-right {
+            transform: translateX(100%);
+        }
+        .scale-in {
+            transform: scale(0);
+        }
+        .fade-in {
+            opacity: 0;
+        }
+        .fall {
+            transform: translateY(-200px);
+        }
+        .animate-slide-left {
+            animation: slideLeft 0.8s ease-out forwards;
+        }
+        .animate-slide-right {
+            animation: slideRight 0.8s ease-out forwards;
+        }
+        .animate-scale-in {
+            animation: scaleIn 0.8s ease-out forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .animate-fall {
+            animation: fall 0.8s ease-out forwards;
+        }
+        @keyframes slideLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes slideRight {
+            0% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes fall {
+            0% {
+                opacity: 0;
+                transform: translateY(-200px);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        .loading{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            gap: 5px;
+        }
+        .loading span{
+            width: 4px;
+            height: 60px;
+            background-color: #4cf9f9;
+            animation: scale 1.22s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            border-radius: 2px;
+            box-shadow: 0 0 8px currentColor;
+        }
+        .loading span:nth-child(1) { background: #1aff00; animation-delay: -1.29s; }
+        .loading span:nth-child(2){ background: #006aff; animation-delay: -1.28s; }
+        .loading span:nth-child(3) { background: #ff0000; animation-delay: -1.27s; }
+        .loading span:nth-child(4) { background: #ff00f7; animation-delay: -1.26s; }
+        .loading span:nth-child(5) { background: #fffb00; animation-delay: -0.25s; }
+        .loading span:nth-child(6) { background: #00b7ff; animation-delay: -0.24s; }
+        .loading span:nth-child(7) { background: #ff7b00; animation-delay: -1.23s; }
+        .loading span:nth-child(8) { background: #00ff66; animation-delay: -0.24s; }
+        .loading span:nth-child(9) { background: #1aff00; animation-delay: -0.25s; }
+        .loading span:nth-child(10){ background: #006aff; animation-delay: -1.26s; }
+        .loading span:nth-child(11) { background: #ff0000; animation-delay: -1.27s; }
+        .loading span:nth-child(12) { background: #ff00f7; animation-delay: -1.28s; }
+        .loading span:nth-child(13) { background: #fffb00; animation-delay: -1.29s; }
+        @keyframes scale {
+            0% { transform: scaleY(0.3); opacity: 0.5; }
+            10% { opacity: 1; }
+            50% { transform: scaleY(1); }
+            90% { opacity: 1; }
+            100% { transform: scaleY(0.3); opacity: 0.5; }
+        }
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 3s linear infinite;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 0.15; }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
         /* ===== BASE STYLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        /* Robotic Background with Grid Pattern */
         #background-overlay {
             position: fixed;
             top: 0;
@@ -317,8 +231,6 @@
             z-index: -1;
             opacity: 0.3;
         }
-
-        /* Scan Lines Animation */
         #background-overlay::before {
             content: '';
             position: absolute;
@@ -330,12 +242,10 @@
             animation: scan 2s linear infinite;
             pointer-events: none;
         }
-
         @keyframes scan {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100vh); }
         }
-
         body {
             font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
             background: var(--bg-primary);
@@ -347,7 +257,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -361,31 +270,12 @@
             pointer-events: none;
             z-index: -1;
         }
-
         body.sidebar-collapsed {
             --current-padding: var(--sidebar-collapsed-width);
         }
-
-        /* Login form animation */
-        .login-section {
-            opacity: 0;
-            transform: translateY(-50px);
-            animation: loginFadeIn 1s ease-out forwards;
+        body.sidebar-hidden {
+            --current-padding: 0;
         }
-
-        @keyframes loginFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-
-
         /* ===== SIDEBAR STYLES ===== */
         .sidebar {
             position: fixed;
@@ -402,13 +292,14 @@
             gap: 0.8rem;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: inset 1px 0 1px rgb(255, 255, 255), 2px 0 20px rgba(75, 74, 74, 0.153);
         }
         .sidebar.collapsed {
             width: var(--sidebar-collapsed-width);
             align-items: center;
         }
-        /* collapse effects: hide labels and show icons-only */
         .sidebar.collapsed .sidebar-title,
         .sidebar.collapsed .sidebar-subtitle,
         .sidebar.collapsed .sidebar-nav-link .label {
@@ -420,8 +311,6 @@
         }
         .sidebar .sidebar-nav-link { padding-left: 1rem; }
         .sidebar.collapsed .sidebar-nav-link { justify-content: center; padding: 1rem 0; }
-
-        /* tooltip when collapsed */
         .sidebar.collapsed .sidebar-nav-link::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -499,13 +388,10 @@
             color: var(--bg-primary);
             font-weight: 600;
         }
-
         .sidebar-nav-link i {
             width: 24px;
             text-align: center;
         }
-
-        /* ===== SIDEBAR TOGGLE (Mobile Menu) ===== */
         .sidebar-toggle {
             position: fixed;
             top: 12px;
@@ -558,14 +444,13 @@
         .sidebar.active ~ .sidebar-toggle i {
             transform: rotate(90deg);
         }
-
-        /* ===== MAIN CONTENT AREA ===== */
-        .main-content {
+        .main-content, .developer-content {
             padding: 2rem;
             transition: transform 0.30s ease, padding-left 0.30s ease, margin-right 0.30s ease;
             transform-origin: top left;
         }
-        body.sidebar-collapsed .main-content {
+        body.sidebar-collapsed .main-content,
+        body.sidebar-collapsed .developer-content {
             padding-left: 3rem;
             margin-right: 3rem;
         }
@@ -576,13 +461,18 @@
             padding: 0.8rem 1.5rem;
             font-size: 1rem;
             border-radius: var(--border-radius);
-            border: 1% solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             background: var(--glass-bg);
             color: var(--text-primary);
         }
-        
-
-        /* ===== GALLERY SECTION ===== */
+        #clearCacheBtn:hover {
+            background: #ff0080;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+            transform: scale(1.05);
+        }
+        #clearCacheBtn:active {
+            transform: scale(0.98);
+        }
         .letter-section {
             margin-bottom: 2.5rem;
         }
@@ -609,8 +499,40 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1;
+            z-index: 10;
             display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: 8px;
+            width: 90px;
+            height: 90px;
+        }
+        .gallery-item .loading.show {
+            display: flex;
+        }
+        .gallery-item .loading span {
+            width: 3px;
+            height: 40px;
+        }
+        .modal .loading {
+            margin: 1rem auto;
+            display: none;
+        }
+        .modal .loading.show {
+            display: flex;
+        }
+        .modal .loading span {
+            width: 3px;
+            height: 40px;
+        }
+        .search-loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+        .search-loading.show {
+            display: block;
         }
         .gallery-item img {
             width: 100%;
@@ -630,8 +552,6 @@
             color: var(--text-secondary);
             text-align: center;
         }
-
-        /* ===== MODAL DIALOG STYLES ===== */
         .modal {
             display: none;
             position: fixed;
@@ -675,6 +595,11 @@
             max-height: 70vh;
             border-radius: 10px;
             object-fit: contain;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .modal-info {
             width: 100%;
@@ -714,10 +639,6 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
-
-
-
-        /* spinner shown when button has .loading */
         .download-btn.loading::after {
             content: '';
             position: absolute;
@@ -731,22 +652,9 @@
             border-radius: 50%;
             animation: spin 0.9s linear infinite;
         }
-
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-
-
-
-
-        /* ===== DEVELOPER SECTION ===== */
         .developer-content {
             padding: 2rem;
-            transition: transform 0.28s ease, padding-left 0.28s ease, margin-right 0.28s ease;
-            transform-origin: top left;
-        }
-        body.sidebar-collapsed .developer-content {
-            padding-left: 3rem;
-            margin-right: 3rem;
         }
         .sidebar-profile {
             max-width: 500px;
@@ -797,12 +705,6 @@
         .sidebar-profile a:hover {
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
-
-
-
-
-
-        /* collapse button */
         .sidebar-collapse {
             position: absolute;
             bottom: 25px;
@@ -823,12 +725,64 @@
         }
         .sidebar-collapse:hover { transform: translateX(-50%) scale(1.03); }
         .sidebar.collapsed .sidebar-collapse i { transform: rotate(180deg); }
-
-
-
-
-
-        /* ===== RESPONSIVE DESIGN ===== */
+        .keyboard-shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            max-width: 250px;
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+        .keyboard-shortcuts-hint.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .keyboard-shortcuts-hint h4 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .keyboard-shortcuts-hint p {
+            margin: 0.3rem 0;
+            line-height: 1.4;
+        }
+        .keyboard-shortcuts-hint kbd {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-family: monospace;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+        /* === CONTENT PROTECTION === */
+        body, * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+        img {
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
+            pointer-events: auto;
+        }
         @media (max-width: 768px) {
             body {
                 padding-left: 0;
@@ -852,12 +806,20 @@
                 height: 100px;
             }
         }
+
+        /* === FAST MODE (disable animations/transitions) === */
+        .fast-mode *,
+        .fast-mode *::before,
+        .fast-mode *::after {
+            animation: none !important;
+            transition: none !important;
+        }
+        .fast-mode {
+            scroll-behavior: auto !important;
+        }
     </style>
-
 </head>
-
-<body>
-
+<body class="sidebar-hidden">
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="particles" id="particles"></div>
@@ -873,91 +835,125 @@
             <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
         </div>
         <div class="loading">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
         </div>
         <div class="progress-bar">
             <div class="progress-fill"></div>
         </div>
     </div>
 
-    <!-- SIDEBAR TOGGLE (Mobile Menu) -->
-    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-
-    <!-- NAVIGASI SIDEBAR -->
-    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Navigasi Sidebar">
-        <div class="sidebar-logos">
-         <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="">
+    <!-- LOGIN MODAL OVERLAY -->
+    <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);z-index:9998;">
+        <h2 style="color:#00ff88;margin-bottom:20px;">🔐 Masukkan Kode Akses</h2>
+        <input type="text" id="accessCode" placeholder="Contoh: AbC12-DeF34-GhI56-JkL78" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
+        <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
+        
+        <!-- IDENTIFIKASI SECTION -->
+        <div id="identifikasiSection" style="display:none;margin-top:25px;padding:20px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:8px;width:300px;text-align:left;">
+            <h3 style="color:var(--accent-primary);margin-bottom:15px;font-size:1rem;">📋 Identifikasi :</h3>
+            <p style="color:var(--text-secondary);margin:8px 0;"><strong>Nama :</strong></p>
+            <p id="displayName" style="color:#00ff88;margin:5px 0 15px 0;background:rgba(0,0,0,0.5);padding:8px;border-radius:4px;word-break:break-all;"></p>
+            <p style="color:var(--text-secondary);margin:8px 0;"><strong>Password :</strong></p>
+            <p id="displayPasswordFinal" style="color:#00ff88;margin:5px 0 0 0;background:rgba(0,0,0,0.5);padding:8px;border-radius:4px;word-break:break-all;letter-spacing:2px;"></p>
         </div>
-        <div class="sidebar-title">Togetherness TKJ OnE</div>
-        <div class="sidebar-subtitle">Kenangan dari semua, untuk bersama</div>
-        <nav>
-            <a href="#" class="sidebar-nav-link" data-filter="all" data-tooltip="Semua Foto"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
-            <div class="sidebar-submenu"><a href="#" class="sidebar-nav-link active" data-filter="group" data-tooltip="Foto Bersama"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a></div>
-            <a href="#" class="sidebar-nav-link" data-filter="male" data-tooltip="Foto Laki-laki"><i class="fas fa-mars"></i> <span class="label">FOTO COWOK</span></a>
-            <a href="#" class="sidebar-nav-link" data-filter="female" data-tooltip="Foto Perempuan"><i class="fas fa-venus"></i> <span class="label">FOTO CEWEK</span></a>
-            <a href="#" class="sidebar-nav-link" data-filter="video" data-tooltip="Video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
-            <a href="#" class="sidebar-nav-link" data-target="about" data-tooltip="Developer"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
-        </nav>
-        <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Alihkan sidebar" aria-expanded="true" title="Alihkan sidebar"> <i class="fas fa-chevron-left"></i> </button>
-    </aside>
 
-    <!-- MAIN GALLERY SECTION -->
-    <main class="main-content" id="section-all">
-        <div id="security-notice" class="security-notice" style="text-align:center;margin:2rem 0;padding:2rem;background: rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);">
-            <h3 style="color:var(--accent-primary);margin-bottom:1rem;">🔒 Keamanan Konten</h3>
-            <p style="color:var(--text-secondary);margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot, mendownload, atau menyebarkan tanpa izin.</p>
-            <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan dikenai sanksi hukum</p>
-            <button id="accept-security-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Saya Mengerti & Lanjutkan</button>
+        <!-- BUTTONS: placed under identifikasi and preview -->
+        <div style="display:flex;gap:12px;margin-top:18px;">
+            <button id="loginConfirmBtn" onclick="verifyCode()" style="flex:1;padding:10px 20px;background:#ff0080;color:white;border:none;border-radius:6px;cursor:pointer;">Masuk</button>
+            <button id="openMembersBtn" type="button" onclick="openMembersModal()" style="flex:1;padding:10px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Buka Tabel</button>
         </div>
-        <div id="searchWrapper" style="display:none;">
-            <input type="text" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen...">
-        </div>
-        <h2 id="main-title" style="display:none;">SEKEDAR POINGEK</h2>
-        <div class="sidebar-subtitle" id="main-subtitle" style="display:none;">
-          <h4>Sado fitur sodang dalom tahap pongombangen,joku indo stabil,sabar yo kawen,maklum,sodang boaja🙏😊,boborapo fitur kadang di apuh,jo di ubah,bak bisa juo jalen di hp low-end</h4>
-          <h4><br>web ko pake sistem cache,bak lancar mombukak untuok sotoruhnyo, tapi lambek di bukak portamo kali, usahoken kawen-kawen ocok mongapuh cachenyo yo,bak dapek pembaruan foto baru,tombol apuhnyo di palieng bawah yo</h4>
-        </div>
-        <div id="noResultsMessage" style="text-align:center;margin:2rem 0;color:var(--text-secondary);display:none;">
-            Tanggal atau nomor foto: "<span id="searchedTerm"></span>" Indo Dapek,Typo Kawen Joku,Cubo Cek Baliek
-        </div>
-        <div id="galleryContainer"></div>
-        <div class="stats-footer" id="statsFooter"></div>
-    </main>
+    </div>
 
-    <!-- DEVELOPER PROFILE SECTION -->
-    <main class="developer-content" id="section-about" style="display:none;">
-        <div class="sidebar-profile">
-            <img src="https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="">
-            <div>ZHYLLAN FYLLAH</div>
-            <p>Website ko,songajo aku buek untuok kawen-kawen ku sadonyo,bak bisa mondownload sado kenangen di smk tu,bak jangen tingga corito ajo<blockquote><br> Sado isi web iko dari bosamo,untuok bosamo,jangen sampe monyebarken link nyo yo,tosebar aib beko jadinyo.</blockquote></p> <p><br>Torimokasih untuok kawen-kawen non olah mongirim foto-nyo ko aku,kalau indok lai,joku web ko indo boisi tudo,kalau ondak mongirim foto,botanyo,jo nonlainnyo,klik tombol di bawahyo,baru beko di web portofolioku,klik tombol "chat di whatsapp",tosorahla ondak chat apo ajo,sekian yo,assalamualaikum.<blockquote>===ZHYLLAN FYLLAH===</blockquote></p>
-            <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
-                <i class="fas fa-user"></i> Buka Web folio Developer
-            </a>
-        </div>
-    </main>
+    <!-- MAIN APP (SIDEBAR + CONTENT) -->
+    <div id="mainApp" style="display:none;">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logos">
+                <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="Logo">
+            </div>
+            <div class="sidebar-title">Togetherness TKJ OnE</div>
+            <div class="sidebar-subtitle">Kenangan dari semua, untuk bersama</div>
+            <nav>
+                <a href="#" class="sidebar-nav-link" data-filter="all"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
+                <a href="#" class="sidebar-nav-link active" data-filter="group"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="male"><i class="fas fa-mars"></i> <span class="label">FOTO COWOK</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="female"><i class="fas fa-venus"></i> <span class="label">FOTO CEWEK</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
+                <a href="#" class="sidebar-nav-link" data-target="about"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
+                <a href="#" class="sidebar-nav-link" data-target="members"><i class="fas fa-users-viewfinder"></i> <span class="label">ANGGOTA TKJ 1</span></a>
+            </nav>
+            <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Alihkan sidebar"> <i class="fas fa-chevron-left"></i> </button>
+        </aside>
 
+        <main class="main-content" id="section-all">
+            <div id="security-notice" class="security-notice" style="text-align:center;margin:2rem 0;padding:2rem;background: rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);">
+                <h3 style="color:var(--accent-primary);margin-bottom:1rem;">🔒 Keamanan Konten</h3>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot, mendownload, atau menyebarkan tanpa izin.</p>
+                <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan dikenai sanksi hukum</p>
+                <button id="accept-security-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Saya Mengerti & Lanjutkan</button>
+            </div>
+            <div id="searchWrapper" style="display:none;">
+                <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
+                    <input type="text" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen..." style="flex:1;min-width:200px;">
+                    <button id="clearCacheBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:1px solid #ff0080;border-radius:4px;cursor:pointer;font-weight:bold;transition:all 0.3s;white-space:nowrap;" title="Hapus semua cache dan refresh">🗑️ Hapus Cache</button>
+                </div>
+            </div>
+            <h2 id="main-title" style="display:none;">SEKEDAR POINGEK</h2>
+            <div class="sidebar-subtitle" id="main-subtitle" style="display:none;">
+                <h4>Sado fitur sodang dalom tahap pongombangen,joku indo stabil,sabar yo kawen,maklum,sodang boaja🙏😊,boborapo fitur kadang di apuh,jo di ubah,bak bisa juo jalen di hp low-end</h4>
+                <h4><br>web ko pake sistem cache,bak lancar mombukak untuok sotoruhnyo, tapi lambek di bukak portamo kali, usahoken kawen-kawen ocok mongapuh cachenyo yo,bak dapek pembaruan foto baru,tombol apuhnyo di palieng bawah yo</h4>
+            </div>
+            <div id="noResultsMessage" style="text-align:center;margin:2rem 0;color:var(--text-secondary);display:none;">
+                Tanggal atau nomor foto: "<span id="searchedTerm"></span>" Indo Dapek,Typo Kawen Joku,Cubo Cek Baliek
+            </div>
+            <div id="searchLoadingContainer" class="search-loading">
+                <div class="loading" style="margin: 0 auto;">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                </div>
+                <p style="margin-top:1rem;">Sedang mencari...</p>
+            </div>
+            <div id="galleryContainer"></div>
+            <div id="statsFooter" style="margin-top:2rem;padding:1.5rem;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:4px;text-align:center;color:var(--text-secondary);">
+                <span id="photoStats">Total: 0 foto | Ditampilkan: 0 foto</span>
+            </div>
+        </main>
 
+        <main class="developer-content" id="section-about" style="display:none;">
+            <div class="sidebar-profile">
+                <img src="https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="Zhyllan">
+                <div>ZHYLLAN FYLLAH</div>
+                <p>Website ko,songajo aku buek untuok kawen-kawen ku sadonyo,bak bisa mondownload sado kenangen di smk tu,bak jangen tingga corito ajo<blockquote><br> Sado isi web iko dari bosamo,untuok bosamo,jangen sampe monyebarken link nyo yo,tosebar aib beko jadinyo.</blockquote></p>
+                <p><br>Torimokasih untuok kawen-kawen non olah mongirim foto-nyo ko aku,kalau indok lai,joku web ko indo boisi tudo,kalau ondak mongirim foto,botanyo,jo nonlainnyo,klik tombol di bawahyo,baru beko di web portofolioku,klik tombol "chat di whatsapp",tosorahla ondak chat apo ajo,sekian yo,assalamualaikum.<blockquote>===ZHYLLAN FYLLAH===</blockquote></p>
+                <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
+                    <i class="fas fa-user"></i> Buka Web folio Developer
+                </a>
+                <div style="margin-top:18px;padding:12px;border-top:1px solid rgba(255,255,255,0.04);">
+                    <h4 style="color:var(--text-primary);margin:6px 0 10px 0;">Pengaturan Developer</h4>
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                        <input id="fastModeToggle" type="checkbox" style="width:18px;height:18px;" />
+                        <span style="color:var(--text-secondary);">Mode Fast (Tanpa Animasi)</span>
+                    </label>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menonaktifkan semua animasi dan transisi (berguna untuk perangkat lambat atau uji kecepatan).</p>
+                </div>
+            </div>
+        </main>
+    </div>
 
-
-
-    <!-- IMAGE MODAL POPUP -->
+    <!-- MODAL -->
     <div class="modal" id="imageModal" onclick="closeModal()">
         <div class="modal-dialog" onclick="event.stopPropagation()">
             <button class="close-btn" aria-label="Tutup" onclick="closeModal()">&times;</button>
-        <img id="modalImage" class="modal-image" src="" alt="Gambar">
-        <video id="modalVideo" class="modal-image" src="" alt="Video" controls style="display:none;"></video>
+            <div id="modalLoadingContainer" class="loading" style="display:none;">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span>
+            </div>
+            <img id="modalImage" class="modal-image" src="" alt="Gambar">
+            <video id="modalVideo" class="modal-image" src="" alt="Video" controls style="display:none;"></video>
             <div class="modal-info">
                 <div id="modalName" class="modal-name"></div>
                 <div id="modalDate" class="modal-date"></div>
@@ -970,18 +966,253 @@
         </div>
     </div>
 
-    <script>
-        let securityAccepted = false;
+    <!-- MEMBERS MODAL -->
+    <div class="modal" id="membersModal" onclick="closeMembersModal()">
+        <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+            <button class="close-btn" aria-label="Tutup" onclick="closeMembersModal()">&times;</button>
+            <h2 style="color: var(--text-primary); margin-bottom: 20px; text-align: center;">ANGGOTA TKJ 1</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #00ff88, #00ffff); color: #000; font-weight: bold;">
+                            <th style="padding: 12px; text-align: left; border: 1px solid #00ff88;">No</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #00ff88;">Nama Anggota</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody">
+                        <!-- Akan diisi dengan JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-        // Check security acceptance cache on page load
+    <!-- KEYBOARD SHORTCUTS HINT -->
+    <div class="keyboard-shortcuts-hint" id="keyboardShortcutsHint">
+        <h4>⌨️ Keyboard Shortcuts</h4>
+        <p><kbd>C</kbd> - Toggle Sidebar</p>
+        <p><kbd>M</kbd> - Menu (Mobile)</p>
+        <p><kbd>D</kbd> - Download (Modal)</p>
+        <p><kbd>ESC</kbd> - Close Modal</p>
+        <p><kbd>R</kbd> - Clear Cache</p>
+        <p><kbd>?</kbd> - Help</p>
+    </div>
+
+    <script>
+        // === DOWNLOAD HANDLER ===
+        function downloadImage() {
+            try {
+                const img = document.getElementById('modalImage');
+                const video = document.getElementById('modalVideo');
+                const downloadBtn = document.getElementById('downloadBtn');
+                
+                if (!downloadBtn) return;
+                
+                let fileUrl = '';
+                let fileName = document.getElementById('modalName').textContent || 'download';
+                
+                // Tentukan URL file (gambar atau video)
+                if (img && img.style.display !== 'none' && img.src) {
+                    fileUrl = img.src;
+                    fileName = fileName + '.jpg';
+                } else if (video && video.style.display !== 'none' && video.src) {
+                    fileUrl = video.src;
+                    fileName = fileName + '.mp4';
+                }
+                
+                if (!fileUrl) {
+                    alert('❌ File tidak ditemukan');
+                    return;
+                }
+                
+                // Update button state
+                const originalHTML = downloadBtn.innerHTML;
+                downloadBtn.disabled = true;
+                downloadBtn.classList.add('loading');
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendownload...';
+                
+                // Buat request untuk download
+                fetch(fileUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        // Buat URL blob
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        
+                        // Cleanup
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        // Reset button
+                        downloadBtn.disabled = false;
+                        downloadBtn.classList.remove('loading');
+                        downloadBtn.innerHTML = originalHTML;
+                        
+                        alert('✅ Download selesai!');
+                    })
+                    .catch(err => {
+                        console.error('Download error:', err);
+                        downloadBtn.disabled = false;
+                        downloadBtn.classList.remove('loading');
+                        downloadBtn.innerHTML = originalHTML;
+                        alert('❌ Gagal mendownload file: ' + err.message);
+                    });
+            } catch (e) {
+                console.error('Error in downloadImage:', e);
+                alert('❌ Terjadi kesalahan: ' + e.message);
+            }
+        }
+
+        // ✅ DAFTAR NAMA YANG DIIZINKAN (ISI SESUAI KEBUTUHANMU)
+        const ALLOWED_NAMES = [
+            "Abiyu Anugrah",
+            "Aktsar Hakim Nst",
+            "Amalia Safitri",
+            "Amir Hamzah",
+            "Asra Bilhuda",
+            "Eli Zahara",
+            "Ezyla Aziz Zeira",
+            "Fadel Muhammad Rezki",
+            "Faizul Adzimi",
+            "Faldho Adzani",
+            "Fitria Mulia",
+            "Galang Luqmanul Hakim",
+            "Hafif Mabrur",
+            "Kasifa Rahmah",
+            "Keysa Putri Ramadani",
+            "M. Rafiki Rasli",
+            "Muhammad Hibban Aulia",
+            "Muhammad Yudha Pratama",
+            "Najia Atika Sahira",
+            "Najwa Asyifa",
+            "Rafi Idham",
+            "Ranti Amelia",
+            "Rasima Handayani",
+            "Reviansyah",
+            "Reza Ardiansyah",
+            "Sakinah Khanza",
+            "Salimah",
+            "Salsa Bila",
+            "Susi Saskia",
+            "Syah Ratul Faiza",
+            "Thalita Syafa Harahap",
+            "Tonius Nduru",
+            "Yennisa Mulia",
+            "Yuda Setriawan",
+            "Zhyllan Fyllah"
+        ];
+
+        // === Fungsi dekripsi kode akses ===
+        function hashPass(pass) {
+            let h = 0;
+            for (let c of pass) h = Math.imul(h ^ c.charCodeAt(), 1540483477) >>> 0;
+            return h;
+        }
+        const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        function codeToText(code, pass) {
+            let clean = code.replace(/-/g, '');
+            if (clean.length % 2 !== 0) throw new Error("Kode rusak");
+            const seed = hashPass(pass);
+            let out = '';
+            for (let i = 0; i < clean.length; i += 2) {
+                const a = CHARS.indexOf(clean[i]);
+                const b = CHARS.indexOf(clean[i+1]);
+                if (a === -1 || b === -1) throw new Error("Karakter tidak valid");
+                const val = a * CHARS.length + b;
+                const offset = (seed + (i/2) * 41) % CHARS.length;
+                const orig = (val - offset + 256) % 256;
+                out += String.fromCharCode(orig);
+            }
+            return out;
+        }
+
+        // === Verifikasi kode akses ===
+        function verifyCode() {
+            const code = document.getElementById('accessCode').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const SHARED_SECRET = "123";
+            if (!code) {
+                errorMsg.textContent = "⚠️ Masukkan kode akses!";
+                return;
+            }
+            try {
+                const name = codeToText(code, SHARED_SECRET);
+                if (ALLOWED_NAMES.includes(name)) {
+                    // Simpan user info
+                    localStorage.setItem('logged_in_user', name);
+                    localStorage.setItem('user_code', code);
+                    
+                    // Tampilkan identifikasi
+                    const identifikasiSection = document.getElementById('identifikasiSection');
+                    const displayName = document.getElementById('displayName');
+                    const displayPasswordFinal = document.getElementById('displayPasswordFinal');
+                    
+                    if (identifikasiSection && displayName && displayPasswordFinal) {
+                        displayName.textContent = name;
+                        displayPasswordFinal.textContent = code;
+                        identifikasiSection.style.display = 'block';
+                    }
+                    
+                    // Set timeout 3 detik sebelum redirect
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        document.getElementById('loginModal').style.display = 'none';
+                        document.getElementById('mainApp').style.display = 'block';
+                        showMainContent();
+                    }, 3000);
+                } else {
+                    errorMsg.textContent = "❌ Nama tidak dikenali. Akses ditolak.";
+                }
+            } catch (e) {
+                errorMsg.textContent = "❌ Kode tidak valid.";
+                console.error(e);
+            }
+        }
+
+
+
+        // === Cek apakah sudah login ===
+        function checkLoggedInUser() {
+            const user = localStorage.getItem('logged_in_user');
+            if (user) {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                showMainContent();
+                return true;
+            }
+            return false;
+        }
+
+        // === Tampilkan konten utama ===
+        function showMainContent() {
+            document.body.classList.remove('sidebar-hidden');
+        }
+
+        // === Security notice ===
+        document.getElementById('accept-security-btn').addEventListener('click', () => {
+            const notice = document.getElementById('security-notice');
+            notice.style.display = 'none';
+            document.getElementById('searchWrapper').style.display = 'block';
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-subtitle').style.display = 'block';
+            localStorage.setItem('security_accepted', JSON.stringify({ timestamp: Date.now() }));
+            loadPhotosFromDB();
+        });
+
+        // === Cek cache security ===
         function checkSecurityCache() {
             const cached = localStorage.getItem('security_accepted');
             if (cached) {
                 try {
                     const { timestamp } = JSON.parse(cached);
-                    const now = Date.now();
-                    if (now - timestamp < 24 * 60 * 60 * 1000) { // 24 hours
-                        securityAccepted = true;
+                    if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
                         document.getElementById('security-notice').style.display = 'none';
                         document.getElementById('searchWrapper').style.display = 'block';
                         document.getElementById('main-title').style.display = 'block';
@@ -994,333 +1225,173 @@
             return false;
         }
 
-        // Handle security acceptance button
-        document.getElementById('accept-security-btn').addEventListener('click', function() {
-            securityAccepted = true;
-            // Cache security acceptance for 24 hours
-            localStorage.setItem('security_accepted', JSON.stringify({ timestamp: Date.now() }));
-            // Hide security notice and show main content
-            document.getElementById('security-notice').style.display = 'none';
-            document.getElementById('searchWrapper').style.display = 'block';
-            document.getElementById('main-title').style.display = 'block';
-            document.getElementById('main-subtitle').style.display = 'block';
-            // Load gallery after acceptance
-            loadPhotosFromDB();
+        // === Loading screen animation ===
+        document.addEventListener("DOMContentLoaded", () => {
+            const loadingText = document.getElementById("loading-text");
+            const mainIcon = document.querySelector(".main-icon");
+            const subIcons = document.querySelectorAll(".sub-icons i");
+            const designerText = document.getElementById("designer-text");
+            const designerText2 = document.getElementById("designer-text2");
+            const loadingScreen = document.getElementById("loading-screen");
+
+            function showElement(el, delay) {
+                setTimeout(() => {
+                    el.classList.remove("hidden");
+                    if (el.classList.contains("slide-left")) el.classList.add("animate-slide-left");
+                    else if (el.classList.contains("slide-right")) el.classList.add("animate-slide-right");
+                    else if (el.classList.contains("scale-in")) el.classList.add("animate-scale-in");
+                    else if (el.classList.contains("fade-in")) el.classList.add("animate-fade-in");
+                    else if (el.classList.contains("fall")) el.classList.add("animate-fall");
+                }, delay);
+            }
+
+            function typeWriter() {
+                const text = "Togetherness TKJ OnE";
+                loadingText.textContent = "";
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        loadingText.textContent += text.charAt(i++);
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, 100);
+            }
+
+            typeWriter();
+            showElement(loadingText, 0);
+            showElement(mainIcon, 800);
+            subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
+            showElement(designerText2, 3200);
+            showElement(designerText, 3600);
+
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 55; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 110 + '%';
+                particle.style.width = Math.random() * 120 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 13 + 's';
+                particlesContainer.appendChild(particle);
+            }
+
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    if (!checkLoggedInUser()) {
+                        document.getElementById('loginModal').style.display = 'flex';
+                        checkSecurityCache();
+                    }
+                }, 1000);
+            }, 5500);
         });
-            // === LOADING SCREEN ===
-                document.addEventListener("DOMContentLoaded", () => {
-                    const loadingText = document.getElementById("loading-text");
-                    const mainIcon = document.querySelector(".main-icon");
-                    const subIcons = document.querySelectorAll(".sub-icons i");
-                    const designerText = document.getElementById("designer-text");
-                    const designerText2 = document.getElementById("designer-text2");
-                    const loadingScreen = document.getElementById("loading-screen");
 
-                    function showElement(el, delay) {
-                        setTimeout(() => {
-                            el.classList.remove("hidden");
-                            if (el.classList.contains("slide-left")) {
-                                el.classList.add("animate-slide-left");
-                            } else if (el.classList.contains("slide-right")) {
-                                el.classList.add("animate-slide-right");
-                            } else if (el.classList.contains("scale-in")) {
-                                el.classList.add("animate-scale-in");
-                            } else if (el.classList.contains("fade-in")) {
-                                el.classList.add("animate-fade-in");
-                            } else if (el.classList.contains("fall")) {
-                                el.classList.add("animate-fall");
-                            } else {
-                                el.classList.add("fall");
-                            }
-                        }, delay);
-                    }
-
-                    // Typewriter effect for loading text
-                    function typeWriter() {
-                        const text = "Togetherness TKJ OnE";
-                        const element = document.getElementById("loading-text");
-                        element.textContent = "";
-                        let i = 0;
-                        const timer = setInterval(() => {
-                            if (i < text.length) {
-                                element.textContent += text.charAt(i);
-                                i++;
-                            } else {
-                                clearInterval(timer);
-                            }
-                        }, 100);
-                    }
-                    typeWriter();
-                    showElement(loadingText, 0);
-                    showElement(mainIcon, 800);
-                    subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
-                    showElement(designerText2, 3200);
-                    showElement(designerText, 3600);
-                    // Create floating particles
-                    const particlesContainer = document.getElementById('particles');
-                    for (let i = 0; i < 55; i++) {
-                        const particle = document.createElement('div');
-                        particle.className = 'particle';
-                        particle.style.left = Math.random() * 110 + '%';
-                        particle.style.width = Math.random() * 120 + 5 + 'px';
-                        particle.style.height = particle.style.width;
-                        particle.style.animationDelay = Math.random() * 13 + 's';
-                        particlesContainer.appendChild(particle);
-                    }
-
-                    setTimeout(() => {
-                        loadingScreen.style.opacity = '0';
-                        setTimeout(() => {
-                            loadingScreen.style.display = 'none';
-                            // Check security acceptance cache after loading screen
-                            checkSecurityCache();
-                        }, 1000);
-                    }, 5500);
-                });
-
-        // ===== GLOBAL VARIABLES =====
-        let currentFilter = 'group'; // default filter
-        let selectedMedia = null; // currently selected photo/video for modal
-        let botDetectionScore = 0;
-
-        // ===== BOT DETECTION =====
-        function detectBotBehavior() {
-            // Check for rapid interactions
-            let clickCount = 0;
-            let lastClickTime = 0;
-
-            document.addEventListener('click', () => {
-                const now = Date.now();
-                if (now - lastClickTime < 100) clickCount++;
-                lastClickTime = now;
-
-                if (clickCount > 10) {
-                    botDetectionScore += 10;
-                    console.warn('Rapid clicking detected');
-                }
-            });
-
-            // Check for automated scrolling
-            let scrollCount = 0;
-            let lastScrollTime = 0;
-
-            window.addEventListener('scroll', () => {
-                const now = Date.now();
-                if (now - lastScrollTime < 50) scrollCount++;
-                lastScrollTime = now;
-
-                if (scrollCount > 20) {
-                    botDetectionScore += 5;
-                    console.warn('Rapid scrolling detected');
-                }
-            });
-
-            // Check for headless browser indicators
-            if (navigator.webdriver ||
-                !navigator.language ||
-                navigator.languages.length === 0 ||
-                window.outerHeight === 0 ||
-                window.outerWidth === 0) {
-                botDetectionScore += 50;
-                console.warn('Headless browser indicators detected');
-            }
-
-            // Check for missing plugins (common in bots)
-            if (!navigator.plugins || navigator.plugins.length === 0) {
-                botDetectionScore += 20;
-                console.warn('Missing browser plugins detected');
-            }
-
-            // Check for suspicious user agent
-            if (/bot|crawler|spider|scraper/i.test(navigator.userAgent)) {
-                botDetectionScore += 30;
-                console.warn('Bot-like user agent detected');
-            }
-
-            // Check for missing referrer (bots often don't send referrer)
-            if (!document.referrer && window.location.protocol === 'http:') {
-                botDetectionScore += 15;
-                console.warn('Missing referrer detected');
-            }
-
-            return botDetectionScore;
-        }
-
-        // Rate limiting for API calls
-        let apiCallCount = 0;
-        let lastApiCallTime = 0;
-
-        function checkRateLimit() {
-            const now = Date.now();
-            if (now - lastApiCallTime > 60000) { // Reset every minute
-                apiCallCount = 0;
-                lastApiCallTime = now;
-            }
-
-            if (apiCallCount > 10) { // Max 10 calls per minute
-                console.warn('Rate limit exceeded');
-                return false;
-            }
-
-            apiCallCount++;
-            return true;
-        }
-
-        // Run bot detection on page load
-        detectBotBehavior();
-
-        // ===== HELPER FUNCTIONS: DEVICE DETECTION & URL MANIPULATION =====
-        function isLowEndDevice() {
-            return (
-                window.innerWidth <= 768 ||
-                (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
-                (window.devicePixelRatio && window.devicePixelRatio <= 1.5) ||
-                window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            );
-        }
-
-        function getThumbnailUrl(originalUrl) {
-            try {
-                const url = new URL(originalUrl);
-                url.searchParams.set('w', '300');
-                return url.toString();
-            } catch (e) {
-                return originalUrl;
-            }
-        }
-
-        function getHDUrl(thumbUrl) {
-            try {
-                const url = new URL(thumbUrl);
-                url.searchParams.delete('w');
-                return url.toString();
-            } catch (e) {
-                return thumbUrl;
-            }
-        }
-
-        // ===== CACHE MANAGEMENT =====
-        const CACHE_KEY = 'photos_cache_v2';
-        // Shorter default during active development so JSON edits appear quickly
-        const CACHE_EXPIRY_HOURS = 1; // hours
-
-        function loadFromCache() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (!cached) return null;
-            try {
-                const { data, timestamp } = JSON.parse(cached);
-                const now = Date.now();
-                if (now - timestamp < CACHE_EXPIRY_HOURS * 60 * 60 * 1000) return data;
-            } catch (e) {
-                return null;
-            }
-            return null;
-        }
-
-        function saveToCache(data) {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-        }
-
-        // ===== DATA LOADING: LOCAL & CACHE =====
+        // === FILTER & GALLERY LOGIC (PERBAIKAN UTAMA) ===
+        let currentFilter = 'group';
+        // Keep track of previous sidebar selection so we can restore it after opening the members modal
+        let previousSidebarActive = null;
         let photos = [];
-        let accessToken = '';
 
-        // Generate access token after login
-        function generateAccessToken() {
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substring(2);
-            accessToken = btoa(timestamp + random).replace(/[^a-zA-Z0-9]/g, '');
-            return accessToken;
-        }
-
-        // Validate access token
-        function validateAccessToken(token) {
-            if (!token || token !== accessToken) return false;
-            // Token expires after 1 hour
-            const timestamp = parseInt(atob(token.substring(0, 10)), 36);
-            return Date.now() - timestamp < 3600000;
-        }
-
-        // loadFromLocal(options)
-        // options.noStore -> fetch with cache: 'no-store'
-        // options.bust -> append cache-busting query param
-        async function loadFromLocal(options = {}) {
+        // loadFromLocal - dummy fallback
+        async function loadFromLocal() {
             try {
-                // Only load data if user has accepted security notice
-                if (!securityAccepted) {
-                    throw new Error('Security notice not accepted');
-                }
-
-                const url = './DB/photos.json' + (options.bust ? ('?_=' + Date.now()) : '');
-                const response = await fetch(url, {
-                    cache: options.noStore ? 'no-store' : 'default'
-                });
-                if (!response.ok) throw new Error('File Not Found');
+                const response = await fetch('./DB/photos.json');
+                if (!response.ok) throw new Error();
                 const data = await response.json();
                 return data.photos;
             } catch (e) {
-                console.warn('Fallback dummy', e);
                 return [{ name: "Zhyllan", gender: "male", url: "https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg", date: "2025-11-04" }];
             }
         }
 
-        // loadPhotosFromDB(forceFresh)
-        // If forceFresh===true, bypass cache and fetch a fresh copy.
-        async function loadPhotosFromDB(forceFresh = false) {
-            const cached = !forceFresh ? loadFromCache() : null;
-            if (cached) {
-                photos = cached;
-                console.log('[photos] loaded from cache, items:', (photos && photos.length) || 0);
-                renderGallery();
-                restoreUserState();
-
-                // Background freshness check: fetch with no-store and update if changed
-                try {
-                    const fresh = await loadFromLocal({ noStore: true });
-                    console.log('[photos] freshness check fetched items:', (fresh && fresh.length) || 0);
-                    if (JSON.stringify(fresh) !== JSON.stringify(cached)) {
-                        photos = fresh;
-                        saveToCache(fresh);
-                        console.log('[photos] cache updated from freshness check');
-                        renderGallery();
-                    }
-                } catch (e) {
-                    console.warn('Freshness check failed:', e);
-                }
-                return;
-            }
-
-            // No cache or forced refresh: fetch fresh
+        async function loadPhotosFromDB() {
             try {
-                const fresh = await loadFromLocal({ noStore: forceFresh, bust: forceFresh });
-                console.log('[photos] fetched fresh items:', (fresh && fresh.length) || 0);
-                photos = fresh;
-                saveToCache(fresh);
-                renderGallery();
-                restoreUserState();
+                photos = await loadFromLocal();
+                if (!Array.isArray(photos)) {
+                    console.warn('Photos data is not an array, using fallback');
+                    photos = [];
+                }
+                performSearch('');
             } catch (err) {
-                console.error('Gagal muat data baru:', err);
+                console.error('Error loading photos:', err);
+                photos = [];
+                performSearch('');
             }
         }
 
-        // ===== DATE FORMATTING =====
+        function performSearch(query) {
+            try {
+                // Tampilkan loading saat pencarian
+                const searchLoadingContainer = document.getElementById('searchLoadingContainer');
+                if (searchLoadingContainer) {
+                    searchLoadingContainer.classList.add('show');
+                }
+
+                let results = [...(photos || [])];
+                if (query.trim()) {
+                    results = results.filter(p =>
+                        (p.name && p.name.toLowerCase().includes(query.toLowerCase())) ||
+                        (p.date && formatDate(p.date).includes(query.replace(/\D/g, '')))
+                    );
+                }
+
+                // ✅ PERBAIKAN FILTER "GROUP" → tampilkan SEMUA
+                if (currentFilter === 'male') {
+                    results = results.filter(p => p.gender === 'male');
+                } else if (currentFilter === 'female') {
+                    results = results.filter(p => p.gender === 'female');
+                } else if (currentFilter === 'video') {
+                    results = results.filter(p => p.gender === 'video');
+                }
+                // Jika 'group' atau 'all' → tidak filter
+
+                // Delay kecil untuk smooth transition
+                setTimeout(() => {
+                    renderGallery(results);
+                }, 100);
+            } catch (err) {
+                console.error('Search error:', err);
+                const searchLoadingContainer = document.getElementById('searchLoadingContainer');
+                if (searchLoadingContainer) {
+                    searchLoadingContainer.classList.remove('show');
+                }
+                renderGallery([]);
+            }
+        }
+
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const [y, m, d] = dateStr.split('-');
             return `${d}-${m}-${y}`;
         }
 
-        // ===== GALLERY RENDERING & LAZY LOADING =====
-        function renderGallery(filteredPhotos = photos) {
+        function renderGallery(filteredPhotos) {
             const container = document.getElementById('galleryContainer');
             const noResultsMsg = document.getElementById('noResultsMessage');
+            const searchLoadingContainer = document.getElementById('searchLoadingContainer');
             const currentQuery = document.getElementById('searchInput').value.trim();
+
+            // Sembunyikan loading setelah selesai
+            if (searchLoadingContainer) {
+                searchLoadingContainer.classList.remove('show');
+            }
+
+            // Update statistik
+            const photoStats = document.getElementById('photoStats');
+            if (photoStats) {
+                const totalPhotos = photos.filter(p => p.gender !== 'video').length;
+                const totalVideos = photos.filter(p => p.gender === 'video').length;
+                const displayedPhotos = filteredPhotos.filter(p => p.gender !== 'video').length;
+                const displayedVideos = filteredPhotos.filter(p => p.gender === 'video').length;
+                photoStats.textContent = `Total: ${totalPhotos} foto | ${totalVideos} video | Ditampilkan: ${displayedPhotos} foto | ${displayedVideos} video`;
+            }
 
             if (filteredPhotos.length === 0 && currentQuery) {
                 document.getElementById('searchedTerm').textContent = currentQuery;
                 noResultsMsg.style.display = 'block';
                 container.innerHTML = '';
-                document.getElementById('statsFooter').style.display = 'none';
                 return;
             }
 
@@ -1328,9 +1399,9 @@
             container.innerHTML = '';
             const groups = {};
             filteredPhotos.forEach(photo => {
-                const firstLetter = (photo.name || '?').charAt(0).toUpperCase();
-                if (!groups[firstLetter]) groups[firstLetter] = [];
-                groups[firstLetter].push(photo);
+                const letter = (photo.name || '?').charAt(0).toUpperCase();
+                if (!groups[letter]) groups[letter] = [];
+                groups[letter].push(photo);
             });
 
             Object.keys(groups).sort().forEach(letter => {
@@ -1342,418 +1413,496 @@
                 groups[letter].forEach(photo => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
-                    item.dataset.person = photo.name;
-                    item.dataset.gender = photo.gender;
-                    item.dataset.fullUrl = photo.url;
-                    const thumbUrl = isLowEndDevice() ? getThumbnailUrl(photo.url) : photo.url;
                     const formattedDate = formatDate(photo.date);
                     item.innerHTML = `
-                        <div class="loading">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                        <div class="loading" style="width:90px;height:90px;">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span>
                         </div>
-                        <img data-src="${thumbUrl}" alt="${photo.name}" class="lazy">
+                        <img src="${photo.url}" alt="${photo.name}" style="width:100%;height:180px;object-fit:cover;background:#222;">
                         <div class="gallery-item-name">${photo.name}</div>
                         <div class="gallery-item-date">${formattedDate}</div>
                     `;
-                    item.onclick = () => openModal(photo.url, photo.name, photo.date);
+                    item.onclick = () => openModal(photo.url, photo.name, photo.date, photo.gender);
                     grid.appendChild(item);
+                    
+                    // Tampilkan loading saat gambar sedang dimuat
+                    const img = item.querySelector('img');
+                    const loading = item.querySelector('.loading');
+                    if (img && loading) {
+                        loading.style.display = 'flex';
+                        img.onload = () => { loading.style.display = 'none'; };
+                        img.onerror = () => { loading.style.display = 'none'; };
+                    }
                 });
             });
-            initLazyLoading();
-            updateStatistics(filteredPhotos);
         }
 
-        function initLazyLoading() {
-            if ('IntersectionObserver' in window) {
-                const observerOptions = { root: null, rootMargin: '50px', threshold: 0.01 };
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            const src = img.dataset.src;
-                            const loadingDiv = img.parentElement.querySelector('.loading');
-                            if (loadingDiv) loadingDiv.style.display = 'flex';
-                            const tempImg = new Image();
-                            tempImg.onload = function() {
-                                img.src = src;
-                                img.classList.remove('lazy');
-                                if (loadingDiv) loadingDiv.style.display = 'none';
-                                observer.unobserve(img);
-                            };
-                            tempImg.onerror = function() {
-                                img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIj48cmVjdCBmaWxsPSIjMzMzIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIvPjwvc3ZnPg==';
-                                img.classList.add('error');
-                                if (loadingDiv) loadingDiv.style.display = 'none';
-                                observer.unobserve(img);
-                            };
-                            tempImg.src = src;
-                        }
-                    });
-                }, observerOptions);
-                document.querySelectorAll('img.lazy').forEach(img => {
-                    img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIj48cmVjdCBmaWxsPSIjMjIyIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIvPjwvc3ZnPg==';
-                    observer.observe(img);
-                });
-            } else {
-                document.querySelectorAll('img.lazy').forEach(img => {
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                });
-            }
-        }
+        // === MODAL ===
+        function openModal(url, name, date, gender) {
+            try {
+                const modal = document.getElementById('imageModal');
+                const img = document.getElementById('modalImage');
+                const video = document.getElementById('modalVideo');
+                const modalLoading = document.getElementById('modalLoadingContainer');
+                const isVideo = gender === 'video' || /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(url || '');
 
-        // ===== MODAL POPUP: OPEN, CLOSE, DOWNLOAD =====
-        function openModal(fullUrl, name, date, gender) {
-            const hdUrl = getHDUrl(fullUrl);
-            const modal = document.getElementById('imageModal');
-            const img = document.getElementById('modalImage');
-            const video = document.getElementById('modalVideo');
-            document.getElementById('modalName').textContent = name || '';
-            document.getElementById('modalDate').textContent = date ? formatDate(date) : '';
-            // lock scroll
-            document.body.style.overflow = 'hidden';
-            // reset elements
-            img.style.display = 'none';
-            video.style.display = 'none';
-            img.src = '';
-            video.src = '';
-            modal.classList.add('show');
-            // determine if video or image
-            const isVideo = gender === 'video' || /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(fullUrl);
-            if (isVideo) {
-                video.style.display = 'block';
-                setTimeout(() => {
-                    video.src = hdUrl;
-                }, 30);
-            } else {
-                img.style.display = 'block';
-                // Show loading animation in modal
-                const modalDialog = modal.querySelector('.modal-dialog');
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'loading';
-                loadingDiv.innerHTML = `
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                `;
-                loadingDiv.style.position = 'absolute';
-                loadingDiv.style.top = '50%';
-                loadingDiv.style.left = '50%';
-                loadingDiv.style.transform = 'translate(-50%, -50%)';
-                loadingDiv.style.zIndex = '1';
-                modalDialog.appendChild(loadingDiv);
-                setTimeout(() => {
-                    img.onload = function() {
-                        loadingDiv.remove();
+                document.getElementById('modalName').textContent = name || 'No name';
+                document.getElementById('modalDate').textContent = date ? formatDate(date) : 'No date';
+
+                img.style.display = 'none';
+                video.style.display = 'none';
+                if (modalLoading) {
+                    modalLoading.style.display = 'flex';
+                }
+
+                const downloadBtn = document.getElementById('downloadBtn');
+                if (isVideo) {
+                    video.style.display = 'block';
+                    video.src = url || '';
+                    video.onloadstart = () => {
+                        if (modalLoading) modalLoading.style.display = 'flex';
                     };
-                    img.src = hdUrl;
-                }, 30);
+                    video.oncanplay = () => {
+                        if (modalLoading) modalLoading.style.display = 'none';
+                    };
+                    // Hide download button for video items (use native player controls)
+                    if (downloadBtn) downloadBtn.style.display = 'none';
+                } else {
+                    img.style.display = 'block';
+                    img.src = url || '';
+                    img.onload = () => {
+                        if (modalLoading) modalLoading.style.display = 'none';
+                    };
+                    img.onerror = () => {
+                        if (modalLoading) modalLoading.style.display = 'none';
+                        console.error('Failed to load image');
+                    };
+                    if (downloadBtn) downloadBtn.style.display = '';
+                }
+
+                modal.classList.add('show');
+                // lock body scroll (handles Android touchmove prevention too)
+                updateBodyLockState();
+            } catch (e) {
+                console.error('Error opening modal:', e);
+                alert('Gagal membuka media: ' + e.message);
             }
-            document.getElementById('downloadBtn').disabled = false;
         }
 
         function closeModal() {
             const modal = document.getElementById('imageModal');
             modal.classList.remove('show');
-            document.body.style.overflow = '';
-            // clear media after animation end to free memory
-            const img = document.getElementById('modalImage');
-            const video = document.getElementById('modalVideo');
-            setTimeout(() => {
-                try {
-                    img.src = '';
-                    video.src = '';
-                } catch (e) {}
-            }, 300);
+            // update lock state (will unlock if nothing else requires lock)
+            updateBodyLockState();
         }
 
-        async function downloadImage() {
-            const src = document.getElementById('modalImage').src;
-            const name = (document.getElementById('modalName').textContent || 'photo').replace(/\s+/g, '_');
-            const btn = document.getElementById('downloadBtn');
-            if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+        function openMembersModal() {
+            const modal = document.getElementById('membersModal');
+            const tbody = document.getElementById('membersTableBody');
+            
+            // Isi tabel dengan anggota
+            tbody.innerHTML = ALLOWED_NAMES.map((name, index) => `
+                <tr style="border: 1px solid #00ff88; ${index % 2 === 0 ? 'background: rgba(0, 255, 136, 0.05);' : ''}">
+                    <td style="padding: 10px; color: var(--text-primary); font-weight: bold;">${index + 1}</td>
+                    <td style="padding: 10px; color: var(--text-primary);">${name}</td>
+                </tr>
+            `).join('');
+            
+            // Pastikan modal anggota tampil di atas login modal jika sedang terbuka
+            modal.style.zIndex = 10002;
+            modal.classList.add('show');
+            // lock body scroll (handles Android touchmove prevention too)
+            updateBodyLockState();
+        }
+
+        function closeMembersModal() {
+            const modal = document.getElementById('membersModal');
+            modal.classList.remove('show');
+            modal.style.zIndex = '';
+            // update lock state (will unlock if nothing else requires lock)
+            updateBodyLockState();
+            // Restore previous sidebar selection so the user doesn't see members as a selected section
             try {
-                const resp = await fetch(src);
-                if (!resp.ok) throw new Error('Network');
-                const blob = await resp.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${name}.jpg`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-            } catch (err) {
-                alert('Gagal mondownload,cubo tahen lamo di gambar > klik Simpan gambar,atau cubo cek internet kawen dulu,joku bomasalah.');
-            } finally {
-                if (btn) { btn.classList.remove('loading'); btn.disabled = true; }
-            }
-        }
+                if (previousSidebarActive) {
+                    document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+                    previousSidebarActive.classList.add('active');
 
-        // Allow clearing the local cache (useful during debugging or updates)
-        // If forceReload === true, fetch fresh JSON and re-render without full page reload.
-        function clearCache(forceReload = true) {
-            try {
-                // Clear all localStorage items
-                localStorage.removeItem(CACHE_KEY);
-                localStorage.removeItem('security_accepted');
-                localStorage.removeItem('userPreferences');
-                localStorage.removeItem('sidebarCollapsed');
-                console.log('[all cache] cleared');
-            } catch (e) { console.warn('Failed to clear cache', e); }
-
-            // Always reload the page to clear security acceptance and start fresh
-            location.reload();
-        }
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('imageModal');
-                if (modal && modal.classList.contains('show')) closeModal();
-            }
-        });
-
-         // Download image with D key
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'D' ||e.key === 'd') {
-                    const modal = document.getElementById('imageModal');
-                    if (modal && modal.classList.contains('show')) downloadImage();
-                }
-            });
-
-             // Remove cache with A key
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'a' ||e.key ==='A') {
-                        const modal = document.getElementById('statsFooter');
-                        clearCache();
+                    if (previousSidebarActive.dataset.target === 'about') {
+                        if (document.getElementById('section-all')) document.getElementById('section-all').style.display = 'none';
+                        if (document.getElementById('section-about')) document.getElementById('section-about').style.display = 'block';
+                    } else {
+                        currentFilter = previousSidebarActive.dataset.filter || 'group';
+                        if (document.getElementById('section-about')) document.getElementById('section-about').style.display = 'none';
+                        if (document.getElementById('section-all')) document.getElementById('section-all').style.display = 'block';
+                        // re-run search to update visible gallery based on restored filter
+                        try { performSearch(document.getElementById('searchInput').value.trim()); } catch (e) { /* ignore */ }
                     }
-                });
-
-                        // allow keyboard shortcut 'c' to toggle collapse (desktop)
-                            document.addEventListener('keydown', (e) => {
-                                if (e.key === 'c' || e.key === 'C') {
-                                    if (window.innerWidth > 768) toggleSidebarCollapsed();
-                                }
-                            });
-
-
-
-        // ===== STATISTICS DISPLAY =====
-        function updateStatistics(displayedPhotos) {
-            const statsFooter = document.getElementById('statsFooter');
-            if (!statsFooter) return;
-            if (displayedPhotos.length === 0) {
-                statsFooter.style.display = 'none';
-                return;
+                }
+            } catch (e) {
+                console.warn('Failed to restore previous sidebar selection', e);
             }
-            statsFooter.style.display = 'block';
-            const total = (photos && photos.length) ? photos.length : 0;
-            statsFooter.innerHTML = `<span>${displayedPhotos.length} Foto di Coliekken,Dari ${total} Total Sadonyo.</span> <button id="clearCacheBtn" style="margin-left:12px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text-secondary);cursor:pointer;">Apuih Cache</button>`;
-            const btn = document.getElementById('clearCacheBtn');
-            if (btn) btn.addEventListener('click', clearCache);
+            previousSidebarActive = null;
         }
 
-        // ===== SIDEBAR NAVIGATION & FILTERING =====
+        // === NAVIGASI SIDEBAR ===
         document.querySelectorAll('.sidebar-nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
+
+                // Save previous active link so we can restore later (useful when opening members modal)
+                const currentlyActive = document.querySelector('.sidebar-nav-link.active');
+                previousSidebarActive = (currentlyActive && currentlyActive !== link) ? currentlyActive : null;
+
+                // Update active class visually
                 document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
-                const target = link.dataset.target;
-                if (target) {
-                    // hide all sections
+
+                if (link.dataset.target === 'about') {
                     document.getElementById('section-all').style.display = 'none';
-                    document.getElementById('section-about').style.display = 'none';
-                    // show only the targeted section
-                    if (target === 'about') {
-                        document.getElementById('section-about').style.display = 'block';
-                    }
-                    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+                    document.getElementById('section-about').style.display = 'block';
                     return;
                 }
-                const filter = link.dataset.filter;
-                if (filter !== undefined) {
-                    saveFilterState(filter);
-                    document.getElementById('section-all').style.display = 'block';
+
+                if (link.dataset.target === 'members') {
+                    // Hide main sections because members content is shown in modal
+                    document.getElementById('section-all').style.display = 'none';
                     document.getElementById('section-about').style.display = 'none';
-                    const searchQuery = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-                    performSearch(searchQuery);
-                    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+                    openMembersModal();
+                    return;
                 }
+
+                // Normal filter links
+                currentFilter = link.dataset.filter || 'group';
+                document.getElementById('section-about').style.display = 'none';
+                document.getElementById('section-all').style.display = 'block';
+                performSearch(document.getElementById('searchInput').value.trim());
             });
         });
 
-        // ===== SEARCH & FILTER LOGIC =====
-        function matchesDateQuery(photoDate, searchQuery) {
-            if (!photoDate) return false;
-            const formatted = formatDate(photoDate);
-            const queryDigits = searchQuery.replace(/\D/g, '');
-            const dateDigits = formatted.replace(/\D/g, '');
-            return dateDigits.includes(queryDigits) || formatted.includes(searchQuery);
+        // === SEARCH ===
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                try {
+                    performSearch(e.target.value.trim());
+                } catch (err) {
+                    console.error('Search error:', err);
+                }
+            });
         }
 
-        function matchesNameQuery(photoName, searchQuery) {
-            if (!photoName) return false;
-            return photoName.toLowerCase().includes(searchQuery.toLowerCase());
-        }
-
-        function performSearch(query) {
-            const lastFilter = userPreferences.get('lastFilter') || 'group';
-            let results = [...photos];
-            if (query && query.trim().length > 0) {
-                const searchTerm = query.trim();
-                results = results.filter(p => {
-                    const matchesDate = matchesDateQuery(p.date || '', searchTerm);
-                    const matchesName = matchesNameQuery(p.name || '', searchTerm);
-                    return matchesDate || matchesName;
+        // === CLEAR CACHE BUTTON ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const clearCacheBtn = document.getElementById('clearCacheBtn');
+            if (clearCacheBtn) {
+                clearCacheBtn.addEventListener('click', () => {
+                    if (confirm('Hapus semua cache? Halaman akan di-refresh.')) {
+                        try {
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            if ('caches' in window) {
+                                caches.keys().then(names => {
+                                    names.forEach(name => caches.delete(name));
+                                }).catch(e => console.log('Cache clear error:', e));
+                            }
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500);
+                        } catch (e) {
+                            console.error('Error clearing cache:', e);
+                            alert('Gagal menghapus cache: ' + e.message);
+                        }
+                    }
                 });
             }
-            if (lastFilter && lastFilter !== 'all') {
-                if (lastFilter === 'group') results = results.filter(p => p.gender === 'all');
-                else if (lastFilter === 'male' || lastFilter === 'female') results = results.filter(p => p.gender === lastFilter);
-                if (lastFilter === 'video') results = results.filter(p => p.gender === 'video');
-            }
-            renderGallery(results);
-        }
-
-        // Debounced search input
-        let searchTimer;
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', function (e) {
-            const query = this.value.toLowerCase().trim();
-            clearTimeout(searchTimer);
-            saveSearchState(query);
-            searchTimer = setTimeout(() => {
-                performSearch(query);
-            }, 400);
         });
 
-        // ===== USER PREFERENCES MANAGEMENT =====
-        const userPreferences = {
-            save: (k, v) => {
-                const p = JSON.parse(localStorage.getItem('userPreferences') || '{}');
-                p[k] = v;
-                localStorage.setItem('userPreferences', JSON.stringify(p));
-            },
-            get: (k) => {
-                const p = JSON.parse(localStorage.getItem('userPreferences') || '{}');
-                return p[k];
-            }
-        };
-
-        function saveFilterState(f) {
-            userPreferences.save('lastFilter', f);
-        }
-
-        function saveSearchState(q) {
-            userPreferences.save('lastSearch', q);
-        }
-
-        function restoreUserState() {
-            const lastFilter = userPreferences.get('lastFilter') || 'group';
-            const lastSearch = userPreferences.get('lastSearch') || '';
-            if (lastSearch) document.getElementById('searchInput').value = lastSearch;
-            const menuLink = document.querySelector(`[data-filter="${lastFilter}"]`);
-            if (menuLink) menuLink.click();
-            else {
-                // fallback: click the first filter link (should exist)
-                const first = document.querySelector('.sidebar-nav-link[data-filter]');
-                if (first) first.click();
-            }
-        }
-
-        // ===== MOBILE SIDEBAR TOGGLE =====
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
-        // safe-guard if toggle is missing
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', (e) => {
-                // if sidebar is in collapsed (mini) mode on desktop, don't hide it via the top toggle
-                if (sidebar.classList.contains('collapsed') && window.innerWidth > 768) return;
-                sidebar.classList.toggle('active');
+        // === SIDEBAR COLLAPSE ===
+        const collapseBtn = document.getElementById('sidebarCollapse');
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const body = document.body;
+                if (sidebar.classList.contains('collapsed')) {
+                    sidebar.classList.remove('collapsed');
+                    body.classList.remove('sidebar-collapsed');
+                    collapseBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                } else {
+                    sidebar.classList.add('collapsed');
+                    body.classList.add('sidebar-collapsed');
+                    collapseBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                }
             });
         }
 
-        // ===== SIDEBAR COLLAPSE (Desktop friendly) =====
-        const collapseBtn = document.getElementById('sidebarCollapse');
-        function applySidebarState(collapsed) {
-            if (collapsed) {
-                sidebar.classList.add('collapsed');
-                document.body.classList.add('sidebar-collapsed');
-                collapseBtn && collapseBtn.setAttribute('aria-expanded', 'false');
-                // hide top hamburger toggle while in mini mode
-                if (toggleBtn) toggleBtn.style.display = 'none';
+        // === KEYBOARD SHORTCUTS ===
+        document.addEventListener('keydown', (e) => {
+            try {
+                const key = e.key.toLowerCase();
+                const modal = document.getElementById('imageModal');
+                const isModalOpen = modal && modal.classList.contains('show');
+                const shortcutsHint = document.getElementById('keyboardShortcutsHint');
+                
+                // ? atau / - Show/Hide Keyboard Shortcuts
+                if (key === '?' || key === '/') {
+                    if (shortcutsHint) {
+                        shortcutsHint.classList.toggle('show');
+                        e.preventDefault();
+                    }
+                }
+                
+                // ESC - Tutup modal
+                if (e.key === 'Escape') {
+                    if (isModalOpen) {
+                        closeModal();
+                        e.preventDefault();
+                    } else if (shortcutsHint && shortcutsHint.classList.contains('show')) {
+                        shortcutsHint.classList.remove('show');
+                        e.preventDefault();
+                    }
+                }
+                
+                // C atau c - Toggle collapse sidebar
+                if (key === 'c') {
+                    const collapseBtn = document.getElementById('sidebarCollapse');
+                    if (collapseBtn) {
+                        collapseBtn.click();
+                        e.preventDefault();
+                    }
+                }
+                
+                // M atau m - Toggle menu (mobile)
+                if (key === 'm') {
+                    const toggleBtn = document.getElementById('sidebarToggle');
+                    const sidebar = document.getElementById('sidebar');
+                    if (toggleBtn && sidebar) {
+                            sidebar.classList.toggle('active');
+                            // update body lock so only sidebar can scroll on mobile
+                            updateBodyLockState();
+                            e.preventDefault();
+                        }
+                }
+                
+                // D atau d - Download (hanya jika modal terbuka)
+                if (key === 'd' && isModalOpen) {
+                    const videoEl = document.getElementById('modalVideo');
+                    // Jika modal sedang menampilkan video, jangan trigger download
+                    if (videoEl && videoEl.style.display !== 'none') {
+                        e.preventDefault();
+                    } else {
+                        const downloadBtn = document.getElementById('downloadBtn');
+                        if (downloadBtn) {
+                            downloadBtn.click();
+                            e.preventDefault();
+                        }
+                    }
+                }
+                
+                // R atau r - Hapus cache
+                if (key === 'r') {
+                    if (confirm('Hapus semua cache? Halaman akan di-refresh.')) {
+                        try {
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            if ('caches' in window) {
+                                caches.keys().then(names => {
+                                    names.forEach(name => caches.delete(name));
+                                }).catch(e => console.log('Cache clear error:', e));
+                            }
+                            setTimeout(() => {
+                                location.reload();
+                            }, 500);
+                        } catch (err) {
+                            console.error('Error clearing cache:', err);
+                            alert('Gagal menghapus cache: ' + err.message);
+                        }
+                    }
+                    e.preventDefault();
+                }
+            } catch (err) {
+                console.error('Keyboard shortcut error:', err);
+            }
+        });
+
+        // === MOBILE TOGGLE ===
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                // Ensure body locking state updates when sidebar opens/closes
+                updateBodyLockState();
+            });
+        }
+
+        // === BLOCKING PROTECTION ===
+        // 1. Blokir RIGHT-CLICK (Desktop)
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // 2. Blokir LONG-PRESS (Mobile) - detect touch-hold
+        let touchStartTime = 0;
+        const LONG_PRESS_DURATION = 500; // ms
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartTime = Date.now();
+        }, false);
+
+        document.addEventListener('touchend', (e) => {
+            const touchDuration = Date.now() - touchStartTime;
+            if (touchDuration > LONG_PRESS_DURATION) {
+                // Long press detected
+                e.preventDefault();
+            }
+        }, false);
+
+        // Prevent background touch-scroll on mobile when overlays/sidebars are open
+        // Scroll lock configuration - can be customized at runtime
+        const scrollLockConfig = {
+            allowScrollSelectors: ['#sidebar'], // selectors that should remain scrollable when locked
+            lockOnModal: true,                  // lock body when image/member modal opens
+            lockOnSidebar: true                 // lock body when sidebar is active
+        };
+
+        // Current touchmove handler reference so we can remove it reliably
+        let _currentTouchMoveHandler = null;
+
+        function _createTouchMoveHandler() {
+            return function (ev) {
+                try {
+                    // If the touchstart / touchmove originated inside an allowed scrollable element, allow it
+                    for (const sel of (scrollLockConfig.allowScrollSelectors || [])) {
+                        if (!sel) continue;
+                        const el = ev.target && ev.target.closest && ev.target.closest(sel);
+                        if (el) return; // allow scrolling inside this element
+                    }
+                } catch (e) {
+                    // ignore selector errors and fall back to blocking
+                }
+                ev.preventDefault();
+            };
+        }
+
+        function lockBodyScroll() {
+            try {
+                document.body.style.overflow = 'hidden';
+                if (_currentTouchMoveHandler) {
+                    document.removeEventListener('touchmove', _currentTouchMoveHandler, { passive: false });
+                }
+                _currentTouchMoveHandler = _createTouchMoveHandler();
+                document.addEventListener('touchmove', _currentTouchMoveHandler, { passive: false });
+            } catch (e) { console.warn('lockBodyScroll failed', e); }
+        }
+
+        function unlockBodyScroll() {
+            try {
+                document.body.style.overflow = '';
+                if (_currentTouchMoveHandler) {
+                    document.removeEventListener('touchmove', _currentTouchMoveHandler, { passive: false });
+                    _currentTouchMoveHandler = null;
+                }
+            } catch (e) { console.warn('unlockBodyScroll failed', e); }
+        }
+
+        function setScrollLockConfig(newConfig) {
+            Object.assign(scrollLockConfig, newConfig || {});
+            // when config changes, re-evaluate lock state
+            updateBodyLockState();
+        }
+
+        function updateBodyLockState() {
+            const sidebar = document.getElementById('sidebar');
+            const imgModal = document.getElementById('imageModal');
+            const membersModal = document.getElementById('membersModal');
+            const sidebarActive = sidebar && sidebar.classList.contains('active');
+            const modalOpen = (imgModal && imgModal.classList.contains('show')) || (membersModal && membersModal.classList.contains('show'));
+            const shouldLock = (scrollLockConfig.lockOnModal && modalOpen) || (scrollLockConfig.lockOnSidebar && sidebarActive);
+            if (shouldLock) {
+                lockBodyScroll();
             } else {
-                sidebar.classList.remove('collapsed');
-                document.body.classList.remove('sidebar-collapsed');
-                collapseBtn && collapseBtn.setAttribute('aria-expanded', 'true');
-                // restore top toggle visibility according to screen size
-                if (toggleBtn) toggleBtn.style.display = (window.innerWidth <= 768) ? 'flex' : 'none';
+                unlockBodyScroll();
             }
         }
 
-        function toggleSidebarCollapsed() {
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            const next = !isCollapsed;
-            applySidebarState(next);
-            try { localStorage.setItem('sidebarCollapsed', next ? '1' : '0'); } catch (e) {}
-        }
-
-        if (collapseBtn) collapseBtn.addEventListener('click', () => toggleSidebarCollapsed());
-
-        // restore saved state
-        (function restoreSidebar() {
-            try {
-                const v = localStorage.getItem('sidebarCollapsed');
-                const collapsed = v === '1';
-                // only apply collapsed state on wider screens
-                if (window.innerWidth > 768 && collapsed) applySidebarState(true);
-                else if (toggleBtn) {
-                    // ensure mobile toggle visibility when not collapsed
-                    toggleBtn.style.display = (window.innerWidth <= 768) ? 'flex' : 'none';
-                }
-            } catch (e) {}
-        })();
-
-        // keep toggle visibility in sync on resize
-        window.addEventListener('resize', () => {
-            try {
-                // if currently in collapsed (mini) mode, hide toggle on wider screens
-                if (sidebar.classList.contains('collapsed') && window.innerWidth > 768) {
-                    if (toggleBtn) toggleBtn.style.display = 'none';
-                } else {
-                    if (toggleBtn) toggleBtn.style.display = (window.innerWidth <= 768) ? 'flex' : 'none';
-                }
-            } catch (e) {}
+        // 3. Blokir COPY (Ctrl+C / Cmd+C dan select text copy)
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            return false;
         });
 
-        // ===== INITIALIZATION =====
-        // Gallery will load after captcha verification
+        // 4. Blokir SELECT TEXT (Ctrl+A dan drag select)
+        document.addEventListener('selectstart', (e) => {
+            // Izinkan select di input dan textarea
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // 5. Blokir CUT (Ctrl+X / Cmd+X)
+        document.addEventListener('cut', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // 6. Blokir PASTE jika ada
+        document.addEventListener('paste', (e) => {
+            // Hanya blokir di luar input fields
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+
+        // 7. Blokir DRAG IMAGE (cegah drag gambar otomatis download)
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+                e.preventDefault();
+            }
+        });
+
+        // === FAST MODE HANDLER ===
+        function applyFastMode(enabled) {
+            try {
+                if (enabled) {
+                    document.body.classList.add('fast-mode');
+                    localStorage.setItem('fastMode', '1');
+                } else {
+                    document.body.classList.remove('fast-mode');
+                    localStorage.removeItem('fastMode');
+                }
+            } catch (e) { console.warn('applyFastMode failed', e); }
+        }
+
+        function initFastModeToggle() {
+            try {
+                const toggle = document.getElementById('fastModeToggle');
+                if (!toggle) return;
+                // Initialize from localStorage
+                const saved = localStorage.getItem('fastMode');
+                const enabled = saved === '1' || saved === 'true';
+                toggle.checked = !!enabled;
+                applyFastMode(enabled);
+
+                toggle.addEventListener('change', (e) => {
+                    applyFastMode(!!e.target.checked);
+                });
+            } catch (e) { console.warn('initFastModeToggle error', e); }
+        }
+
+        // Initialize fast-mode toggle after DOM ready
+        try {
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(initFastModeToggle, 30);
+            } else {
+                document.addEventListener('DOMContentLoaded', initFastModeToggle);
+            }
+        } catch (e) {
+            console.warn('Fast mode init failed', e);
+        }
     </script>
 </body>
-
 </html>
