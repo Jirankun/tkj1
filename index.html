@@ -817,6 +817,21 @@
         .fast-mode {
             scroll-behavior: auto !important;
         }
+
+        /* === PASTE BUTTON STYLE === */
+        #pasteCodeBtn {
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        #pasteCodeBtn:hover {
+            background: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        #pasteCodeBtn:active {
+            transform: translateY(0);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
     </style>
 </head>
 <body class="sidebar-hidden">
@@ -847,7 +862,10 @@
     <!-- LOGIN MODAL OVERLAY -->
     <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);z-index:9998;">
         <h2 style="color:#00ff88;margin-bottom:20px;">🔐 Masukkan Kode Akses</h2>
-        <input type="text" id="accessCode" placeholder="Contoh: AbC12-DeF34-GhI56-JkL78" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+            <input type="text" id="accessCode" placeholder="Kode dari halaman dapatkan kode akses" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
+            <button id="pasteCodeBtn" onclick="pasteCodeFromClipboard()" style="padding:12px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:bold;white-space:nowrap;transition:all 0.3s;" title="Tempel kode dari clipboard">📋 Tempel</button>
+        </div>
         <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
         
         <!-- IDENTIFIKASI SECTION -->
@@ -1134,6 +1152,25 @@
         }
 
         // === Verifikasi kode akses ===
+        // === Fungsi Paste dari Clipboard ===
+        async function pasteCodeFromClipboard() {
+            try {
+                // Coba menggunakan Clipboard API modern
+                const text = await navigator.clipboard.readText();
+                document.getElementById('accessCode').value = text.trim();
+                document.getElementById('errorMsg').textContent = "✅ Kode berhasil ditempel!";
+                document.getElementById('errorMsg').style.color = '#00ff88';
+                setTimeout(() => {
+                    document.getElementById('errorMsg').textContent = '';
+                }, 2000);
+            } catch (err) {
+                // Fallback untuk browser yang tidak support Clipboard API
+                document.getElementById('errorMsg').textContent = "❌ Gagal mengakses clipboard. Pastikan browser mengizinkan akses.";
+                document.getElementById('errorMsg').style.color = '#ff6b6b';
+                console.error('Clipboard error:', err);
+            }
+        }
+
         function verifyCode() {
             const code = document.getElementById('accessCode').value.trim();
             const errorMsg = document.getElementById('errorMsg');
