@@ -1360,7 +1360,8 @@
 
             function showElement(el, delay) {
                 if (!el) return;
-                const isFast = document.body.classList.contains('fast-mode');
+                // Consider fast-mode from body class or persisted setting — read localStorage to ensure early application
+                const isFast = document.body.classList.contains('fast-mode') || localStorage.getItem('fastMode') === '1';
                 setTimeout(() => {
                     el.classList.remove("hidden");
                     if (!isFast) {
@@ -1374,41 +1375,43 @@
             }
 
             function typeWriter() {
-                const text = "Togetherness TKJ OnE";
-                const isFast = document.body.classList.contains('fast-mode');
+                // In normal mode show full title with typing; in fast-mode show simplified title
+                const fullText = "Togetherness TKJ OnE";
+                const fastText = "TKJ OnE";
+                const isFast = document.body.classList.contains('fast-mode') || localStorage.getItem('fastMode') === '1';
                 if (isFast) {
-                    loadingText.textContent = text;
+                    loadingText.textContent = fastText;
                     return;
                 }
                 loadingText.textContent = "";
                 let i = 0;
                 const timer = setInterval(() => {
-                    if (i < text.length) {
-                        loadingText.textContent += text.charAt(i++);
+                    if (i < fullText.length) {
+                        loadingText.textContent += fullText.charAt(i++);
                     } else {
                         clearInterval(timer);
                     }
                 }, 100);
             }
 
-            const isFast = document.body.classList.contains('fast-mode');
+            const isFastImmediate = document.body.classList.contains('fast-mode') || localStorage.getItem('fastMode') === '1';
             typeWriter();
             showElement(loadingText, 0);
-            if (!isFast) {
+            if (!isFastImmediate) {
                 showElement(mainIcon, 800);
                 subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
                 showElement(designerText2, 3200);
                 showElement(designerText, 3600);
             } else {
-                // fast-mode: reveal essentials immediately
-                if (mainIcon) mainIcon.classList.remove('hidden');
-                subIcons.forEach((icon) => icon.classList.remove('hidden'));
-                if (designerText2) designerText2.classList.remove('hidden');
-                if (designerText) designerText.classList.remove('hidden');
+                // fast-mode: show only simplified title and hide other opening visuals
+                if (mainIcon) mainIcon.classList.add('hidden');
+                subIcons.forEach((icon) => icon.classList.add('hidden'));
+                if (designerText2) designerText2.classList.add('hidden');
+                if (designerText) designerText.classList.add('hidden');
             }
 
             const particlesContainer = document.getElementById('particles');
-            if (!isFast) {
+            if (!isFastImmediate) {
                 for (let i = 0; i < 55; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
@@ -1431,8 +1434,8 @@
                     }
                     // Setup long press untuk tombol Buka Tabel
                     setupOpenMembersBtnLongPress();
-                }, isFast ? 50 : 1000);
-            }, isFast ? 50 : 5500);
+                }, isFastImmediate ? 50 : 1000);
+            }, isFastImmediate ? 50 : 5500);
         });
 
         // === FILTER & GALLERY LOGIC (PERBAIKAN UTAMA) ===
