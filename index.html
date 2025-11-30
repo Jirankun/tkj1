@@ -499,7 +499,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            z-index: 999;
             display: none;
             background: rgba(0, 0, 0, 0.7);
             padding: 1rem;
@@ -513,6 +513,7 @@
         .gallery-item .loading span {
             width: 3px;
             height: 40px;
+            display: inline-block;
         }
         .modal .loading {
             margin: 1rem auto;
@@ -705,26 +706,6 @@
         .sidebar-profile a:hover {
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
-        .sidebar-collapse {
-            position: absolute;
-            bottom: 25px;
-            left: 97%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            color: var(--text-primary);
-            padding: 8px 10px;
-            border-radius: 999px;
-            cursor: pointer;
-            display: flex;
-            gap: 8px;
-            align-items: top;
-            justify-content: top;
-            transition: transform 0.2s ease, background 0.2s ease;
-            z-index: 1100;
-        }
-        .sidebar-collapse:hover { transform: translateX(-50%) scale(1.03); }
-        .sidebar.collapsed .sidebar-collapse i { transform: rotate(180deg); }
         .keyboard-shortcuts-hint {
             position: fixed;
             bottom: 20px;
@@ -832,22 +813,6 @@
             transform: translateY(0);
             box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
         }
-
-        /* === GET CODE BUTTON STYLE === */
-        #getCodeBtn {
-            transition: all 0.25s ease;
-            box-shadow: 0 0 6px rgba(0, 255, 136, 0.08);
-        }
-        #getCodeBtn:hover {
-            background: var(--accent-primary);
-            color: #000;
-            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.18), inset 0 0 8px rgba(255,255,255,0.03);
-            transform: translateY(-2px);
-        }
-        #getCodeBtn:active {
-            transform: translateY(0);
-            box-shadow: 0 0 8px rgba(0, 255, 136, 0.12);
-        }
     </style>
 </head>
 <body class="sidebar-hidden">
@@ -878,10 +843,11 @@
     <!-- LOGIN MODAL OVERLAY -->
     <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);z-index:9998;">
         <h2 style="color:#00ff88;margin-bottom:20px;">🔐 Masukkan Kode Akses</h2>
-        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
-            <input type="text" id="accessCode" placeholder="Kode dari halaman dapatkan kode akses" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
-            <button id="pasteCodeBtn" onclick="pasteCodeFromClipboard()" style="padding:12px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:bold;white-space:nowrap;transition:all 0.3s;" title="Tempel kode dari clipboard">📋 Tempel</button>
-        </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="accessCode" placeholder="Contoh: AbC12-DeF34-GhI56-JkL78" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
+                <button id="pasteCodeBtn" type="button" onclick="pasteAccessCode()" style="padding:10px 12px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Tempel</button>
+            </div>
+            <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
         <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
         
         <!-- IDENTIFIKASI SECTION -->
@@ -896,8 +862,7 @@
         <!-- BUTTONS: placed under identifikasi and preview -->
         <div style="display:flex;gap:12px;margin-top:18px;">
             <button id="loginConfirmBtn" onclick="verifyCode()" style="flex:1;padding:10px 20px;background:#ff0080;color:white;border:none;border-radius:6px;cursor:pointer;">Masuk</button>
-            <a id="getCodeBtn" href="https://code-dt9.pages.dev/" target="_blank" rel="noopener noreferrer" title="Buka halaman untuk mendapatkan kode akses" style="flex:1;padding:10px 20px;background:transparent;color:var(--accent-primary);border:1px solid var(--accent-primary);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;">Dapatkan Kode</a>
-            <button id="openMembersBtn" type="button" onclick="openMembersModal()" style="flex:1;padding:10px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Buka Tabel</button>
+            <button id="openMembersBtn" type="button" style="flex:1;padding:10px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Buka Tabel</button>
         </div>
     </div>
 
@@ -919,7 +884,6 @@
                 <a href="#" class="sidebar-nav-link" data-target="about"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
                 <a href="#" class="sidebar-nav-link" data-target="members"><i class="fas fa-users-viewfinder"></i> <span class="label">ANGGOTA TKJ 1</span></a>
             </nav>
-            <button id="sidebarCollapse" class="sidebar-collapse" aria-label="Alihkan sidebar"> <i class="fas fa-chevron-left"></i> </button>
         </aside>
 
         <main class="main-content" id="section-all">
@@ -1003,7 +967,7 @@
 
     <!-- MEMBERS MODAL -->
     <div class="modal" id="membersModal" onclick="closeMembersModal()">
-        <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+        <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto; overflow-x: hidden;" onclick="event.stopPropagation()">
             <button class="close-btn" aria-label="Tutup" onclick="closeMembersModal()">&times;</button>
             <h2 style="color: var(--text-primary); margin-bottom: 20px; text-align: center;">ANGGOTA TKJ 1</h2>
             <div style="overflow-x: auto;">
@@ -1065,43 +1029,67 @@
                 downloadBtn.disabled = true;
                 downloadBtn.classList.add('loading');
                 downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendownload...';
-                
-                // Buat request untuk download
-                fetch(fileUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        // Buat URL blob
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = fileName;
-                        document.body.appendChild(a);
-                        a.click();
-                        
-                        // Cleanup
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                        
-                        // Reset button
-                        downloadBtn.disabled = false;
-                        downloadBtn.classList.remove('loading');
-                        downloadBtn.innerHTML = originalHTML;
-                        
-                        alert('✅ Download selesai!');
-                    })
-                    .catch(err => {
-                        console.error('Download error:', err);
-                        downloadBtn.disabled = false;
-                        downloadBtn.classList.remove('loading');
-                        downloadBtn.innerHTML = originalHTML;
+
+                // Try fetch+blob first for normal browsers, fallback to opening the file URL
+                fetch(fileUrl).then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                }).then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    downloadBtn.disabled = false;
+                    downloadBtn.classList.remove('loading');
+                    downloadBtn.innerHTML = originalHTML;
+                    alert('✅ Download selesai!');
+                }).catch(err => {
+                    console.warn('Blob download failed, falling back to open URL:', err);
+                    // Some environments (webviews like Kodular) handle file URLs differently — open in new tab/window
+                    try {
+                        window.open(fileUrl, '_blank');
+                        alert('Jika unduhan otomatis tidak berlangsung, file dibuka di tab baru.');
+                    } catch (openErr) {
+                        console.error('Fallback open failed:', openErr);
                         alert('❌ Gagal mendownload file: ' + err.message);
-                    });
+                    }
+                    downloadBtn.disabled = false;
+                    downloadBtn.classList.remove('loading');
+                    downloadBtn.innerHTML = originalHTML;
+                });
             } catch (e) {
                 console.error('Error in downloadImage:', e);
                 alert('❌ Terjadi kesalahan: ' + e.message);
+            }
+        }
+
+        // Paste helper for login modal — attempts clipboard API, falls back to prompt
+        function pasteAccessCode() {
+            const input = document.getElementById('accessCode');
+            const err = document.getElementById('errorMsg');
+            if (!input) return;
+            err.textContent = '';
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(text => {
+                    if (text) {
+                        input.value = text.trim();
+                    } else {
+                        err.textContent = 'Clipboard kosong atau tidak ada teks.';
+                    }
+                }).catch(cbErr => {
+                    console.warn('Clipboard read failed', cbErr);
+                    // fallback: ask user to paste manually via prompt
+                    const manual = prompt('Tempelkan kode akses di sini:');
+                    if (manual !== null) input.value = manual;
+                });
+            } else {
+                // Fallback for webviews that don't expose clipboard API
+                const manual = prompt('Tidak dapat mengakses clipboard. Tempelkan kode akses di sini:');
+                if (manual !== null) input.value = manual;
             }
         }
 
@@ -1279,6 +1267,88 @@
             return false;
         }
 
+        // === LONG PRESS STATE UNTUK TOMBOL BUKA TABEL ===
+        let openMembersBtn_pressTimer = null;
+        let openMembersBtn_isLongPress = false;
+        let openMembersBtn_modeGetCode = false;
+
+        function setupOpenMembersBtnLongPress() {
+            const btn = document.getElementById('openMembersBtn');
+            if (!btn) return;
+
+            btn.addEventListener('mousedown', (e) => {
+                openMembersBtn_isLongPress = false;
+                openMembersBtn_pressTimer = setTimeout(() => {
+                    openMembersBtn_isLongPress = true;
+                    openMembersBtn_modeGetCode = !openMembersBtn_modeGetCode;
+                    updateOpenMembersBtnDisplay();
+                }, 800);
+            });
+
+            btn.addEventListener('mouseup', (e) => {
+                if (openMembersBtn_pressTimer) {
+                    clearTimeout(openMembersBtn_pressTimer);
+                    openMembersBtn_pressTimer = null;
+                }
+                
+                if (!openMembersBtn_isLongPress) {
+                    if (openMembersBtn_modeGetCode) {
+                        window.open('https://code-dt9.pages.dev/', '_blank', 'noopener,noreferrer');
+                    } else {
+                        openMembersModal();
+                    }
+                }
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                if (openMembersBtn_pressTimer) {
+                    clearTimeout(openMembersBtn_pressTimer);
+                    openMembersBtn_pressTimer = null;
+                }
+                openMembersBtn_isLongPress = false;
+            });
+
+            // Touch support
+            btn.addEventListener('touchstart', (e) => {
+                openMembersBtn_isLongPress = false;
+                openMembersBtn_pressTimer = setTimeout(() => {
+                    openMembersBtn_isLongPress = true;
+                    openMembersBtn_modeGetCode = !openMembersBtn_modeGetCode;
+                    updateOpenMembersBtnDisplay();
+                }, 800);
+            });
+
+            btn.addEventListener('touchend', (e) => {
+                if (openMembersBtn_pressTimer) {
+                    clearTimeout(openMembersBtn_pressTimer);
+                    openMembersBtn_pressTimer = null;
+                }
+                
+                if (!openMembersBtn_isLongPress) {
+                    if (openMembersBtn_modeGetCode) {
+                        window.open('https://code-dt9.pages.dev/', '_blank', 'noopener,noreferrer');
+                    } else {
+                        openMembersModal();
+                    }
+                }
+            });
+        }
+
+        function updateOpenMembersBtnDisplay() {
+            const btn = document.getElementById('openMembersBtn');
+            if (!btn) return;
+            
+            if (openMembersBtn_modeGetCode) {
+                btn.textContent = '🔑 Minta Kode';
+                btn.style.background = '#ff0080';
+                btn.style.color = 'white';
+            } else {
+                btn.textContent = 'Buka Tabel';
+                btn.style.background = 'var(--accent-primary)';
+                btn.style.color = '#000';
+            }
+        }
+
         // === Loading screen animation ===
         document.addEventListener("DOMContentLoaded", () => {
             const loadingText = document.getElementById("loading-text");
@@ -1289,18 +1359,27 @@
             const loadingScreen = document.getElementById("loading-screen");
 
             function showElement(el, delay) {
+                if (!el) return;
+                const isFast = document.body.classList.contains('fast-mode');
                 setTimeout(() => {
                     el.classList.remove("hidden");
-                    if (el.classList.contains("slide-left")) el.classList.add("animate-slide-left");
-                    else if (el.classList.contains("slide-right")) el.classList.add("animate-slide-right");
-                    else if (el.classList.contains("scale-in")) el.classList.add("animate-scale-in");
-                    else if (el.classList.contains("fade-in")) el.classList.add("animate-fade-in");
-                    else if (el.classList.contains("fall")) el.classList.add("animate-fall");
+                    if (!isFast) {
+                        if (el.classList.contains("slide-left")) el.classList.add("animate-slide-left");
+                        else if (el.classList.contains("slide-right")) el.classList.add("animate-slide-right");
+                        else if (el.classList.contains("scale-in")) el.classList.add("animate-scale-in");
+                        else if (el.classList.contains("fade-in")) el.classList.add("animate-fade-in");
+                        else if (el.classList.contains("fall")) el.classList.add("animate-fall");
+                    }
                 }, delay);
             }
 
             function typeWriter() {
                 const text = "Togetherness TKJ OnE";
+                const isFast = document.body.classList.contains('fast-mode');
+                if (isFast) {
+                    loadingText.textContent = text;
+                    return;
+                }
                 loadingText.textContent = "";
                 let i = 0;
                 const timer = setInterval(() => {
@@ -1312,24 +1391,36 @@
                 }, 100);
             }
 
+            const isFast = document.body.classList.contains('fast-mode');
             typeWriter();
             showElement(loadingText, 0);
-            showElement(mainIcon, 800);
-            subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
-            showElement(designerText2, 3200);
-            showElement(designerText, 3600);
-
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 55; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 110 + '%';
-                particle.style.width = Math.random() * 120 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.animationDelay = Math.random() * 13 + 's';
-                particlesContainer.appendChild(particle);
+            if (!isFast) {
+                showElement(mainIcon, 800);
+                subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
+                showElement(designerText2, 3200);
+                showElement(designerText, 3600);
+            } else {
+                // fast-mode: reveal essentials immediately
+                if (mainIcon) mainIcon.classList.remove('hidden');
+                subIcons.forEach((icon) => icon.classList.remove('hidden'));
+                if (designerText2) designerText2.classList.remove('hidden');
+                if (designerText) designerText.classList.remove('hidden');
             }
 
+            const particlesContainer = document.getElementById('particles');
+            if (!isFast) {
+                for (let i = 0; i < 55; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 110 + '%';
+                    particle.style.width = Math.random() * 120 + 5 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = Math.random() * 13 + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            // Hide loading screen faster in fast-mode
             setTimeout(() => {
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
@@ -1338,8 +1429,10 @@
                         document.getElementById('loginModal').style.display = 'flex';
                         checkSecurityCache();
                     }
-                }, 1000);
-            }, 5500);
+                    // Setup long press untuk tombol Buka Tabel
+                    setupOpenMembersBtnLongPress();
+                }, isFast ? 50 : 1000);
+            }, isFast ? 50 : 5500);
         });
 
         // === FILTER & GALLERY LOGIC (PERBAIKAN UTAMA) ===
@@ -1485,9 +1578,17 @@
                     const img = item.querySelector('img');
                     const loading = item.querySelector('.loading');
                     if (img && loading) {
-                        loading.style.display = 'flex';
-                        img.onload = () => { loading.style.display = 'none'; };
-                        img.onerror = () => { loading.style.display = 'none'; };
+                        loading.classList.add('show');
+                        const onLoad = () => { loading.classList.remove('show'); img.removeEventListener('load', onLoad); img.removeEventListener('error', onError); };
+                        const onError = () => { loading.classList.remove('show'); img.removeEventListener('load', onLoad); img.removeEventListener('error', onError); };
+                        img.addEventListener('load', onLoad);
+                        img.addEventListener('error', onError);
+                        // If image already cached and complete, remove spinner immediately
+                        if (img.complete && img.naturalWidth) {
+                            loading.classList.remove('show');
+                            img.removeEventListener('load', onLoad);
+                            img.removeEventListener('error', onError);
+                        }
                     }
                 });
             });
@@ -1508,7 +1609,7 @@
                 img.style.display = 'none';
                 video.style.display = 'none';
                 if (modalLoading) {
-                    modalLoading.style.display = 'flex';
+                    modalLoading.classList.add('show');
                 }
 
                 const downloadBtn = document.getElementById('downloadBtn');
@@ -1516,10 +1617,10 @@
                     video.style.display = 'block';
                     video.src = url || '';
                     video.onloadstart = () => {
-                        if (modalLoading) modalLoading.style.display = 'flex';
+                        if (modalLoading) modalLoading.classList.add('show');
                     };
                     video.oncanplay = () => {
-                        if (modalLoading) modalLoading.style.display = 'none';
+                        if (modalLoading) modalLoading.classList.remove('show');
                     };
                     // Hide download button for video items (use native player controls)
                     if (downloadBtn) downloadBtn.style.display = 'none';
@@ -1527,10 +1628,10 @@
                     img.style.display = 'block';
                     img.src = url || '';
                     img.onload = () => {
-                        if (modalLoading) modalLoading.style.display = 'none';
+                        if (modalLoading) modalLoading.classList.remove('show');
                     };
                     img.onerror = () => {
-                        if (modalLoading) modalLoading.style.display = 'none';
+                        if (modalLoading) modalLoading.classList.remove('show');
                         console.error('Failed to load image');
                     };
                     if (downloadBtn) downloadBtn.style.display = '';
@@ -1632,6 +1733,17 @@
                 document.getElementById('section-about').style.display = 'none';
                 document.getElementById('section-all').style.display = 'block';
                 performSearch(document.getElementById('searchInput').value.trim());
+
+                // On mobile, close the sidebar after selecting a menu item
+                try {
+                    if (window.innerWidth < 769) {
+                        const sidebarEl = document.getElementById('sidebar');
+                        if (sidebarEl && sidebarEl.classList.contains('active')) {
+                            sidebarEl.classList.remove('active');
+                            updateBodyLockState();
+                        }
+                    }
+                } catch (e) { console.warn('Auto-close sidebar on mobile failed', e); }
             });
         });
 
@@ -1679,14 +1791,22 @@
             collapseBtn.addEventListener('click', () => {
                 const sidebar = document.getElementById('sidebar');
                 const body = document.body;
-                if (sidebar.classList.contains('collapsed')) {
-                    sidebar.classList.remove('collapsed');
-                    body.classList.remove('sidebar-collapsed');
-                    collapseBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                // On desktop (>=769px) we minimize the sidebar (collapse labels/icons)
+                // On mobile, collapse button behaves like a mobile toggle (open/close)
+                if (window.innerWidth >= 769) {
+                    if (sidebar.classList.contains('collapsed')) {
+                        sidebar.classList.remove('collapsed');
+                        body.classList.remove('sidebar-collapsed');
+                        collapseBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    } else {
+                        sidebar.classList.add('collapsed');
+                        body.classList.add('sidebar-collapsed');
+                        collapseBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    }
                 } else {
-                    sidebar.classList.add('collapsed');
-                    body.classList.add('sidebar-collapsed');
-                    collapseBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    // mobile behavior: toggle active state (slide in/out)
+                    sidebar.classList.toggle('active');
+                    updateBodyLockState();
                 }
             });
         }
@@ -1718,14 +1838,7 @@
                     }
                 }
                 
-                // C atau c - Toggle collapse sidebar
-                if (key === 'c') {
-                    const collapseBtn = document.getElementById('sidebarCollapse');
-                    if (collapseBtn) {
-                        collapseBtn.click();
-                        e.preventDefault();
-                    }
-                }
+                // NOTE: 'C' shortcut removed — use 'M' to toggle menu on mobile
                 
                 // M atau m - Toggle menu (mobile)
                 if (key === 'm') {
