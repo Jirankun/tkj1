@@ -967,7 +967,7 @@
 
     <!-- MEMBERS MODAL -->
     <div class="modal" id="membersModal" onclick="closeMembersModal()">
-        <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto; overflow-x: hidden;" onclick="event.stopPropagation()">
+        <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
             <button class="close-btn" aria-label="Tutup" onclick="closeMembersModal()">&times;</button>
             <h2 style="color: var(--text-primary); margin-bottom: 20px; text-align: center;">ANGGOTA TKJ 1</h2>
             <div style="overflow-x: auto;">
@@ -1933,7 +1933,7 @@
         // Prevent background touch-scroll on mobile when overlays/sidebars are open
         // Scroll lock configuration - can be customized at runtime
         const scrollLockConfig = {
-            allowScrollSelectors: ['#sidebar'], // selectors that should remain scrollable when locked
+            allowScrollSelectors: ['#sidebar', '.modal-dialog'], // selectors that should remain scrollable when locked
             lockOnModal: true,                  // lock body when image/member modal opens
             lockOnSidebar: true                 // lock body when sidebar is active
         };
