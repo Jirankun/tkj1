@@ -25,18 +25,22 @@
             --border-primary: #00ffff;
             --border-secondary: #ff0080;
             --border-tertiary: #ffaa00;
-            --glass-bg: rgba(0, 255, 136, 0.03);
-            --glass-border: rgba(0, 255, 136, 0.15);
-            --border-radius: 0px;
-            --transition-smooth: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(0, 255, 136, 0.08);
+            --glass-border: rgba(0, 255, 136, 0.25);
+            --border-radius: 16px;
+            --border-radius-small: 8px;
+            --transition-smooth: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, box-shadow 0.3s ease;
             --sidebar-bg: linear-gradient(180deg, rgba(10, 10, 10, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
             --sidebar-border: rgba(0, 255, 136, 0.3);
-            --glow-primary: 0 0 8px rgba(0, 255, 136, 0.4), 0 0 16px rgba(0, 255, 136, 0.2);
-            --glow-secondary: 0 0 10px rgba(255, 0, 128, 0.5), 0 0 20px rgba(255, 0, 128, 0.2);
-            --glow-tertiary: 0 0 6px rgba(255, 170, 0, 0.3);
+            --glow-primary: 0 0 12px rgba(0, 255, 136, 0.5), 0 0 24px rgba(0, 255, 136, 0.3);
+            --glow-secondary: 0 0 15px rgba(255, 0, 128, 0.6), 0 0 30px rgba(255, 0, 128, 0.3);
+            --glow-tertiary: 0 0 10px rgba(255, 170, 0, 0.4);
             --scan-line: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
-            --grid-pattern: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+            --grid-pattern: linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+            --shadow-smooth: 0 4px 20px rgba(0, 255, 136, 0.08);
+            --shadow-hover: 0 8px 32px rgba(0, 255, 136, 0.15);
+            --shadow-strong: 0 12px 48px rgba(0, 255, 136, 0.2);
         }
         /* === LOADING SCREEN === */
         #loading-screen {
@@ -149,41 +153,39 @@
                 transform: translateY(0);
             }
         }
-        .loading{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100px;
-            height: 100px;
-            gap: 5px;
+        .loader {
+            width: 50px;
+            aspect-ratio: 1;
+            display: none;
+            border: 4px solid #0000;
+            border-radius: 50%;
+            border-color: #ccc #0000;
+            animation: l16 1s infinite linear;
         }
-        .loading span{
-            width: 4px;
-            height: 60px;
-            background-color: #4cf9f9;
-            animation: scale 1.22s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            border-radius: 2px;
-            box-shadow: 0 0 8px currentColor;
+        .loader.show {
+            display: grid;
         }
-        .loading span:nth-child(1) { background: #1aff00; animation-delay: -1.29s; }
-        .loading span:nth-child(2){ background: #006aff; animation-delay: -1.28s; }
-        .loading span:nth-child(3) { background: #ff0000; animation-delay: -1.27s; }
-        .loading span:nth-child(4) { background: #ff00f7; animation-delay: -1.26s; }
-        .loading span:nth-child(5) { background: #fffb00; animation-delay: -0.25s; }
-        .loading span:nth-child(6) { background: #00b7ff; animation-delay: -0.24s; }
-        .loading span:nth-child(7) { background: #ff7b00; animation-delay: -1.23s; }
-        .loading span:nth-child(8) { background: #00ff66; animation-delay: -0.24s; }
-        .loading span:nth-child(9) { background: #1aff00; animation-delay: -0.25s; }
-        .loading span:nth-child(10){ background: #006aff; animation-delay: -1.26s; }
-        .loading span:nth-child(11) { background: #ff0000; animation-delay: -1.27s; }
-        .loading span:nth-child(12) { background: #ff00f7; animation-delay: -1.28s; }
-        .loading span:nth-child(13) { background: #fffb00; animation-delay: -1.29s; }
-        @keyframes scale {
-            0% { transform: scaleY(0.3); opacity: 0.5; }
-            10% { opacity: 1; }
-            50% { transform: scaleY(1); }
-            90% { opacity: 1; }
-            100% { transform: scaleY(0.3); opacity: 0.5; }
+        .loader::before,
+        .loader::after {
+            content: "";
+            grid-area: 1/1;
+            margin: 2px;
+            border: inherit;
+            border-radius: 50%;
+        }
+        .loader::before {
+            border-color: #f03355 #0000;
+            animation: inherit;
+            animation-duration: .5s;
+            animation-direction: reverse;
+        }
+        .loader::after {
+            margin: 8px;
+        }
+        @keyframes l16 {
+            100% {
+                transform: rotate(1turn);
+            }
         }
         .particles {
             position: absolute;
@@ -264,9 +266,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--scan-line);
-            animation: scan 3s linear infinite;
-            opacity: 0.1;
+            background: transparent;
+            opacity: 0;
             pointer-events: none;
             z-index: -1;
         }
@@ -494,37 +495,15 @@
             cursor: pointer;
             position: relative;
         }
-        .gallery-item .loading {
+        .gallery-item .loader {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 999;
-            display: none;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 1rem;
-            border-radius: 8px;
-            width: 90px;
-            height: 90px;
         }
-        .gallery-item .loading.show {
-            display: flex;
-        }
-        .gallery-item .loading span {
-            width: 3px;
-            height: 40px;
-            display: inline-block;
-        }
-        .modal .loading {
+        .modal .loader {
             margin: 1rem auto;
-            display: none;
-        }
-        .modal .loading.show {
-            display: flex;
-        }
-        .modal .loading span {
-            width: 3px;
-            height: 40px;
         }
         .search-loading {
             text-align: center;
@@ -678,6 +657,12 @@
             font-weight: 600;
             margin-top: 0.8rem;
         }
+        .sidebar-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
         .sidebar-logos img {
             width: 120px;
             height: 120px;
@@ -685,6 +670,33 @@
             object-fit: cover;
             border: 3px solid var(--accent-primary);
             box-shadow: 0 20px 20px rgba(177, 177, 177, 0.4);
+        }
+        .settings-toggle {
+            background: none;
+            border: none;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: var(--transition-smooth);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+        }
+        .settings-toggle:hover {
+            background: var(--glass-bg);
+            box-shadow: var(--glow-primary);
+        }
+        .sidebar-settings {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            display: none;
+        }
+        .sidebar.collapsed .sidebar-settings,
+        .sidebar.collapsed .settings-toggle {
+            display: none;
         }
         .sidebar-profile p {
             color: var(--text-secondary);
@@ -813,6 +825,28 @@
             transform: translateY(0);
             box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
         }
+
+        /* === SCROLLING PHOTO BAR === */
+        @keyframes scrollLeft {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        #scrollingPhotoBar {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            margin: 1rem -2rem;
+        }
+        #scrollingPhotoBar img {
+            height: 200px;
+            width: auto;
+            max-width: 300px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 12px;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
     </style>
 </head>
 <body class="sidebar-hidden">
@@ -830,13 +864,7 @@
             <h2 id="designer-text2" class="hidden fade-in">-</h2>
             <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
         </div>
-        <div class="loading">
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+        <div class="loader"></div>
         </div>
     </div>
 
@@ -872,9 +900,29 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logos">
                 <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="Logo">
+                <button class="settings-toggle" id="settingsToggle" title="Pengaturan"><i class="fas fa-cog"></i></button>
             </div>
             <div class="sidebar-title">Togetherness TKJ OnE</div>
-            <div class="sidebar-subtitle">Kenangan dari semua, untuk bersama</div>
+            <div class="sidebar-subtitle">
+                Koleksi Foto & Video Bersama Anggota TKJ 1
+            </div>
+            <div class="sidebar-settings" id="sidebarSettings">
+                <h4 style="color: var(--accent-primary); margin-bottom: 1rem;">Pengaturan</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nama:</strong> <span id="settingsName">-</span></p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Password:</strong> <span id="settingsPassword">-</span></p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nomor Urut:</strong> <span id="settingsOrder">-</span></p>
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:1rem;">
+                    <input id="fastModeToggle" type="checkbox" style="width:18px;height:18px;" />
+                    <span style="color:var(--text-secondary);">Mode Fast (Tanpa Animasi)</span>
+                </label>
+                <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menonaktifkan semua animasi dan transisi (berguna untuk perangkat lambat atau uji kecepatan).</p>
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:1rem;">
+                    <input id="scrollingPhotoBarToggle" type="checkbox" style="width:18px;height:18px;" checked />
+                    <span style="color:var(--text-secondary);">Tampilkan Bar Foto Berjalan</span>
+                </label>
+                <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menampilkan bar foto yang berjalan di atas galeri.</p>
+                <button id="clearCacheBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:1px solid #ff0080;border-radius:4px;cursor:pointer;font-weight:bold;transition:all 0.3s;margin-top:1rem;" title="Hapus semua cache dan refresh">🗑️ Hapus Cache</button>
+            </div>
             <nav>
                 <a href="#" class="sidebar-nav-link" data-filter="all"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
                 <a href="#" class="sidebar-nav-link active" data-filter="group"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a>
@@ -889,31 +937,27 @@
         <main class="main-content" id="section-all">
             <div id="security-notice" class="security-notice" style="text-align:center;margin:2rem 0;padding:2rem;background: rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);">
                 <h3 style="color:var(--accent-primary);margin-bottom:1rem;">🔒 Keamanan Konten</h3>
-                <p style="color:var(--text-secondary);margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot, mendownload, atau menyebarkan tanpa izin.</p>
-                <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan dikenai sanksi hukum</p>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot atau menyebarkan tanpa izin.</p>
+                <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan di kenai sangsi</p>
                 <button id="accept-security-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:var(--accent-primary);color:#fff;cursor:pointer;">Saya Mengerti & Lanjutkan</button>
             </div>
             <div id="searchWrapper" style="display:none;">
                 <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
-                    <input type="text" id="searchInput" class="search-box" placeholder="Cari Sosue Tanggal Ato Nomor fotonyo Yo kawen..." style="flex:1;min-width:200px;">
-                    <button id="clearCacheBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:1px solid #ff0080;border-radius:4px;cursor:pointer;font-weight:bold;transition:all 0.3s;white-space:nowrap;" title="Hapus semua cache dan refresh">🗑️ Hapus Cache</button>
+                    <input type="number" id="searchInput" class="search-box" placeholder="Cari sesuai tanggal atau nomor foto yang tersedia" style="flex:1;min-width:200px;">
                 </div>
             </div>
-            <h2 id="main-title" style="display:none;">SEKEDAR POINGEK</h2>
+            <div id="scrollingPhotoBar" style="display:none; overflow:hidden; height:120px; margin-bottom:1rem; position:relative; pointer-events:none;">
+                <div id="scrollingInner" style="display:flex; gap:10px; animation: scrollLeft 30s linear infinite;"></div>
+            </div>
+            <h2 id="main-title" style="display:none;"></h2>
             <div class="sidebar-subtitle" id="main-subtitle" style="display:none;">
-                <h4>Sado fitur sodang dalom tahap pongombangen,joku indo stabil,sabar yo kawen,maklum,sodang boaja🙏😊,boborapo fitur kadang di apuh,jo di ubah,bak bisa juo jalen di hp low-end</h4>
-                <h4><br>web ko pake sistem cache,bak lancar mombukak untuok sotoruhnyo, tapi lambek di bukak portamo kali, usahoken kawen-kawen ocok mongapuh cachenyo yo,bak dapek pembaruan foto baru,tombol apuhnyo di palieng bawah yo</h4>
             </div>
             <div id="noResultsMessage" style="text-align:center;margin:2rem 0;color:var(--text-secondary);display:none;">
-                Tanggal atau nomor foto: "<span id="searchedTerm"></span>" Indo Dapek,Typo Kawen Joku,Cubo Cek Baliek
+                Tanggal atau nomor foto: "<span id="searchedTerm"></span>" Tidak di temukan. Coba lagi dengan kata kunci lain.
             </div>
             <div id="searchLoadingContainer" class="search-loading">
-                <div class="loading" style="margin: 0 auto;">
-                    <span></span><span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span><span></span><span></span>
-                    <span></span><span></span><span></span>
-                </div>
-                <p style="margin-top:1rem;">Sedang mencari...</p>
+                <p><div class="loader" style="margin-top:1rem;"></div></p>
+                <p>Memuat hasil pencarian...</p>
             </div>
             <div id="galleryContainer"></div>
             <div id="statsFooter" style="margin-top:2rem;padding:1.5rem;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:4px;text-align:center;color:var(--text-secondary);">
@@ -923,21 +967,13 @@
 
         <main class="developer-content" id="section-about" style="display:none;">
             <div class="sidebar-profile">
-                <img src="https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="Zhyllan">
+                <img src="https://i.ibb.co.com/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="Zhyllan">
                 <div>ZHYLLAN FYLLAH</div>
-                <p>Website ko,songajo aku buek untuok kawen-kawen ku sadonyo,bak bisa mondownload sado kenangen di smk tu,bak jangen tingga corito ajo<blockquote><br> Sado isi web iko dari bosamo,untuok bosamo,jangen sampe monyebarken link nyo yo,tosebar aib beko jadinyo.</blockquote></p>
-                <p><br>Torimokasih untuok kawen-kawen non olah mongirim foto-nyo ko aku,kalau indok lai,joku web ko indo boisi tudo,kalau ondak mongirim foto,botanyo,jo nonlainnyo,klik tombol di bawahyo,baru beko di web portofolioku,klik tombol "chat di whatsapp",tosorahla ondak chat apo ajo,sekian yo,assalamualaikum.<blockquote>===ZHYLLAN FYLLAH===</blockquote></p>
+                <p><blockquote></blockquote></p>
                 <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
                     <i class="fas fa-user"></i> Buka Web folio Developer
                 </a>
-                <div style="margin-top:18px;padding:12px;border-top:1px solid rgba(255,255,255,0.04);">
-                    <h4 style="color:var(--text-primary);margin:6px 0 10px 0;">Pengaturan Developer</h4>
-                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-                        <input id="fastModeToggle" type="checkbox" style="width:18px;height:18px;" />
-                        <span style="color:var(--text-secondary);">Mode Fast (Tanpa Animasi)</span>
-                    </label>
-                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menonaktifkan semua animasi dan transisi (berguna untuk perangkat lambat atau uji kecepatan).</p>
-                </div>
+
             </div>
         </main>
     </div>
@@ -946,11 +982,7 @@
     <div class="modal" id="imageModal" onclick="closeModal()">
         <div class="modal-dialog" onclick="event.stopPropagation()">
             <button class="close-btn" aria-label="Tutup" onclick="closeModal()">&times;</button>
-            <div id="modalLoadingContainer" class="loading" style="display:none;">
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span>
-            </div>
+            <div id="modalLoadingContainer" class="loader" style="display:none;"></div>
             <img id="modalImage" class="modal-image" src="" alt="Gambar">
             <video id="modalVideo" class="modal-image" src="" alt="Video" controls style="display:none;"></video>
             <div class="modal-info">
@@ -1235,7 +1267,31 @@
         // === Tampilkan konten utama ===
         function showMainContent() {
             document.body.classList.remove('sidebar-hidden');
+            populateSettings();
         }
+
+        // === Populate settings menu ===
+        function populateSettings() {
+            const user = localStorage.getItem('logged_in_user');
+            const code = localStorage.getItem('user_code');
+            if (user && code) {
+                const order = ALLOWED_NAMES.indexOf(user) + 1;
+                document.getElementById('settingsName').textContent = user;
+                document.getElementById('settingsPassword').textContent = code;
+                document.getElementById('settingsOrder').textContent = order;
+            }
+        }
+
+        // === Settings toggle ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsToggle = document.getElementById('settingsToggle');
+            const sidebarSettings = document.getElementById('sidebarSettings');
+            if (settingsToggle && sidebarSettings) {
+                settingsToggle.addEventListener('click', () => {
+                    sidebarSettings.style.display = sidebarSettings.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+        });
 
         // === Security notice ===
         document.getElementById('accept-security-btn').addEventListener('click', () => {
@@ -1357,6 +1413,8 @@
             const designerText = document.getElementById("designer-text");
             const designerText2 = document.getElementById("designer-text2");
             const loadingScreen = document.getElementById("loading-screen");
+            const loader = document.querySelector("#loading-screen .loader");
+            if (loader) loader.classList.add('show');
 
             function showElement(el, delay) {
                 if (!el) return;
@@ -1412,13 +1470,13 @@
 
             const particlesContainer = document.getElementById('particles');
             if (!isFastImmediate) {
-                for (let i = 0; i < 55; i++) {
+                for (let i = 0; i < 25; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
                     particle.style.left = Math.random() * 110 + '%';
-                    particle.style.width = Math.random() * 120 + 5 + 'px';
+                    particle.style.width = Math.random() * 80 + 5 + 'px';
                     particle.style.height = particle.style.width;
-                    particle.style.animationDelay = Math.random() * 13 + 's';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
                     particlesContainer.appendChild(particle);
                 }
             }
@@ -1463,6 +1521,7 @@
                     console.warn('Photos data is not an array, using fallback');
                     photos = [];
                 }
+                initializeScrollingPhotoBar();
                 performSearch('');
             } catch (err) {
                 console.error('Error loading photos:', err);
@@ -1471,12 +1530,46 @@
             }
         }
 
+        function initializeScrollingPhotoBar() {
+            const bar = document.getElementById('scrollingPhotoBar');
+            const inner = document.getElementById('scrollingInner');
+            if (!bar || !inner) return;
+
+            // Get current month
+            const now = new Date();
+            const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            // Filter photos from current month
+            const currentMonthPhotos = photos.filter(p => p.date && p.date.startsWith(currentMonth));
+
+            if (currentMonthPhotos.length === 0) return;
+
+            // Shuffle and select up to 10 photos
+            const shuffled = currentMonthPhotos.sort(() => 0.5 - Math.random());
+            const selectedPhotos = shuffled.slice(0, Math.min(10, shuffled.length));
+
+            // Duplicate for seamless scrolling
+            const allPhotos = [...selectedPhotos, ...selectedPhotos];
+
+            inner.innerHTML = '';
+            allPhotos.forEach(photo => {
+                const img = document.createElement('img');
+                img.src = photo.url;
+                img.alt = photo.name;
+                inner.appendChild(img);
+            });
+
+            bar.style.display = 'block';
+        }
+
         function performSearch(query) {
             try {
                 // Tampilkan loading saat pencarian
                 const searchLoadingContainer = document.getElementById('searchLoadingContainer');
                 if (searchLoadingContainer) {
                     searchLoadingContainer.classList.add('show');
+                    const loader = searchLoadingContainer.querySelector('.loader');
+                    if (loader) loader.classList.add('show');
                 }
 
                 let results = [...(photos || [])];
@@ -1506,6 +1599,8 @@
                 const searchLoadingContainer = document.getElementById('searchLoadingContainer');
                 if (searchLoadingContainer) {
                     searchLoadingContainer.classList.remove('show');
+                    const loader = searchLoadingContainer.querySelector('.loader');
+                    if (loader) loader.classList.remove('show');
                 }
                 renderGallery([]);
             }
@@ -1565,36 +1660,20 @@
                     item.className = 'gallery-item';
                     const formattedDate = formatDate(photo.date);
                     item.innerHTML = `
-                        <div class="loading" style="width:90px;height:90px;">
-                            <span></span><span></span><span></span><span></span><span></span>
-                            <span></span><span></span><span></span><span></span><span></span>
-                            <span></span><span></span><span></span>
-                        </div>
                         <img src="${photo.url}" alt="${photo.name}" style="width:100%;height:180px;object-fit:cover;background:#222;">
                         <div class="gallery-item-name">${photo.name}</div>
                         <div class="gallery-item-date">${formattedDate}</div>
                     `;
                     item.onclick = () => openModal(photo.url, photo.name, photo.date, photo.gender);
                     grid.appendChild(item);
-                    
-                    // Tampilkan loading saat gambar sedang dimuat
-                    const img = item.querySelector('img');
-                    const loading = item.querySelector('.loading');
-                    if (img && loading) {
-                        loading.classList.add('show');
-                        const onLoad = () => { loading.classList.remove('show'); img.removeEventListener('load', onLoad); img.removeEventListener('error', onError); };
-                        const onError = () => { loading.classList.remove('show'); img.removeEventListener('load', onLoad); img.removeEventListener('error', onError); };
-                        img.addEventListener('load', onLoad);
-                        img.addEventListener('error', onError);
-                        // If image already cached and complete, remove spinner immediately
-                        if (img.complete && img.naturalWidth) {
-                            loading.classList.remove('show');
-                            img.removeEventListener('load', onLoad);
-                            img.removeEventListener('error', onError);
-                        }
-                    }
                 });
             });
+        }
+
+        // === DETEKSI DESKTOP ===
+        function isDesktop() {
+            // Deteksi desktop berdasarkan lebar layar dan tidak ada touch capability
+            return window.innerWidth > 768 && !('ontouchstart' in window);
         }
 
         // === MODAL ===
@@ -1637,7 +1716,10 @@
                         if (modalLoading) modalLoading.classList.remove('show');
                         console.error('Failed to load image');
                     };
-                    if (downloadBtn) downloadBtn.style.display = '';
+                    // Hide download button on desktop
+                    if (downloadBtn) {
+                        downloadBtn.style.display = isDesktop() ? 'none' : '';
+                    }
                 }
 
                 modal.classList.add('show');
@@ -1755,6 +1837,10 @@
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 try {
+                    // Hide scrolling photo bar when searching
+                    const bar = document.getElementById('scrollingPhotoBar');
+                    if (bar) bar.style.display = 'none';
+
                     performSearch(e.target.value.trim());
                 } catch (err) {
                     console.error('Search error:', err);
@@ -2063,16 +2149,67 @@
             } catch (e) { console.warn('initFastModeToggle error', e); }
         }
 
+        // === SCROLLING PHOTO BAR TOGGLE HANDLER ===
+        function applyScrollingPhotoBar(enabled) {
+            try {
+                const bar = document.getElementById('scrollingPhotoBar');
+                if (!bar) return;
+
+                if (enabled) {
+                    localStorage.setItem('scrollingPhotoBarEnabled', '1');
+                    // Show the bar if photos are available
+                    initializeScrollingPhotoBar();
+                } else {
+                    localStorage.setItem('scrollingPhotoBarEnabled', '0');
+                    bar.style.display = 'none';
+                }
+            } catch (e) { console.warn('applyScrollingPhotoBar failed', e); }
+        }
+
+        function initScrollingPhotoBarToggle() {
+            try {
+                const toggle = document.getElementById('scrollingPhotoBarToggle');
+                if (!toggle) return;
+                // Initialize from localStorage
+                const saved = localStorage.getItem('scrollingPhotoBarEnabled');
+                const enabled = saved !== '0'; // Default to enabled if not set
+                toggle.checked = !!enabled;
+                applyScrollingPhotoBar(enabled);
+
+                toggle.addEventListener('change', (e) => {
+                    applyScrollingPhotoBar(!!e.target.checked);
+                });
+            } catch (e) { console.warn('initScrollingPhotoBarToggle error', e); }
+        }
+
         // Initialize fast-mode toggle after DOM ready
         try {
             if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                setTimeout(initFastModeToggle, 30);
+                setTimeout(() => {
+                    initFastModeToggle();
+                    initScrollingPhotoBarToggle();
+                }, 30);
             } else {
-                document.addEventListener('DOMContentLoaded', initFastModeToggle);
+                document.addEventListener('DOMContentLoaded', () => {
+                    initFastModeToggle();
+                    initScrollingPhotoBarToggle();
+                });
             }
         } catch (e) {
-            console.warn('Fast mode init failed', e);
+            console.warn('Initialization failed', e);
         }
     </script>
+    <script src="https://minnit.chat/js/chaticon.js" defer></script>
+    <span
+    data-icon-pixel-size="60"
+    data-chat-small-medium-or-large="small"
+    data-circle-or-square="circle"
+    data-left-or-right="right"
+    data-chaturl="https://organizations.minnit.chat/700753906889005/c/Main"
+    data-hex-color-code="ff0000"
+    data-icon-url=""
+    class="minnit-chat-icon-sembed"
+    style="display:block">
+    </span>
 </body>
 </html>
