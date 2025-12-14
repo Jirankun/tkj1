@@ -62,6 +62,14 @@
             overflow: hidden;
             box-sizing: border-box;
         }
+        #loadingMainIcon {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
         @keyframes bgShift {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -249,7 +257,7 @@
             100% { transform: translateY(100vh); }
         }
         body {
-            font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.4;
@@ -277,6 +285,74 @@
         body.sidebar-hidden {
             --current-padding: 0;
         }
+        /* ===== TOP BAR STYLES (DESKTOP) ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--sidebar-border);
+            padding: 0 2rem;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            overflow-x: auto;
+        }
+        .top-bar .sidebar-logos img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+        .top-bar .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            white-space: nowrap;
+        }
+        .top-bar nav {
+            display: flex;
+            gap: 1rem;
+            margin-left: auto;
+        }
+        .top-bar .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .top-bar .sidebar-nav-link:hover {
+            color: var(--text-primary);
+        }
+        .top-bar .sidebar-nav-link.active {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            font-weight: 600;
+        }
+        .top-bar .sidebar-nav-link i {
+            width: 16px;
+            text-align: center;
+        }
+        .top-bar .sidebar-nav-link .label {
+            display: inline;
+        }
+
         /* ===== SIDEBAR STYLES ===== */
         .sidebar {
             position: fixed;
@@ -291,8 +367,8 @@
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             box-shadow: inset 1px 0 1px rgb(255, 255, 255), 2px 0 20px rgba(75, 74, 74, 0.153);
@@ -506,10 +582,14 @@
             margin: 1rem auto;
         }
         .search-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            padding: 2rem;
             color: var(--text-secondary);
             display: none;
+            width: 100%;
         }
         .search-loading.show {
             display: block;
@@ -757,6 +837,54 @@
             color: var(--text-primary);
             font-size: 0.8rem;
         }
+        /* === CONTEXT MENU BACKDROP === */
+        .context-menu-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2999;
+            display: none;
+        }
+        .context-menu-backdrop.show {
+            display: block;
+        }
+
+        /* === CONTEXT MENU === */
+        .context-menu {
+            position: fixed;
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            min-width: 150px;
+            display: none;
+        }
+        .context-menu.show {
+            display: block;
+        }
+        .context-menu-item {
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .context-menu-item:hover {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+        }
+        .context-menu-item i {
+            width: 16px;
+            text-align: center;
+        }
+
         /* === CONTENT PROTECTION === */
         body, * {
             user-select: none;
@@ -776,17 +904,63 @@
             -webkit-touch-callout: none;
             pointer-events: auto;
         }
-        @media (max-width: 768px) {
+        /* Hide keyboard shortcuts info on mobile */
+        .keyboard-shortcuts-info {
+            display: block;
+        }
+        @media (min-width: 769px) {
+            /* Desktop: Show top-bar, hide sidebar */
+            .top-bar {
+                display: flex;
+            }
+            .sidebar {
+                display: none;
+            }
+            .sidebar-toggle {
+                display: none;
+            }
             body {
                 padding-left: 0;
-                padding-top: 50px;
+            }
+            .main-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .gallery-grid {
+                justify-content: center;
+            }
+            #searchWrapper {
+                margin-top: 2rem;
+                position: sticky;
+                top: 60px;
+                z-index: 999;
+                background: var(--bg-primary);
+            }
+            .top-bar button span {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .top-bar button:hover span {
+                opacity: 1;
+            }
+        }
+        @media (max-width: 768px) {
+            /* Mobile: Show sidebar (half screen), hide top-bar */
+            body {
+                padding-left: 0;
+                padding-top: 0;
+            }
+            .top-bar {
+                display: none;
             }
             .sidebar-toggle {
                 display: flex;
             }
             .sidebar {
-                width: 100%;
-                left: -100%;
+                width: 50vw;
+                left: -50vw;
                 transition: left 0.3s ease;
             }
             .sidebar.active {
@@ -798,8 +972,10 @@
             .gallery-item img {
                 height: 100px;
             }
+            .keyboard-shortcuts-info {
+                display: none !important;
+            }
         }
-
         /* === FAST MODE (disable animations/transitions) === */
         .fast-mode *,
         .fast-mode *::before,
@@ -809,6 +985,31 @@
         }
         .fast-mode {
             scroll-behavior: auto !important;
+        }
+        /* === MENU LOADING OVERLAY === */
+        #menuLoadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            flex-direction: column;
+        }
+        #menuLoadingOverlay.show {
+            display: flex;
+        }
+        #menuLoadingOverlay .loader {
+            margin-bottom: 1rem;
+        }
+        #menuLoadingOverlay p {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
         /* === PASTE BUTTON STYLE === */
@@ -825,36 +1026,62 @@
             transform: translateY(0);
             box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
         }
-
         /* === SCROLLING PHOTO BAR === */
         @keyframes scrollLeft {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         #scrollingPhotoBar {
-            height: 200px;
+            height: 120px;
             overflow: hidden;
             position: relative;
             margin: 1rem -2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(255, 0, 128, 0.05));
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #scrollingPhotoBar.privacy-mode {
+            filter: blur(8px);
+            position: relative;
+        }
+        #scrollingPhotoBar.privacy-mode::before {
+            content: '🔒 Konten Privat - Aktifkan di Pengaturan';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-primary);
         }
         #scrollingPhotoBar img {
-            height: 200px;
+            height: 100px;
             width: auto;
-            max-width: 300px;
-            object-fit: cover;
-            object-position: center;
-            border-radius: 12px;
-            border: 2px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.2);
+            object-fit: contain;
         }
         #scrollingPhotoBar .scrolling-container {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             position: absolute;
             top: 0;
             left: 0;
-            height: 200px;
-            animation: scrollLeft 30s linear infinite;
+            height: 120px;
+            align-items: center;
+            animation: scrollLeft 25s linear infinite;
+        }
+        #scrollingPhotoBar .scrolling-container.paused {
+            animation-play-state: paused;
         }
         /* Tombol di kiri — seperti slot */
     #chatButton {
@@ -877,7 +1104,6 @@
       transition: width 0.25s ease;
     }
     #chatButton:hover { width: 64px; }
-
     /* Container chat */
     #chatContainer {
       position: fixed;
@@ -896,7 +1122,32 @@
       transition: left 0.45s cubic-bezier(0.33, 0.01, 0.2, 1);
     }
     #chatContainer.open { left: 20px; }
-
+    /* Tombol reload di dalam chat */
+    #reloadChatBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(255, 0, 0, 0.5);
+      z-index: 1001;
+      transition: all 0.3s ease;
+    }
+    #reloadChatBtn:hover {
+      background: #cc0000;
+      transform: scale(1.1);
+    }
+    #reloadChatBtn:active {
+      transform: scale(0.95);
+    }
     iframe {
       width: 100%;
       height: 100%;
@@ -904,7 +1155,6 @@
       display: none;
       border-radius: 12px 12px 12px 4px;
     }
-
     /* Loader */
     .loader {
       width: 50px;
@@ -935,7 +1185,6 @@
     @keyframes l16 {
       100% { transform: rotate(1turn); }
     }
-
     /* Peringatan overlay */
     #warningOverlay {
       position: absolute;
@@ -974,7 +1223,6 @@
     #warningOverlay button:hover {
       background: #45a049;
     }
-
     /* Mobile */
     @media (max-width: 767px) {
       #chatButton {
@@ -998,76 +1246,91 @@
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="particles" id="particles"></div>
-        <div class="loading-content">
-            <i class="fa-solid fa-laptop-code fa-4x main-icon hidden slide-left"></i>
-            <h1 id="loading-text" class="hidden slide-right"></h1>
-            <div class="sub-icons">
-                <i class="fa-brands fa-github fa-2x hidden scale-in"></i>
-                <i class="fa-solid fa-code fa-2x hidden scale-in"></i>
-                <i class="fa-solid fa-user fa-2x hidden scale-in"></i>
+            <div class="loading-content">
+                <img id="loadingMainIcon" class="main-icon hidden slide-left" src="" alt="Profile Icon">
+                <h1 id="loading-text" class="hidden slide-right"></h1>
+                <div class="sub-icons">
+                    <i class="fa-brands fa-github fa-2x hidden scale-in"></i>
+                    <i class="fa-solid fa-code fa-2x hidden scale-in"></i>
+                    <i class="fa-solid fa-user fa-2x hidden scale-in"></i>
+                </div>
+                <h2 id="userGreeting" class="hidden fade-in" style="color: var(--accent-primary); font-size: 1.2rem; margin: 1rem 0;"></h2>
+                <h2 id="designer-text2" class="hidden fade-in">-</h2>
+                <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
             </div>
-            <h2 id="designer-text2" class="hidden fade-in">-</h2>
-            <h2 id="designer-text" class="hidden fall">DEVELOPER : ZHYLLAN</h2>
-        </div>
         <div class="loader"></div>
         </div>
     </div>
-
-    <!-- LOGIN MODAL OVERLAY -->
-    <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);z-index:9998;">
-        <h2 style="color:#00ff88;margin-bottom:20px;">🔐 Masukkan Kode Akses</h2>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <input type="text" id="accessCode" placeholder="Contoh: AbC12-DeF34-GhI56-JkL78" style="padding:12px;width:300px;text-align:center;background:#111;color:#00ff88;border:1px solid #00ff88;border-radius:6px;">
-                <button id="pasteCodeBtn" type="button" onclick="pasteAccessCode()" style="padding:10px 12px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Tempel</button>
-            </div>
-            <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
-        <div id="errorMsg" style="color:#ff6b6b;margin-top:12px;"></div>
+    <!-- LOGIN MODAL OVERLAY — BARU (MENGANTIKAN YANG LAMA) -->
+    <div id="loginModal" style="position:fixed;top:0;left:0;width:100%;height:100%;display:none;justify-content:center;align-items:center;background:rgba(10,10,10,0.92);z-index:9998;padding:20px;box-sizing:border-box;">
+      <div style="background:#111;border:2px solid #00ff88;border-radius:16px;width:100%;max-width:500px;padding:30px;box-shadow:0 0 25px rgba(0,255,136,0.4);position:relative;">
+        <h2 style="color:#00ff88;text-align:center;margin-bottom:20px;font-weight:600;">🔐 Masuk ke Album</h2>
         
-        <!-- IDENTIFIKASI SECTION -->
-        <div id="identifikasiSection" style="display:none;margin-top:25px;padding:20px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);border-radius:8px;width:300px;text-align:left;">
-            <h3 style="color:var(--accent-primary);margin-bottom:15px;font-size:1rem;">📋 Identifikasi :</h3>
-            <p style="color:var(--text-secondary);margin:8px 0;"><strong>Nama :</strong></p>
-            <p id="displayName" style="color:#00ff88;margin:5px 0 15px 0;background:rgba(0,0,0,0.5);padding:8px;border-radius:4px;word-break:break-all;"></p>
-            <p style="color:var(--text-secondary);margin:8px 0;"><strong>Password :</strong></p>
-            <p id="displayPasswordFinal" style="color:#00ff88;margin:5px 0 0 0;background:rgba(0,0,0,0.5);padding:8px;border-radius:4px;word-break:break-all;letter-spacing:2px;"></p>
+        <!-- FORM INPUT -->
+        <div style="margin-bottom:18px;">
+          <input type="text" id="accessCode" placeholder="Masukkan kode akses Anda" 
+                 style="width:100%;padding:12px;font-size:16px;background:#1a1a1a;color:#00ff88;border:1px solid #00ff88;border-radius:8px;outline:none;">
+        </div>
+        
+        <!-- TOMBOL TEMPel -->
+        <div style="display:flex;gap:10px;margin-bottom:18px;">
+          <button id="pasteCodeBtn" type="button" onclick="pasteAccessCode()"
+                  style="flex:1;padding:10px;background:#00ffff;color:#000;font-weight:bold;border:none;border-radius:8px;cursor:pointer;transition:all 0.3s;">
+            📋 Tempel Kode
+          </button>
+          <button onclick="verifyCode()" 
+                  style="flex:1;padding:10px;background:#ff0080;color:white;font-weight:bold;border:none;border-radius:8px;cursor:pointer;transition:all 0.3s;">
+            ✅ Masuk
+          </button>
         </div>
 
-        <!-- BUTTONS: placed under identifikasi and preview -->
-        <div style="display:flex;gap:12px;margin-top:18px;">
-            <button id="loginConfirmBtn" onclick="verifyCode()" style="flex:1;padding:10px 20px;background:#ff0080;color:white;border:none;border-radius:6px;cursor:pointer;">Masuk</button>
-            <button id="openMembersBtn" type="button" style="flex:1;padding:10px 20px;background:var(--accent-primary);color:#000;border:none;border-radius:6px;cursor:pointer;">Buka Tabel</button>
+        <!-- ERROR MESSAGE -->
+        <div id="errorMsg" style="color:#ff6b6b;text-align:center;margin:12px 0;height:20px;font-size:14px;"></div>
+
+        <!-- IDENTIFIKASI (akan muncul setelah login sukses) -->
+        <div id="identifikasiSection" style="display:none;margin-top:20px;padding:16px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;">
+          <h3 style="color:#00ff88;margin:0 0 12px;font-size:15px;">📋 Identifikasi Pengguna:</h3>
+          <p style="margin:6px 0;color:#00cc66;"><strong>Nama:</strong> <span id="displayName">-</span></p>
+          <p style="margin:6px 0;color:#00cc66;"><strong>Kode:</strong> <span id="displayPasswordFinal" style="word-break:break-all;font-family:monospace;">-</span></p>
         </div>
+
+        <!-- PEMBERITAHUAN PRIVASI (akan muncul sekali saat login jika belum diterima) -->
+        <div id="loginSecurityNotice" style="display:none;margin-top:20px;padding:16px;background:rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:8px;text-align:center;">
+          <h3 style="color:#00ff88;margin-bottom:1rem;">🔒 Keamanan Konten</h3>
+          <p style="color:#ccc;margin-bottom:1rem;">Foto-foto ini dilindungi. Dilarang keras mengambil screenshot atau menyebarkan tanpa izin.</p>
+          <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:1rem;">⚠️ Pelanggaran akan di kenai sangsi</p>
+          <button id="accept-login-security-btn" style="padding:0.5rem 1rem;border-radius:8px;border:none;background:#00ff88;color:#000;cursor:pointer;">Saya Mengerti & Lanjutkan</button>
+        </div>
+
+        <!-- TOMBOL BAWAH -->
+        <div style="text-align:center;margin-top:16px;">
+          <button id="openMembersBtn" type="button"
+                  style="padding:8px 16px;background:linear-gradient(135deg, #00ffff, #ff0080);color:#000;border:none;border-radius:20px;cursor:pointer;font-weight:bold;">
+            Buka Tabel Anggota
+          </button>
+        </div>
+
+        <!-- PETUNJUK -->
+        <div style="margin-top:20px;text-align:center;color:#777;font-size:13px;">
+          Belum punya kode?<br>
+          Tahan tombol <strong>"Buka Tabel Anggota"</strong> selama 1 detik untuk mendapatkan kode akses.
+        </div>
+      </div>
+    </div>
+    <!-- MENU LOADING OVERLAY -->
+    <div id="menuLoadingOverlay">
+        <div class="loader"></div>
+        <p>Memuat menu...</p>
     </div>
 
     <!-- MAIN APP (SIDEBAR + CONTENT) -->
     <div id="mainApp" style="display:none;">
-        <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-        <aside class="sidebar" id="sidebar">
+        <!-- TOP BAR (DESKTOP) -->
+        <header class="top-bar" id="topBar">
             <div class="sidebar-logos">
-                <img src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="Logo">
-                <button class="settings-toggle" id="settingsToggle" title="Pengaturan"><i class="fas fa-cog"></i></button>
+                <img id="topBarLogo" src="https://i.ibb.co.com/ZzG0Pq5w/Whats-App-Image-2025-11-16-at-12-04-50-72c53b34.jpg" alt="Logo">
             </div>
             <div class="sidebar-title">Togetherness TKJ OnE</div>
-            <div class="sidebar-subtitle">
-                Koleksi Foto & Video Bersama Anggota TKJ 1
-            </div>
-            <div class="sidebar-settings" id="sidebarSettings">
-                <h4 style="color: var(--accent-primary); margin-bottom: 1rem;">Pengaturan</h4>
-                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nama:</strong> <span id="settingsName">-</span></p>
-                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Password:</strong> <span id="settingsPassword">-</span></p>
-                <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nomor Urut:</strong> <span id="settingsOrder">-</span></p>
-                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:1rem;">
-                    <input id="fastModeToggle" type="checkbox" style="width:18px;height:18px;" />
-                    <span style="color:var(--text-secondary);">Mode Fast (Tanpa Animasi)</span>
-                </label>
-                <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menonaktifkan semua animasi dan transisi (berguna untuk perangkat lambat atau uji kecepatan).</p>
-                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:1rem;">
-                    <input id="scrollingPhotoBarToggle" type="checkbox" style="width:18px;height:18px;" checked />
-                    <span style="color:var(--text-secondary);">Tampilkan Bar Foto Berjalan</span>
-                </label>
-                <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">Aktifkan untuk menampilkan bar foto yang berjalan di atas galeri.</p>
-                <button id="clearCacheBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:1px solid #ff0080;border-radius:4px;cursor:pointer;font-weight:bold;transition:all 0.3s;margin-top:1rem;" title="Hapus semua cache dan refresh">🗑️ Hapus Cache</button>
-            </div>
             <nav>
                 <a href="#" class="sidebar-nav-link" data-filter="all"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
                 <a href="#" class="sidebar-nav-link active" data-filter="group"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a>
@@ -1076,9 +1339,36 @@
                 <a href="#" class="sidebar-nav-link" data-filter="video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
                 <a href="#" class="sidebar-nav-link" data-target="about"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
                 <a href="#" class="sidebar-nav-link" data-target="members"><i class="fas fa-users-viewfinder"></i> <span class="label">ANGGOTA TKJ 1</span></a>
+                <a href="#" class="sidebar-nav-link" id="contactBtn" data-target="settings"><i class="fas fa-cog"></i> <span class="label">SETTING</span></a>
+                <a href="#" class="sidebar-nav-link" id="faqBtn" data-target="profile"><i class="fas fa-user"></i> <span class="label">AKUN PROFILE</span></a>
+                <a href="#" class="sidebar-nav-link" id="helpBtn" data-target="help"><i class="fas fa-question-circle"></i> <span class="label">BANTUAN</span></a>
+                <a href="#" class="sidebar-nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span class="label">KELUAR</span></a>
+            </nav>
+        </header>
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logos">
+                <img id="sidebarLogo" src="https://i.ibb.co.com/ZzG0Pq5w/Whats-App-Image-2025-11-16-at-12-04-50-72c53b34.jpg" alt="Logo">
+            </div>
+            <div class="sidebar-title">Togetherness TKJ OnE</div>
+            <div class="sidebar-subtitle">
+                Koleksi Foto & Video Bersama Anggota TKJ 1
+            </div>
+
+            <nav>
+                <a href="#" class="sidebar-nav-link" data-filter="all"><i class="fas fa-images"></i> <span class="label">SEMUA FOTO</span></a>
+                <a href="#" class="sidebar-nav-link active" data-filter="group"><i class="fas fa-users"></i> <span class="label">FOTO BERSAMA</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="male"><i class="fas fa-mars"></i> <span class="label">FOTO COWOK</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="female"><i class="fas fa-venus"></i> <span class="label">FOTO CEWEK</span></a>
+                <a href="#" class="sidebar-nav-link" data-filter="video"><i class="fas fa-video"></i> <span class="label">VIDEO</span></a>
+                <a href="#" class="sidebar-nav-link" data-target="about"><i class="fas fa-user"></i> <span class="label">INFO DEVELOPER</span></a>
+                <a href="#" class="sidebar-nav-link" data-target="members"><i class="fas fa-users-viewfinder"></i> <span class="label">ANGGOTA TKJ 1</span></a>
+                <a href="#" class="sidebar-nav-link" id="contactBtn" data-target="settings"><i class="fas fa-cog"></i> <span class="label">SETTING</span></a>
+                <a href="#" class="sidebar-nav-link" id="faqBtn" data-target="profile"><i class="fas fa-user"></i> <span class="label">AKUN PROFILE</span></a>
+                <a href="#" class="sidebar-nav-link" id="helpBtn" data-target="help"><i class="fas fa-question-circle"></i> <span class="label">BANTUAN</span></a>
+                <a href="#" class="sidebar-nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span class="label">KELUAR</span></a>
             </nav>
         </aside>
-
         <main class="main-content" id="section-all">
             <div id="security-notice" class="security-notice" style="text-align:center;margin:2rem 0;padding:2rem;background: rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);">
                 <h3 style="color:var(--accent-primary);margin-bottom:1rem;">🔒 Keamanan Konten</h3>
@@ -1109,7 +1399,6 @@
                 <span id="photoStats">Total: 0 foto | Ditampilkan: 0 foto</span>
             </div>
         </main>
-
         <main class="developer-content" id="section-about" style="display:none;">
             <div class="sidebar-profile">
                 <img src="https://i.ibb.co.com/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg" alt="Zhyllan">
@@ -1118,11 +1407,132 @@
                 <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">
                     <i class="fas fa-user"></i> Buka Web folio Developer
                 </a>
+            </div>
+        </main>
+        <main class="developer-content" id="section-profile" style="display:none;">
+            <div class="sidebar-profile">
+                <img id="profileImage" src="https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg" alt="User">
+                <div id="profileName">Nama Pengguna</div>
+                <p><strong>Kode Akses:</strong> <span id="profileCode">-</span></p>
+                <p><strong>Nomor Urut:</strong> <span id="profileOrder">-</span></p>
+                <p><strong>Tanggal Lahir:</strong> <span id="profileBirthDate">-</span></p>
+                <p><strong>Status:</strong> Aktif</p>
+                <p><strong>Sambutan:</strong> <span id="profileGreeting">Selamat datang!</span></p>
+                <p><strong>Foto Dibuka:</strong> <span id="profilePhotoViews">0</span></p>
+                <p><strong>Download:</strong> <span id="profileDownloads">0</span></p>
+                <button id="editProfileBtn" style="padding:0.7rem 1.2rem;background:var(--accent-primary);color:#000;border:none;border-radius:8px;cursor:pointer;margin-top:1rem;">Edit Profile</button>
+                <button id="viewFavoritesBtn" style="padding:0.7rem 1.2rem;background:#ff0080;color:white;border:none;border-radius:8px;cursor:pointer;margin-top:1rem;margin-left:1rem;">Lihat Favorit</button>
+            </div>
+            <!-- Edit Profile Modal -->
+            <div id="editProfileModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:2000;justify-content:center;align-items:center;">
+                <div style="background:var(--bg-secondary);padding:2rem;border-radius:16px;max-width:500px;width:90%;box-shadow:0 0 20px rgba(0,255,136,0.5);">
+                    <h3 style="color:var(--accent-primary);margin-bottom:1.5rem;text-align:center;">Edit Profile</h3>
+                    <form id="editProfileForm">
+                        <div style="margin-bottom:1rem;">
+                            <label style="color:var(--text-secondary);display:block;margin-bottom:0.5rem;">Foto Profile (Link Direct):</label>
+                            <input type="url" id="editPhotoUrl" placeholder="Masukkan URL foto" style="width:100%;padding:0.8rem;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);border-radius:8px;" required>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label style="color:var(--text-secondary);display:block;margin-bottom:0.5rem;">Nama:</label>
+                            <input type="text" id="editName" placeholder="Masukkan nama" style="width:100%;padding:0.8rem;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);border-radius:8px;" required>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label style="color:var(--text-secondary);display:block;margin-bottom:0.5rem;">Tanggal Lahir:</label>
+                            <input type="date" id="editBirthDate" style="width:100%;padding:0.8rem;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);border-radius:8px;" required>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label style="color:var(--text-secondary);display:block;margin-bottom:0.5rem;">Sambutan:</label>
+                            <input type="text" id="editGreeting" placeholder="Masukkan sambutan" style="width:100%;padding:0.8rem;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-primary);border-radius:8px;" required>
+                        </div>
+                        <div style="display:flex;gap:1rem;justify-content:center;">
+                            <button type="submit" style="padding:0.8rem 1.5rem;background:var(--accent-primary);color:#000;border:none;border-radius:8px;cursor:pointer;">Simpan</button>
+                            <button type="button" id="cancelEditBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:none;border-radius:8px;cursor:pointer;">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <main class="developer-content" id="section-help" style="display:none;">
+            <div class="sidebar-profile">
+                <h2 style="color: var(--accent-primary); margin-bottom: 1rem;">Bantuan & Pintasan Keyboard</h2>
 
+        <div class="keyboard-shortcuts-info" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem;">
+            <h3 style="color: var(--accent-primary); margin-bottom: 1rem;">⌨️ Pintasan Keyboard</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; color: var(--text-secondary);">
+                        <p><kbd>?</kbd> atau <kbd>/</kbd> - Tampilkan/Sembunyikan Bantuan</p>
+                        <p><kbd>ESC</kbd> - Tutup Modal atau Sembunyikan Bantuan</p>
+                        <p><kbd>M</kbd> - Toggle Menu (Mobile)</p>
+                        <p><kbd>D</kbd> - Download (saat Modal terbuka)</p>
+                        <p><kbd>R</kbd> - Hapus Cache</p>
+                    </div>
+                </div>
+
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;">📖 Cara Penggunaan</h3>
+                    <ul style="color: var(--text-secondary); line-height: 1.6; margin: 0; padding-left: 1.2rem;">
+                        <li><strong>Navigasi:</strong> Klik menu di sidebar untuk berpindah antar bagian</li>
+                        <li><strong>Melihat Foto:</strong> Klik pada thumbnail foto untuk melihat dalam ukuran besar</li>
+                        <li><strong>Download:</strong> Gunakan tombol download di modal untuk menyimpan media</li>
+                        <li><strong>Pencarian:</strong> Ketik nama atau tanggal di kotak pencarian untuk mencari foto</li>
+                        <li><strong>Pengaturan:</strong> Akses menu Setting untuk mengubah preferensi aplikasi</li>
+                        <li><strong>Profile:</strong> Edit informasi pribadi di menu Akun Profile</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;">🔒 Tips Keamanan</h3>
+                    <ul style="color: var(--text-secondary); line-height: 1.6; margin: 0; padding-left: 1.2rem;">
+                        <li>Jangan screenshot atau sebarkan foto tanpa izin</li>
+                        <li>Gunakan kode akses pribadi dengan bijak</li>
+                        <li>Aktifkan Mode Privasi jika diperlukan</li>
+                        <li>Laporkan jika menemukan aktivitas mencurigakan</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1.5rem;">
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;">🔧 Troubleshooting</h3>
+                    <ul style="color: var(--text-secondary); line-height: 1.6; margin: 0; padding-left: 1.2rem;">
+                        <li><strong>Foto tidak muncul:</strong> Refresh halaman atau hapus cache</li>
+                        <li><strong>Download gagal:</strong> Pastikan koneksi internet stabil</li>
+                        <li><strong>Login bermasalah:</strong> Periksa kode akses atau hubungi admin</li>
+                        <li><strong>Performa lambat:</strong> Aktifkan Mode Fast di pengaturan</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+        <main class="developer-content" id="section-settings" style="display:none;">
+            <div class="sidebar-profile">
+                <h2 style="color: var(--accent-primary); margin-bottom: 1rem;">Pengaturan</h2>
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 2rem;">
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1.5rem;">Informasi Akun</h3>
+                    <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nama:</strong> <span id="settingsName">-</span></p>
+                    <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Kode Akses:</strong> <span id="settingsPassword">-</span></p>
+                    <p style="color: var(--text-secondary); margin: 0.5rem 0;"><strong>Nomor Urut:</strong> <span id="settingsOrder">-</span></p>
+
+                    <h3 style="color: var(--accent-primary); margin: 2rem 0 1.5rem 0;">Preferensi Aplikasi</h3>
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:1rem;">
+                        <input id="fastModeToggle" type="checkbox" style="width:18px;height:18px;" />
+                        <span style="color:var(--text-secondary);">Mode Fast (Tanpa Animasi)</span>
+                    </label>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">Aktifkan untuk menonaktifkan semua animasi dan transisi (berguna untuk perangkat lambat atau uji kecepatan).</p>
+
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:1rem;">
+                        <input id="scrollingPhotoBarToggle" type="checkbox" style="width:18px;height:18px;" checked />
+                        <span style="color:var(--text-secondary);">Tampilkan Bar Foto Berjalan</span>
+                    </label>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">Aktifkan untuk menampilkan bar foto yang berjalan di atas galeri.</p>
+
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:1rem;">
+                        <input id="privacyModeToggle" type="checkbox" style="width:18px;height:18px;" />
+                        <span style="color:var(--text-secondary);">Mode Privasi Foto</span>
+                    </label>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:2rem;">Aktifkan untuk menyembunyikan konten foto di bar berjalan (hanya tampilkan pesan privasi).</p>
+
+                    <button id="clearCacheBtn" style="padding:0.8rem 1.5rem;background:#ff0080;color:white;border:1px solid #ff0080;border-radius:4px;cursor:pointer;font-weight:bold;transition:all 0.3s;" title="Hapus semua cache dan refresh">🗑️ Hapus Cache</button>
+                </div>
             </div>
         </main>
     </div>
-
     <!-- MODAL -->
     <div class="modal" id="imageModal" onclick="closeModal()">
         <div class="modal-dialog" onclick="event.stopPropagation()">
@@ -1141,7 +1551,6 @@
             </div>
         </div>
     </div>
-
     <!-- MEMBERS MODAL -->
     <div class="modal" id="membersModal" onclick="closeMembersModal()">
         <div class="modal-dialog" style="max-width: 700px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
@@ -1162,6 +1571,31 @@
             </div>
         </div>
     </div>
+    <!-- FAVORITES MODAL -->
+    <div class="modal" id="favoritesModal" onclick="closeFavoritesModal()">
+        <div class="modal-dialog" style="max-width: 90vw; max-height: 90vh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
+            <button class="close-btn" aria-label="Tutup" onclick="closeFavoritesModal()">&times;</button>
+            <h2 style="color: var(--text-primary); margin-bottom: 20px; text-align: center;">FOTO FAVORIT</h2>
+            <div id="favoritesContainer" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                <!-- Akan diisi dengan JavaScript -->
+            </div>
+            <div id="noFavoritesMessage" style="text-align: center; color: var(--text-secondary); display: none;">
+                Belum ada foto favorit. Klik kanan atau tahan lama pada foto untuk menambahkannya ke favorit.
+            </div>
+        </div>
+    </div>
+    <!-- CONTEXT MENU BACKDROP -->
+    <div class="context-menu-backdrop" id="contextMenuBackdrop"></div>
+
+    <!-- CONTEXT MENU -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" id="reportBtn">
+            <i class="fas fa-flag"></i> Laporkan
+        </div>
+        <div class="context-menu-item" id="likeBtn">
+            <i class="fas fa-heart"></i> Disukai
+        </div>
+    </div>
 
     <!-- KEYBOARD SHORTCUTS HINT -->
     <div class="keyboard-shortcuts-hint" id="keyboardShortcutsHint">
@@ -1173,7 +1607,6 @@
         <p><kbd>R</kbd> - Clear Cache</p>
         <p><kbd>?</kbd> - Help</p>
     </div>
-
       <button id="chatButton">
     <img
       src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11/icons/chat-fill.svg"
@@ -1181,12 +1614,14 @@
       style="width: 26px; height: 26px; filter: invert(1);"
     />
   </button>
-
   <div id="chatContainer">
     <div class="loader"></div>
     <iframe id="chatIframe" scrolling="no"></iframe>
+    <div id="chatError" style="display:none;"></div>
+    <button id="reloadChatBtn">
+      <i class="fas fa-redo"></i>
+    </button>
   </div>
-
     <script>
         // === DOWNLOAD HANDLER ===
         function downloadImage() {
@@ -1194,12 +1629,9 @@
                 const img = document.getElementById('modalImage');
                 const video = document.getElementById('modalVideo');
                 const downloadBtn = document.getElementById('downloadBtn');
-                
                 if (!downloadBtn) return;
-                
                 let fileUrl = '';
                 let fileName = document.getElementById('modalName').textContent || 'download';
-                
                 // Tentukan URL file (gambar atau video)
                 if (img && img.style.display !== 'none' && img.src) {
                     fileUrl = img.src;
@@ -1208,88 +1640,86 @@
                     fileUrl = video.src;
                     fileName = fileName + '.mp4';
                 }
-                
                 if (!fileUrl) {
                     alert('❌ File tidak ditemukan');
                     return;
                 }
-                
                 // Update button state
                 const originalHTML = downloadBtn.innerHTML;
                 downloadBtn.disabled = true;
                 downloadBtn.classList.add('loading');
                 downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mendownload...';
-
-                // Try fetch+blob first for normal browsers, fallback to opening the file URL
-                fetch(fileUrl).then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.blob();
-                }).then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    downloadBtn.disabled = false;
-                    downloadBtn.classList.remove('loading');
-                    downloadBtn.innerHTML = originalHTML;
-                    alert('✅ Download selesai!');
-                }).catch(err => {
-                    console.warn('Blob download failed, falling back to open URL:', err);
-                    // Some environments (webviews like Kodular) handle file URLs differently — open in new tab/window
-                    try {
-                        window.open(fileUrl, '_blank');
-                        alert('Jika unduhan otomatis tidak berlangsung, file dibuka di tab baru.');
-                    } catch (openErr) {
-                        console.error('Fallback open failed:', openErr);
-                        alert('❌ Gagal mendownload file: ' + err.message);
-                    }
-                    downloadBtn.disabled = false;
-                    downloadBtn.classList.remove('loading');
-                    downloadBtn.innerHTML = originalHTML;
-                });
+                // Simplified download: create link and click
+                const a = document.createElement('a');
+                a.href = fileUrl;
+                a.download = fileName;
+                a.target = '_blank'; // Fallback to open in new tab if download fails
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                // Increment download count
+                const currentDownloads = parseInt(localStorage.getItem('userDownloads') || '0');
+                localStorage.setItem('userDownloads', (currentDownloads + 1).toString());
+                // Reset button state
+                downloadBtn.disabled = false;
+                downloadBtn.classList.remove('loading');
+                downloadBtn.innerHTML = originalHTML;
+                alert('✅ Download selesai!');
             } catch (e) {
                 console.error('Error in downloadImage:', e);
                 alert('❌ Terjadi kesalahan: ' + e.message);
             }
         }
-
         const chatButton = document.getElementById('chatButton');
     const chatContainer = document.getElementById('chatContainer');
     const chatIframe = document.getElementById('chatIframe');
     const loader = chatContainer.querySelector('.loader');
-
     // Cek apakah user sudah pernah setuju
     const hasAgreedBefore = localStorage.getItem('chat_agreed') === 'true';
     let hasAgreed = hasAgreedBefore;
     let hasLoaded = false;
     let isOpen = false;
-
     // Fungsi buat overlay peringatan
     function showWarning() {
       const overlay = document.createElement('div');
       overlay.id = 'warningOverlay';
       overlay.innerHTML = `
         <p>
-          Dimohon jangan ada trik spam dan mengirim kata-kata yang mengandung unsur SARA 
+          Dimohon jangan ada trik spam dan mengirim kata-kata yang mengandung unsur SARA
           dan penyelewengan akhlak. Jangan mengirim link yang berbahaya dan negatif.
         </p>
-        <button id="agreeButton">Saya Mengerti</button>
+        <div style="margin: 16px 0; display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="agreeCheckbox" style="width: 18px; height: 18px;">
+          <label for="agreeCheckbox" style="font-size: 14px; color: #333; cursor: pointer;">Setuju</label>
+        </div>
+        <button id="agreeButton" disabled>Saya Mengerti</button>
       `;
       chatContainer.appendChild(overlay);
+
+      // Enable/disable button based on checkbox
+      const checkbox = document.getElementById('agreeCheckbox');
+      const button = document.getElementById('agreeButton');
+      checkbox.addEventListener('change', () => {
+        button.disabled = !checkbox.checked;
+      });
 
       document.getElementById('agreeButton').addEventListener('click', () => {
         hasAgreed = true;
         localStorage.setItem('chat_agreed', 'true');
         overlay.remove();
-        // Mulai muat iframe
+        // Mulai muat iframe dan buka chat container
         loadChat();
+        // Buka chat container secara otomatis
+        chatContainer.style.display = 'flex';
+        setTimeout(() => {
+          chatContainer.classList.add('open');
+        }, 10);
+        isOpen = true;
+        // Ganti icon ke panah kiri
+        const chatIcon = chatButton.querySelector('img');
+        if (chatIcon) chatIcon.src = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11/icons/arrow-left.svg';
       });
     }
-
     // Fungsi muat iframe
     function loadChat() {
       if (!hasLoaded) {
@@ -1301,35 +1731,43 @@
         };
         chatIframe.onerror = () => {
           loader.style.display = 'none';
-          chatIframe.style.display = 'block';
-          chatContainer.innerHTML = `
-            <div style="color:#d32f2f;text-align:center;padding:20px;font-family:sans-serif;line-height:1.4;">
-              ⚠️ Tidak dapat memuat chat.<br>
-              Pastikan JavaScript aktif dan akses via browser.
-            </div>
-          `;
+          chatIframe.style.display = 'none';
+          const errorDiv = document.getElementById('chatError');
+          if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = `
+              <div style="color:#d32f2f;text-align:center;padding:20px;font-family:sans-serif;line-height:1.4;">
+                ⚠️ Tidak dapat memuat chat.<br>
+                Pastikan jaringan anda lancar tanpa gangguan dan coba kembali.<br>
+                <i class="fas fa-arrow-up" style="font-size:24px;transform:rotate(45deg);color:#00ff88;"></i> (Tombol refresh di atas kanan)
+              </div>
+            `;
+          }
         };
       } else {
         loader.style.display = 'none';
         chatIframe.style.display = 'block';
       }
     }
-
     // Toggle buka/tutup
     chatButton.addEventListener('click', () => {
+      const chatIcon = chatButton.querySelector('img');
       if (isOpen) {
         chatContainer.classList.remove('open');
         setTimeout(() => {
           chatContainer.style.display = 'flex';
         }, 450);
         isOpen = false;
+        // Ganti icon kembali ke chat
+        if (chatIcon) chatIcon.src = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11/icons/chat-fill.svg';
       } else {
         chatContainer.style.display = 'flex';
         setTimeout(() => {
           chatContainer.classList.add('open');
         }, 10);
         isOpen = true;
-
+        // Ganti icon ke panah kiri
+        if (chatIcon) chatIcon.src = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11/icons/arrow-left.svg';
         // Tampilkan konten sesuai status
         if (hasAgreed) {
           // Langsung muat chat
@@ -1340,7 +1778,22 @@
         }
       }
     });
-
+    // Event listener untuk tombol reload chat
+    const reloadChatBtn = document.getElementById('reloadChatBtn');
+    if (reloadChatBtn) {
+      reloadChatBtn.addEventListener('click', () => {
+        // Reload iframe
+        chatIframe.src = chatIframe.src;
+        // Tampilkan loader sementara
+        loader.style.display = 'grid';
+        chatIframe.style.display = 'none';
+        // Sembunyikan loader setelah iframe dimuat
+        chatIframe.onload = () => {
+          loader.style.display = 'none';
+          chatIframe.style.display = 'block';
+        };
+      });
+    }
         // Paste helper for login modal — attempts clipboard API, falls back to prompt
         function pasteAccessCode() {
             const input = document.getElementById('accessCode');
@@ -1366,7 +1819,6 @@
                 if (manual !== null) input.value = manual;
             }
         }
-
         // ✅ DAFTAR NAMA YANG DIIZINKAN (ISI SESUAI KEBUTUHANMU)
         const ALLOWED_NAMES = [
             "Abiyu Anugrah",
@@ -1405,7 +1857,6 @@
             "Yuda Setriawan",
             "Zhyllan Fyllah"
         ];
-
         // === Fungsi dekripsi kode akses ===
         function hashPass(pass) {
             let h = 0;
@@ -1429,7 +1880,6 @@
             }
             return out;
         }
-
         // === Verifikasi kode akses ===
         // === Fungsi Paste dari Clipboard ===
         async function pasteCodeFromClipboard() {
@@ -1449,7 +1899,6 @@
                 console.error('Clipboard error:', err);
             }
         }
-
         function verifyCode() {
             const code = document.getElementById('accessCode').value.trim();
             const errorMsg = document.getElementById('errorMsg');
@@ -1464,18 +1913,22 @@
                     // Simpan user info
                     localStorage.setItem('logged_in_user', name);
                     localStorage.setItem('user_code', code);
-                    
                     // Tampilkan identifikasi
                     const identifikasiSection = document.getElementById('identifikasiSection');
                     const displayName = document.getElementById('displayName');
                     const displayPasswordFinal = document.getElementById('displayPasswordFinal');
-                    
                     if (identifikasiSection && displayName && displayPasswordFinal) {
                         displayName.textContent = name;
                         displayPasswordFinal.textContent = code;
                         identifikasiSection.style.display = 'block';
                     }
-                    
+                    // Cek apakah sudah pernah menerima pemberitahuan privasi
+                    const privacyAccepted = localStorage.getItem('login_privacy_accepted');
+                    if (!privacyAccepted) {
+                        // Tampilkan pemberitahuan privasi
+                        document.getElementById('loginSecurityNotice').style.display = 'block';
+                        return; // Tunggu user menerima privasi dulu
+                    }
                     // Set timeout 3 detik sebelum redirect
                     setTimeout(() => {
                         document.getElementById('loading-screen').style.display = 'none';
@@ -1491,9 +1944,6 @@
                 console.error(e);
             }
         }
-
-
-
         // === Cek apakah sudah login ===
         function checkLoggedInUser() {
             const user = localStorage.getItem('logged_in_user');
@@ -1505,13 +1955,22 @@
             }
             return false;
         }
-
         // === Tampilkan konten utama ===
         function showMainContent() {
             document.body.classList.remove('sidebar-hidden');
             populateSettings();
+            // Show security notice only once per login
+            const securityNoticeShown = localStorage.getItem('security_notice_shown');
+            if (!securityNoticeShown) {
+                document.getElementById('security-notice').style.display = 'block';
+            } else {
+                document.getElementById('security-notice').style.display = 'none';
+                document.getElementById('searchWrapper').style.display = 'block';
+                document.getElementById('main-title').style.display = 'block';
+                document.getElementById('main-subtitle').style.display = 'block';
+                loadPhotosFromDB();
+            }
         }
-
         // === Populate settings menu ===
         function populateSettings() {
             const user = localStorage.getItem('logged_in_user');
@@ -1523,7 +1982,158 @@
                 document.getElementById('settingsOrder').textContent = order;
             }
         }
+        // === Profile Edit Functionality ===
+        function loadProfileData() {
+            const user = localStorage.getItem('logged_in_user');
+            const code = localStorage.getItem('user_code');
+            if (user && code) {
+                const order = ALLOWED_NAMES.indexOf(user) + 1;
+                const profileImage = localStorage.getItem('profileImage') || 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg';
+                const profileName = localStorage.getItem('profileName') || user;
+                const profileBirthDate = localStorage.getItem('profileBirthDate') || '';
+                const profileGreeting = localStorage.getItem('profileGreeting') || 'Selamat datang!';
 
+                // Update profile display
+                updateProfileDisplay(profileImage, profileName, code, order, profileBirthDate, profileGreeting);
+
+                // Update sidebar logo
+                updateSidebarLogo(profileImage);
+            }
+        }
+
+        function updateProfileDisplay(imageUrl, name, code, order, birthDate, greeting) {
+            const isVideo = /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(imageUrl || '');
+            const profileImageEl = document.getElementById('profileImage');
+
+            if (isVideo) {
+                // Replace img with video element
+                const videoEl = document.createElement('video');
+                videoEl.id = 'profileImage';
+                videoEl.src = imageUrl;
+                videoEl.controls = true;
+                videoEl.style.width = '120px';
+                videoEl.style.height = '120px';
+                videoEl.style.borderRadius = '50%';
+                videoEl.style.objectFit = 'cover';
+                videoEl.style.border = '3px solid var(--accent-primary)';
+                profileImageEl.parentNode.replaceChild(videoEl, profileImageEl);
+            } else {
+                // Ensure it's an img element
+                if (profileImageEl.tagName !== 'IMG') {
+                    const imgEl = document.createElement('img');
+                    imgEl.id = 'profileImage';
+                    imgEl.alt = 'User';
+                    imgEl.style.width = '120px';
+                    imgEl.style.height = '120px';
+                    imgEl.style.borderRadius = '50%';
+                    imgEl.style.objectFit = 'cover';
+                    imgEl.style.border = '3px solid var(--accent-primary)';
+                    profileImageEl.parentNode.replaceChild(imgEl, profileImageEl);
+                }
+                document.getElementById('profileImage').src = imageUrl;
+            }
+
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileCode').textContent = code;
+            document.getElementById('profileOrder').textContent = order;
+            document.getElementById('profileBirthDate').textContent = birthDate ? new Date(birthDate).toLocaleDateString('id-ID') : '-';
+            document.getElementById('profileGreeting').textContent = greeting;
+
+            // Update statistics
+            const photoViews = parseInt(localStorage.getItem('userPhotoViews') || '0');
+            const downloads = parseInt(localStorage.getItem('userDownloads') || '0');
+            document.getElementById('profilePhotoViews').textContent = photoViews;
+            document.getElementById('profileDownloads').textContent = downloads;
+
+            // Update top bar logo
+            updateTopBarLogo(imageUrl);
+        }
+
+        function updateSidebarLogo(imageUrl) {
+            const sidebarLogo = document.getElementById('sidebarLogo');
+            if (!sidebarLogo) return;
+
+            const isVideo = /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(imageUrl || '');
+
+            if (isVideo) {
+                // For video, use a static image or placeholder
+                sidebarLogo.src = 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg'; // fallback to default
+            } else {
+                sidebarLogo.src = imageUrl;
+            }
+        }
+
+        function updateTopBarLogo(imageUrl) {
+            const topBarLogo = document.getElementById('topBarLogo');
+            if (!topBarLogo) return;
+
+            const isVideo = /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(imageUrl || '');
+
+            if (isVideo) {
+                // For video, use a static image or placeholder
+                topBarLogo.src = 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg'; // fallback to default
+            } else {
+                topBarLogo.src = imageUrl;
+            }
+        }
+        function openEditProfileModal() {
+            const user = localStorage.getItem('logged_in_user');
+            if (!user) return;
+
+            const profileImage = localStorage.getItem('profileImage') || 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg';
+            const profileName = localStorage.getItem('profileName') || user;
+            const profileBirthDate = localStorage.getItem('profileBirthDate') || '';
+            const profileGreeting = localStorage.getItem('profileGreeting') || 'Selamat datang!';
+
+            document.getElementById('editPhotoUrl').value = profileImage;
+            document.getElementById('editName').value = profileName;
+            document.getElementById('editBirthDate').value = profileBirthDate;
+            document.getElementById('editGreeting').value = profileGreeting;
+
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+        function saveProfileData() {
+            const photoUrl = document.getElementById('editPhotoUrl').value.trim();
+            const name = document.getElementById('editName').value.trim();
+            const birthDate = document.getElementById('editBirthDate').value;
+            const greeting = document.getElementById('editGreeting').value.trim();
+
+            if (!photoUrl || !name || !greeting) {
+                alert('Harap isi semua field yang diperlukan!');
+                return;
+            }
+
+            localStorage.setItem('profileImage', photoUrl);
+            localStorage.setItem('profileName', name);
+            localStorage.setItem('profileBirthDate', birthDate);
+            localStorage.setItem('profileGreeting', greeting);
+
+            loadProfileData();
+            closeEditProfileModal();
+            alert('Profile berhasil disimpan!');
+        }
+        // Event listeners for edit profile
+        document.addEventListener('DOMContentLoaded', () => {
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const editProfileForm = document.getElementById('editProfileForm');
+
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', openEditProfileModal);
+            }
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', closeEditProfileModal);
+            }
+            if (editProfileForm) {
+                editProfileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    saveProfileData();
+                });
+            }
+        });
         // === Settings toggle ===
         document.addEventListener('DOMContentLoaded', () => {
             const settingsToggle = document.getElementById('settingsToggle');
@@ -1534,7 +2144,6 @@
                 });
             }
         });
-
         // === Security notice ===
         document.getElementById('accept-security-btn').addEventListener('click', () => {
             const notice = document.getElementById('security-notice');
@@ -1543,9 +2152,9 @@
             document.getElementById('main-title').style.display = 'block';
             document.getElementById('main-subtitle').style.display = 'block';
             localStorage.setItem('security_accepted', JSON.stringify({ timestamp: Date.now() }));
+            localStorage.setItem('security_notice_shown', 'true');
             loadPhotosFromDB();
         });
-
         // === Cek cache security ===
         function checkSecurityCache() {
             const cached = localStorage.getItem('security_accepted');
@@ -1564,16 +2173,13 @@
             }
             return false;
         }
-
         // === LONG PRESS STATE UNTUK TOMBOL BUKA TABEL ===
         let openMembersBtn_pressTimer = null;
         let openMembersBtn_isLongPress = false;
         let openMembersBtn_modeGetCode = false;
-
         function setupOpenMembersBtnLongPress() {
             const btn = document.getElementById('openMembersBtn');
             if (!btn) return;
-
             btn.addEventListener('mousedown', (e) => {
                 openMembersBtn_isLongPress = false;
                 openMembersBtn_pressTimer = setTimeout(() => {
@@ -1582,13 +2188,11 @@
                     updateOpenMembersBtnDisplay();
                 }, 800);
             });
-
             btn.addEventListener('mouseup', (e) => {
                 if (openMembersBtn_pressTimer) {
                     clearTimeout(openMembersBtn_pressTimer);
                     openMembersBtn_pressTimer = null;
                 }
-                
                 if (!openMembersBtn_isLongPress) {
                     if (openMembersBtn_modeGetCode) {
                         window.open('https://code-dt9.pages.dev/', '_blank', 'noopener,noreferrer');
@@ -1597,7 +2201,6 @@
                     }
                 }
             });
-
             btn.addEventListener('mouseleave', () => {
                 if (openMembersBtn_pressTimer) {
                     clearTimeout(openMembersBtn_pressTimer);
@@ -1605,7 +2208,6 @@
                 }
                 openMembersBtn_isLongPress = false;
             });
-
             // Touch support
             btn.addEventListener('touchstart', (e) => {
                 openMembersBtn_isLongPress = false;
@@ -1615,13 +2217,11 @@
                     updateOpenMembersBtnDisplay();
                 }, 800);
             });
-
             btn.addEventListener('touchend', (e) => {
                 if (openMembersBtn_pressTimer) {
                     clearTimeout(openMembersBtn_pressTimer);
                     openMembersBtn_pressTimer = null;
                 }
-                
                 if (!openMembersBtn_isLongPress) {
                     if (openMembersBtn_modeGetCode) {
                         window.open('https://code-dt9.pages.dev/', '_blank', 'noopener,noreferrer');
@@ -1631,11 +2231,9 @@
                 }
             });
         }
-
         function updateOpenMembersBtnDisplay() {
             const btn = document.getElementById('openMembersBtn');
             if (!btn) return;
-            
             if (openMembersBtn_modeGetCode) {
                 btn.textContent = '🔑 Minta Kode';
                 btn.style.background = '#ff0080';
@@ -1646,9 +2244,16 @@
                 btn.style.color = '#000';
             }
         }
-
         // === Loading screen animation ===
         document.addEventListener("DOMContentLoaded", () => {
+            // Set loading screen icon based on login status
+            const loadingMainIcon = document.getElementById('loadingMainIcon');
+            if (loadingMainIcon) {
+                const user = localStorage.getItem('logged_in_user');
+                const profileImage = localStorage.getItem('profileImage') || 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg';
+                loadingMainIcon.src = user ? profileImage : 'https://i.ibb.co.com/twpD1fqr/Whats-App-Image-2025-11-16-at-12-05-11-0adeacb0.jpg';
+            }
+
             const loadingText = document.getElementById("loading-text");
             const mainIcon = document.querySelector(".main-icon");
             const subIcons = document.querySelectorAll(".sub-icons i");
@@ -1657,7 +2262,6 @@
             const loadingScreen = document.getElementById("loading-screen");
             const loader = document.querySelector("#loading-screen .loader");
             if (loader) loader.classList.add('show');
-
             function showElement(el, delay) {
                 if (!el) return;
                 // Consider fast-mode from body class or persisted setting — read localStorage to ensure early application
@@ -1673,7 +2277,6 @@
                     }
                 }, delay);
             }
-
             function typeWriter() {
                 // In normal mode show full title with typing; in fast-mode show simplified title
                 const fullText = "Togetherness TKJ OnE";
@@ -1693,23 +2296,26 @@
                     }
                 }, 100);
             }
-
             const isFastImmediate = document.body.classList.contains('fast-mode') || localStorage.getItem('fastMode') === '1';
             typeWriter();
             showElement(loadingText, 0);
             if (!isFastImmediate) {
                 showElement(mainIcon, 800);
                 subIcons.forEach((icon, i) => showElement(icon, 1600 + i * 400));
-                showElement(designerText2, 3200);
+                // Show user greeting if available
+                const userGreetingEl = document.getElementById('userGreeting');
+                const greeting = localStorage.getItem('profileGreeting') || 'Selamat datang!';
+                userGreetingEl.textContent = greeting;
+                showElement(userGreetingEl, 2800);
                 showElement(designerText, 3600);
             } else {
                 // fast-mode: show only simplified title and hide other opening visuals
                 if (mainIcon) mainIcon.classList.add('hidden');
                 subIcons.forEach((icon) => icon.classList.add('hidden'));
-                if (designerText2) designerText2.classList.add('hidden');
+                const userGreetingEl = document.getElementById('userGreeting');
+                userGreetingEl.style.display = 'none';
                 if (designerText) designerText.classList.add('hidden');
             }
-
             const particlesContainer = document.getElementById('particles');
             if (!isFastImmediate) {
                 for (let i = 0; i < 25; i++) {
@@ -1722,7 +2328,6 @@
                     particlesContainer.appendChild(particle);
                 }
             }
-
             // Hide loading screen faster in fast-mode
             setTimeout(() => {
                 loadingScreen.style.opacity = '0';
@@ -1737,13 +2342,11 @@
                 }, isFastImmediate ? 50 : 1000);
             }, isFastImmediate ? 50 : 5500);
         });
-
         // === FILTER & GALLERY LOGIC (PERBAIKAN UTAMA) ===
         let currentFilter = 'group';
         // Keep track of previous sidebar selection so we can restore it after opening the members modal
         let previousSidebarActive = null;
         let photos = [];
-
         // loadFromLocal - dummy fallback
         async function loadFromLocal() {
             try {
@@ -1755,7 +2358,6 @@
                 return [{ name: "Zhyllan", gender: "male", url: "https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg", date: "2025-11-04" }];
             }
         }
-
         async function loadPhotosFromDB() {
             try {
                 photos = await loadFromLocal();
@@ -1771,28 +2373,21 @@
                 performSearch('');
             }
         }
-
         function initializeScrollingPhotoBar() {
             const bar = document.getElementById('scrollingPhotoBar');
             const inner = document.getElementById('scrollingInner');
             if (!bar || !inner) return;
-
             // Get current month
             const now = new Date();
             const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
             // Filter photos from current month
             const currentMonthPhotos = photos.filter(p => p.date && p.date.startsWith(currentMonth));
-
             if (currentMonthPhotos.length === 0) return;
-
             // Shuffle and select up to 10 photos
             const shuffled = currentMonthPhotos.sort(() => 0.5 - Math.random());
             const selectedPhotos = shuffled.slice(0, Math.min(10, shuffled.length));
-
             // Duplicate for seamless scrolling
             const allPhotos = [...selectedPhotos, ...selectedPhotos];
-
             inner.innerHTML = '';
             allPhotos.forEach(photo => {
                 const img = document.createElement('img');
@@ -1800,10 +2395,8 @@
                 img.alt = photo.name;
                 inner.appendChild(img);
             });
-
             bar.style.display = 'block';
         }
-
         function performSearch(query) {
             try {
                 // Tampilkan loading saat pencarian
@@ -1813,7 +2406,6 @@
                     const loader = searchLoadingContainer.querySelector('.loader');
                     if (loader) loader.classList.add('show');
                 }
-
                 let results = [...(photos || [])];
                 if (query.trim()) {
                     results = results.filter(p =>
@@ -1821,7 +2413,6 @@
                         (p.date && formatDate(p.date).includes(query.replace(/\D/g, '')))
                     );
                 }
-
                 // ✅ PERBAIKAN FILTER "GROUP" → tampilkan SEMUA
                 if (currentFilter === 'male') {
                     results = results.filter(p => p.gender === 'male');
@@ -1831,7 +2422,6 @@
                     results = results.filter(p => p.gender === 'video');
                 }
                 // Jika 'group' atau 'all' → tidak filter
-
                 // Delay kecil untuk smooth transition
                 setTimeout(() => {
                     renderGallery(results);
@@ -1847,24 +2437,20 @@
                 renderGallery([]);
             }
         }
-
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const [y, m, d] = dateStr.split('-');
             return `${d}-${m}-${y}`;
         }
-
         function renderGallery(filteredPhotos) {
             const container = document.getElementById('galleryContainer');
             const noResultsMsg = document.getElementById('noResultsMessage');
             const searchLoadingContainer = document.getElementById('searchLoadingContainer');
             const currentQuery = document.getElementById('searchInput').value.trim();
-
             // Sembunyikan loading setelah selesai
             if (searchLoadingContainer) {
                 searchLoadingContainer.classList.remove('show');
             }
-
             // Update statistik
             const photoStats = document.getElementById('photoStats');
             if (photoStats) {
@@ -1874,14 +2460,12 @@
                 const displayedVideos = filteredPhotos.filter(p => p.gender === 'video').length;
                 photoStats.textContent = `Total: ${totalPhotos} foto | ${totalVideos} video | Ditampilkan: ${displayedPhotos} foto | ${displayedVideos} video`;
             }
-
             if (filteredPhotos.length === 0 && currentQuery) {
                 document.getElementById('searchedTerm').textContent = currentQuery;
                 noResultsMsg.style.display = 'block';
                 container.innerHTML = '';
                 return;
             }
-
             noResultsMsg.style.display = 'none';
             container.innerHTML = '';
             const groups = {};
@@ -1890,7 +2474,6 @@
                 if (!groups[letter]) groups[letter] = [];
                 groups[letter].push(photo);
             });
-
             Object.keys(groups).sort().forEach(letter => {
                 const section = document.createElement('div');
                 section.className = 'letter-section';
@@ -1911,13 +2494,11 @@
                 });
             });
         }
-
         // === DETEKSI DESKTOP ===
         function isDesktop() {
             // Deteksi desktop berdasarkan lebar layar dan tidak ada touch capability
             return window.innerWidth > 768 && !('ontouchstart' in window);
         }
-
         // === MODAL ===
         function openModal(url, name, date, gender) {
             try {
@@ -1926,16 +2507,13 @@
                 const video = document.getElementById('modalVideo');
                 const modalLoading = document.getElementById('modalLoadingContainer');
                 const isVideo = gender === 'video' || /\.(mp4|avi|mov|wmv|flv|webm|mkv)$/i.test(url || '');
-
                 document.getElementById('modalName').textContent = name || 'No name';
                 document.getElementById('modalDate').textContent = date ? formatDate(date) : 'No date';
-
                 img.style.display = 'none';
                 video.style.display = 'none';
                 if (modalLoading) {
                     modalLoading.classList.add('show');
                 }
-
                 const downloadBtn = document.getElementById('downloadBtn');
                 if (isVideo) {
                     video.style.display = 'block';
@@ -1963,7 +2541,9 @@
                         downloadBtn.style.display = isDesktop() ? 'none' : '';
                     }
                 }
-
+                // Increment photo views counter
+                const currentViews = parseInt(localStorage.getItem('userPhotoViews') || '0');
+                localStorage.setItem('userPhotoViews', (currentViews + 1).toString());
                 modal.classList.add('show');
                 // lock body scroll (handles Android touchmove prevention too)
                 updateBodyLockState();
@@ -1972,18 +2552,15 @@
                 alert('Gagal membuka media: ' + e.message);
             }
         }
-
         function closeModal() {
             const modal = document.getElementById('imageModal');
             modal.classList.remove('show');
             // update lock state (will unlock if nothing else requires lock)
             updateBodyLockState();
         }
-
         function openMembersModal() {
             const modal = document.getElementById('membersModal');
             const tbody = document.getElementById('membersTableBody');
-            
             // Isi tabel dengan anggota
             tbody.innerHTML = ALLOWED_NAMES.map((name, index) => `
                 <tr style="border: 1px solid #00ff88; ${index % 2 === 0 ? 'background: rgba(0, 255, 136, 0.05);' : ''}">
@@ -1991,14 +2568,12 @@
                     <td style="padding: 10px; color: var(--text-primary);">${name}</td>
                 </tr>
             `).join('');
-            
             // Pastikan modal anggota tampil di atas login modal jika sedang terbuka
             modal.style.zIndex = 10002;
             modal.classList.add('show');
             // lock body scroll (handles Android touchmove prevention too)
             updateBodyLockState();
         }
-
         function closeMembersModal() {
             const modal = document.getElementById('membersModal');
             modal.classList.remove('show');
@@ -2010,14 +2585,40 @@
                 if (previousSidebarActive) {
                     document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
                     previousSidebarActive.classList.add('active');
-
-                    if (previousSidebarActive.dataset.target === 'about') {
-                        if (document.getElementById('section-all')) document.getElementById('section-all').style.display = 'none';
-                        if (document.getElementById('section-about')) document.getElementById('section-about').style.display = 'block';
+                    const target = previousSidebarActive.dataset.target;
+                    if (target === 'about') {
+                        document.getElementById('section-all').style.display = 'none';
+                        document.getElementById('section-about').style.display = 'block';
+                        document.getElementById('section-profile').style.display = 'none';
+                        document.getElementById('section-help').style.display = 'none';
+                        document.getElementById('section-settings').style.display = 'none';
+                    } else if (target === 'settings') {
+                        document.getElementById('section-all').style.display = 'none';
+                        document.getElementById('section-about').style.display = 'none';
+                        document.getElementById('section-profile').style.display = 'none';
+                        document.getElementById('section-help').style.display = 'none';
+                        document.getElementById('section-settings').style.display = 'block';
+                    } else if (target === 'profile') {
+                        loadProfileData();
+                        document.getElementById('section-all').style.display = 'none';
+                        document.getElementById('section-about').style.display = 'none';
+                        document.getElementById('section-profile').style.display = 'block';
+                        document.getElementById('section-help').style.display = 'none';
+                        document.getElementById('section-settings').style.display = 'none';
+                    } else if (target === 'help') {
+                        document.getElementById('section-all').style.display = 'none';
+                        document.getElementById('section-about').style.display = 'none';
+                        document.getElementById('section-profile').style.display = 'none';
+                        document.getElementById('section-help').style.display = 'block';
+                        document.getElementById('section-settings').style.display = 'none';
                     } else {
+                        // Filter links
                         currentFilter = previousSidebarActive.dataset.filter || 'group';
-                        if (document.getElementById('section-about')) document.getElementById('section-about').style.display = 'none';
-                        if (document.getElementById('section-all')) document.getElementById('section-all').style.display = 'block';
+                        document.getElementById('section-about').style.display = 'none';
+                        document.getElementById('section-all').style.display = 'block';
+                        document.getElementById('section-profile').style.display = 'none';
+                        document.getElementById('section-help').style.display = 'none';
+                        document.getElementById('section-settings').style.display = 'none';
                         // re-run search to update visible gallery based on restored filter
                         try { performSearch(document.getElementById('searchInput').value.trim()); } catch (e) { /* ignore */ }
                     }
@@ -2027,40 +2628,95 @@
             }
             previousSidebarActive = null;
         }
-
         // === NAVIGASI SIDEBAR ===
         document.querySelectorAll('.sidebar-nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-
+                // On mobile, close the sidebar after selecting a menu item
+                try {
+                    if (window.innerWidth < 769) {
+                        const sidebarEl = document.getElementById('sidebar');
+                        if (sidebarEl && sidebarEl.classList.contains('active')) {
+                            sidebarEl.classList.remove('active');
+                            updateBodyLockState();
+                        }
+                    }
+                } catch (e) { console.warn('Auto-close sidebar on mobile failed', e); }
                 // Save previous active link so we can restore later (useful when opening members modal)
                 const currentlyActive = document.querySelector('.sidebar-nav-link.active');
                 previousSidebarActive = (currentlyActive && currentlyActive !== link) ? currentlyActive : null;
-
                 // Update active class visually
                 document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
-
                 if (link.dataset.target === 'about') {
                     document.getElementById('section-all').style.display = 'none';
                     document.getElementById('section-about').style.display = 'block';
+                    document.getElementById('section-profile').style.display = 'none';
+                    document.getElementById('section-help').style.display = 'none';
+                    document.getElementById('section-settings').style.display = 'none';
                     return;
                 }
-
                 if (link.dataset.target === 'members') {
                     // Hide main sections because members content is shown in modal
                     document.getElementById('section-all').style.display = 'none';
                     document.getElementById('section-about').style.display = 'none';
+                    document.getElementById('section-profile').style.display = 'none';
+                    document.getElementById('section-help').style.display = 'none';
+                    document.getElementById('section-settings').style.display = 'none';
                     openMembersModal();
                     return;
                 }
-
+                if (link.dataset.target === 'settings') {
+                    // Show settings section in main content
+                    document.getElementById('section-all').style.display = 'none';
+                    document.getElementById('section-about').style.display = 'none';
+                    document.getElementById('section-profile').style.display = 'none';
+                    document.getElementById('section-help').style.display = 'none';
+                    document.getElementById('section-settings').style.display = 'block';
+                    return;
+                }
+                if (link.dataset.target === 'profile') {
+                    // Populate profile data
+                    loadProfileData();
+                    document.getElementById('section-all').style.display = 'none';
+                    document.getElementById('section-about').style.display = 'none';
+                    document.getElementById('section-profile').style.display = 'block';
+                    document.getElementById('section-help').style.display = 'none';
+                    document.getElementById('section-settings').style.display = 'none';
+                    return;
+                }
+                if (link.dataset.target === 'help') {
+                    document.getElementById('section-all').style.display = 'none';
+                    document.getElementById('section-about').style.display = 'none';
+                    document.getElementById('section-profile').style.display = 'none';
+                    document.getElementById('section-help').style.display = 'block';
+                    document.getElementById('section-settings').style.display = 'none';
+                    return;
+                }
+                if (link.id === 'logoutBtn') {
+                    // Logout functionality
+                    if (confirm('Apakah Anda yakin ingin keluar?')) {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        location.reload();
+                    }
+                    return;
+                }
                 // Normal filter links
                 currentFilter = link.dataset.filter || 'group';
                 document.getElementById('section-about').style.display = 'none';
                 document.getElementById('section-all').style.display = 'block';
+                document.getElementById('section-profile').style.display = 'none';
+                document.getElementById('section-help').style.display = 'none';
+                document.getElementById('section-settings').style.display = 'none';
                 performSearch(document.getElementById('searchInput').value.trim());
-
+                // Check if no content after filtering
+                setTimeout(() => {
+                    const galleryContainer = document.getElementById('galleryContainer');
+                    if (galleryContainer && galleryContainer.children.length === 0) {
+                        alert('Menu ini tidak memiliki konten yang tersedia.');
+                    }
+                }, 200);
                 // On mobile, close the sidebar after selecting a menu item
                 try {
                     if (window.innerWidth < 769) {
@@ -2073,7 +2729,6 @@
                 } catch (e) { console.warn('Auto-close sidebar on mobile failed', e); }
             });
         });
-
         // === SEARCH ===
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
@@ -2082,14 +2737,12 @@
                     // Hide scrolling photo bar when searching
                     const bar = document.getElementById('scrollingPhotoBar');
                     if (bar) bar.style.display = 'none';
-
                     performSearch(e.target.value.trim());
                 } catch (err) {
                     console.error('Search error:', err);
                 }
             });
         }
-
         // === CLEAR CACHE BUTTON ===
         document.addEventListener('DOMContentLoaded', () => {
             const clearCacheBtn = document.getElementById('clearCacheBtn');
@@ -2115,7 +2768,6 @@
                 });
             }
         });
-
         // === SIDEBAR COLLAPSE ===
         const collapseBtn = document.getElementById('sidebarCollapse');
         if (collapseBtn) {
@@ -2141,7 +2793,6 @@
                 }
             });
         }
-
         // === KEYBOARD SHORTCUTS ===
         document.addEventListener('keydown', (e) => {
             try {
@@ -2149,7 +2800,6 @@
                 const modal = document.getElementById('imageModal');
                 const isModalOpen = modal && modal.classList.contains('show');
                 const shortcutsHint = document.getElementById('keyboardShortcutsHint');
-                
                 // ? atau / - Show/Hide Keyboard Shortcuts
                 if (key === '?' || key === '/') {
                     if (shortcutsHint) {
@@ -2157,7 +2807,6 @@
                         e.preventDefault();
                     }
                 }
-                
                 // ESC - Tutup modal
                 if (e.key === 'Escape') {
                     if (isModalOpen) {
@@ -2168,9 +2817,7 @@
                         e.preventDefault();
                     }
                 }
-                
                 // NOTE: 'C' shortcut removed — use 'M' to toggle menu on mobile
-                
                 // M atau m - Toggle menu (mobile)
                 if (key === 'm') {
                     const toggleBtn = document.getElementById('sidebarToggle');
@@ -2182,7 +2829,6 @@
                             e.preventDefault();
                         }
                 }
-                
                 // D atau d - Download (hanya jika modal terbuka)
                 if (key === 'd' && isModalOpen) {
                     const videoEl = document.getElementById('modalVideo');
@@ -2197,7 +2843,6 @@
                         }
                     }
                 }
-                
                 // R atau r - Hapus cache
                 if (key === 'r') {
                     if (confirm('Hapus semua cache? Halaman akan di-refresh.')) {
@@ -2223,7 +2868,6 @@
                 console.error('Keyboard shortcut error:', err);
             }
         });
-
         // === MOBILE TOGGLE ===
         const toggleBtn = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
@@ -2234,22 +2878,18 @@
                 updateBodyLockState();
             });
         }
-
         // === BLOCKING PROTECTION ===
         // 1. Blokir RIGHT-CLICK (Desktop)
         document.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             return false;
         });
-
         // 2. Blokir LONG-PRESS (Mobile) - detect touch-hold
         let touchStartTime = 0;
         const LONG_PRESS_DURATION = 500; // ms
-
         document.addEventListener('touchstart', (e) => {
             touchStartTime = Date.now();
         }, false);
-
         document.addEventListener('touchend', (e) => {
             const touchDuration = Date.now() - touchStartTime;
             if (touchDuration > LONG_PRESS_DURATION) {
@@ -2257,7 +2897,6 @@
                 e.preventDefault();
             }
         }, false);
-
         // Prevent background touch-scroll on mobile when overlays/sidebars are open
         // Scroll lock configuration - can be customized at runtime
         const scrollLockConfig = {
@@ -2265,10 +2904,8 @@
             lockOnModal: true,                  // lock body when image/member modal opens
             lockOnSidebar: true                 // lock body when sidebar is active
         };
-
         // Current touchmove handler reference so we can remove it reliably
         let _currentTouchMoveHandler = null;
-
         function _createTouchMoveHandler() {
             return function (ev) {
                 try {
@@ -2284,7 +2921,6 @@
                 ev.preventDefault();
             };
         }
-
         function lockBodyScroll() {
             try {
                 document.body.style.overflow = 'hidden';
@@ -2295,7 +2931,6 @@
                 document.addEventListener('touchmove', _currentTouchMoveHandler, { passive: false });
             } catch (e) { console.warn('lockBodyScroll failed', e); }
         }
-
         function unlockBodyScroll() {
             try {
                 document.body.style.overflow = '';
@@ -2305,13 +2940,11 @@
                 }
             } catch (e) { console.warn('unlockBodyScroll failed', e); }
         }
-
         function setScrollLockConfig(newConfig) {
             Object.assign(scrollLockConfig, newConfig || {});
             // when config changes, re-evaluate lock state
             updateBodyLockState();
         }
-
         function updateBodyLockState() {
             const sidebar = document.getElementById('sidebar');
             const imgModal = document.getElementById('imageModal');
@@ -2325,13 +2958,11 @@
                 unlockBodyScroll();
             }
         }
-
         // 3. Blokir COPY (Ctrl+C / Cmd+C dan select text copy)
         document.addEventListener('copy', (e) => {
             e.preventDefault();
             return false;
         });
-
         // 4. Blokir SELECT TEXT (Ctrl+A dan drag select)
         document.addEventListener('selectstart', (e) => {
             // Izinkan select di input dan textarea
@@ -2340,13 +2971,11 @@
                 return false;
             }
         });
-
         // 5. Blokir CUT (Ctrl+X / Cmd+X)
         document.addEventListener('cut', (e) => {
             e.preventDefault();
             return false;
         });
-
         // 6. Blokir PASTE jika ada
         document.addEventListener('paste', (e) => {
             // Hanya blokir di luar input fields
@@ -2354,14 +2983,12 @@
                 e.preventDefault();
             }
         });
-
         // 7. Blokir DRAG IMAGE (cegah drag gambar otomatis download)
         document.addEventListener('dragstart', (e) => {
             if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
                 e.preventDefault();
             }
         });
-
         // === FAST MODE HANDLER ===
         function applyFastMode(enabled) {
             try {
@@ -2374,7 +3001,6 @@
                 }
             } catch (e) { console.warn('applyFastMode failed', e); }
         }
-
         function initFastModeToggle() {
             try {
                 const toggle = document.getElementById('fastModeToggle');
@@ -2384,19 +3010,16 @@
                 const enabled = saved === '1' || saved === 'true';
                 toggle.checked = !!enabled;
                 applyFastMode(enabled);
-
                 toggle.addEventListener('change', (e) => {
                     applyFastMode(!!e.target.checked);
                 });
             } catch (e) { console.warn('initFastModeToggle error', e); }
         }
-
         // === SCROLLING PHOTO BAR TOGGLE HANDLER ===
         function applyScrollingPhotoBar(enabled) {
             try {
                 const bar = document.getElementById('scrollingPhotoBar');
                 if (!bar) return;
-
                 if (enabled) {
                     localStorage.setItem('scrollingPhotoBarEnabled', '1');
                     // Show the bar if photos are available
@@ -2407,7 +3030,6 @@
                 }
             } catch (e) { console.warn('applyScrollingPhotoBar failed', e); }
         }
-
         function initScrollingPhotoBarToggle() {
             try {
                 const toggle = document.getElementById('scrollingPhotoBarToggle');
@@ -2417,12 +3039,253 @@
                 const enabled = saved !== '0'; // Default to enabled if not set
                 toggle.checked = !!enabled;
                 applyScrollingPhotoBar(enabled);
-
                 toggle.addEventListener('change', (e) => {
                     applyScrollingPhotoBar(!!e.target.checked);
                 });
             } catch (e) { console.warn('initScrollingPhotoBarToggle error', e); }
         }
+        // === PRIVACY MODE TOGGLE HANDLER ===
+        function applyPrivacyMode(enabled) {
+            try {
+                const bar = document.getElementById('scrollingPhotoBar');
+                if (!bar) return;
+                if (enabled) {
+                    localStorage.setItem('privacyModeEnabled', '1');
+                    bar.classList.add('privacy-mode');
+                    // Pause animation when in privacy mode
+                    const container = bar.querySelector('.scrolling-container');
+                    if (container) container.classList.add('paused');
+                } else {
+                    localStorage.setItem('privacyModeEnabled', '0');
+                    bar.classList.remove('privacy-mode');
+                    // Resume animation when privacy mode is disabled
+                    const container = bar.querySelector('.scrolling-container');
+                    if (container) container.classList.remove('paused');
+                }
+            } catch (e) { console.warn('applyPrivacyMode failed', e); }
+        }
+        function initPrivacyModeToggle() {
+            try {
+                const toggle = document.getElementById('privacyModeToggle');
+                if (!toggle) return;
+                // Initialize from localStorage
+                const saved = localStorage.getItem('privacyModeEnabled');
+                const enabled = saved === '1'; // Default to disabled if not set
+                toggle.checked = !!enabled;
+                applyPrivacyMode(enabled);
+                toggle.addEventListener('change', (e) => {
+                    applyPrivacyMode(!!e.target.checked);
+                });
+            } catch (e) { console.warn('initPrivacyModeToggle error', e); }
+        }
+        // === CONTEXT MENU FUNCTIONALITY ===
+        let currentContextPhoto = null;
+        let longPressTimer = null;
+        const LONG_PRESS_DELAY = 500; // ms - shorter for mobile responsiveness
+
+        function initContextMenu() {
+            const contextMenu = document.getElementById('contextMenu');
+            const reportBtn = document.getElementById('reportBtn');
+            const likeBtn = document.getElementById('likeBtn');
+
+            // Hide context menu when clicking elsewhere
+            document.addEventListener('click', (e) => {
+                if (!contextMenu.contains(e.target)) {
+                    hideContextMenu();
+                }
+            });
+
+            // Report button handler
+            reportBtn.addEventListener('click', () => {
+                if (currentContextPhoto) {
+                    handleReport(currentContextPhoto);
+                }
+                hideContextMenu();
+            });
+
+            // Like button handler
+            likeBtn.addEventListener('click', () => {
+                if (currentContextPhoto) {
+                    handleLike(currentContextPhoto);
+                }
+                hideContextMenu();
+            });
+
+            // Add long press listeners to gallery items
+            document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener('mousedown', handleMouseDown);
+                document.addEventListener('mouseup', handleMouseUp);
+                document.addEventListener('touchstart', handleTouchStart, { passive: false });
+                document.addEventListener('touchend', handleTouchEnd, { passive: false });
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            });
+        }
+
+        function handleMouseDown(e) {
+            const galleryItem = e.target.closest('.gallery-item');
+            if (galleryItem) {
+                if (isDesktop() && e.button === 2) { // Right click on desktop
+                    showContextMenu(e, galleryItem);
+                } else {
+                    // Long press for mobile
+                    longPressTimer = setTimeout(() => {
+                        showContextMenu(e, galleryItem);
+                    }, LONG_PRESS_DELAY);
+                }
+            }
+        }
+
+        function handleMouseUp(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
+        function handleTouchStart(e) {
+            const galleryItem = e.target.closest('.gallery-item');
+            if (galleryItem) {
+                longPressTimer = setTimeout(() => {
+                    showContextMenu(e, galleryItem);
+                    e.preventDefault();
+                }, LONG_PRESS_DELAY);
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
+        function showContextMenu(e, galleryItem) {
+            e.preventDefault();
+            const contextMenu = document.getElementById('contextMenu');
+            const contextMenuBackdrop = document.getElementById('contextMenuBackdrop');
+            const rect = galleryItem.getBoundingClientRect();
+
+            // Get photo data from the gallery item
+            const img = galleryItem.querySelector('img');
+            const name = galleryItem.querySelector('.gallery-item-name').textContent;
+            const date = galleryItem.querySelector('.gallery-item-date').textContent;
+
+            currentContextPhoto = {
+                url: img.src,
+                name: name,
+                date: date
+            };
+
+            // Position the context menu
+            contextMenu.style.left = `${e.clientX || e.touches[0].clientX}px`;
+            contextMenu.style.top = `${e.clientY || e.touches[0].clientY}px`;
+            contextMenu.classList.add('show');
+            contextMenuBackdrop.classList.add('show');
+
+            // Update like button text based on current like status
+            const likeBtn = document.getElementById('likeBtn');
+            const likedPhotos = JSON.parse(localStorage.getItem('likedPhotos') || '[]');
+            const isLiked = likedPhotos.some(photo => photo.url === currentContextPhoto.url);
+            likeBtn.innerHTML = `<i class="fas fa-heart"></i> ${isLiked ? 'Batal Suka' : 'Disukai'}`;
+        }
+
+        function hideContextMenu() {
+            const contextMenu = document.getElementById('contextMenu');
+            const contextMenuBackdrop = document.getElementById('contextMenuBackdrop');
+            contextMenu.classList.remove('show');
+            contextMenuBackdrop.classList.remove('show');
+            currentContextPhoto = null;
+        }
+
+        function handleReport(photo) {
+            const user = localStorage.getItem('logged_in_user') || 'Tidak diketahui';
+            const code = localStorage.getItem('user_code') || 'Tidak diketahui';
+
+            const message = `Nama foto: ${photo.name}
+Tanggal foto: ${photo.date}
+Nama user: ${user}
+Kode user: ${code}
+Masalah anda:
+`;
+
+            const whatsappUrl = `https://wa.me/6285165721384?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function handleLike(photo) {
+            let likedPhotos = JSON.parse(localStorage.getItem('likedPhotos') || '[]');
+            const existingIndex = likedPhotos.findIndex(p => p.url === photo.url);
+
+            if (existingIndex > -1) {
+                // Remove from liked
+                likedPhotos.splice(existingIndex, 1);
+                alert('Foto dihapus dari daftar yang disukai');
+            } else {
+                // Add to liked
+                likedPhotos.push(photo);
+                alert('Foto ditambahkan ke daftar yang disukai');
+            }
+
+            localStorage.setItem('likedPhotos', JSON.stringify(likedPhotos));
+        }
+
+        // Initialize context menu
+        initContextMenu();
+
+        // === FAVORITES MODAL FUNCTIONALITY ===
+        function openFavoritesModal() {
+            const modal = document.getElementById('favoritesModal');
+            const container = document.getElementById('favoritesContainer');
+            const noFavoritesMsg = document.getElementById('noFavoritesMessage');
+
+            // Get liked photos from localStorage
+            const likedPhotos = JSON.parse(localStorage.getItem('likedPhotos') || '[]');
+
+            if (likedPhotos.length === 0) {
+                container.innerHTML = '';
+                noFavoritesMsg.style.display = 'block';
+            } else {
+                noFavoritesMsg.style.display = 'none';
+                container.innerHTML = '';
+
+                likedPhotos.forEach(photo => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    const formattedDate = formatDate(photo.date);
+                    item.innerHTML = `
+                        <img src="${photo.url}" alt="${photo.name}" style="width:100%;height:180px;object-fit:cover;background:#222;">
+                        <div class="gallery-item-name">${photo.name}</div>
+                        <div class="gallery-item-date">${formattedDate}</div>
+                    `;
+                    item.onclick = () => openModal(photo.url, photo.name, photo.date, 'image'); // Assume image for favorites
+                    container.appendChild(item);
+                });
+            }
+
+            modal.classList.add('show');
+            updateBodyLockState();
+        }
+
+        function closeFavoritesModal() {
+            const modal = document.getElementById('favoritesModal');
+            modal.classList.remove('show');
+            updateBodyLockState();
+        }
+
+        // Add event listener for view favorites button
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewFavoritesBtn = document.getElementById('viewFavoritesBtn');
+            if (viewFavoritesBtn) {
+                viewFavoritesBtn.addEventListener('click', openFavoritesModal);
+            }
+        });
 
         // Initialize fast-mode toggle after DOM ready
         try {
@@ -2430,11 +3293,13 @@
                 setTimeout(() => {
                     initFastModeToggle();
                     initScrollingPhotoBarToggle();
+                    initPrivacyModeToggle();
                 }, 30);
             } else {
                 document.addEventListener('DOMContentLoaded', () => {
                     initFastModeToggle();
                     initScrollingPhotoBarToggle();
+                    initPrivacyModeToggle();
                 });
             }
         } catch (e) {
