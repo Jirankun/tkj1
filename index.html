@@ -1959,17 +1959,12 @@
         function showMainContent() {
             document.body.classList.remove('sidebar-hidden');
             populateSettings();
-            // Show security notice only once per login
-            const securityNoticeShown = localStorage.getItem('security_notice_shown');
-            if (!securityNoticeShown) {
-                document.getElementById('security-notice').style.display = 'block';
-            } else {
-                document.getElementById('security-notice').style.display = 'none';
-                document.getElementById('searchWrapper').style.display = 'block';
-                document.getElementById('main-title').style.display = 'block';
-                document.getElementById('main-subtitle').style.display = 'block';
-                loadPhotosFromDB();
-            }
+            // Always hide security notice and show content directly
+            document.getElementById('security-notice').style.display = 'none';
+            document.getElementById('searchWrapper').style.display = 'block';
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-subtitle').style.display = 'block';
+            loadPhotosFromDB();
         }
         // === Populate settings menu ===
         function populateSettings() {
