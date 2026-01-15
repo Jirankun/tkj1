@@ -392,6 +392,18 @@ text-align: center;
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
+color: blue;
+}
+.app-title a:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}
+.app-title a,
+.app-title a:hover,
+.app-title a:visited,
+.app-title a:active {
+  text-decoration: none;
+  color: inherit;
 }
 /* Style for the sidebar 'Daftar' (open members) button to be visually wider */
 .open-members-btn {
@@ -1024,7 +1036,7 @@ pointer-events: none;
     </button>
 <div id="errorMsg" class="error-message"></div>
 <div class="hint-text">
-Gunakan kode akses untuk login,saya menyarankan untuk tidak membagikan Kode anda,jika di Bagikan,anda sama saja membagikan akun Email asli anda.
+Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan tempel di atas.
 </div>
 </div>
 </div>
@@ -1081,13 +1093,16 @@ Gunakan kode akses untuk login,saya menyarankan untuk tidak membagikan Kode anda
     <span>Daftar</span>
     </div>
     </div>
+    <p class="app-title">
+      <a href="https://github.com/Jirankun/TKJ-One/releases/" >Download aplikasi TKJ-OnE
+      </a>
+    </p>
 </div>
 <!-- HEADER -->
 <header class="header">
 <button id="menuBtn" class="menu-btn" onclick="toggleMenu()">
 <i class="fas fa-bars"></i>
 </button>
-<h1 class="app-title"></h1>
 </header>
 <!-- CONTENT WRAPPER -->
 <div class="content-wrapper">
@@ -1096,7 +1111,7 @@ Gunakan kode akses untuk login,saya menyarankan untuk tidak membagikan Kode anda
 <!-- SECURITY NOTICE -->
 <div id="securityNotice" class="security-notice" style="display:none;">
 <h3><i class="fas fa-shield-alt"></i> Keamanan Konten</h3>
-<p>Dilarang mengambil screenshot Halaman web ini,mohon download jika ingin membagikan.</p>
+<p>Dilarang mengambil screenshot pada Halaman ini,mohon di download jika kamu ingin membagikan.</p>
 <button onclick="acceptSecurity()" class="btn btn-primary" style="width:140px;margin:0 auto;">
 <i class="fas fa-check"></i> Saya Mengerti
 </button>
