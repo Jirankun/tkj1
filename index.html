@@ -1087,7 +1087,7 @@ Gunakan kode akses untuk login. Semua data disimpan offline untuk keamanan.
 <button id="menuBtn" class="menu-btn" onclick="toggleMenu()">
 <i class="fas fa-bars"></i>
 </button>
-<h1 class="app-title">TKJ OnE • Togetherness</h1>
+<h1 class="app-title"></h1>
 </header>
 <!-- CONTENT WRAPPER -->
 <div class="content-wrapper">
@@ -1188,7 +1188,7 @@ Gunakan kode akses untuk login. Semua data disimpan offline untuk keamanan.
 </div>
 <script>
 // Konfigurasi
-const CURRENT_APP_VERSION = 'v1.0.1'; // Ganti dengan versi aplikasi Anda
+const CURRENT_APP_VERSION = 'v0.0.0'; // Ganti dengan versi aplikasi Anda
 const GITHUB_REPO_OWNER = 'Jirankun';  // Ganti dengan owner repo Anda
 const GITHUB_REPO_NAME = 'TKJ-One';   // Ganti dengan nama repo Anda
 const GITHUB_RELEASE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
@@ -1281,7 +1281,7 @@ async function checkForUpdates() {
                 // hidePopup();
             };
             // Format pesan menjadi dua baris
-            const fullMessage = `Update tersedia!<br>${releaseName}`;
+            const fullMessage = `Kamu terdeteksi menggunkan versi browser<br>silahkan download aplikasi untuk pengalaman lebih baik<br>versi terbaru...<br>${releaseName}`;
             // Tampilkan pesan dengan format HTML
             showPopup(fullMessage, true, false, false, false);
         } else {
@@ -1291,7 +1291,7 @@ async function checkForUpdates() {
         }
     } catch (error) {
         console.error("Error saat memeriksa update:", error);
-        showPopup("Memeriksa update gagal", false, true, false, true); // Bounce sekali, lalu hilang ke atas
+        showPopup("Memeriksa info aplikasi terbaru gagal", false, true, false, true); // Bounce sekali, lalu hilang ke atas
     }
 }
 // Jalankan pemeriksaan saat halaman dimuat
