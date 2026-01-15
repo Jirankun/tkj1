@@ -1024,7 +1024,7 @@ pointer-events: none;
     </button>
 <div id="errorMsg" class="error-message"></div>
 <div class="hint-text">
-Gunakan kode akses untuk login. Semua data disimpan offline untuk keamanan.
+Gunakan kode akses untuk login,saya menyarankan untuk tidak membagikan Kode anda,jika di Bagikan,anda sama saja membagikan akun Email asli anda.
 </div>
 </div>
 </div>
@@ -1096,7 +1096,7 @@ Gunakan kode akses untuk login. Semua data disimpan offline untuk keamanan.
 <!-- SECURITY NOTICE -->
 <div id="securityNotice" class="security-notice" style="display:none;">
 <h3><i class="fas fa-shield-alt"></i> Keamanan Konten</h3>
-<p>Dilarang mengambil screenshot atau menyebarkan foto tanpa izin.</p>
+<p>Dilarang mengambil screenshot Halaman web ini,mohon download jika ingin membagikan.</p>
 <button onclick="acceptSecurity()" class="btn btn-primary" style="width:140px;margin:0 auto;">
 <i class="fas fa-check"></i> Saya Mengerti
 </button>
@@ -1188,7 +1188,7 @@ Gunakan kode akses untuk login. Semua data disimpan offline untuk keamanan.
 </div>
 <script>
 // Konfigurasi
-const CURRENT_APP_VERSION = 'v0.0.0'; // Ganti dengan versi aplikasi Anda
+const CURRENT_APP_VERSION = 'v1.0.1'; // Ganti dengan versi aplikasi Anda
 const GITHUB_REPO_OWNER = 'Jirankun';  // Ganti dengan owner repo Anda
 const GITHUB_REPO_NAME = 'TKJ-One';   // Ganti dengan nama repo Anda
 const GITHUB_RELEASE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
@@ -1281,7 +1281,7 @@ async function checkForUpdates() {
                 // hidePopup();
             };
             // Format pesan menjadi dua baris
-            const fullMessage = `Kamu terdeteksi menggunkan versi browser<br>silahkan download aplikasi untuk pengalaman lebih baik<br>versi terbaru...<br>${releaseName}`;
+            const fullMessage = `Update tersedia!<br>${releaseName}`;
             // Tampilkan pesan dengan format HTML
             showPopup(fullMessage, true, false, false, false);
         } else {
@@ -1291,7 +1291,7 @@ async function checkForUpdates() {
         }
     } catch (error) {
         console.error("Error saat memeriksa update:", error);
-        showPopup("Memeriksa info aplikasi terbaru gagal", false, true, false, true); // Bounce sekali, lalu hilang ke atas
+        showPopup("Memeriksa update gagal", false, true, false, true); // Bounce sekali, lalu hilang ke atas
     }
 }
 // Jalankan pemeriksaan saat halaman dimuat
