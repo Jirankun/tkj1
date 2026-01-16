@@ -269,14 +269,15 @@ overflow: hidden;
 /* SIDEBAR */
 .sidebar-overlay {
 position: fixed;
+overflow: hidden;
 top: 0;
 left: 0;
 width: 100%;
 height: 100%;
 background: rgba(0,0,0,0.7);
 backdrop-filter: blur(4px);
-    /* Put overlay above bottom nav and content but below sidebar */
-    z-index: 120;
+    /* Put overlay behind bottom nav (so bottom bar stays on top) and below the sidebar */
+    z-index: 80;
 display: none;
 opacity: 0;
 transition: var(--transition-smooth);
@@ -295,7 +296,9 @@ background: var(--bg-secondary);
 border-right: 1px solid var(--glass-border);
 padding: 1rem;
 padding-top: 70px;
-z-index: 30;
+overflow: hidden;
+    /* Keep the sidebar above the overlay but behind the bottom bar */
+    z-index: 90;
 transition: var(--transition-smooth);
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
@@ -336,6 +339,7 @@ color: var(--text-secondary);
 cursor: pointer;
 transition: var(--transition-smooth);
 font-weight: 500;
+overflow: hidden;
 }
 .sidebar-menu-item:hover {
 background: var(--glass-bg);
@@ -385,25 +389,13 @@ transform: scale(1.05);
 }
 .app-title {
 font-size: 1.2rem;
-font-weight: 500;
+font-weight: 700;
 letter-spacing: -0.5px;
 flex: 1;
 text-align: center;
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
-color: blue;
-}
-.app-title a:hover {
-  opacity: 0.7;
-  cursor: pointer;
-}
-.app-title a,
-.app-title a:hover,
-.app-title a:visited,
-.app-title a:active {
-  text-decoration: none;
-  color: inherit;
 }
 /* Style for the sidebar 'Daftar' (open members) button to be visually wider */
 .open-members-btn {
@@ -899,7 +891,7 @@ width: 100%;
 height: 100%;
 background-color: #00000066; /* Warna gelap dengan opacity */
 z-index: 2999; /* Di bawah context menu tapi di atas semua elemen lain */
-pointer-events: none; /* Agar overlay tidak menghalangi klik */
+pointer-events: auto; /* Capture clicks so underlying elements are not accidentally activated */
 }
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -1004,6 +996,8 @@ pointer-events: none;
     font-size: 0.9rem;
 }
 .photo-list .list-item .actions .btn { padding: 6px 10px; }
+.photo-list .list-item .actions .btn { padding: 6px 8px; border-radius:8px; background: transparent; border: 1px solid rgba(255,255,255,0.03); color:var(--text-secondary); min-width:40px }
+.photo-list .list-item .actions .btn i { font-size:1rem }
 </style>
 </head>
 <body>
@@ -1032,11 +1026,11 @@ pointer-events: none;
 <button onclick="verifyCode()" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Masuk</button>
 </div>
     <button id="openMembersBtn" class="btn btn-secondary open-members-btn" aria-label="Daftar" type="button">
-        <i class="fas fa-list"></i> Daftar
+        <i class="fas fa-user"></i> Minta kode
     </button>
 <div id="errorMsg" class="error-message"></div>
 <div class="hint-text">
-Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan tempel di atas.
+Gunakan kode akses untuk login. Jika kamu membagikan Kode akses,sama halnya seperti kamu membagikan akun Email kamu sendiri.
 </div>
 </div>
 </div>
@@ -1083,7 +1077,7 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
     </div>
     </div>
     <div class="sidebar-section">
-    <h4>Aksi</h4>
+    <h4>Gaya</h4>
     <div class="sidebar-menu-item active" data-view="grid" onclick="setViewMode('grid', this)">
     <i class="fas fa-th-large"></i>
     <span>Grid</span>
@@ -1093,16 +1087,17 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
     <span>Daftar</span>
     </div>
     </div>
-    <p class="app-title">
-      <a href="https://github.com/Jirankun/TKJ-One/releases/" >Download aplikasi TKJ-OnE
-      </a>
-    </p>
+      <p class="app-title">
+         <a href="https://github.com/Jirankun/TKJ-One/releases/" >Unduh aplikasi TKJ-OnE
+        </a>
+      </p>
 </div>
 <!-- HEADER -->
 <header class="header">
 <button id="menuBtn" class="menu-btn" onclick="toggleMenu()">
 <i class="fas fa-bars"></i>
 </button>
+<h1 class="app-title"></h1>
 </header>
 <!-- CONTENT WRAPPER -->
 <div class="content-wrapper">
@@ -1111,7 +1106,7 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 <!-- SECURITY NOTICE -->
 <div id="securityNotice" class="security-notice" style="display:none;">
 <h3><i class="fas fa-shield-alt"></i> Keamanan Konten</h3>
-<p>Dilarang mengambil screenshot pada Halaman ini,mohon di download jika kamu ingin membagikan.</p>
+<p>Dilarang mengambil screenshot pada Halaman web ini,mohon di Unduh gambar jika kamu ingin membagikan.</p>
 <button onclick="acceptSecurity()" class="btn btn-primary" style="width:140px;margin:0 auto;">
 <i class="fas fa-check"></i> Saya Mengerti
 </button>
@@ -1119,7 +1114,7 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 <!-- GALLERY SECTION -->
 <div id="gallerySection" style="display:none;">
 <div class="search-box-container">
-<input type="text" id="searchInput" class="search-box" placeholder="Cari foto atau tanggal..." onkeyup="performSearch()">
+<input type="number" id="searchInput" class="search-box" placeholder="Cari foto sesuai nomor foto atau tanggal..." onkeyup="performSearch()">
 </div>
 <div id="galleryContainer" class="gallery-grid"></div>
 </div>
@@ -1130,7 +1125,7 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 <div class="profile-info">
 <p><strong>Nama:</strong> <span id="profileName">-</span></p>
 <p><strong>Kode:</strong> <span id="profileCode">-</span></p>
-<p><strong>Download:</strong> <span id="profileDownloads">0</span></p>
+<p><strong>Hitungan Mengunduh:</strong> <span id="profileDownloads">0</span>Kali Mengunduh</p>
 </div>
 </div>
 </div>
@@ -1139,8 +1134,8 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 <h2><i class="fas fa-info-circle"></i> Info Developer</h2>
 <div class="info-card">
 <h3>ZHYLLAN FYLLAH</h3>
-<p>Website ini dibuat oleh anggota kelas TKJ 1 SMK N 1 LEMBAH MELINTANG.</p>
-<p>Terima kasih kepada semua teman-teman yang telah berkontribusi dalam pengambilan foto dan video untuk pengisian konten pada aplikasi ini,semoga sehat Selalu dan di berkati tuhan.</p>
+<p>Website ini dibuat sebagai memori atas kebersamaan kelas TKJ 1 SMK N 1 LEMBAH MELINTANG.</p>
+<p>Terima kasih kepada semua teman-teman yang telah berkontribusi dalam pengambilan foto dan video untuk pengisian konten pada halaman web ini,semoga sehat Selalu dan di berkati tuhan.</p>
 </div>
 </div>
 </main>
@@ -1166,9 +1161,10 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 </div>
 <!-- CUSTOM CONTEXT MENU -->
 <div id="customContextMenu" class="context-menu">
-<div class="context-menu-item" onclick="reportImage()">
-<i class="fas fa-exclamation-triangle"></i> Laporkan Foto
-</div>
+    <div class="context-menu-item" onclick="previewContextItem()"><i class="fas fa-eye"></i> Pratinjau</div>
+    <div class="context-menu-item" onclick="downloadContextItem()"><i class="fas fa-download"></i> Unduh</div>
+    <div class="context-menu-item" onclick="shareContextItem()"><i class="fas fa-share-alt"></i> Bagikan</div>
+    <div class="context-menu-item" onclick="reportImage()"><i class="fas fa-exclamation-triangle"></i> Laporkan Foto</div>
 </div>
 </div>
 <!-- IMAGE MODAL -->
@@ -1184,14 +1180,14 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 <p id="imageDate" style="color:#999;font-size:0.85rem;"></p>
     <div style="display:flex;gap:8px;margin-top:10px;">
     <button id="downloadBtn" onclick="downloadImage(null)" class="btn btn-primary">
-        <i class="fas fa-download"></i> Download
+        <i class="fas fa-download"></i> Unduh
     </button>
 </div>
 </div>
 <!-- PREVIEW MODAL (included fragment) -->
 <!-- Inserted preview modal HTML (kept separate for clarity) -->
         <div id="previewModal" class="modal-overlay" style="display:none;" onclick="closePreviewModal()">
-    <div class="modal-content" style="max-width:520px;">
+    <div class="modal-content" style="max-width:820px; width: calc(100% - 48px);">
         <h2><i class="fas fa-list"></i> Daftar Foto</h2>
         <div id="previewList" style="max-height:60vh;overflow:auto;padding-right:4px;margin-top:0.5rem;"></div>
         <div style="text-align:center;margin-top:1rem;">
@@ -1203,7 +1199,7 @@ Klik tombol daftar untuk mendaftar,dan Setelah kode berhasil di salin,silahkan t
 </div>
 <script>
 // Konfigurasi
-const CURRENT_APP_VERSION = 'v1.0.1'; // Ganti dengan versi aplikasi Anda
+const CURRENT_APP_VERSION = 'v100000'; // Ganti dengan versi aplikasi Anda
 const GITHUB_REPO_OWNER = 'Jirankun';  // Ganti dengan owner repo Anda
 const GITHUB_REPO_NAME = 'TKJ-One';   // Ganti dengan nama repo Anda
 const GITHUB_RELEASE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
@@ -1302,7 +1298,7 @@ async function checkForUpdates() {
         } else {
             // Current version is up-to-date: show a brief confirmation popup
             console.log("Aplikasi sudah versi terbaru.");
-            showPopup("Versi kamu sudah terbaru", false, true, true, false);
+            showPopup("Kamu sedang menjalankan versi web, Unduh aplikasi untuk pengalaman terbaik", false, true, true, false);
         }
     } catch (error) {
         console.error("Error saat memeriksa update:", error);
@@ -1502,6 +1498,9 @@ document.getElementById('gallerySection').style.display = 'block';
 document.getElementById('profileSection').style.display = 'none';
 document.getElementById('infoSection').style.display = 'none';
 document.getElementById('sidebar').style.display = 'block';
+    // show the sidebar toggle only for gallery
+    const menuBtn = document.getElementById('menuBtn');
+    if (menuBtn) menuBtn.style.display = '';
 renderGallery();
 }
 function openProfile(e) {
@@ -1513,6 +1512,9 @@ document.getElementById('gallerySection').style.display = 'none';
 document.getElementById('profileSection').style.display = 'block';
 document.getElementById('infoSection').style.display = 'none';
 document.getElementById('sidebar').style.display = 'none';
+    // hide the sidebar toggle outside gallery view
+    const menuBtn = document.getElementById('menuBtn');
+    if (menuBtn) menuBtn.style.display = 'none';
 if (currentUser) {
 document.getElementById('profileName').textContent = currentUser;
 document.getElementById('profileCode').textContent = localStorage.getItem('user_code') || '-';
@@ -1528,10 +1530,13 @@ document.getElementById('gallerySection').style.display = 'none';
 document.getElementById('profileSection').style.display = 'none';
 document.getElementById('infoSection').style.display = 'block';
 document.getElementById('sidebar').style.display = 'none';
+    // hide the sidebar toggle outside gallery view
+    const menuBtn = document.getElementById('menuBtn');
+    if (menuBtn) menuBtn.style.display = 'none';
 }
 function logout(e) {
 e.preventDefault();
-if (confirm('Yakin ingin logout?')) {
+if (confirm('Yakin ingin logout?,semua data login kamu bakalan hilang loh!')) {
 localStorage.removeItem('logged_in_user');
 localStorage.removeItem('user_code');
 location.reload();
@@ -1565,6 +1570,65 @@ async function loadPhotos() {
     renderGallery();
 }
 // ===== GALLERY RENDERING =====
+// === SETUP OBSERVER (HANYA SEKALI) ===
+let imgObserver;
+// Flag to prevent accidental selection when context menu is open
+let contextMenuOpen = false;
+function setupLazyObserver() {
+    if (imgObserver) return;
+    if ('IntersectionObserver' in window) {
+        imgObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const src = el.dataset.src;
+                    if (src) {
+                        if (el.tagName === 'VIDEO') {
+                            el.src = src;
+                            // load metadata first; finalize when enough data available
+                            el.load();
+                            el.onloadeddata = () => finalizeLoad(el);
+                        } else {
+                            el.src = src;
+                            el.onload = () => finalizeLoad(el);
+                            el.onerror = () => finalizeLoad(el); // tetap tampilkan meski error
+                        }
+                        imgObserver.unobserve(el);
+                    }
+                }
+            });
+        }, { rootMargin: '200px' });
+    } else {
+        // Fallback for older browsers: immediately load media
+        imgObserver = {
+            observe(el) {
+                const src = el.dataset.src;
+                if (!src) return;
+                if (el.tagName === 'VIDEO') {
+                    el.src = src;
+                    el.load();
+                    el.onloadeddata = () => finalizeLoad(el);
+                } else {
+                    el.src = src;
+                    el.onload = () => finalizeLoad(el);
+                    el.onerror = () => finalizeLoad(el);
+                }
+            },
+            unobserve() { /* no-op */ }
+        };
+    }
+}
+
+function finalizeLoad(mediaEl) {
+    const item = mediaEl.parentElement;
+    if (item) {
+        item.classList.remove('skeleton');
+        item.classList.add('loaded');
+        // ensure media fades in (remove inline hidden opacity)
+        try { mediaEl.style.opacity = '1'; } catch (e) { /* ignore */ }
+    }
+}
+
 function renderGallery(filteredOverride) {
     // Use optimized rendering: accept optional filtered array, otherwise use allPhotos
     let filtered = Array.isArray(filteredOverride) ? filteredOverride : allPhotos.slice();
@@ -1596,22 +1660,43 @@ function renderGallery(filteredOverride) {
         const listFrag = document.createDocumentFragment();
         filtered.forEach(photo => {
             const row = document.createElement('div');
-            row.className = 'list-item';
-            row.innerHTML = `
-                <img loading="lazy" src="${photo.url}" alt="${photo.name || ''}" />
-                <div class="info">
-                    <div class="name">${photo.name || 'Tanpa Nama'}</div>
-                    <div class="date">${photo.date ? formatDateReadable(photo.date) : '-'}</div>
-                </div>
-                <div class="actions"><button class="btn btn-primary" title="Download"><i class="fas fa-download"></i></button></div>
-            `;
+            row.className = 'list-item skeleton';
+
+            const img = document.createElement('img');
+            // For list view we want immediate preview (not dark), so set src directly
+            img.src = photo.url;
+            img.alt = photo.name || '';
+            img.style.opacity = '1';
+            row.appendChild(img);
+
+            const info = document.createElement('div');
+            info.className = 'info';
+            info.innerHTML = `<div class="name">${photo.name || 'Tanpa Nama'}</div><div class="date">${photo.date ? formatDateReadable(photo.date) : '-'}</div>`;
+            row.appendChild(info);
+
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-primary';
+            btn.title = 'Unduh';
+            btn.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
+            actions.appendChild(btn);
+            row.appendChild(actions);
+
             // Event handlers
-            row.querySelector('.actions .btn').addEventListener('click', (ev) => { ev.stopPropagation(); currentPhoto = photo; downloadImage(); });
+            // Open elegant action menu for this item (Preview, Download, Share, Report)
+            btn.addEventListener('click', (ev) => { ev.stopPropagation(); currentPhoto = photo; selectedPhotoForReport = photo; const anchor = ev.target.closest('.list-item'); showContextMenu(ev.clientX, ev.clientY, 'list', anchor); });
             row.addEventListener('click', () => { currentPhoto = photo; openImage(photo); });
+            row._photo = photo;
             listFrag.appendChild(row);
         });
         listWrap.appendChild(listFrag);
         container.appendChild(listWrap);
+
+        // Setup observer and observe list images
+        setupLazyObserver();
+        container.querySelectorAll('.list-item img, .list-item video').forEach(el => imgObserver.observe(el));
+
         return; // finished rendering list
     }
 
@@ -1631,14 +1716,36 @@ function renderGallery(filteredOverride) {
         grid.className = 'gallery-grid';
         groups[letter].forEach(photo => {
             const item = document.createElement('div');
-            item.className = 'gallery-item';
+            item.className = 'gallery-item skeleton';
+            item.style.aspectRatio = '1 / 1.2';
             item.setAttribute('data-photo-id', photo.url);
-            // Use lazy loading and lightweight DOM
-            const imgHtml = photo.gender === 'video' || /\.(mp4|webm|avi)$/i.test(photo.url)
-                ? `<video draggable="false" ondragstart="return false;" preload="metadata" muted playsinline src="${photo.url}" style="width:100%;height:180px;object-fit:cover;background:#222;"></video>`
-                : `<img draggable="false" ondragstart="return false;" loading="lazy" src="${photo.url}" alt="${photo.name || ''}" style="width:100%;height:180px;object-fit:cover;background:#222;">`;
-            const metaHtml = `<div class="gallery-item-meta"><div class="gallery-item-name">${photo.name || 'Tanpa Nama'}</div><div class="gallery-item-date">${photo.date || 'Tanggal tidak tersedia'}</div></div>`;
-            item.innerHTML = imgHtml + metaHtml;
+
+            const isVideo = photo.gender === 'video' || /\.(mp4|webm|avi)$/i.test(photo.url);
+            if (isVideo) {
+                const vid = document.createElement('video');
+                vid.dataset.src = photo.url;
+                vid.draggable = false;
+                vid.setAttribute('ondragstart', 'return false;');
+                vid.preload = 'metadata';
+                vid.muted = true;
+                vid.playsInline = true;
+                vid.style.opacity = '0';
+                item.appendChild(vid);
+            } else {
+                const img = document.createElement('img');
+                img.dataset.src = photo.url;
+                img.draggable = false;
+                img.setAttribute('ondragstart', 'return false;');
+                img.alt = photo.name || '';
+                img.style.opacity = '0';
+                item.appendChild(img);
+            }
+
+            const meta = document.createElement('div');
+            meta.className = 'gallery-item-meta';
+            meta.innerHTML = `<div class="gallery-item-name">${photo.name || 'Tanpa Nama'}</div><div class="gallery-item-date">${photo.date || 'Tanggal tidak tersedia'}</div>`;
+            item.appendChild(meta);
+
             // Keep a lightweight pointer to photo on element
             item._photo = photo;
             grid.appendChild(item);
@@ -1651,6 +1758,11 @@ function renderGallery(filteredOverride) {
 
     // Ensure event delegation listeners exist (added once)
     attachGalleryDelegates();
+    // Setup observer and observe gallery media
+    setupLazyObserver();
+    container.querySelectorAll('.gallery-item > img, .gallery-item > video, .list-item img, .list-item video').forEach(el => {
+        imgObserver.observe(el);
+    });
 }
 
 // Set view mode and update sidebar active state
@@ -1695,10 +1807,12 @@ function attachGalleryDelegates() {
         if (!photo) return;
         isLongPress = false;
         startX = e.clientX; startY = e.clientY;
+        const itemEl = e.target.closest('.gallery-item, .list-item');
         pressTimer = setTimeout(() => {
             isLongPress = true;
             selectedPhotoForReport = photo;
-            showContextMenu(e.clientX, e.clientY);
+            const source = itemEl && itemEl.classList.contains('gallery-item') ? 'grid' : 'list';
+            showContextMenu(e.clientX, e.clientY, source, itemEl);
         }, LONG_PRESS_MS);
     });
     container.addEventListener('mouseup', (e) => {
@@ -1712,16 +1826,23 @@ function attachGalleryDelegates() {
         if (!photo) return;
         isLongPress = false;
         startX = touch.clientX; startY = touch.clientY;
+        const itemEl = e.target.closest('.gallery-item, .list-item');
         pressTimer = setTimeout(() => {
             isLongPress = true;
             selectedPhotoForReport = photo;
-            showContextMenu(touch.clientX, touch.clientY);
+            const source = itemEl && itemEl.classList.contains('gallery-item') ? 'grid' : 'list';
+            showContextMenu(touch.clientX, touch.clientY, source, itemEl);
         }, LONG_PRESS_MS);
     }, { passive: true });
     container.addEventListener('touchend', () => clearTimeout(pressTimer));
     container.addEventListener('touchcancel', () => clearTimeout(pressTimer));
 
     container.addEventListener('click', (e) => {
+        // If context menu is open, ignore clicks to avoid accidental selection
+        if (contextMenuOpen) {
+            contextMenuOpen = false;
+            return;
+        }
         const photo = findPhotoFromTarget(e.target);
         if (!photo) return;
         // If long press occurred, do not open modal
@@ -1733,27 +1854,64 @@ function attachGalleryDelegates() {
     });
 }
 // Fungsi untuk menampilkan context menu dan menambahkan overlay
-function showContextMenu(x, y) {
-const menu = document.getElementById('customContextMenu');
-// Adjust position to stay in viewport
-const rect = menu.getBoundingClientRect();
-const spaceRight = window.innerWidth - x;
-const spaceBottom = window.innerHeight - y;
-let left = x;
-let top = y;
-if (spaceRight < rect.width) {
-left = x - rect.width;
-}
-if (spaceBottom < rect.height) {
-top = y - rect.height;
-}
-menu.style.left = `${left}px`;
-menu.style.top = `${top}px`;
-menu.classList.add('show');
-// Tambahkan class ke body untuk menampilkan overlay
-document.body.classList.add('context-active');
-// Tambahkan event listener untuk menutup menu saat klik di luar
-document.addEventListener('click', closeContextMenuOnClick, { once: true });
+function showContextMenu(x, y, source, anchorEl) {
+    const menu = document.getElementById('customContextMenu');
+    if (!menu) return;
+    // Full action set for both grid and list
+    menu.innerHTML = `
+        <div class="context-menu-item" onclick="previewContextItem()"><i class="fas fa-eye"></i> Pratinjau</div>
+        <div class="context-menu-item" onclick="downloadContextItem()"><i class="fas fa-download"></i> Unduh</div>
+        <div class="context-menu-item" onclick="shareContextItem()"><i class="fas fa-share-alt"></i> Bagikan</div>
+        <div class="context-menu-item" onclick="reportImage()"><i class="fas fa-exclamation-triangle"></i> Laporkan Foto</div>
+    `;
+
+    // Ensure the menu actions operate on the correct photo (set current selection)
+    let resolvedPhoto = null;
+    if (selectedPhotoForReport) resolvedPhoto = selectedPhotoForReport;
+    else if (anchorEl && anchorEl._photo) resolvedPhoto = anchorEl._photo;
+    else if (anchorEl) {
+        // Try to infer from image src if the element lacks _photo
+        const img = anchorEl.querySelector('img');
+        if (img) resolvedPhoto = { url: img.src || img.dataset.src, name: img.alt || '' };
+    }
+    if (resolvedPhoto) {
+        currentPhoto = resolvedPhoto;
+        selectedPhotoForReport = resolvedPhoto;
+    }
+
+    // Positioning: measure first, then compute placement anchored to element when possible
+    menu.style.visibility = 'hidden';
+    menu.classList.add('show');
+    const rectMenu = menu.getBoundingClientRect();
+    let left = 8, top = 8;
+    if (anchorEl) {
+        const a = anchorEl.getBoundingClientRect();
+        // default: centered horizontally over anchor, below it
+        left = a.left + (a.width - rectMenu.width) / 2;
+        top = a.bottom + 8;
+        // Clamp horizontally
+        if (left + rectMenu.width > window.innerWidth - 8) left = window.innerWidth - rectMenu.width - 8;
+        if (left < 8) left = 8;
+        // If it doesn't fit vertically below, place above
+        if (top + rectMenu.height > window.innerHeight - 8) top = a.top - rectMenu.height - 8;
+        if (top < 8) top = 8;
+    } else {
+        // fallback to pointer coordinates
+        left = x;
+        top = y;
+        if (left + rectMenu.width > window.innerWidth - 8) left = x - rectMenu.width;
+        if (left < 8) left = 8;
+        if (top + rectMenu.height > window.innerHeight - 8) top = y - rectMenu.height;
+        if (top < 8) top = 8;
+    }
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.visibility = '';
+
+    // Block background clicks to avoid accidental selection
+    contextMenuOpen = true;
+    document.body.classList.add('context-active');
+    document.addEventListener('click', closeContextMenuOnClick, { once: true });
 }
 // Fungsi untuk menutup context menu dan menghapus overlay
 function closeContextMenu() {
@@ -1763,6 +1921,8 @@ menu.classList.remove('show');
 document.body.classList.remove('context-active');
 // Hapus listener jika terjadi error
 document.removeEventListener('click', closeContextMenuOnClick);
+    // allow clicks again
+    contextMenuOpen = false;
 }
 function closeContextMenuOnClick(e) {
 const menu = document.getElementById('customContextMenu');
@@ -1770,6 +1930,38 @@ if (!menu.contains(e.target)) {
 closeContextMenu();
 }
 }
+
+// Close context menu on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && contextMenuOpen) {
+        closeContextMenu();
+    }
+});
+
+// === RIGHT-CLICK (DESKTOP) ===
+// Show custom context menu on right-click for gallery/list items and disable browser menu
+document.addEventListener('contextmenu', (e) => {
+    // Always prevent native menu
+    e.preventDefault();
+    // Only show custom menu on desktop
+    try {
+        const desktop = (window.innerWidth > 768 && !('ontouchstart' in window));
+        if (!desktop) return false;
+        const targetItem = e.target.closest('.gallery-item, .list-item');
+        if (targetItem) {
+            const source = targetItem.classList.contains('gallery-item') ? 'grid' : 'list';
+            // Use pointer position and anchor element so direction is consistent
+            showContextMenu(e.clientX, e.clientY, source, targetItem);
+        } else {
+            // clicked outside items -> close any open custom menu
+            if (contextMenuOpen) closeContextMenu();
+        }
+    } catch (err) {
+        // swallow errors to avoid breaking right-click behavior
+        console.warn('contextmenu handler error', err);
+    }
+    return false;
+}, false);
 // Debounced search to avoid re-render on every keystroke
 let _searchTimer = null;
 function performSearch() {
@@ -1819,7 +2011,7 @@ function downloadImage() {
     const photo = currentPhoto;
     const btn = document.getElementById('downloadBtn');
     const originalText = btn ? btn.innerHTML : '';
-    if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang Download...'; btn.disabled = true; }
+    if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang Mengunduh...'; btn.disabled = true; }
 
     // Build safe filename: name_date.ext
     const url = (photo.url || '');
@@ -1906,10 +2098,36 @@ const message =
 `Nama : ${currentUser}
 Kode user : (${userCode})
 Nama Foto : "${photoName}"
-Silahkan ketik masalah-mu ${currentUser} :`;
+Silahkan ketik masalah kamu:`;
 const encodedMessage = encodeURIComponent(message);
 const whatsappUrl = `https://wa.me/6285165721384?text=${encodedMessage}`;
 window.open(whatsappUrl, '_blank');
+}
+function previewContextItem() {
+    closeContextMenu();
+    if (!currentPhoto) return;
+    openImage(currentPhoto);
+}
+function downloadContextItem() {
+    closeContextMenu();
+    if (!currentPhoto) return;
+    // ensure download uses currentPhoto
+    downloadImage();
+}
+function shareContextItem() {
+    closeContextMenu();
+    if (!currentPhoto) return;
+    const p = currentPhoto;
+    if (navigator.share) {
+        navigator.share({ title: p.name || '', text: p.name || '', url: p.url }).catch(() => {});
+    } else {
+        // Fallback: copy URL to clipboard
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(p.url).then(() => showPopup('URL disalin ke clipboard', false, false, false, true));
+        } else {
+            showPopup('Fitur bagikan tidak tersedia', false, true, false, true);
+        }
+    }
 }
 // Preview modal handlers
 function openPreviewModal() {
@@ -1919,40 +2137,40 @@ function openPreviewModal() {
     // Build list from current filtered photos
     const items = getFilteredPhotos();
     list.innerHTML = '';
-    if (!items || items.length === 0) {
-        list.innerHTML = '<p style="color:var(--text-secondary);">Tidak ada foto untuk ditampilkan.</p>';
-    } else {
-        const frag = document.createDocumentFragment();
-        items.forEach(p => {
-            const row = document.createElement('div');
-            row.style.display = 'flex';
-            row.style.justifyContent = 'space-between';
-            row.style.alignItems = 'center';
-            row.style.padding = '8px 6px';
-            row.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
-            row.style.cursor = 'pointer';
-            const left = document.createElement('div');
-            left.style.flex = '1';
-            left.innerHTML = `<div style="font-weight:600;color:var(--text-primary);">${p.name || 'Tanpa Nama'}</div><div style="font-size:0.85rem;color:var(--text-secondary);">${p.date ? formatDateReadable(p.date) : '-'}</div>`;
-            const right = document.createElement('div');
-            const dl = document.createElement('button');
-            dl.className = 'btn btn-primary';
-            dl.style.padding = '6px 10px';
-            dl.innerHTML = '<i class="fas fa-download"></i>';
-            dl.onclick = (ev) => { ev.stopPropagation(); currentPhoto = p; downloadImage(); };
-            right.appendChild(dl);
-            // Clicking row opens the photo modal and closes the preview
-            row.onclick = () => {
-                currentPhoto = p;
-                closePreviewModal();
-                openImage(p);
-            };
-            row.appendChild(left);
-            row.appendChild(right);
-            frag.appendChild(row);
-        });
-        list.appendChild(frag);
-    }
+        if (!items || items.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-secondary);">Tidak ada foto untuk ditampilkan.</p>';
+        } else {
+            const frag = document.createDocumentFragment();
+            items.forEach(p => {
+                const row = document.createElement('div');
+                row.className = 'preview-list-row';
+                // Thumbnail
+                const thumb = document.createElement('img');
+                thumb.src = p.url;
+                thumb.alt = p.name || '';
+                thumb.className = 'preview-thumb';
+                // Info
+                const info = document.createElement('div');
+                info.className = 'preview-info';
+                info.innerHTML = `<div class="preview-name">${p.name || 'Tanpa Nama'}</div><div class="preview-date">${p.date ? formatDateReadable(p.date) : '-'}</div>`;
+                // Actions
+                const right = document.createElement('div');
+                right.className = 'preview-actions';
+                const dl = document.createElement('button');
+                dl.className = 'btn btn-primary';
+                dl.style.padding = '6px 10px';
+                dl.innerHTML = '<i class="fas fa-download"></i>';
+                dl.onclick = (ev) => { ev.stopPropagation(); currentPhoto = p; downloadImage(); };
+                right.appendChild(dl);
+                // Clicking row opens the photo modal
+                row.onclick = () => { currentPhoto = p; closePreviewModal(); openImage(p); };
+                row.appendChild(thumb);
+                row.appendChild(info);
+                row.appendChild(right);
+                frag.appendChild(row);
+            });
+            list.appendChild(frag);
+        }
     modal.style.display = 'flex';
     // Prevent background scrolling while modal is open
     document.body.style.overflow = 'hidden';
@@ -2056,11 +2274,11 @@ function updateOpenMembersBtnDisplay() {
     const btn = document.getElementById('openMembersBtn');
     if (!btn) return;
     if (openMembersBtn_modeGetCode) {
-        btn.textContent = '🔑 Minta Kode';
+        btn.textContent = 'Minta Kode Alternatif';
         btn.style.background = '#ff0080';
         btn.style.color = 'white';
     } else {
-        btn.innerHTML = '<i class="fas fa-list"></i> Daftar';
+        btn.innerHTML = '<i class="fas fa-user"></i> Minta kode';
         btn.style.background = '';
         btn.style.color = '';
     }
