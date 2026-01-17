@@ -1133,48 +1133,47 @@ Gunakan kode akses untuk login. Jika kamu membagikan Kode akses,sama halnya sepe
 <div id="infoSection" style="display:none;" class="section-content">
 <h2><i class="fas fa-info-circle"></i> Info Developer</h2>
 <div class="info-card">
-<h2>Tentang Aplikasi Album Kelas TKJ 1</h2>
+ <h2>Tentang Halaman Web Ini</h2>
 
-<p>Aplikasi ini merupakan versi mobile dari situs <strong><a href="https://tkj1.pages.dev" target="_blank">https://tkj1.pages.dev</a></strong>, yang dibuat khusus sebagai arsip digital kenangan <strong>Kelas TKJ 1 SMK Negeri 1 Lembah Melintang</strong>. Ini bukan sekadar kumpulan foto dan video biasa, melainkan sebuah proyek pribadi yang lahir dari keinginan untuk melestarikan momen-momen berharga selama masa sekolah — mulai dari praktikum jaringan, lomba kelas, hingga tawa di sela-sela pelajaran.</p>
+<p>Halaman web ini (<a href="https://tkj1.pages.dev" target="_blank">https://tkj1.pages.dev</a>) dibuat khusus sebagai arsip digital kenangan <strong>Kelas TKJ 1 SMK Negeri 1 Lembah Melintang</strong>. Ini bukan sekadar galeri foto biasa, melainkan dokumentasi hidup yang mengumpulkan momen-momen berharga selama masa sekolah — dari praktikum jaringan, lomba kelas, hingga kebersamaan sehari-hari.</p>
 
-<p>Dikembangkan oleh <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">Zhyllan Fyllah</a>, salah satu anggota kelas yang fokus pada pengembangan <strong>web, game, dan aplikasi Android</strong>, aplikasi ini dirancang agar tetap eksklusif, ringan, dan dapat diakses kapan saja — bahkan bertahun-tahun setelah lulus.</p>
+<p>Dibuat oleh <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">Zhyllan Fyllah</a>, salah satu anggota kelas yang fokus pada pengembangan <strong>web, game, dan aplikasi Android</strong>, halaman ini dirancang agar tetap eksklusif, ringan, dan dapat diakses kapan saja — bahkan bertahun-tahun setelah lulus.</p>
 
 <h3>Sistem Akses & Login</h3>
-<p>Aplikasi ini tidak menggunakan akun email, media sosial, atau sistem login konvensional. Sebagai gantinya, ia menggunakan mekanisme akses berbasis <strong>kata sandi khusus</strong> yang dibuat secara manual. Setiap nama anggota kelas memiliki <strong>kode hash unik</strong> yang sesuai. Hanya pengguna yang memasukkan kode yang benar — dan sesuai dengan nama yang terdaftar — yang dapat membuka konten penuh aplikasi.</p>
-<p>Sistem ini sengaja dibuat sederhana namun efektif: tidak ada database pengguna, tidak ada server autentikasi, dan semua verifikasi dilakukan langsung di perangkat Anda. Tujuannya adalah menjaga privasi sekaligus memastikan bahwa hanya teman sekelas yang sah yang bisa mengakses kenangan ini.</p>
+<p>Halaman web ini tidak menggunakan akun email atau media sosial. Sebagai gantinya, akses dilindungi dengan <strong>kata sandi khusus</strong> berbasis <strong>kode hash unik</strong> yang sesuai dengan nama anggota kelas. Hanya pengguna yang memasukkan kode yang benar — dan sesuai dengan nama yang terdaftar — yang dapat melihat konten penuh.</p>
+<p>Semua verifikasi dilakukan langsung di perangkat pengguna. Tidak ada database, tidak ada server autentikasi, dan tidak ada data login yang dikirim ke internet.</p>
 
 <h3>Pelacakan Penggunaan</h3>
-<p>Meskipun tidak mengumpulkan data pribadi, aplikasi ini menyimpan satu informasi kecil di perangkat Anda: <strong>jumlah kali Anda mengunduh file</strong> (baik foto maupun video). Data ini disimpan secara lokal — melalui <code>localStorage</code> di web atau <code>SharedPreferences</code> di Android — dan <strong>tidak pernah dikirim ke internet atau server eksternal</strong>.</p>
-<p>Tujuannya murni untuk statistik pribadi, misalnya mengetahui konten mana yang paling sering diakses. Tidak ada pelacakan, tidak ada analitik, dan tidak ada pihak ketiga yang terlibat.</p>
+<p>Meskipun tidak mengumpulkan data pribadi, halaman ini menyimpan satu informasi kecil di perangkat Anda: <strong>jumlah kali Anda mengunduh file</strong> (foto atau video). Data ini disimpan secara lokal melalui <code>localStorage</code> dan <strong>tidak pernah dikirim ke server</strong>. Tujuannya hanya untuk statistik pribadi, bukan pelacakan.</p>
 
-<h3>arsitektur & Alur Data</h3>
-<p>Seluruh konten aplikasi — termasuk daftar foto, video, judul, deskripsi, dan kategori — berasal dari satu sumber utama:</p>
+<h3>Arsitektur & Alur Data</h3>
+<p>Seluruh konten halaman — termasuk daftar foto, video, judul, dan kategori — berasal dari satu sumber utama:</p>
 <blockquote>
   <code>https://tkj1.pages.dev/DB/photos.json</code>
 </blockquote>
-<p>File <code>photos.json</code> ini adalah "otak" dari seluruh aplikasi. Setiap kali ada pembaruan konten (misalnya penambahan foto baru), cukup edit file tersebut di repositori GitHub. Setelah itu, proses berikut terjadi secara otomatis:</p>
+<p>File <code>photos.json</code> ini dikelola di <strong>GitHub</strong>. Setiap kali ada pembaruan, proses berikut terjadi secara otomatis:</p>
 <ol>
-  <li>Pengembang memperbarui file <code>DB/photos.json</code> di <strong>GitHub</strong>,</li>
-  <li><strong>Cloudflare Pages</strong> mendeteksi perubahan dan segera men-deploy ulang situs web statis,</li>
-  <li>Aplikasi (baik versi web maupun Android) mengambil data terbaru dari URL di atas saat dibuka.</li>
+  <li>Pengembang memperbarui file <code>DB/photos.json</code> di repositori GitHub,</li>
+  <li><strong>Cloudflare Pages</strong> mendeteksi perubahan dan langsung men-deploy ulang situs,</li>
+  <li>Halaman web mengambil data terbaru dari URL tersebut saat dibuka.</li>
 </ol>
-<p>Dengan arsitektur ini, konten bisa diperbarui tanpa perlu merilis ulang aplikasi Android. Cukup edit file JSON, dan semua pengguna akan melihat perubahan dalam hitungan detik.</p>
+<p>Berarti, konten bisa diperbarui tanpa menyentuh kode halaman — cukup edit file JSON di GitHub.</p>
 
 <h3>Layanan Pendukung</h3>
-<p>Aplikasi ini dibangun di atas ekosistem layanan modern yang andal, cepat, dan gratis. Berikut peran masing-masing:</p>
+<p>Halaman web ini dibangun dengan bantuan layanan berikut:</p>
 <ul>
-  <li><strong><a href="https://github.com" target="_blank">GitHub</a></strong> – digunakan sebagai pusat pengembangan dan penyimpanan kode. Dengan GitHub, pengembang bisa mengedit konten client (HTML, CSS, JavaScript, dan file JSON) secara mudah, fleksibel, dan terkontrol melalui sistem version control.</li>
-  <li><strong><a href="https://pages.cloudflare.com" target="_blank">Cloudflare Pages</a></strong> – berfungsi sebagai backend hosting untuk situs statis. Cloudflare menjamin kecepatan akses global, keamanan HTTPS otomatis, dan deployment instan setiap kali kode di GitHub diperbarui.</li>
-  <li><strong><a href="https://imgbb.com" target="_blank">ImgBB</a></strong> – digunakan untuk menyimpan semua foto album kelas. ImgBB dipilih karena gratis, tidak memerlukan akun wajib, dan menyediakan tautan langsung yang stabil untuk ditampilkan di aplikasi.</li>
-  <li><strong><a href="https://catbox.moe" target="_blank">Catbox.moe</a></strong> – digunakan khusus untuk menyimpan video. Layanan ini ringan, bebas iklan, dan mendukung unggah file besar tanpa kompresi berlebihan, sehingga kualitas video tetap terjaga.</li>
+  <li><strong><a href="https://github.com" target="_blank">GitHub</a></strong> – untuk mengelola dan mengedit konten secara mudah dan terkontrol.</li>
+  <li><strong><a href="https://pages.cloudflare.com" target="_blank">Cloudflare Pages</a></strong> – sebagai hosting gratis yang cepat, aman, dan otomatis update saat kode di GitHub berubah.</li>
+  <li><strong><a href="https://imgbb.com" target="_blank">ImgBB</a></strong> – digunakan untuk menyimpan semua foto album kelas.</li>
+  <li><strong><a href="https://catbox.moe" target="_blank">Catbox.moe</a></strong> – digunakan untuk menyimpan video, karena ringan dan mendukung kualitas asli.</li>
 </ul>
 
 <h3>Nilai & Tujuan</h3>
-<p>Di balik teknologi yang digunakan, ada nilai yang lebih penting: <strong>persahabatan, kenangan, dan kebersamaan</strong>. Aplikasi ini adalah bukti bahwa keterampilan teknis — seperti membuat web, mengelola data, atau mengembangkan aplikasi Android — bisa digunakan untuk tujuan yang bermakna, bukan hanya komersial.</p>
-<p>Ini juga menjadi portofolio nyata dari pembelajaran di jurusan Teknik Komputer dan Jaringan (TKJ): menggabungkan logika, desain, dan infrastruktur cloud untuk menciptakan sesuatu yang berguna bagi komunitas terdekat — yaitu teman-teman sekelas sendiri.</p>
+<p>Di balik teknologi, halaman ini lahir dari nilai <strong>persahabatan dan kenangan</strong>. Ini adalah bukti bahwa keterampilan pengembangan web bisa digunakan untuk tujuan yang personal dan bermakna — bukan hanya komersial.</p>
+<p>Sebagai bagian dari pembelajaran di jurusan TKJ, halaman ini juga menjadi portofolio nyata: menggabungkan HTML, JavaScript, manajemen data, dan integrasi cloud dalam satu karya yang berguna bagi komunitas terdekat.</p>
 
 <h3>Kontak Pengembang</h3>
-<p>Jika Anda memiliki masukan, permintaan penghapusan konten, atau sekadar ingin menyapa, silakan hubungi pengembang:</p>
+<p>Jika Anda ingin memberikan masukan, meminta penghapusan konten, atau sekadar menyapa, silakan hubungi:</p>
 <ul>
   <li>Email: <a href="mailto:zhyllanfyllah@gmail.com">zhyllanfyllah@gmail.com</a></li>
   <li>WhatsApp: <a href="https://wa.me/6285165721384" target="_blank">085165721384</a></li>
@@ -1182,7 +1181,7 @@ Gunakan kode akses untuk login. Jika kamu membagikan Kode akses,sama halnya sepe
 </ul>
 
 <blockquote>
-  “Kenangan tidak perlu megah — cukup tulus. Dan aplikasi ini adalah bukti bahwa hal sederhana, seperti foto bersama di kelas, bisa menjadi harta yang tak ternilai suatu hari nanti.”
+  “Kenangan tidak perlu megah — cukup tulus. Dan halaman web ini adalah bukti bahwa hal sederhana, seperti foto bersama di kelas, bisa menjadi harta yang tak ternilai suatu hari nanti.”
 </blockquote>
 
 <p>© 2026 Kelas TKJ 1 SMKN 1 Lembah Melintang – Dibuat dengan ❤️ untuk kenangan yang tak terlupakan.</p>
