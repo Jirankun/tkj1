@@ -1,12 +1,12 @@
 {
   "info": [
     {
-      "status": "false",
+      "status": "true",
       "category": "main",
       "show": "Aplikasi sedang maintenance."
     },
     {
-      "status": "true",
+      "status": "false",
       "category": "info",
       "show": "Fitur unduh batch sudah aktif! Coba sekarang."
     },
