@@ -6,12 +6,12 @@
       "show": "Aplikasi sedang maintenance."
     },
     {
-      "status": "false",
+      "status": "true",
       "category": "info",
       "show": "Fitur unduh batch sudah aktif! Coba sekarang."
     },
     {
-      "status": "true",
+      "status": "false",
       "category": "ads",
       "show": "https://youtu.be/y9Kqb2z9Lzs?si=Eytv4BtdpuxZ-cMu"
     }
