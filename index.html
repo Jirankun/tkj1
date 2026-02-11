@@ -34,7 +34,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Real-time Date & Time (TOP) */
         .datetime-realtime {
             font-family: 'Courier New', monospace;
             font-size: 16px;
@@ -47,10 +46,8 @@
             border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
-        /* Icons - Enhanced Design */
         .icon-wrapper {
-            display: flex;
-            justify-content: center;
+            display: flex;            justify-content: center;
             gap: 40px;
             margin-bottom: 30px;
         }
@@ -87,7 +84,6 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        /* Countdown Timer */
         .countdown {
             display: flex;
             flex-wrap: nowrap;
@@ -100,7 +96,6 @@
             border: 2px solid #4caf50;
             box-shadow: inset 0 0 15px rgba(76, 175, 80, 0.2);
         }
-
         .countdown-item {
             display: flex;
             flex-direction: column;
@@ -124,7 +119,6 @@
             white-space: nowrap;
         }
 
-        /* Jam Ini Text */
         .jam-ini {
             margin-bottom: 30px;
             padding: 18px;
@@ -142,7 +136,6 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* Header */
         .header {
             margin-bottom: 30px;
         }
@@ -152,8 +145,7 @@
             margin-bottom: 10px;
             background: linear-gradient(135deg, #4caf50, #8bc34a);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-text-fill-color: transparent;            background-clip: text;
         }
 
         .status-text {
@@ -163,7 +155,6 @@
             margin-top: 5px;
         }
 
-        /* Message */
         .message {
             background: rgba(35, 35, 35, 0.7);
             padding: 22px;
@@ -182,7 +173,6 @@
             font-weight: bold;
         }
 
-        /* Download Button */
         .download-section {
             margin-bottom: 25px;
         }
@@ -204,8 +194,7 @@
             letter-spacing: 0.5px;
         }
 
-        .download-btn:hover {
-            transform: translateY(-3px);
+        .download-btn:hover {            transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(76, 175, 80, 0.7);
             background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%);
         }
@@ -228,7 +217,6 @@
             text-transform: uppercase;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding-top: 20px;
@@ -237,51 +225,26 @@
             font-size: 12px;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 25px;
-            }
-            h1 {
-                font-size: 22px;
-            }
-            .icon-container {
-                width: 65px;
-                height: 65px;
-            }
-            .warning-icon, .close-icon {
-                width: 32px;
-                height: 32px;
-            }
-            .time-unit {
-                font-size: 26px;
-            }
-            .time-label {
-                font-size: 10px;
-            }
-            .datetime-realtime {
-                font-size: 14px;
-                margin-bottom: 20px;
-            }
-            .jam-ini {
-                font-size: 15px;
-                padding: 15px;
-            }
-        }
-
-        /* Google Ads Container */
         .ads-container {
             margin-top: 30px;
             text-align: center;
         }
+
+        @media (max-width: 480px) {
+            .container { padding: 25px; }
+            h1 { font-size: 22px; }
+            .icon-container { width: 65px; height: 65px; }
+            .warning-icon, .close-icon { width: 32px; height: 32px; }
+            .time-unit { font-size: 26px; }
+            .time-label { font-size: 10px; }
+            .datetime-realtime { font-size: 14px; margin-bottom: 20px; }
+            .jam-ini { font-size: 15px; padding: 15px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Real-time Date & Time -->
-        <div class="datetime-realtime" id="datetime-realtime"></div>
+    <div class="container">        <div class="datetime-realtime" id="datetime-realtime"></div>
 
-        <!-- Icons -->
         <div class="icon-wrapper">
             <div class="icon-container warning-bg">
                 <svg class="warning-icon" viewBox="0 0 24 24">
@@ -295,7 +258,6 @@
             </div>
         </div>
 
-        <!-- Countdown Timer -->
         <div class="countdown" id="countdown">
             <div class="countdown-item">
                 <span class="time-unit" id="years">0</span>
@@ -323,23 +285,18 @@
             </div>
         </div>
 
-        <!-- Jam Saat Ini -->
         <div class="jam-ini">
             <span class="jam-highlight" id="jam-sekarang">Memuat...</span>
         </div>
 
-        <!-- Header -->
         <div class="header">
             <h1>Halaman Album Foto TKJ1</h1>
             <p class="status-text">Sudah Dimatikan / Dialihkan</p>
         </div>
-
-        <!-- Message -->
         <div class="message">
             <p>Halaman ini sudah tidak aktif lagi. Sebagai developer, saya menyarankan Anda untuk mengunduh aplikasi <strong>TKJ OnE</strong> karena aplikasi tersebut sudah saya nyatakan stabil untuk menghandle semua sistem yang dibutuhkan.</p>
         </div>
 
-        <!-- Download Button -->
         <div class="download-section">
             <button class="download-btn">
                 <span class="btn-text">Unduh Aplikasi TKJ OnE</span>
@@ -347,12 +304,11 @@
             </button>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             <p>© 2026 TKJ OnE - Developed by Zhyllan Fyllah</p>
         </div>
 
-        <!-- Google AdSense -->
+        <!-- Google AdSense - Hanya aktif di web -->
         <div class="ads-container">
             <ins class="adsbygoogle"
                  style="display:block"
@@ -363,11 +319,9 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
-
-        const closedDate = new Date('2025-01-30T00:23:00+07:00');
-
+        // ⏰ WAKTU PENONAKTIFAN: Jumat, 30 Januari 2026 pukul 00:23 WIB (dini hari)
+        const closedDate = new Date('2026-01-30T00:23:00+07:00');
 
         function updateRealtimeDateTime() {
             const now = new Date();
@@ -382,13 +336,12 @@
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
 
+            // Format 24-jam tanpa AM/PM (sesuai permintaan "00:23")
             document.getElementById('datetime-realtime').textContent = 
                 `${day}, ${date} ${month} ${year} | ${hours}:${minutes}:${seconds}`;
             document.getElementById('jam-sekarang').textContent = 
-                `${day}, ${date} ${month} ${year}_${hours}:${minutes} ${ampm}`;
-        }
+                `${day}, ${date} ${month} ${year}_${hours}:${minutes}`;        }
 
         function calculateTimeDifference(startDate, endDate) {
             const diffMs = endDate - startDate;
@@ -437,8 +390,7 @@
         });
     </script>
 
-    <!-- Google AdSense Loader (cukup sekali di akhir body) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
+    <!-- Google AdSense Loader -->    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
             crossorigin="anonymous"></script>
 </body>
 </html>
