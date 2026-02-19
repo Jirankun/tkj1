@@ -1,0 +1,184 @@
+{
+  "users": [
+    { 
+      "name": "Abiyu Anugrah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Aktsar Hakim Nst", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Amalia Safitri", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Amir Hamzah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Asra Bilhuda", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Eli Zahara", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Ezyla Aziz Zeira", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Fadel Muhammad Rezki", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Faizul Adzimi", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Faldho Adzani", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Fitria Mulia", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Galang Luqmanul Hakim", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Hafif Mabrur", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Kasifa Rahmah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Keysa Putri Ramadani", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "M. Rafiki Rasli", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Muhammad Hibban Aulia", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Muhammad Yudha Pratama", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Najia Atika Sahira", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Najwa Asyifa", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Rafi Idham", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Ranti Amelia", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Rasima Handayani", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Reviansyah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Reza Ardiansyah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Sakinah Khanza", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Salimah", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Salsa Bila", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Susi Saskia", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Syah Ratul Paiza", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Thalita Syafa Harahap", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Tonius Nduru", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Yennisa Mulia", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Yuda Setriawan", 
+      "status": true,
+      "suspend_reason": ""
+    },
+    { 
+      "name": "Zhyllan Fyllah", 
+      "status": false,
+      "suspend_reason": "Melanggar aturan komunitas: Mengambil screenshot aplikasi"
+    },
+    { 
+      "name": "@", 
+      "status": true,
+      "suspend_reason": ""
+    }
+  ]
+}
