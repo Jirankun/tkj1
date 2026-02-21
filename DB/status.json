@@ -173,12 +173,12 @@
     { 
       "name": "Zhyllan Fyllah", 
       "status": true,
-      "suspend_reason": "Melanggar aturan komunitas: Mengambil screenshot aplikasi"
+      "suspend_reason": ""
     },
     { 
       "name": "@", 
-      "status": true,
-      "suspend_reason": ""
+      "status": false,
+      "suspend_reason": "gak sesuai selera developer"
     }
   ]
 }
