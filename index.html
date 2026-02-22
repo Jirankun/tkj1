@@ -3,394 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Album Foto TKJ1 - Dialihkan</title>
+    <meta name="description" content="TKJ OnE Blog - Dokumentasi album foto TKJ1, tutorial networking, pengembangan aplikasi Android oleh Zhyllan Fyllah">
+    <meta name="keywords" content="TKJ, album foto, Android, networking, Zhyllan Fyllah, tutorial IT">
+    <meta name="author" content="Zhyllan Fyllah">
+    <meta name="robots" content="index, follow">
+    <title>TKJ OnE Blog | Dokumentasi TKJ1 & Tutorial Networking</title>
     <script src="https://quge5.com/88/tag.min.js" data-zone="212549" async data-cfasync="false"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: rgba(40, 40, 40, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 620px;
-            width: 100%;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .datetime-realtime {
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            color: #4caf50;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            padding: 12px;
-            background: rgba(30, 30, 30, 0.7);
-            border-radius: 10px;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-
-        .icon-wrapper {
-            display: flex;            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .icon-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-
-        .icon-container:hover {
-            transform: scale(1.1);
-        }
-
-        .warning-bg {
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-        }
-
-        .close-bg {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
-        }
-
-        .warning-icon, .close-icon {
-            width: 40px;
-            height: 40px;
-            fill: white;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .countdown {
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(25, 25, 25, 0.8);
-            border-radius: 16px;
-            border: 2px solid #4caf50;
-            box-shadow: inset 0 0 15px rgba(76, 175, 80, 0.2);
-        }
-        .countdown-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 60px;
-        }
-
-        .time-unit {
-            font-size: 28px;
-            font-weight: bold;
-            color: #4caf50;
-            text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
-        }
-
-        .time-label {
-            font-size: 10px;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .jam-ini {
-            margin-bottom: 30px;
-            padding: 18px;
-            background: rgba(25, 25, 25, 0.8);
-            border-radius: 12px;
-            border-left: 4px solid #ff9800;
-            font-size: 17px;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .jam-highlight {
-            color: #ff9800;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-        }
-
-        .header {
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #4caf50, #8bc34a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;            background-clip: text;
-        }
-
-        .status-text {
-            font-size: 16px;
-            color: #ff9800;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .message {
-            background: rgba(35, 35, 35, 0.7);
-            padding: 22px;
-            border-radius: 12px;
-            margin-bottom: 28px;
-            line-height: 1.6;
-            border-left: 4px solid #4caf50;
-        }
-
-        .message p {
-            font-size: 15px;
-        }
-
-        .message strong {
-            color: #4caf50;
-            font-weight: bold;
-        }
-
-        .download-section {
-            margin-bottom: 25px;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
-            color: white;
-            border: none;
-            padding: 22px 45px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
-            display: inline-block;
-            text-align: center;
-            width: 100%;
-            max-width: 360px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .download-btn:hover {            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.7);
-            background: linear-gradient(135deg, #66bb6a 0%, #388e3c 100%);
-        }
-
-        .download-btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-text {
-            display: block;
-            font-size: 19px;
-            margin-bottom: 6px;
-        }
-
-        .btn-subtext {
-            display: block;
-            font-size: 11px;
-            opacity: 0.95;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-
-        .footer {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #888;
-            font-size: 12px;
-        }
-
-        .ads-container {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 25px; }
-            h1 { font-size: 22px; }
-            .icon-container { width: 65px; height: 65px; }
-            .warning-icon, .close-icon { width: 32px; height: 32px; }
-            .time-unit { font-size: 26px; }
-            .time-label { font-size: 10px; }
-            .datetime-realtime { font-size: 14px; margin-bottom: 20px; }
-            .jam-ini { font-size: 15px; padding: 15px; }
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#4caf50;--primary-dark:#2e7d32;--accent:#ff9800;--bg:#1a1a1a;--card:rgba(40,40,40,.95);--text:#fff;--muted:#aaa;--border:rgba(255,255,255,.1)}
+        body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg),#2d2d2d);color:var(--text);min-height:100vh;line-height:1.7;padding-top:125px}
+        
+        /* ===== COMPACT HEADER ===== */
+        .site-header{position:fixed;top:0;left:0;right:0;background:rgba(30,30,30,.98);border-bottom:2px solid var(--primary);z-index:1000;padding:8px 15px;backdrop-filter:blur(8px);box-shadow:0 2px 20px rgba(0,0,0,.4)}
+        .header-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+        .brand{display:flex;align-items:center;gap:8px}
+        .brand h1{font-size:16px;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .brand .status{font-size:10px;color:var(--accent);font-weight:600}
+        .datetime{font-family:'Courier New',monospace;font-size:11px;color:var(--primary);background:rgba(30,30,30,.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(76,175,80,.3)}
+        .header-actions{display:flex;align-items:center;gap:8px}
+        .icon-btn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .icon-btn.warning{background:linear-gradient(135deg,#ff9800,#f57c00)}
+        .icon-btn.close{background:linear-gradient(135deg,#f44336,#d32f2f)}
+        .icon-btn svg{width:14px;height:14px;fill:white}
+        .header-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;flex-wrap:wrap}
+        .countdown{display:flex;gap:4px}
+        .cd-item{display:flex;flex-direction:column;align-items:center;min-width:32px}
+        .cd-val{font-size:13px;font-weight:bold;color:var(--primary)}
+        .cd-label{font-size:7px;color:var(--muted);text-transform:uppercase}
+        .header-msg{font-size:11px;color:#ccc;background:rgba(35,35,35,.8);padding:4px 8px;border-radius:4px;border-left:2px solid var(--primary);flex:1;min-width:150px}
+        .btn-dl{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;white-space:nowrap}
+        .btn-dl:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(76,175,80,.4)}
+        .btn-sub{display:block;font-size:8px;opacity:.9;text-transform:uppercase;margin-top:2px}
+        .header-ads{text-align:center;margin-top:6px}
+        
+        /* ===== COMPACT NAV ===== */
+        .site-nav{position:fixed;top:92px;left:0;right:0;background:rgba(35,35,35,.98);border-bottom:1px solid var(--border);z-index:999;padding:0 10px;backdrop-filter:blur(6px)}
+        .nav-wrap{display:flex;gap:2px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
+        .nav-wrap::-webkit-scrollbar{display:none}
+        .nav-link{color:var(--text);text-decoration:none;padding:6px 12px;font-size:12px;font-weight:500;border-radius:4px;white-space:nowrap}
+        .nav-link:hover,.nav-link.active{background:rgba(76,175,80,.2);color:var(--primary)}
+        
+        /* ===== BLOG CONTENT ===== */
+        .blog-wrap{max-width:950px;margin:0 auto;padding:20px 15px;display:grid;gap:20px}
+        @media(min-width:850px){.blog-wrap{grid-template-columns:2fr 1fr}}
+        .blog-main{min-width:0}
+        .post{background:var(--card);border-radius:12px;padding:20px;margin-bottom:15px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+        .post-h{font-size:18px;color:var(--primary);margin-bottom:8px;line-height:1.3}
+        .post-meta{display:flex;gap:12px;color:var(--muted);font-size:11px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+        .post-p{color:#d0d0d0;font-size:14px;text-align:justify;margin-bottom:12px}
+        .post-h3{color:var(--accent);margin:18px 0 8px;font-size:16px;padding-left:8px;border-left:2px solid var(--accent)}
+        .post-ul,.post-ol{margin:10px 0 10px 22px;color:#c0c0c0;font-size:14px}
+        .post-li{margin-bottom:6px}
+        .post-code{background:#1e1e1e;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;color:var(--primary);font-size:12px}
+        .post-pre{background:#1e1e1e;padding:12px;border-radius:6px;overflow-x:auto;margin:12px 0;border:1px solid var(--border);font-size:11px;color:#d4d4d4}
+        .post-pre code{background:none;padding:0;color:inherit}
+        .post-bq{background:rgba(76,175,80,.1);border-left:3px solid var(--primary);padding:10px 12px;margin:12px 0;border-radius:0 4px 4px 0;font-style:italic;color:#bbb;font-size:13px}
+        .tags{display:flex;flex-wrap:wrap;gap:5px;margin:15px 0 10px;padding-top:10px;border-top:1px solid var(--border)}
+        .tag{background:rgba(76,175,80,.15);color:var(--primary);padding:3px 10px;border-radius:15px;font-size:10px;font-weight:600}
+        .cta{background:linear-gradient(135deg,rgba(76,175,80,.12),rgba(46,125,50,.1));padding:12px;border-radius:8px;margin:15px 0;border:1px dashed var(--primary);text-align:center}
+        .cta-p{margin-bottom:8px;font-size:13px;font-weight:500}
+        .cta .btn-dl{margin:0 auto;display:flex;align-items:center;gap:4px}
+        
+        /* ===== SIDEBAR ===== */
+        .sidebar{min-width:0}
+        .widget{background:var(--card);border-radius:12px;padding:15px;margin-bottom:15px;border:1px solid var(--border)}
+        .widget-h{font-size:15px;color:var(--primary);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+        .widget-p{color:#ccc;font-size:12px;line-height:1.6}
+        .widget-list{list-style:none;padding:0}
+        .widget-list li{padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+        .widget-list li:last-child{border:none}
+        .widget-list a{color:var(--text);text-decoration:none}
+        .widget-list a:hover{color:var(--primary)}
+        .ads-side{text-align:center;padding:10px;background:rgba(30,30,30,.5);border-radius:8px;margin:10px 0}
+        
+        /* ===== FOOTER ===== */
+        .footer{background:rgba(30,30,30,.98);border-top:1px solid var(--border);padding:25px 15px;margin-top:30px;text-align:center}
+        .footer-logo{font-size:18px;font-weight:bold;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+        .footer-p{color:#aaa;font-size:12px;margin-bottom:15px}
+        .footer-links{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:15px 0}
+        .footer-links a{color:var(--muted);text-decoration:none;font-size:11px}
+        .footer-links a:hover{color:var(--primary)}
+        .footer-copy{color:#555;font-size:10px;margin-top:15px;padding-top:15px;border-top:1px solid var(--border)}
+        
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .post{animation:fadeIn .3s ease forwards;opacity:0}
+        .post:nth-child(1){animation-delay:.1s;opacity:1}.post:nth-child(2){animation-delay:.2s;opacity:1}.post:nth-child(3){animation-delay:.3s;opacity:1}.post:nth-child(4){animation-delay:.4s;opacity:1}
+        
+        @media(max-width:600px){
+            body{padding-top:145px}
+            .header-row{flex-direction:column;align-items:flex-start}
+            .header-bottom{width:100%}
+            .header-msg{min-width:100%}
+            .btn-dl{width:100%;justify-content:center}
+            .nav-wrap{padding:4px 0}
+            .nav-link{padding:5px 10px;font-size:11px}
+            .post{padding:15px}
+            .post-h{font-size:16px}
+            .post-p{font-size:13px}
         }
     </style>
 </head>
 <body>
-    <div class="container">        <div class="datetime-realtime" id="datetime-realtime"></div>
 
-        <div class="icon-wrapper">
-            <div class="icon-container warning-bg">
-                <svg class="warning-icon" viewBox="0 0 24 24">
-                    <path d="M1 21h22L12 2 1 21zm12-6h-2v2h2v-2zm0-4h-2v2h2v-2z"/>
-                </svg>
-            </div>
-            <div class="icon-container close-bg">
-                <svg class="close-icon" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-            </div>
+<!-- ===== COMPACT HEADER ===== -->
+<header class="site-header">
+    <div class="header-row">
+        <div class="brand">
+            <h1>📸 TKJ1</h1>
+            <span class="status">⚠️ Dialihkan</span>
         </div>
-
-        <div class="countdown" id="countdown">
-            <div class="countdown-item">
-                <span class="time-unit" id="years">0</span>
-                <span class="time-label">Tahun</span>
-            </div>
-            <div class="countdown-item">
-                <span class="time-unit" id="months">0</span>
-                <span class="time-label">Bulan</span>
-            </div>
-            <div class="countdown-item">
-                <span class="time-unit" id="days">0</span>
-                <span class="time-label">Hari</span>
-            </div>
-            <div class="countdown-item">
-                <span class="time-unit" id="hours">0</span>
-                <span class="time-label">Jam</span>
-            </div>
-            <div class="countdown-item">
-                <span class="time-unit" id="minutes">0</span>
-                <span class="time-label">Menit</span>
-            </div>
-            <div class="countdown-item">
-                <span class="time-unit" id="seconds">0</span>
-                <span class="time-label">Detik</span>
-            </div>
-        </div>
-
-        <div class="jam-ini">
-            <span class="jam-highlight" id="jam-sekarang">Memuat...</span>
-        </div>
-
-        <div class="header">
-            <h1>Halaman Album Foto TKJ1</h1>
-            <p class="status-text">Sudah Dimatikan / Dialihkan</p>
-        </div>
-        <div class="message">
-            <p>Halaman ini sudah tidak aktif lagi. Sebagai developer, saya menyarankan Anda untuk mengunduh aplikasi <strong>TKJ OnE</strong> karena aplikasi tersebut sudah saya nyatakan stabil untuk menghandle semua sistem yang dibutuhkan.</p>
-        </div>
-
-        <div class="download-section">
-            <button class="download-btn">
-                <span class="btn-text">Unduh Aplikasi TKJ OnE</span>
-                <span class="btn-subtext">UNTUK ANDROID</span>
-            </button>
-        </div>
-
-        <div class="footer">
-            <p>© 2026 TKJ OnE - Developed by Zhyllan Fyllah</p>
-        </div>
-
-        <!-- Google AdSense - Hanya aktif di web -->
-        <div class="ads-container">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-6754329161781195"
-                 data-ad-slot="5141810024"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
+        <div class="datetime" id="datetime">Memuat...</div>
+        <div class="header-actions">
+            <div class="icon-btn warning" title="Peringatan"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-6h-2v2h2v-2zm0-4h-2v2h2v-2z"/></svg></div>
+            <div class="icon-btn close" title="Tutup"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
         </div>
     </div>
-    <script>
-        // ⏰ WAKTU PENONAKTIFAN: Jumat, 30 Januari 2026 pukul 00:23 WIB (dini hari)
-        const closedDate = new Date('2026-01-30T00:23:00+07:00');
+    <div class="header-bottom">
+        <div class="countdown" id="countdown">
+            <div class="cd-item"><span class="cd-val" id="y">0</span><span class="cd-label">Th</span></div>
+            <div class="cd-item"><span class="cd-val" id="mo">0</span><span class="cd-label">Bl</span></div>
+            <div class="cd-item"><span class="cd-val" id="d">0</span><span class="cd-label">Hr</span></div>
+            <div class="cd-item"><span class="cd-val" id="h">0</span><span class="cd-label">Jm</span></div>
+            <div class="cd-item"><span class="cd-val" id="m">0</span><span class="cd-label">Mn</span></div>
+            <div class="cd-item"><span class="cd-val" id="s">0</span><span class="cd-label">Dk</span></div>
+        </div>
+        <div class="header-msg">⚡ Web tidak aktif. Unduh <strong>TKJ OnE</strong> untuk akses lengkap.</div>
+        <button class="btn-dl" id="dlBtn">📥 Download<span class="btn-sub">Android • Gratis</span></button>
+    </div>
+    <div class="header-ads">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="5141810024" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+</header>
 
-        function updateRealtimeDateTime() {
-            const now = new Date();
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            
-            const day = days[now.getDay()];
-            const date = now.getDate();
-            const month = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+<!-- ===== COMPACT NAV ===== -->
+<nav class="site-nav">
+    <div class="nav-wrap">
+        <a href="#" class="nav-link active">🏠 Home</a>
+        <a href="#p1" class="nav-link">📰 Blog</a>
+        <a href="#p2" class="nav-link">🛠️ Tutorial</a>
+        <a href="#p3" class="nav-link">💻 Teknis</a>
+        <a href="#p4" class="nav-link">📢 Update</a>
+        <a href="#contact" class="nav-link">📧 Kontak</a>
+    </div>
+</nav>
 
-            // Format 24-jam tanpa AM/PM (sesuai permintaan "00:23")
-            document.getElementById('datetime-realtime').textContent = 
-                `${day}, ${date} ${month} ${year} | ${hours}:${minutes}:${seconds}`;
-            document.getElementById('jam-sekarang').textContent = 
-                `${day}, ${date} ${month} ${year}_${hours}:${minutes}`;        }
+<!-- ===== BLOG CONTENT ===== -->
+<main class="blog-wrap">
+    <div class="blog-main">
+        
+        <!-- POST 1 -->
+        <article class="post" id="p1">
+            <h2 class="post-h">🚀 Migrasi Web ke Aplikasi: Kenapa TKJ OnE Lebih Baik?</h2>
+            <div class="post-meta"><span>📅 30 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 5 Menit</span></div>
+            <p class="post-p">Halo sobat TKJ! 👋 Halaman album foto web kini sudah <strong>migrasi total ke aplikasi TKJ OnE</strong>. Keputusan ini berdasarkan evaluasi teknis: performa lebih cepat, fitur lebih lengkap, dan pengalaman pengguna yang lebih baik. Aplikasi mobile memungkinkan akses offline, upload langsung dari kamera, notifikasi real-time, dan keamanan data yang lebih terjamin.</p>
+            <h3 class="post-h3">✨ Keunggulan TKJ OnE</h3>
+            <ul class="post-ul">
+                <li class="post-li"><strong>Offline First:</strong> Cache cerdas, akses foto tanpa internet</li>
+                <li class="post-li"><strong>Upload Cepat:</strong> Kamera native + kompresi otomatis</li>
+                <li class="post-li"><strong>Keamanan:</strong> Enkripsi AES-256 untuk data sensitif</li>
+                <li class="post-li"><strong>Notifikasi:</strong> Push notification untuk update baru</li>
+                <li class="post-li"><strong>Ringan:</strong> &lt;25MB, optimasi untuk device low-end</li>
+            </ul>
+            <p class="post-p">Dengan pendekatan hybrid Cordova, kami gabungkan kemudahan web development dengan performa mendekati native. Kode diobfuscate untuk proteksi dasar, JSON schema validation untuk integritas data, dan multi-provider cloud (ImgBB/Imgur) untuk redundancy.</p>
+            <div class="tags"><span class="tag">#TKJOnE</span><span class="tag">#Migrasi</span><span class="tag">#Android</span><span class="tag">#Performa</span></div>
+            <div class="cta"><p class="cta-p">🎯 Coba sekarang, gratis & open source!</p><button class="btn-dl" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases','_blank')">📥 Download APK</button></div>
+        </article>
 
-        function calculateTimeDifference(startDate, endDate) {
-            const diffMs = endDate - startDate;
-            const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
-            const months = Math.floor((diffMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
-            const days = Math.floor((diffMs % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+        <!-- POST 2 -->
+        <article class="post" id="p2">
+            <h2 class="post-h">🛠️ Install TKJ OnE: Panduan 3 Langkah</h2>
+            <div class="post-meta"><span>📅 28 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 4 Menit</span></div>
+            <p class="post-p">Install aplikasi TKJ OnE sangat mudah, tidak perlu root. Ikuti panduan singkat ini:</p>
+            <h3 class="post-h3">📥 Step 1: Download APK</h3>
+            <p class="post-p">Klik tombol download di header atau akses <span class="post-code">github.com/Jirankun/TKJ-One/releases</span>. Download file <code>TKJOnE-v*.apk</code> terbaru (~20MB).</p>
+            <h3 class="post-h3">⚙️ Step 2: Izinkan Sumber Tidak Dikenal</h3>
+            <p class="post-p">Buka <strong>Pengaturan &gt; Aplikasi &gt; Install tidak dikenal</strong>, aktifkan untuk browser Anda. Ini hanya diperlukan sekali untuk instalasi pertama.</p>
+            <h3 class="post-h3">🚀 Step 3: Install & Login</h3>
+            <p class="post-p">Buka file APK, klik Install, lalu buka aplikasi. Login dengan akun kelas yang diberikan admin. Selesai! 🎉</p>
+            <blockquote class="post-bq">💡 Tips: Gunakan WiFi saat pertama buka untuk download cache album lama.</blockquote>
+            <div class="tags"><span class="tag">#Tutorial</span><span class="tag">#Install</span><span class="tag">#Android</span><span class="tag">#Panduan</span></div>
+        </article>
 
-            return { years, months, days, hours, minutes, seconds };
-        }
+        <!-- POST 3 -->
+        <article class="post" id="p3">
+            <h2 class="post-h">💻 Teknis: Stack & Keamanan TKJ OnE</h2>
+            <div class="post-meta"><span>📅 25 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 6 Menit</span></div>
+            <p class="post-p">TKJ OnE dibangun dengan <strong>Cordova + HTML/CSS/JS vanilla</strong>. Pilihan ini memberikan single codebase, ukuran kecil, dan mudah dikontribusi komunitas. Data disimpan dalam JSON terstruktur dengan validasi ketat.</p>
+            <h3 class="post-h3">🔐 Lapisan Keamanan</h3>
+            <ul class="post-ul">
+                <li class="post-li"><strong>Enkripsi:</strong> AES-256-GCM untuk data pribadi</li>
+                <li class="post-li"><strong>Validasi:</strong> JSON schema + sanitasi input</li>
+                <li class="post-li"><strong>Obfuscation:</strong> javascript-obfuscator untuk proteksi kode</li>
+                <li class="post-li"><strong>HTTPS:</strong> Certificate pinning untuk komunikasi API</li>
+            </ul>
+            <pre class="post-pre"><code>// Contoh struktur JSON
+{
+  "albums": [{
+    "id": "praktik_2026",
+    "photos": [{
+      "url": "https://imgbb.com/xxx",
+      "tags": ["cisco","router"],
+      "uploader": "tkj1_005"
+    }]
+  }]
+}</code></pre>
+            <p class="post-p">Cloud strategy: ImgBB (primary) + Imgur (fallback) + local cache. Fallback otomatis dengan exponential backoff jika upload gagal.</p>
+            <div class="tags"><span class="tag">#Dev</span><span class="tag">#Security</span><span class="tag">#Cordova</span><span class="tag">#JSON</span></div>
+        </article>
 
-        function updateCountdown() {
-            const now = new Date();
-            const diff = calculateTimeDifference(closedDate, now);
-            document.getElementById('years').textContent = diff.years;
-            document.getElementById('months').textContent = diff.months;
-            document.getElementById('days').textContent = diff.days;
-            document.getElementById('hours').textContent = diff.hours;
-            document.getElementById('minutes').textContent = diff.minutes;
-            document.getElementById('seconds').textContent = diff.seconds;
-        }
+        <!-- POST 4 -->
+        <article class="post" id="p4">
+            <h2 class="post-h">📢 Roadmap & Komunitas</h2>
+            <div class="post-meta"><span>📅 Akan Datang</span><span>👤 Zhyllan</span><span>⏱️ 3 Menit</span></div>
+            <p class="post-p">TKJ OnE adalah proyek komunitas. Kontribusi Anda sangat berarti! Berikut rencana ke depan:</p>
+            <ul class="post-ul">
+                <li class="post-li"><strong>Feb 2026:</strong> v2.2 - Export PDF + bug fixes</li>
+                <li class="post-li"><strong>Mar 2026:</strong> v2.3 - Notifikasi Telegram + multi-language</li>
+                <li class="post-li"><strong>Apr 2026:</strong> v2.4 - Custom theme builder + analytics</li>
+            </ul>
+            <p class="post-p">Cara terlibat: 💬 Berikan feedback via GitHub Issues, ✍️ Kirim tutorial/konten, 🔧 Fork & PR untuk kode, 📢 Sebarkan ke komunitas TKJ lain.</p>
+            <blockquote class="post-bq">✨ "Open-source bukan tentang siapa paling jago, tapi tentang saling mengangkat untuk maju bersama."</blockquote>
+            <div class="cta"><p class="cta-p">🔥 Gabung komunitas, mulai eksplor sekarang!</p><button class="btn-dl" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases','_blank')">🚀 Download & Kontribusi</button></div>
+            <div class="tags"><span class="tag">#Roadmap</span><span class="tag">#Komunitas</span><span class="tag">#OpenSource</span><span class="tag">#TKJ</span></div>
+        </article>
 
-        setInterval(() => {
-            updateRealtimeDateTime();
-            updateCountdown();
-        }, 1000);
+    </div>
 
-        updateRealtimeDateTime();
-        updateCountdown();
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="widget">
+            <h3 class="widget-h">👤 Penulis</h3>
+            <p class="widget-p"><strong>Zhyllan Fyllah</strong><br>Developer TKJ • Android Security • UI/UX<br>🔗 <a href="https://github.com/Jirankun" target="_blank" style="color:var(--primary)">GitHub</a></p>
+        </div>
+        <div class="widget">
+            <h3 class="widget-h">📁 Kategori</h3>
+            <ul class="widget-list">
+                <li><a href="#">📰 Pengumuman (3)</a></li>
+                <li><a href="#">🛠️ Tutorial (5)</a></li>
+                <li><a href="#">💻 Development (4)</a></li>
+                <li><a href="#">🔐 Keamanan (2)</a></li>
+            </ul>
+        </div>
+        <div class="widget">
+            <h3 class="widget-h">📢 Iklan</h3>
+            <div class="ads-side">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="8273641059" data-ad-format="rectangle"></ins>
+            </div>
+        </div>
+        <div class="widget">
+            <h3 class="widget-h">🔄 Update</h3>
+            <ul class="widget-list">
+                <li>v2.1.0 - Fix upload + dark mode</li>
+                <li>v2.0.5 - Cache offline improvement</li>
+                <li>v2.0.0 - UI overhaul + security</li>
+            </ul>
+        </div>
+        <div class="widget" style="text-align:center">
+            <h3 class="widget-h">📥 Quick Download</h3>
+            <button class="btn-dl" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases','_blank')" style="width:100%">📦 APK v2.1.0</button>
+            <p style="font-size:10px;color:#888;margin-top:8px">✅ Verified • ✅ No Ads • ✅ Open Source</p>
+        </div>
+    </aside>
 
-        document.querySelector('.download-btn').addEventListener('click', () => {
-            window.open('https://github.com/Jirankun/TKJ-One/releases', '_blank');
-        });
+</main>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.container');
-            container.style.opacity = '0';
-            container.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                container.style.transition = 'all 0.5s ease';
-                container.style.opacity = '1';
-                container.style.transform = 'translateY(0)';
-            }, 100);
-        });
-    </script>
+<!-- FOOTER -->
+<footer class="footer" id="contact">
+    <div class="footer-logo">TKJ OnE</div>
+    <p class="footer-p">Platform dokumentasi & komunitas pelajar TKJ Indonesia</p>
+    <div class="footer-links">
+        <a href="#">🏠 Home</a>
+        <a href="#p1">📰 Blog</a>
+        <a href="https://github.com/Jirankun/TKJ-One" target="_blank">💻 GitHub</a>
+        <a href="#">📧 Kontak</a>
+        <a href="#">🔒 Privacy</a>
+    </div>
+    <p class="footer-copy">© 2026 TKJ OnE • Zhyllan Fyllah • Optimized for Adsense • Konten original</p>
+</footer>
 
-    <!-- Google AdSense Loader -->    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
-           crossorigin="anonymous"></script>
+<!-- JAVASCRIPT -->
+<script>
+    const closedDate = new Date('2026-01-30T00:23:00+07:00');
+    function updateDT(){const n=new Date(),d=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];document.getElementById('datetime').textContent=`${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;}
+    function calcDiff(s,e){const d=e-s;return{y:Math.floor(d/315576e5),mo:Math.floor(d%315576e5/26298e5),d:Math.floor(d%26298e5/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)}}
+    function updateCD(){const c=calcDiff(closedDate,new Date());document.getElementById('y').textContent=c.y;document.getElementById('mo').textContent=c.mo;document.getElementById('d').textContent=c.d;document.getElementById('h').textContent=c.h;document.getElementById('m').textContent=c.m;document.getElementById('s').textContent=c.s;}
+    setInterval(()=>{updateDT();updateCD()},1e3);
+    document.addEventListener('DOMContentLoaded',()=>{updateDT();updateCD();document.getElementById('dlBtn')?.addEventListener('click',()=>window.open('https://github.com/Jirankun/TKJ-One/releases','_blank'));if(typeof adsbygoogle!=='undefined')(adsbygoogle=window.adsbygoogle||[]).push({});});
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
 </body>
 </html>
