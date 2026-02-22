@@ -8,181 +8,248 @@
     <meta name="author" content="Zhyllan Fyllah">
     <meta name="robots" content="index, follow">
     <title>TKJ OnE Blog | Dokumentasi TKJ1 & Tutorial Networking</title>
+    
+    <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
+    
     <style>
+        /* ===== RESET & VARIABLES ===== */
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#4caf50;--primary-dark:#2e7d32;--accent:#ff9800;--bg:#1a1a1a;--card:rgba(40,40,40,.95);--text:#fff;--muted:#aaa;--border:rgba(255,255,255,.1)}
-        body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg),#2d2d2d);color:var(--text);min-height:100vh;line-height:1.7;padding-top:70px}
-        
+        :root{
+            --primary:#4caf50;--primary-dark:#2e7d32;--accent:#ff9800;
+            --bg:#1a1a1a;--card:rgba(40,40,40,.95);--text:#fff;--muted:#aaa;
+            --border:rgba(255,255,255,.1);--header-h:56px;--nav-h:44px
+        }
+        body{
+            font-family:'Segoe UI',Tahoma,sans-serif;
+            background:linear-gradient(135deg,var(--bg),#2d2d2d);
+            color:var(--text);min-height:100vh;line-height:1.6;
+            padding-top:calc(var(--header-h) + var(--nav-h))
+        }
+
         /* ===== TOGGLE BUTTON (Mobile Only) ===== */
-        .menu-toggle{display:none;position:fixed;top:15px;left:15px;z-index:1100;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border:none;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .menu-toggle{
+            display:none;position:fixed;top:8px;left:8px;z-index:1100;
+            width:40px;height:40px;border-radius:8px;
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+            border:none;cursor:pointer;align-items:center;justify-content:center;
+            box-shadow:0 4px 12px rgba(0,0,0,.3)
+        }
         .menu-toggle svg{width:20px;height:20px;fill:white}
+
+        /* ===== DESKTOP HEADER - COMPACT ===== */
+        .site-header{
+            position:fixed;top:0;left:0;right:0;
+            height:var(--header-h);
+            background:rgba(30,30,30,.98);border-bottom:2px solid var(--primary);
+            z-index:1000;padding:0 15px;display:flex;align-items:center;
+            justify-content:space-between;gap:12px;backdrop-filter:blur(8px);
+            box-shadow:0 2px 20px rgba(0,0,0,.4)
+        }
+        .brand{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .brand h1{font-size:15px;font-weight:700;            background:linear-gradient(135deg,var(--primary),#8bc34a);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .brand .status{font-size:9px;color:var(--accent);font-weight:600}
         
-        /* ===== DESKTOP HEADER ===== */
-        .site-header{position:fixed;top:0;left:0;right:0;background:rgba(30,30,30,.98);border-bottom:2px solid var(--primary);z-index:1000;padding:8px 15px;backdrop-filter:blur(8px);box-shadow:0 2px 20px rgba(0,0,0,.4)}
-        .header-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-        .brand{display:flex;align-items:center;gap:8px}
-        .brand h1{font-size:16px;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .brand .status{font-size:10px;color:var(--accent);font-weight:600}
-        .datetime{font-family:'Courier New',monospace;font-size:11px;color:var(--primary);background:rgba(30,30,30,.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(76,175,80,.3)}
-        .header-actions{display:flex;align-items:center;gap:8px}
-        .icon-btn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+        .header-center{display:flex;align-items:center;gap:10px;flex:1;justify-content:center}
+        .datetime{font-family:'Courier New',monospace;font-size:10px;color:var(--primary);
+            background:rgba(30,30,30,.8);padding:3px 8px;border-radius:4px;
+            border:1px solid rgba(76,175,80,.3);white-space:nowrap}
+        .countdown{display:flex;gap:3px}
+        .cd-item{display:flex;flex-direction:column;align-items:center;min-width:28px}
+        .cd-val{font-size:11px;font-weight:bold;color:var(--primary)}
+        .cd-label{font-size:6px;color:var(--muted);text-transform:uppercase}
+        
+        .header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .header-msg{font-size:10px;color:#ccc;background:rgba(35,35,35,.8);
+            padding:3px 8px;border-radius:4px;border-left:2px solid var(--primary);
+            display:none} /* Hidden on desktop, shown on mobile sidebar */
+        .icon-btn{width:26px;height:26px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;cursor:pointer}
         .icon-btn.warning{background:linear-gradient(135deg,#ff9800,#f57c00)}
         .icon-btn.close{background:linear-gradient(135deg,#f44336,#d32f2f)}
-        .icon-btn svg{width:14px;height:14px;fill:white}
-        .header-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;flex-wrap:wrap}
-        .countdown{display:flex;gap:4px}
-        .cd-item{display:flex;flex-direction:column;align-items:center;min-width:32px}
-        .cd-val{font-size:13px;font-weight:bold;color:var(--primary)}
-        .cd-label{font-size:7px;color:var(--muted);text-transform:uppercase}
-        .header-msg{font-size:11px;color:#ccc;background:rgba(35,35,35,.8);padding:4px 8px;border-radius:4px;border-left:2px solid var(--primary);flex:1;min-width:150px}
-        .btn-dl{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;white-space:nowrap}
+        .icon-btn svg{width:13px;height:13px;fill:white}
+        .btn-dl{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+            color:#fff;border:none;padding:5px 10px;border-radius:5px;
+            cursor:pointer;font-size:10px;font-weight:600;white-space:nowrap}
         .btn-dl:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(76,175,80,.4)}
-        .btn-sub{display:block;font-size:8px;opacity:.9;text-transform:uppercase;margin-top:2px}
-        .header-ads{text-align:center;margin-top:6px}
+        .btn-sub{display:block;font-size:7px;opacity:.9;text-transform:uppercase;margin-top:1px}
         
+        .header-ads{position:absolute;top:var(--header-h);left:0;right:0;
+            text-align:center;background:rgba(30,30,30,.9);padding:4px 0;
+            border-bottom:1px solid var(--border)}
+
         /* ===== MOBILE SIDEBAR ===== */
-        .mobile-sidebar{position:fixed;top:0;left:-280px;width:280px;height:100vh;background:rgba(30,30,30,.98);border-right:2px solid var(--primary);z-index:1050;padding:20px 15px;backdrop-filter:blur(8px);transition:left .3s ease;overflow-y:auto}
+        .mobile-sidebar{
+            position:fixed;top:0;left:-260px;width:260px;height:100vh;
+            background:rgba(30,30,30,.98);border-right:2px solid var(--primary);
+            z-index:1050;padding:15px;backdrop-filter:blur(8px);
+            transition:left .25s ease;overflow-y:auto
+        }
         .mobile-sidebar.active{left:0}
-        .sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border)}
-        .sidebar-brand h2{font-size:18px;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .sidebar-close{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f44336,#d32f2f);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-        .sidebar-close svg{width:16px;height:16px;fill:white}        .sidebar-content{display:flex;flex-direction:column;gap:15px}
-        .sidebar-item{display:flex;flex-direction:column;gap:5px}
-        .sidebar-item label{font-size:10px;color:var(--muted);text-transform:uppercase}
-        .sidebar-item .value{font-size:13px;color:var(--text);font-weight:500}
-        .sidebar-dl{margin-top:10px}
-        .sidebar-dl .btn-dl{width:100%;justify-content:center}
-        .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1040;opacity:0;visibility:hidden;transition:all .3s ease}
+        .sidebar-header{display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:15px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+        .sidebar-brand h2{font-size:16px;font-weight:700;
+            background:linear-gradient(135deg,var(--primary),#8bc34a);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .sidebar-close{width:30px;height:30px;border-radius:50%;
+            background:linear-gradient(135deg,#f44336,#d32f2f);
+            border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .sidebar-close svg{width:15px;height:15px;fill:white}
+                .sidebar-content{display:flex;flex-direction:column;gap:12px}
+        .s-item{display:flex;flex-direction:column;gap:3px}
+        .s-item label{font-size:9px;color:var(--muted);text-transform:uppercase}
+        .s-item .val{font-size:12px;color:var(--text);font-weight:500}
+        .sidebar-dl .btn-dl{width:100%;justify-content:center;font-size:11px;padding:6px}
+        
+        .overlay{position:fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,.5);z-index:1040;
+            opacity:0;visibility:hidden;transition:all .25s ease}
         .overlay.active{opacity:1;visibility:visible}
-        
-        /* ===== COMPACT NAV ===== */
-        .site-nav{position:fixed;top:70px;left:0;right:0;background:rgba(35,35,35,.98);border-bottom:1px solid var(--border);z-index:999;padding:0 10px;backdrop-filter:blur(6px)}
-        .nav-wrap{display:flex;gap:2px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
+
+        /* ===== NAVIGATION ===== */
+        .site-nav{
+            position:fixed;top:var(--header-h);left:0;right:0;
+            height:var(--nav-h);
+            background:rgba(35,35,35,.98);border-bottom:1px solid var(--border);
+            z-index:999;backdrop-filter:blur(6px)
+        }
+        .nav-wrap{display:flex;gap:1px;overflow-x:auto;padding:0 10px;
+            height:100%;align-items:center;scrollbar-width:none}
         .nav-wrap::-webkit-scrollbar{display:none}
-        .nav-link{color:var(--text);text-decoration:none;padding:6px 12px;font-size:12px;font-weight:500;border-radius:4px;white-space:nowrap}
+        .nav-link{color:var(--text);text-decoration:none;padding:6px 10px;
+            font-size:11px;font-weight:500;border-radius:4px;white-space:nowrap}
         .nav-link:hover,.nav-link.active{background:rgba(76,175,80,.2);color:var(--primary)}
-        
+
         /* ===== BLOG CONTENT ===== */
         .blog-wrap{max-width:950px;margin:0 auto;padding:20px 15px;display:grid;gap:20px}
         @media(min-width:850px){.blog-wrap{grid-template-columns:2fr 1fr}}
         .blog-main{min-width:0}
-        .post{background:var(--card);border-radius:12px;padding:20px;margin-bottom:15px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+        .post{background:var(--card);border-radius:12px;padding:20px;
+            margin-bottom:15px;border:1px solid var(--border);
+            box-shadow:0 4px 20px rgba(0,0,0,.3)}
         .post-h{font-size:18px;color:var(--primary);margin-bottom:8px;line-height:1.3}
-        .post-meta{display:flex;gap:12px;color:var(--muted);font-size:11px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+        .post-meta{display:flex;gap:12px;color:var(--muted);font-size:11px;
+            margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
         .post-p{color:#d0d0d0;font-size:14px;text-align:justify;margin-bottom:12px}
-        .post-h3{color:var(--accent);margin:18px 0 8px;font-size:16px;padding-left:8px;border-left:2px solid var(--accent)}
+        .post-h3{color:var(--accent);margin:18px 0 8px;font-size:16px;
+            padding-left:8px;border-left:2px solid var(--accent)}
         .post-ul,.post-ol{margin:10px 0 10px 22px;color:#c0c0c0;font-size:14px}
         .post-li{margin-bottom:6px}
-        .post-code{background:#1e1e1e;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;color:var(--primary);font-size:12px}
-        .post-pre{background:#1e1e1e;padding:12px;border-radius:6px;overflow-x:auto;margin:12px 0;border:1px solid var(--border);font-size:11px;color:#d4d4d4}
+        .post-code{background:#1e1e1e;padding:2px 6px;border-radius:3px;
+            font-family:'Courier New',monospace;color:var(--primary);font-size:12px}
+        .post-pre{background:#1e1e1e;padding:12px;border-radius:6px;
+            overflow-x:auto;margin:12px 0;border:1px solid var(--border);
+            font-size:11px;color:#d4d4d4}
         .post-pre code{background:none;padding:0;color:inherit}
-        .post-bq{background:rgba(76,175,80,.1);border-left:3px solid var(--primary);padding:10px 12px;margin:12px 0;border-radius:0 4px 4px 0;font-style:italic;color:#bbb;font-size:13px}
-        .tags{display:flex;flex-wrap:wrap;gap:5px;margin:15px 0 10px;padding-top:10px;border-top:1px solid var(--border)}
-        .tag{background:rgba(76,175,80,.15);color:var(--primary);padding:3px 10px;border-radius:15px;font-size:10px;font-weight:600}
-        .cta{background:linear-gradient(135deg,rgba(76,175,80,.12),rgba(46,125,50,.1));padding:12px;border-radius:8px;margin:15px 0;border:1px dashed var(--primary);text-align:center}
+        .post-bq{background:rgba(76,175,80,.1);border-left:3px solid var(--primary);
+            padding:10px 12px;margin:12px 0;border-radius:0 4px 4px 0;
+            font-style:italic;color:#bbb;font-size:13px}
+        .tags{display:flex;flex-wrap:wrap;gap:5px;margin:15px 0 10px;            padding-top:10px;border-top:1px solid var(--border)}
+        .tag{background:rgba(76,175,80,.15);color:var(--primary);
+            padding:3px 10px;border-radius:15px;font-size:10px;font-weight:600}
+        .cta{background:linear-gradient(135deg,rgba(76,175,80,.12),rgba(46,125,50,.1));
+            padding:12px;border-radius:8px;margin:15px 0;
+            border:1px dashed var(--primary);text-align:center}
         .cta-p{margin-bottom:8px;font-size:13px;font-weight:500}
         .cta .btn-dl{margin:0 auto;display:flex;align-items:center;gap:4px}
-        
-        /* ===== SIDEBAR ===== */
+
+        /* ===== SIDEBAR WIDGETS ===== */
         .sidebar{min-width:0}
-        .widget{background:var(--card);border-radius:12px;padding:15px;margin-bottom:15px;border:1px solid var(--border)}
-        .widget-h{font-size:15px;color:var(--primary);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+        .widget{background:var(--card);border-radius:12px;padding:15px;
+            margin-bottom:15px;border:1px solid var(--border)}
+        .widget-h{font-size:15px;color:var(--primary);margin-bottom:10px;
+            padding-bottom:8px;border-bottom:2px solid var(--border)}
         .widget-p{color:#ccc;font-size:12px;line-height:1.6}
         .widget-list{list-style:none;padding:0}
         .widget-list li{padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
         .widget-list li:last-child{border:none}
         .widget-list a{color:var(--text);text-decoration:none}
         .widget-list a:hover{color:var(--primary)}
-        .ads-side{text-align:center;padding:10px;background:rgba(30,30,30,.5);border-radius:8px;margin:10px 0}
-        
-        /* ===== FOOTER ===== */        .footer{background:rgba(30,30,30,.98);border-top:1px solid var(--border);padding:25px 15px;margin-top:30px;text-align:center}
-        .footer-logo{font-size:18px;font-weight:bold;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+        .ads-side{text-align:center;padding:10px;background:rgba(30,30,30,.5);
+            border-radius:8px;margin:10px 0}
+
+        /* ===== FOOTER ===== */
+        .footer{background:rgba(30,30,30,.98);border-top:1px solid var(--border);
+            padding:25px 15px;margin-top:30px;text-align:center}
+        .footer-logo{font-size:18px;font-weight:bold;
+            background:linear-gradient(135deg,var(--primary),#8bc34a);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
         .footer-p{color:#aaa;font-size:12px;margin-bottom:15px}
         .footer-links{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:15px 0}
         .footer-links a{color:var(--muted);text-decoration:none;font-size:11px}
         .footer-links a:hover{color:var(--primary)}
-        .footer-copy{color:#555;font-size:10px;margin-top:15px;padding-top:15px;border-top:1px solid var(--border)}
-        
+        .footer-copy{color:#555;font-size:10px;margin-top:15px;
+            padding-top:15px;border-top:1px solid var(--border)}
+
         /* ===== ANIMATIONS ===== */
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         .post{animation:fadeIn .3s ease forwards;opacity:0}
-        .post:nth-child(1){animation-delay:.1s;opacity:1}.post:nth-child(2){animation-delay:.2s;opacity:1}.post:nth-child(3){animation-delay:.3s;opacity:1}.post:nth-child(4){animation-delay:.4s;opacity:1}
-        
-        /* ===== RESPONSIVE: MOBILE SIDEBAR MODE ===== */
+        .post:nth-child(1){animation-delay:.1s;opacity:1}.post:nth-child(2){animation-delay:.2s;opacity:1}
+        .post:nth-child(3){animation-delay:.3s;opacity:1}.post:nth-child(4){animation-delay:.4s;opacity:1}
+
+        /* ===== RESPONSIVE: MOBILE ===== */
         @media(max-width:768px){
-            body{padding-top:60px}
             .menu-toggle{display:flex}
-            .site-header{display:none} /* Hide desktop header on mobile */
-            .site-nav{top:60px}
-            
-            /* Minimal sidebar content - NO ADS, NO COUNTDOWN for safety */
-            .mobile-sidebar .sidebar-ads,
-            .mobile-sidebar .countdown{display:none}
+            .site-header{display:none} /* Hide desktop header */
+            .site-nav{top:var(--header-h);padding-left:50px} /* Shift nav right for toggle button */
+            .nav-wrap{padding:0 10px 0 55px} /* Extra left padding so nav items don't hide behind toggle */
+                        /* Mobile sidebar: minimal & safe */
+            .mobile-sidebar .sidebar-ads{display:none}
         }
         
         @media(max-width:600px){
-            .nav-wrap{padding:4px 0}
-            .nav-link{padding:5px 10px;font-size:11px}
+            .nav-link{padding:5px 8px;font-size:10px}
             .post{padding:15px}
             .post-h{font-size:16px}
             .post-p{font-size:13px}
+            .blog-wrap{padding:15px 10px}
+        }
+        
+        /* ===== DESKTOP: Show msg, hide on mobile ===== */
+        @media(min-width:769px){
+            .header-msg{display:block}
         }
     </style>
 </head>
 <body>
 
-<!-- ===== MOBILE TOGGLE BUTTON ===== -->
+<!-- 🔘 MOBILE TOGGLE BUTTON -->
 <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
     <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
 </button>
 
-<!-- ===== MOBILE SIDEBAR ===== -->
+<!-- 📱 MOBILE SIDEBAR (Minimal - No Ads) -->
 <aside class="mobile-sidebar" id="mobileSidebar">
     <div class="sidebar-header">
         <div class="sidebar-brand">
             <h2>📸 TKJ1</h2>
-            <span class="status" style="font-size:10px;color:var(--accent)">⚠️ Dialihkan</span>
+            <span class="status" style="font-size:9px;color:var(--accent)">⚠️ Dialihkan</span>
         </div>
-        <button class="sidebar-close" id="sidebarClose" aria-label="Tutup menu">
-            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>        </button>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Tutup">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
     </div>
     <div class="sidebar-content">
-        <div class="sidebar-item">
-            <label>🕐 Waktu</label>
-            <span class="value" id="sidebar-datetime">Memuat...</span>
-        </div>
-        <div class="sidebar-item">
-            <label>⚡ Status</label>
-            <span class="value">Web tidak aktif. Unduh <strong>TKJ OnE</strong> untuk akses lengkap.</span>
-        </div>
+        <div class="s-item"><label>🕐 Waktu</label><span class="val" id="sb-dt">Memuat...</span></div>
+        <div class="s-item"><label>⚡ Status</label><span class="val">Web tidak aktif. Unduh <strong>TKJ OnE</strong> untuk akses lengkap.</span></div>
         <div class="sidebar-dl">
-            <button class="btn-dl" id="sidebarDlBtn">📥 Download APK</button>
-            <span class="btn-sub" style="text-align:center;display:block;margin-top:4px">Android • Gratis</span>
-        </div>
-        <!-- ADS DIHAPUS DARI SIDEBAR MOBILE BIAR AMAN -->
-        <div class="sidebar-ads" style="margin-top:20px;text-align:center">
-            <small style="color:var(--muted);font-size:9px">Iklan desktop only</small>
+            <button class="btn-dl" id="sb-dl">📥 Download APK</button>
+            <span class="btn-sub" style="text-align:center;display:block;margin-top:3px">Android • Gratis</span>
         </div>
     </div>
 </aside>
 <div class="overlay" id="overlay"></div>
 
-<!-- ===== DESKTOP HEADER (Hidden on Mobile) ===== -->
+<!-- 🖥️ DESKTOP HEADER (Compact - Hidden on Mobile) -->
 <header class="site-header">
-    <div class="header-row">
-        <div class="brand">
-            <h1>📸 TKJ1</h1>
-            <span class="status">⚠️ Dialihkan</span>
-        </div>
-        <div class="datetime" id="datetime">Memuat...</div>
-        <div class="header-actions">
-            <div class="icon-btn warning" title="Peringatan"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-6h-2v2h2v-2zm0-4h-2v2h2v-2z"/></svg></div>
-            <div class="icon-btn close" title="Tutup"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
-        </div>
+    <div class="brand">        <h1>📸 TKJ1</h1>
+        <span class="status">⚠️ Dialihkan</span>
     </div>
-    <div class="header-bottom">
-        <div class="countdown" id="countdown">
+    
+    <div class="header-center">
+        <div class="datetime" id="dt">Memuat...</div>
+        <div class="countdown">
             <div class="cd-item"><span class="cd-val" id="y">0</span><span class="cd-label">Th</span></div>
             <div class="cd-item"><span class="cd-val" id="mo">0</span><span class="cd-label">Bl</span></div>
             <div class="cd-item"><span class="cd-val" id="d">0</span><span class="cd-label">Hr</span></div>
@@ -190,14 +257,22 @@
             <div class="cd-item"><span class="cd-val" id="m">0</span><span class="cd-label">Mn</span></div>
             <div class="cd-item"><span class="cd-val" id="s">0</span><span class="cd-label">Dk</span></div>
         </div>
-        <div class="header-msg">⚡ Web tidak aktif. Unduh <strong>TKJ OnE</strong> untuk akses lengkap.</div>
-        <button class="btn-dl" id="dlBtn">📥 Download<span class="btn-sub">Android • Gratis</span></button>
     </div>
+    
+    <div class="header-right">
+        <div class="header-msg">⚡ Unduh <strong>TKJ OnE</strong> untuk akses lengkap</div>
+        <div class="icon-btn warning" title="Peringatan"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-6h-2v2h2v-2zm0-4h-2v2h2v-2z"/></svg></div>
+        <div class="icon-btn close" title="Tutup"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
+        <button class="btn-dl" id="dlBtn">📥 Download<span class="btn-sub">Gratis</span></button>
+    </div>
+    
+    <!-- Iklan Desktop Only -->
     <div class="header-ads">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="5141810024" data-ad-format="auto" data-full-width-responsive="true"></ins>    </div>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="5141810024" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
 </header>
 
-<!-- ===== COMPACT NAV ===== -->
+<!-- 🧭 NAVIGATION -->
 <nav class="site-nav">
     <div class="nav-wrap">
         <a href="#" class="nav-link active">🏠 Home</a>
@@ -209,25 +284,21 @@
     </div>
 </nav>
 
-<!-- ===== BLOG CONTENT ===== -->
+<!-- 📝 BLOG CONTENT -->
 <main class="blog-wrap">
     <div class="blog-main">
-        
         <!-- POST 1 -->
         <article class="post" id="p1">
             <h2 class="post-h">🚀 Migrasi Web ke Aplikasi: Kenapa TKJ OnE Lebih Baik?</h2>
             <div class="post-meta"><span>📅 30 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 5 Menit</span></div>
-            <p class="post-p">Halo sobat TKJ! 👋 Halaman album foto web kini sudah <strong>migrasi total ke aplikasi TKJ OnE</strong>. Keputusan ini berdasarkan evaluasi teknis: performa lebih cepat, fitur lebih lengkap, dan pengalaman pengguna yang lebih baik. Aplikasi mobile memungkinkan akses offline, upload langsung dari kamera, notifikasi real-time, dan keamanan data yang lebih terjamin.</p>
-            <h3 class="post-h3">✨ Keunggulan TKJ OnE</h3>
-            <ul class="post-ul">
+            <p class="post-p">Halo sobat TKJ! 👋 Halaman album foto web kini sudah <strong>migrasi total ke aplikasi TKJ OnE</strong>. Keputusan ini berdasarkan evaluasi teknis: performa lebih cepat, fitur lebih lengkap, dan pengalaman pengguna yang lebih baik.</p>
+            <h3 class="post-h3">✨ Keunggulan TKJ OnE</h3>            <ul class="post-ul">
                 <li class="post-li"><strong>Offline First:</strong> Cache cerdas, akses foto tanpa internet</li>
                 <li class="post-li"><strong>Upload Cepat:</strong> Kamera native + kompresi otomatis</li>
                 <li class="post-li"><strong>Keamanan:</strong> Enkripsi AES-256 untuk data sensitif</li>
-                <li class="post-li"><strong>Notifikasi:</strong> Push notification untuk update baru</li>
-                <li class="post-li"><strong>Ringan:</strong> <25MB, optimasi untuk device low-end</li>
+                <li class="post-li"><strong>Ringan:</strong> <25MB, optimasi device low-end</li>
             </ul>
-            <p class="post-p">Dengan pendekatan hybrid Cordova, kami gabungkan kemudahan web development dengan performa mendekati native. Kode diobfuscate untuk proteksi dasar, JSON schema validation untuk integritas data, dan multi-provider cloud (ImgBB/Imgur) untuk redundancy.</p>
-            <div class="tags"><span class="tag">#TKJOnE</span><span class="tag">#Migrasi</span><span class="tag">#Android</span><span class="tag">#Performa</span></div>
+            <div class="tags"><span class="tag">#TKJOnE</span><span class="tag">#Migrasi</span><span class="tag">#Android</span></div>
             <div class="cta"><p class="cta-p">🎯 Coba sekarang, gratis & open source!</p><button class="btn-dl" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases','_blank')">📥 Download APK</button></div>
         </article>
 
@@ -237,62 +308,45 @@
             <div class="post-meta"><span>📅 28 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 4 Menit</span></div>
             <p class="post-p">Install aplikasi TKJ OnE sangat mudah, tidak perlu root. Ikuti panduan singkat ini:</p>
             <h3 class="post-h3">📥 Step 1: Download APK</h3>
-            <p class="post-p">Klik tombol download di header atau akses <span class="post-code">github.com/Jirankun/TKJ-One/releases</span>. Download file <code>TKJOnE-v*.apk</code> terbaru (~20MB).</p>
+            <p class="post-p">Klik tombol download atau akses <span class="post-code">github.com/Jirankun/TKJ-One/releases</span>. Download file <code>TKJOnE-v*.apk</code> terbaru (~20MB).</p>
             <h3 class="post-h3">⚙️ Step 2: Izinkan Sumber Tidak Dikenal</h3>
-            <p class="post-p">Buka <strong>Pengaturan > Aplikasi > Install tidak dikenal</strong>, aktifkan untuk browser Anda. Ini hanya diperlukan sekali untuk instalasi pertama.</p>
-            <h3 class="post-h3">🚀 Step 3: Install & Login</h3>
-            <p class="post-p">Buka file APK, klik Install, lalu buka aplikasi. Login dengan akun kelas yang diberikan admin. Selesai! 🎉</p>
+            <p class="post-p">Buka <strong>Pengaturan > Aplikasi > Install tidak dikenal</strong>, aktifkan untuk browser Anda.</p>
             <blockquote class="post-bq">💡 Tips: Gunakan WiFi saat pertama buka untuk download cache album lama.</blockquote>
-            <div class="tags"><span class="tag">#Tutorial</span><span class="tag">#Install</span><span class="tag">#Android</span><span class="tag">#Panduan</span></div>        </article>
+            <div class="tags"><span class="tag">#Tutorial</span><span class="tag">#Install</span><span class="tag">#Android</span></div>
+        </article>
 
         <!-- POST 3 -->
         <article class="post" id="p3">
             <h2 class="post-h">💻 Teknis: Stack & Keamanan TKJ OnE</h2>
             <div class="post-meta"><span>📅 25 Jan 2026</span><span>👤 Zhyllan</span><span>⏱️ 6 Menit</span></div>
-            <p class="post-p">TKJ OnE dibangun dengan <strong>Cordova + HTML/CSS/JS vanilla</strong>. Pilihan ini memberikan single codebase, ukuran kecil, dan mudah dikontribusi komunitas. Data disimpan dalam JSON terstruktur dengan validasi ketat.</p>
+            <p class="post-p">TKJ OnE dibangun dengan <strong>Cordova + HTML/CSS/JS vanilla</strong>. Pilihan ini memberikan single codebase, ukuran kecil, dan mudah dikontribusi komunitas.</p>
             <h3 class="post-h3">🔐 Lapisan Keamanan</h3>
             <ul class="post-ul">
                 <li class="post-li"><strong>Enkripsi:</strong> AES-256-GCM untuk data pribadi</li>
                 <li class="post-li"><strong>Validasi:</strong> JSON schema + sanitasi input</li>
                 <li class="post-li"><strong>Obfuscation:</strong> javascript-obfuscator untuk proteksi kode</li>
-                <li class="post-li"><strong>HTTPS:</strong> Certificate pinning untuk komunikasi API</li>
             </ul>
-            <pre class="post-pre"><code>// Contoh struktur JSON
-{
-  "albums": [{
-    "id": "praktik_2026",
-    "photos": [{
-      "url": "https://imgbb.com/xxx",
-      "tags": ["cisco","router"],
-      "uploader": "tkj1_005"
-    }]
-  }]
-}</code></pre>
-            <p class="post-p">Cloud strategy: ImgBB (primary) + Imgur (fallback) + local cache. Fallback otomatis dengan exponential backoff jika upload gagal.</p>
-            <div class="tags"><span class="tag">#Dev</span><span class="tag">#Security</span><span class="tag">#Cordova</span><span class="tag">#JSON</span></div>
+            <div class="tags"><span class="tag">#Dev</span><span class="tag">#Security</span><span class="tag">#Cordova</span></div>
         </article>
 
         <!-- POST 4 -->
         <article class="post" id="p4">
             <h2 class="post-h">📢 Roadmap & Komunitas</h2>
             <div class="post-meta"><span>📅 Akan Datang</span><span>👤 Zhyllan</span><span>⏱️ 3 Menit</span></div>
-            <p class="post-p">TKJ OnE adalah proyek komunitas. Kontribusi Anda sangat berarti! Berikut rencana ke depan:</p>
+            <p class="post-p">TKJ OnE adalah proyek komunitas. Kontribusi Anda sangat berarti!</p>
             <ul class="post-ul">
                 <li class="post-li"><strong>Feb 2026:</strong> v2.2 - Export PDF + bug fixes</li>
                 <li class="post-li"><strong>Mar 2026:</strong> v2.3 - Notifikasi Telegram + multi-language</li>
-                <li class="post-li"><strong>Apr 2026:</strong> v2.4 - Custom theme builder + analytics</li>
+                <li class="post-li"><strong>Apr 2026:</strong> v2.4 - Custom theme builder</li>
             </ul>
-            <p class="post-p">Cara terlibat: 💬 Berikan feedback via GitHub Issues, ✍️ Kirim tutorial/konten, 🔧 Fork & PR untuk kode, 📢 Sebarkan ke komunitas TKJ lain.</p>
-            <blockquote class="post-bq">✨ "Open-source bukan tentang siapa paling jago, tapi tentang saling mengangkat untuk maju bersama."</blockquote>
             <div class="cta"><p class="cta-p">🔥 Gabung komunitas, mulai eksplor sekarang!</p><button class="btn-dl" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases','_blank')">🚀 Download & Kontribusi</button></div>
-            <div class="tags"><span class="tag">#Roadmap</span><span class="tag">#Komunitas</span><span class="tag">#OpenSource</span><span class="tag">#TKJ</span></div>
-        </article>
+            <div class="tags"><span class="tag">#Roadmap</span><span class="tag">#Komunitas</span><span class="tag">#OpenSource</span></div>
+        </article>    </div>
 
-    </div>
-
-    <!-- SIDEBAR -->
+    <!-- 🧰 SIDEBAR WIDGETS -->
     <aside class="sidebar">
-        <div class="widget">            <h3 class="widget-h">👤 Penulis</h3>
+        <div class="widget">
+            <h3 class="widget-h">👤 Penulis</h3>
             <p class="widget-p"><strong>Zhyllan Fyllah</strong><br>Developer TKJ • Android Security • UI/UX<br>🔗 <a href="https://github.com/Jirankun" target="_blank" style="color:var(--primary)">GitHub</a></p>
         </div>
         <div class="widget">
@@ -324,10 +378,9 @@
             <p style="font-size:10px;color:#888;margin-top:8px">✅ Verified • ✅ No Ads • ✅ Open Source</p>
         </div>
     </aside>
-
 </main>
 
-<!-- FOOTER -->
+<!-- 🦶 FOOTER -->
 <footer class="footer" id="contact">
     <div class="footer-logo">TKJ OnE</div>
     <p class="footer-p">Platform dokumentasi & komunitas pelajar TKJ Indonesia</p>
@@ -337,51 +390,67 @@
         <a href="https://github.com/Jirankun/TKJ-One" target="_blank">💻 GitHub</a>
         <a href="#">📧 Kontak</a>
         <a href="#">🔒 Privacy</a>
-    </div>
-    <p class="footer-copy">© 2026 TKJ OnE • Zhyllan Fyllah • Optimized for Adsense • Konten original</p>
+    </div>    <p class="footer-copy">© 2026 TKJ OnE • Zhyllan Fyllah • Optimized for Adsense • Konten original</p>
 </footer>
+
 <script src="sw.js"></script>
-<!-- JAVASCRIPT --><script>
-    const closedDate = new Date('2026-01-30T00:23:00+07:00');
-    
-    // ===== SIDEBAR TOGGLE LOGIC =====
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebarClose = document.getElementById('sidebarClose');
-    const mobileSidebar = document.getElementById('mobileSidebar');
+<!-- JAVASCRIPT -->
+<script>
+    // ⚙️ CONFIG - Gampang Edit Disini, Bang!
+    const CONFIG = {
+        closedDate: new Date('2026-01-30T00:23:00+07:00'),
+        downloadUrl: 'https://github.com/Jirankun/TKJ-One/releases',
+        monthNames: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
+        dayNames: ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']
+    };
+
+    // 🔄 SIDEBAR TOGGLE
+    const toggle = document.getElementById('menuToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+    const sidebar = document.getElementById('mobileSidebar');
     const overlay = document.getElementById('overlay');
     
-    function openSidebar(){mobileSidebar.classList.add('active');overlay.classList.add('active');document.body.style.overflow='hidden'}
-    function closeSidebar(){mobileSidebar.classList.remove('active');overlay.classList.remove('active');document.body.style.overflow=''}
+    const openSB = () => { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow='hidden' };
+    const closeSB = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow='' };
     
-    menuToggle?.addEventListener('click',openSidebar);
-    sidebarClose?.addEventListener('click',closeSidebar);
-    overlay?.addEventListener('click',closeSidebar);
-    document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closeSidebar()});
-    
-    // ===== DATETIME & COUNTDOWN =====
+    toggle?.addEventListener('click', openSB);
+    closeBtn?.addEventListener('click', closeSB);
+    overlay?.addEventListener('click', closeSB);
+    document.addEventListener('keydown', e => { if(e.key==='Escape') closeSB() });
+
+    // 🕐 DATETIME & COUNTDOWN
     function updateDT(){
-        const n=new Date(),d=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        const dtStr=`${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-        document.getElementById('datetime')&&(document.getElementById('datetime').textContent=dtStr);
-        document.getElementById('sidebar-datetime')&&(document.getElementById('sidebar-datetime').textContent=dtStr);
+        const n = new Date();
+        const str = `${CONFIG.dayNames[n.getDay()]}, ${n.getDate()} ${CONFIG.monthNames[n.getMonth()]} ${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+        document.getElementById('dt') && (document.getElementById('dt').textContent = str);
+        document.getElementById('sb-dt') && (document.getElementById('sb-dt').textContent = str);
     }
     
-    function calcDiff(s,e){const d=e-s;return{y:Math.floor(d/315576e5),mo:Math.floor(d%315576e5/26298e5),d:Math.floor(d%26298e5/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)}}
+    function calcDiff(start, end){
+        const diff = end - start;
+        return {
+            y: Math.floor(diff/315576e5), mo: Math.floor(diff%315576e5/26298e5),
+            d: Math.floor(diff%26298e5/864e5), h: Math.floor(diff%864e5/36e5),
+            m: Math.floor(diff%36e5/6e4), s: Math.floor(diff%6e4/1e3)
+        };
+    }
     
     function updateCD(){
-        const c=calcDiff(closedDate,new Date());
-        ['y','mo','d','h','m','s'].forEach(id=>{if(document.getElementById(id))document.getElementById(id).textContent=c[id]});
+        const c = calcDiff(CONFIG.closedDate, new Date());
+        ['y','mo','d','h','m','s'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.textContent = c[id];        });
     }
     
-    setInterval(()=>{updateDT();updateCD()},1e3);
+    setInterval(() => { updateDT(); updateCD() }, 1000);
     
-    // ===== ADS & DOWNLOAD =====
-    document.addEventListener('DOMContentLoaded',()=>{
-        updateDT();updateCD();
-        ['dlBtn','sidebarDlBtn'].forEach(id=>{
-            document.getElementById(id)?.addEventListener('click',()=>window.open('https://github.com/Jirankun/TKJ-One/releases','_blank'))
+    // 🚀 INIT
+    document.addEventListener('DOMContentLoaded', () => {
+        updateDT(); updateCD();
+        ['dlBtn','sb-dl'].forEach(id => {
+            document.getElementById(id)?.addEventListener('click', () => window.open(CONFIG.downloadUrl,'_blank'));
         });
-        if(typeof adsbygoogle!=='undefined')(adsbygoogle=window.adsbygoogle||[]).push({});
+        if(typeof adsbygoogle !== 'undefined') (adsbygoogle = window.adsbygoogle || []).push({});
     });
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
