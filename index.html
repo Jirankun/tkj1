@@ -12,9 +12,13 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--primary:#4caf50;--primary-dark:#2e7d32;--accent:#ff9800;--bg:#1a1a1a;--card:rgba(40,40,40,.95);--text:#fff;--muted:#aaa;--border:rgba(255,255,255,.1)}
-        body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg),#2d2d2d);color:var(--text);min-height:100vh;line-height:1.7;padding-top:125px}
+        body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg),#2d2d2d);color:var(--text);min-height:100vh;line-height:1.7;padding-top:70px}
         
-        /* ===== COMPACT HEADER ===== */
+        /* ===== TOGGLE BUTTON (Mobile Only) ===== */
+        .menu-toggle{display:none;position:fixed;top:15px;left:15px;z-index:1100;width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border:none;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .menu-toggle svg{width:20px;height:20px;fill:white}
+        
+        /* ===== DESKTOP HEADER ===== */
         .site-header{position:fixed;top:0;left:0;right:0;background:rgba(30,30,30,.98);border-bottom:2px solid var(--primary);z-index:1000;padding:8px 15px;backdrop-filter:blur(8px);box-shadow:0 2px 20px rgba(0,0,0,.4)}
         .header-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
         .brand{display:flex;align-items:center;gap:8px}
@@ -37,8 +41,23 @@
         .btn-sub{display:block;font-size:8px;opacity:.9;text-transform:uppercase;margin-top:2px}
         .header-ads{text-align:center;margin-top:6px}
         
+        /* ===== MOBILE SIDEBAR ===== */
+        .mobile-sidebar{position:fixed;top:0;left:-280px;width:280px;height:100vh;background:rgba(30,30,30,.98);border-right:2px solid var(--primary);z-index:1050;padding:20px 15px;backdrop-filter:blur(8px);transition:left .3s ease;overflow-y:auto}
+        .mobile-sidebar.active{left:0}
+        .sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border)}
+        .sidebar-brand h2{font-size:18px;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .sidebar-close{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f44336,#d32f2f);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .sidebar-close svg{width:16px;height:16px;fill:white}        .sidebar-content{display:flex;flex-direction:column;gap:15px}
+        .sidebar-item{display:flex;flex-direction:column;gap:5px}
+        .sidebar-item label{font-size:10px;color:var(--muted);text-transform:uppercase}
+        .sidebar-item .value{font-size:13px;color:var(--text);font-weight:500}
+        .sidebar-dl{margin-top:10px}
+        .sidebar-dl .btn-dl{width:100%;justify-content:center}
+        .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1040;opacity:0;visibility:hidden;transition:all .3s ease}
+        .overlay.active{opacity:1;visibility:visible}
+        
         /* ===== COMPACT NAV ===== */
-        .site-nav{position:fixed;top:92px;left:0;right:0;background:rgba(35,35,35,.98);border-bottom:1px solid var(--border);z-index:999;padding:0 10px;backdrop-filter:blur(6px)}
+        .site-nav{position:fixed;top:70px;left:0;right:0;background:rgba(35,35,35,.98);border-bottom:1px solid var(--border);z-index:999;padding:0 10px;backdrop-filter:blur(6px)}
         .nav-wrap{display:flex;gap:2px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
         .nav-wrap::-webkit-scrollbar{display:none}
         .nav-link{color:var(--text);text-decoration:none;padding:6px 12px;font-size:12px;font-weight:500;border-radius:4px;white-space:nowrap}
@@ -77,8 +96,7 @@
         .widget-list a:hover{color:var(--primary)}
         .ads-side{text-align:center;padding:10px;background:rgba(30,30,30,.5);border-radius:8px;margin:10px 0}
         
-        /* ===== FOOTER ===== */
-        .footer{background:rgba(30,30,30,.98);border-top:1px solid var(--border);padding:25px 15px;margin-top:30px;text-align:center}
+        /* ===== FOOTER ===== */        .footer{background:rgba(30,30,30,.98);border-top:1px solid var(--border);padding:25px 15px;margin-top:30px;text-align:center}
         .footer-logo{font-size:18px;font-weight:bold;background:linear-gradient(135deg,var(--primary),#8bc34a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
         .footer-p{color:#aaa;font-size:12px;margin-bottom:15px}
         .footer-links{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:15px 0}
@@ -91,12 +109,19 @@
         .post{animation:fadeIn .3s ease forwards;opacity:0}
         .post:nth-child(1){animation-delay:.1s;opacity:1}.post:nth-child(2){animation-delay:.2s;opacity:1}.post:nth-child(3){animation-delay:.3s;opacity:1}.post:nth-child(4){animation-delay:.4s;opacity:1}
         
+        /* ===== RESPONSIVE: MOBILE SIDEBAR MODE ===== */
+        @media(max-width:768px){
+            body{padding-top:60px}
+            .menu-toggle{display:flex}
+            .site-header{display:none} /* Hide desktop header on mobile */
+            .site-nav{top:60px}
+            
+            /* Minimal sidebar content - NO ADS, NO COUNTDOWN for safety */
+            .mobile-sidebar .sidebar-ads,
+            .mobile-sidebar .countdown{display:none}
+        }
+        
         @media(max-width:600px){
-            body{padding-top:145px}
-            .header-row{flex-direction:column;align-items:flex-start}
-            .header-bottom{width:100%}
-            .header-msg{min-width:100%}
-            .btn-dl{width:100%;justify-content:center}
             .nav-wrap{padding:4px 0}
             .nav-link{padding:5px 10px;font-size:11px}
             .post{padding:15px}
@@ -107,7 +132,43 @@
 </head>
 <body>
 
-<!-- ===== COMPACT HEADER ===== -->
+<!-- ===== MOBILE TOGGLE BUTTON ===== -->
+<button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</button>
+
+<!-- ===== MOBILE SIDEBAR ===== -->
+<aside class="mobile-sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <h2>📸 TKJ1</h2>
+            <span class="status" style="font-size:10px;color:var(--accent)">⚠️ Dialihkan</span>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Tutup menu">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>        </button>
+    </div>
+    <div class="sidebar-content">
+        <div class="sidebar-item">
+            <label>🕐 Waktu</label>
+            <span class="value" id="sidebar-datetime">Memuat...</span>
+        </div>
+        <div class="sidebar-item">
+            <label>⚡ Status</label>
+            <span class="value">Web tidak aktif. Unduh <strong>TKJ OnE</strong> untuk akses lengkap.</span>
+        </div>
+        <div class="sidebar-dl">
+            <button class="btn-dl" id="sidebarDlBtn">📥 Download APK</button>
+            <span class="btn-sub" style="text-align:center;display:block;margin-top:4px">Android • Gratis</span>
+        </div>
+        <!-- ADS DIHAPUS DARI SIDEBAR MOBILE BIAR AMAN -->
+        <div class="sidebar-ads" style="margin-top:20px;text-align:center">
+            <small style="color:var(--muted);font-size:9px">Iklan desktop only</small>
+        </div>
+    </div>
+</aside>
+<div class="overlay" id="overlay"></div>
+
+<!-- ===== DESKTOP HEADER (Hidden on Mobile) ===== -->
 <header class="site-header">
     <div class="header-row">
         <div class="brand">
@@ -133,8 +194,7 @@
         <button class="btn-dl" id="dlBtn">📥 Download<span class="btn-sub">Android • Gratis</span></button>
     </div>
     <div class="header-ads">
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="5141810024" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    </div>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="5141810024" data-ad-format="auto" data-full-width-responsive="true"></ins>    </div>
 </header>
 
 <!-- ===== COMPACT NAV ===== -->
@@ -164,7 +224,7 @@
                 <li class="post-li"><strong>Upload Cepat:</strong> Kamera native + kompresi otomatis</li>
                 <li class="post-li"><strong>Keamanan:</strong> Enkripsi AES-256 untuk data sensitif</li>
                 <li class="post-li"><strong>Notifikasi:</strong> Push notification untuk update baru</li>
-                <li class="post-li"><strong>Ringan:</strong> &lt;25MB, optimasi untuk device low-end</li>
+                <li class="post-li"><strong>Ringan:</strong> <25MB, optimasi untuk device low-end</li>
             </ul>
             <p class="post-p">Dengan pendekatan hybrid Cordova, kami gabungkan kemudahan web development dengan performa mendekati native. Kode diobfuscate untuk proteksi dasar, JSON schema validation untuk integritas data, dan multi-provider cloud (ImgBB/Imgur) untuk redundancy.</p>
             <div class="tags"><span class="tag">#TKJOnE</span><span class="tag">#Migrasi</span><span class="tag">#Android</span><span class="tag">#Performa</span></div>
@@ -179,12 +239,11 @@
             <h3 class="post-h3">📥 Step 1: Download APK</h3>
             <p class="post-p">Klik tombol download di header atau akses <span class="post-code">github.com/Jirankun/TKJ-One/releases</span>. Download file <code>TKJOnE-v*.apk</code> terbaru (~20MB).</p>
             <h3 class="post-h3">⚙️ Step 2: Izinkan Sumber Tidak Dikenal</h3>
-            <p class="post-p">Buka <strong>Pengaturan &gt; Aplikasi &gt; Install tidak dikenal</strong>, aktifkan untuk browser Anda. Ini hanya diperlukan sekali untuk instalasi pertama.</p>
+            <p class="post-p">Buka <strong>Pengaturan > Aplikasi > Install tidak dikenal</strong>, aktifkan untuk browser Anda. Ini hanya diperlukan sekali untuk instalasi pertama.</p>
             <h3 class="post-h3">🚀 Step 3: Install & Login</h3>
             <p class="post-p">Buka file APK, klik Install, lalu buka aplikasi. Login dengan akun kelas yang diberikan admin. Selesai! 🎉</p>
             <blockquote class="post-bq">💡 Tips: Gunakan WiFi saat pertama buka untuk download cache album lama.</blockquote>
-            <div class="tags"><span class="tag">#Tutorial</span><span class="tag">#Install</span><span class="tag">#Android</span><span class="tag">#Panduan</span></div>
-        </article>
+            <div class="tags"><span class="tag">#Tutorial</span><span class="tag">#Install</span><span class="tag">#Android</span><span class="tag">#Panduan</span></div>        </article>
 
         <!-- POST 3 -->
         <article class="post" id="p3">
@@ -233,8 +292,7 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="widget">
-            <h3 class="widget-h">👤 Penulis</h3>
+        <div class="widget">            <h3 class="widget-h">👤 Penulis</h3>
             <p class="widget-p"><strong>Zhyllan Fyllah</strong><br>Developer TKJ • Android Security • UI/UX<br>🔗 <a href="https://github.com/Jirankun" target="_blank" style="color:var(--primary)">GitHub</a></p>
         </div>
         <div class="widget">
@@ -283,14 +341,48 @@
     <p class="footer-copy">© 2026 TKJ OnE • Zhyllan Fyllah • Optimized for Adsense • Konten original</p>
 </footer>
 <script src="sw.js"></script>
-<!-- JAVASCRIPT -->
-<script>
+<!-- JAVASCRIPT --><script>
     const closedDate = new Date('2026-01-30T00:23:00+07:00');
-    function updateDT(){const n=new Date(),d=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];document.getElementById('datetime').textContent=`${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;}
+    
+    // ===== SIDEBAR TOGGLE LOGIC =====
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const mobileSidebar = document.getElementById('mobileSidebar');
+    const overlay = document.getElementById('overlay');
+    
+    function openSidebar(){mobileSidebar.classList.add('active');overlay.classList.add('active');document.body.style.overflow='hidden'}
+    function closeSidebar(){mobileSidebar.classList.remove('active');overlay.classList.remove('active');document.body.style.overflow=''}
+    
+    menuToggle?.addEventListener('click',openSidebar);
+    sidebarClose?.addEventListener('click',closeSidebar);
+    overlay?.addEventListener('click',closeSidebar);
+    document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closeSidebar()});
+    
+    // ===== DATETIME & COUNTDOWN =====
+    function updateDT(){
+        const n=new Date(),d=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        const dtStr=`${d[n.getDay()]}, ${n.getDate()} ${m[n.getMonth()]} ${n.getFullYear()} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+        document.getElementById('datetime')&&(document.getElementById('datetime').textContent=dtStr);
+        document.getElementById('sidebar-datetime')&&(document.getElementById('sidebar-datetime').textContent=dtStr);
+    }
+    
     function calcDiff(s,e){const d=e-s;return{y:Math.floor(d/315576e5),mo:Math.floor(d%315576e5/26298e5),d:Math.floor(d%26298e5/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)}}
-    function updateCD(){const c=calcDiff(closedDate,new Date());document.getElementById('y').textContent=c.y;document.getElementById('mo').textContent=c.mo;document.getElementById('d').textContent=c.d;document.getElementById('h').textContent=c.h;document.getElementById('m').textContent=c.m;document.getElementById('s').textContent=c.s;}
+    
+    function updateCD(){
+        const c=calcDiff(closedDate,new Date());
+        ['y','mo','d','h','m','s'].forEach(id=>{if(document.getElementById(id))document.getElementById(id).textContent=c[id]});
+    }
+    
     setInterval(()=>{updateDT();updateCD()},1e3);
-    document.addEventListener('DOMContentLoaded',()=>{updateDT();updateCD();document.getElementById('dlBtn')?.addEventListener('click',()=>window.open('https://github.com/Jirankun/TKJ-One/releases','_blank'));if(typeof adsbygoogle!=='undefined')(adsbygoogle=window.adsbygoogle||[]).push({});});
+    
+    // ===== ADS & DOWNLOAD =====
+    document.addEventListener('DOMContentLoaded',()=>{
+        updateDT();updateCD();
+        ['dlBtn','sidebarDlBtn'].forEach(id=>{
+            document.getElementById(id)?.addEventListener('click',()=>window.open('https://github.com/Jirankun/TKJ-One/releases','_blank'))
+        });
+        if(typeof adsbygoogle!=='undefined')(adsbygoogle=window.adsbygoogle||[]).push({});
+    });
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
 </body>
