@@ -127,8 +127,8 @@
     },
     { 
       "name": "Sakinah Khanza", 
-      "status": false,
-      "suspend_reason": "Kamu di usir oleh developer"
+      "status": true,
+      "suspend_reason": ""
     },
     { 
       "name": "Salimah", 
@@ -177,8 +177,8 @@
     },
     { 
       "name": "@", 
-      "status": false,
-      "suspend_reason": "Akun ini khusus debug,anda melanggar aturan kebijakan sistem,segera laporkan kepada devepoper untuk membuka blokir perangkat anda."
+      "status": true,
+      "suspend_reason": ""
     }
   ]
 }
