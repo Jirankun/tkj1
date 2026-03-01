@@ -127,8 +127,8 @@
     },
     { 
       "name": "Sakinah Khanza", 
-      "status": true,
-      "suspend_reason": ""
+      "status": false,
+      "suspend_reason": "Kamu di usir oleh developer"
     },
     { 
       "name": "Salimah", 
