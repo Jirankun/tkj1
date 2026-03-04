@@ -13,6 +13,7 @@
       --accent: #00ff88;
       --error: #ff4444;
       --card-bg: #1e1e1e;
+      --btn-app: #6c5ce7;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -46,8 +47,8 @@
       border: 2px solid var(--error);
       animation: shake 0.5s ease-in-out;
     }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }      25% { transform: translateX(-5px); }
+    @keyframes shake {      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
       75% { transform: translateX(5px); }
     }
     
@@ -71,15 +72,19 @@
       text-shadow: 0 0 10px rgba(0,255,136,0.3);
     }
     
-    #photo-img {
+    /* Image & Video - CENTERED! */
+    #photo-img, #photo-video {
       max-width: 100%;
       height: auto;
       border-radius: 12px;
-      margin: 20px 0;
+      margin: 20px auto; /* <-- AUTO = CENTER, BANGSAT! */
+      display: block; /* <-- BLOCK = CENTER WITH MARGIN AUTO */
       box-shadow: 0 8px 25px rgba(0,0,0,0.6);
       transition: transform 0.3s ease;
     }
-    #photo-img:hover { transform: scale(1.02); }
+    #photo-img:hover, #photo-video:hover {
+      transform: scale(1.02);
+    }
     
     #photo-desc {
       margin: 15px 0 25px;
@@ -87,16 +92,35 @@
       font-size: 1.05rem;
     }
     
+    #photo-meta {
+      opacity: 0.7;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      font-style: italic;    }
+    
+    /* Button Container */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    /* Primary Button */
     .btn {
-      display: inline-block;
-      padding: 14px 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
       background: linear-gradient(135deg, var(--accent), #00cc6a);
       color: #000;
       text-decoration: none;
       border-radius: 10px;
       font-weight: 700;
       font-size: 1rem;
-      transition: all 0.25s ease;      border: none;
+      transition: all 0.25s ease;
+      border: none;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -107,12 +131,13 @@
     }
     .btn:active { transform: translateY(-1px); }
     
-    /* Video styling */
-    #photo-video {
-      max-width: 100%;
-      border-radius: 12px;
-      margin: 20px 0;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    /* App Button - Purple Theme */
+    .btn-app {
+      background: linear-gradient(135deg, var(--btn-app), #5649c3);
+      color: #fff;
+    }
+    .btn-app:hover {
+      box-shadow: 0 8px 25px rgba(108,92,231,0.5);
     }
     
     /* Glitch effect */
@@ -120,17 +145,18 @@
       position: relative;
       animation: glitch-skew 3s infinite linear alternate-reverse;
     }
-    @keyframes glitch-skew {
-      0% { text-shadow: 0 0 0 var(--accent); }
+    @keyframes glitch-skew {      0% { text-shadow: 0 0 0 var(--accent); }
       2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
       4% { text-shadow: 0 0 0 var(--accent); }
       100% { text-shadow: 0 0 0 var(--accent); }
     }
     
+    /* Responsive */
     @media (max-width: 600px) {
       #photo-title { font-size: 1.4rem; }
-      #photo-desc { font-size: 0.95rem; }
-      .btn { padding: 12px 24px; font-size: 0.9rem; }
+      #photo-desc, #photo-meta { font-size: 0.95rem; }
+      .btn { padding: 12px 20px; font-size: 0.9rem; }
+      .btn-group { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -143,10 +169,21 @@
     <div id="error" class="hidden"></div>
     <div id="photo-container" class="hidden">
       <h1 id="photo-title" class="glitch"></h1>
-      <img id="photo-img" src="" alt="Photo" style="display:none"/>
-      <video id="photo-video" src="" controls style="display:none"></video>
-      <p id="photo-desc"></p>      <p id="photo-meta" style="opacity:0.7;font-size:0.9rem;margin-bottom:15px;"></p>
-      <a id="photo-link" href="#" target="_blank" class="btn">🔗 Buka Link Asli</a>
+      
+      <!-- Image -->
+      <img id="photo-img" src="" alt="Photo" />
+      
+      <!-- Video (auto-centered via CSS) -->
+      <video id="photo-video" src="" controls playsinline preload="metadata"></video>
+      
+      <p id="photo-desc"></p>
+      <p id="photo-meta"></p>
+      
+      <!-- Button Group -->
+      <div class="btn-group">
+        <a id="photo-link" href="#" target="_blank" class="btn">🔗 Buka Link Asli</a>
+        <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE</button>
+      </div>
     </div>
   </div>
 
@@ -154,6 +191,11 @@
     (function() {
       'use strict';
       
+      const CONFIG = {
+        APP_PACKAGE: 'com.tkjone.app',
+        APP_SCHEME: 'tkjone', // Custom scheme app lo (opsional)
+        PLAY_STORE: 'https://play.google.com/store/apps/details?id=com.tkjone.app'      };
+
       const DOM = {
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
@@ -163,7 +205,8 @@
         video: document.getElementById('photo-video'),
         desc: document.getElementById('photo-desc'),
         meta: document.getElementById('photo-meta'),
-        link: document.getElementById('photo-link')
+        link: document.getElementById('photo-link'),
+        btnApp: document.getElementById('btn-app')
       };
 
       function showError(msg) {
@@ -174,6 +217,12 @@
         console.error('[PhotoApp Error]', msg);
       }
 
+      function isVideo(url) {
+        if (!url) return false;
+        const lower = url.toLowerCase();
+        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
+      }
+
       function showPhoto(data) {
         DOM.loading.classList.add('hidden');
         DOM.error.classList.add('hidden');
@@ -181,21 +230,69 @@
         
         DOM.title.textContent = data.title || 'Photo #' + data.name;
         
-        // Handle gambar vs video
-        const isVideo = data.url.toLowerCase().includes('.mp4') || data.gender === 'video';
-        DOM.img.style.display = isVideo ? 'none' : 'block';
-        DOM.video.style.display = isVideo ? 'block' : 'none';
+        // Handle image vs video
+        const mediaUrl = (data.url || '').trim();
+        const videoMode = isVideo(mediaUrl);
         
-        if (isVideo) {
-          DOM.video.src = data.url.trim();
+        DOM.img.style.display = videoMode ? 'none' : 'block';
+        DOM.video.style.display = videoMode ? 'block' : 'none';
+        
+        if (videoMode) {
+          DOM.video.src = mediaUrl;
           DOM.img.src = '';
         } else {
-          DOM.img.src = data.url.trim();
+          DOM.img.src = mediaUrl;
           DOM.video.src = '';
+        }        
+        DOM.desc.textContent = data.desc || data.description || '';
+        DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
+        DOM.link.href = mediaUrl || '#';
+        
+        // Setup App Button
+        setupAppButton(data);
+      }
+
+      function setupAppButton(data) {
+        const photoName = data.name;
+        
+        // Prioritas: pakai deep_link dari JSON kalau ada
+        let deepLink = data.deep_link || data.app_url || null;
+        
+        if (deepLink) {
+          // Kalau JSON udah nyediain full deep link, pakai itu
+          DOM.btnApp.onclick = () => openAppWithFallback(deepLink);
+        } else {
+          // Build intent URL otomatis
+          const intentUrl = buildIntentUrl(photoName);
+          DOM.btnApp.onclick = () => openAppWithFallback(intentUrl);
         }
         
-        DOM.desc.textContent = data.desc || data.description || '';        DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
-        DOM.link.href = data.url.trim() || '#';
+        DOM.btnApp.style.display = 'inline-flex';
+      }
+
+      function buildIntentUrl(photoId) {
+        // Format Intent URL untuk Android
+        // intent://host/path#Intent;package=...;scheme=...;end
+        const host = 'tkj1.pages.dev';
+        const path = `/photo/${photoId}`;
+        const scheme = CONFIG.APP_SCHEME;
+        const pkg = CONFIG.APP_PACKAGE;
+        
+        // Intent URL dengan fallback ke Play Store
+        return `intent://${host}${path}#Intent;scheme=${scheme};package=${pkg};S.browser_fallback_url=${encodeURIComponent(CONFIG.PLAY_STORE)};end`;
+      }
+
+      function openAppWithFallback(url) {
+        // Coba buka app dulu
+        window.location.href = url;
+        
+        // Fallback: kalau setelah 2 detik masih di browser, redirect ke Play Store
+        setTimeout(() => {
+          // Cek apakah dokumen masih visible (kalau app terbuka, tab bakal blur)
+          if (!document.hidden) {
+            console.log('[TKJ OnE] App tidak terdeteksi, redirect ke Play Store...');
+            window.location.href = CONFIG.PLAY_STORE;
+          }        }, 2000);
       }
 
       async function init() {
@@ -209,14 +306,13 @@
         
         const photoName = decodeURIComponent(parts[1]);
         DOM.loading.classList.remove('hidden');
+        DOM.btnApp.style.display = 'none'; // Hide dulu sampai data load
 
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
           
           const rawData = await res.json();
-          
-          // ⚠️ FIX UTAMA: Akses array di dalam object "photos"
           const photosArray = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
           
           if (!Array.isArray(photosArray)) {
@@ -243,9 +339,9 @@
           
           showPhoto(photo);
           
-        } catch (err) {          console.error('[PhotoApp]', err);
-          if (err.message.includes('Failed to fetch')) {
-            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
+        } catch (err) {
+          console.error('[PhotoApp]', err);
+          if (err.message.includes('Failed to fetch')) {            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
           } else {
             showError('Error: ' + err.message);
           }
