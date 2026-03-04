@@ -14,6 +14,7 @@
       --error: #ff4444;
       --card-bg: #1e1e1e;
       --btn-app: #6c5ce7;
+      --btn-app-hover: #5649c3;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -46,8 +47,8 @@
       color: var(--error);
       border: 2px solid var(--error);
       animation: shake 0.5s ease-in-out;
-    }
-    @keyframes shake {      0%, 100% { transform: translateX(0); }
+    }    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-5px); }
       75% { transform: translateX(5px); }
     }
@@ -77,28 +78,25 @@
       max-width: 100%;
       height: auto;
       border-radius: 12px;
-      margin: 20px auto; /* <-- AUTO = CENTER, BANGSAT! */
-      display: block; /* <-- BLOCK = CENTER WITH MARGIN AUTO */
+      margin: 20px auto;
+      display: block;
       box-shadow: 0 8px 25px rgba(0,0,0,0.6);
       transition: transform 0.3s ease;
     }
-    #photo-img:hover, #photo-video:hover {
-      transform: scale(1.02);
-    }
+    #photo-img:hover, #photo-video:hover { transform: scale(1.02); }
     
     #photo-desc {
       margin: 15px 0 25px;
       opacity: 0.95;
       font-size: 1.05rem;
     }
-    
     #photo-meta {
       opacity: 0.7;
       font-size: 0.9rem;
       margin-bottom: 20px;
-      font-style: italic;    }
-    
-    /* Button Container */
+      font-style: italic;
+    }
+        /* Button Group */
     .btn-group {
       display: flex;
       flex-wrap: wrap;
@@ -133,25 +131,22 @@
     
     /* App Button - Purple Theme */
     .btn-app {
-      background: linear-gradient(135deg, var(--btn-app), #5649c3);
+      background: linear-gradient(135deg, var(--btn-app), var(--btn-app-hover));
       color: #fff;
     }
-    .btn-app:hover {
-      box-shadow: 0 8px 25px rgba(108,92,231,0.5);
-    }
+    .btn-app:hover { box-shadow: 0 8px 25px rgba(108,92,231,0.5); }
     
     /* Glitch effect */
     .glitch {
       position: relative;
       animation: glitch-skew 3s infinite linear alternate-reverse;
     }
-    @keyframes glitch-skew {      0% { text-shadow: 0 0 0 var(--accent); }
+    @keyframes glitch-skew {
+      0% { text-shadow: 0 0 0 var(--accent); }
       2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
       4% { text-shadow: 0 0 0 var(--accent); }
-      100% { text-shadow: 0 0 0 var(--accent); }
-    }
+      100% { text-shadow: 0 0 0 var(--accent); }    }
     
-    /* Responsive */
     @media (max-width: 600px) {
       #photo-title { font-size: 1.4rem; }
       #photo-desc, #photo-meta { font-size: 0.95rem; }
@@ -169,17 +164,10 @@
     <div id="error" class="hidden"></div>
     <div id="photo-container" class="hidden">
       <h1 id="photo-title" class="glitch"></h1>
-      
-      <!-- Image -->
       <img id="photo-img" src="" alt="Photo" />
-      
-      <!-- Video (auto-centered via CSS) -->
       <video id="photo-video" src="" controls playsinline preload="metadata"></video>
-      
       <p id="photo-desc"></p>
       <p id="photo-meta"></p>
-      
-      <!-- Button Group -->
       <div class="btn-group">
         <a id="photo-link" href="#" target="_blank" class="btn">🔗 Buka Link Asli</a>
         <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE</button>
@@ -192,9 +180,11 @@
       'use strict';
       
       const CONFIG = {
-        APP_PACKAGE: 'com.tkjone.app',
-        APP_SCHEME: 'tkjone', // Custom scheme app lo (opsional)
-        PLAY_STORE: 'https://play.google.com/store/apps/details?id=com.tkjone.app'      };
+        // ⚠️ MULTIPLE PACKAGES: Release + Debug
+        APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
+        APP_SCHEME: 'tkjone',
+        FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases'
+      };
 
       const DOM = {
         loading: document.getElementById('loading'),
@@ -204,8 +194,7 @@
         img: document.getElementById('photo-img'),
         video: document.getElementById('photo-video'),
         desc: document.getElementById('photo-desc'),
-        meta: document.getElementById('photo-meta'),
-        link: document.getElementById('photo-link'),
+        meta: document.getElementById('photo-meta'),        link: document.getElementById('photo-link'),
         btnApp: document.getElementById('btn-app')
       };
 
@@ -230,7 +219,6 @@
         
         DOM.title.textContent = data.title || 'Photo #' + data.name;
         
-        // Handle image vs video
         const mediaUrl = (data.url || '').trim();
         const videoMode = isVideo(mediaUrl);
         
@@ -243,56 +231,96 @@
         } else {
           DOM.img.src = mediaUrl;
           DOM.video.src = '';
-        }        
+        }
+        
         DOM.desc.textContent = data.desc || data.description || '';
         DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
         DOM.link.href = mediaUrl || '#';
         
-        // Setup App Button
         setupAppButton(data);
       }
 
       function setupAppButton(data) {
         const photoName = data.name;
-        
-        // Prioritas: pakai deep_link dari JSON kalau ada
-        let deepLink = data.deep_link || data.app_url || null;
-        
-        if (deepLink) {
-          // Kalau JSON udah nyediain full deep link, pakai itu
-          DOM.btnApp.onclick = () => openAppWithFallback(deepLink);
+        const deepLink = data.deep_link || data.app_url || null;
+                if (deepLink) {
+          DOM.btnApp.onclick = () => openAppWithMultiFallback(deepLink);
         } else {
-          // Build intent URL otomatis
-          const intentUrl = buildIntentUrl(photoName);
-          DOM.btnApp.onclick = () => openAppWithFallback(intentUrl);
+          DOM.btnApp.onclick = () => openAppWithMultiFallback(null, photoName);
         }
         
         DOM.btnApp.style.display = 'inline-flex';
       }
 
-      function buildIntentUrl(photoId) {
-        // Format Intent URL untuk Android
-        // intent://host/path#Intent;package=...;scheme=...;end
+      function buildIntentUrl(photoId, packageName) {
         const host = 'tkj1.pages.dev';
         const path = `/photo/${photoId}`;
         const scheme = CONFIG.APP_SCHEME;
-        const pkg = CONFIG.APP_PACKAGE;
+        const fallback = encodeURIComponent(CONFIG.FALLBACK_URL);
         
-        // Intent URL dengan fallback ke Play Store
-        return `intent://${host}${path}#Intent;scheme=${scheme};package=${pkg};S.browser_fallback_url=${encodeURIComponent(CONFIG.PLAY_STORE)};end`;
+        return `intent://${host}${path}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${fallback};end`;
       }
 
-      function openAppWithFallback(url) {
-        // Coba buka app dulu
-        window.location.href = url;
+      function tryOpenUrl(url) {
+        return new Promise((resolve) => {
+          let resolved = false;
+          const onBlur = () => {
+            if (!resolved) {
+              resolved = true;
+              window.removeEventListener('blur', onBlur);
+              resolve(true); // App opened!
+            }
+          };
+          
+          window.addEventListener('blur', onBlur, { once: true });
+          console.log('[TKJ OnE] Trying:', url);
+          window.location.href = url;
+          
+          // If no blur after timeout, assume failed
+          setTimeout(() => {
+            if (!resolved) {
+              window.removeEventListener('blur', onBlur);
+              resolve(false);
+            }
+          }, 1200);
+        });
+      }
+
+      async function openAppWithMultiFallback(customDeepLink, photoId) {
+        console.log('[TKJ OnE] Starting multi-package deep link attempt...');
         
-        // Fallback: kalau setelah 2 detik masih di browser, redirect ke Play Store
-        setTimeout(() => {
-          // Cek apakah dokumen masih visible (kalau app terbuka, tab bakal blur)
-          if (!document.hidden) {
-            console.log('[TKJ OnE] App tidak terdeteksi, redirect ke Play Store...');
-            window.location.href = CONFIG.PLAY_STORE;
-          }        }, 2000);
+        // Strategy 1: Custom Scheme (works for BOTH release & debug if both register tkjone://)
+        if (customDeepLink) {
+          const opened = await tryOpenUrl(customDeepLink);
+          if (opened) {            console.log('[TKJ OnE] ✅ App opened via custom deep link');
+            return;
+          }
+          console.log('[TKJ OnE] ❌ Custom deep link failed');
+        } else if (photoId) {
+          const schemeUrl = `${CONFIG.APP_SCHEME}://gallery/${photoId}`;
+          const opened = await tryOpenUrl(schemeUrl);
+          if (opened) {
+            console.log('[TKJ OnE] ✅ App opened via custom scheme');
+            return;
+          }
+          console.log('[TKJ OnE] ❌ Custom scheme failed');
+        }
+        
+        // Strategy 2: Intent URL with multiple packages (release → debug)
+        for (const pkg of CONFIG.APP_PACKAGES) {
+          if (!photoId) continue;
+          const intentUrl = buildIntentUrl(photoId, pkg);
+          const opened = await tryOpenUrl(intentUrl);
+          if (opened) {
+            console.log(`[TKJ OnE] ✅ App opened via intent (package: ${pkg})`);
+            return;
+          }
+          console.log(`[TKJ OnE] ❌ Intent failed for package: ${pkg}`);
+        }
+        
+        // Strategy 3: Final fallback to GitHub Releases
+        console.log('[TKJ OnE] ❌ All attempts failed, redirecting to GitHub Releases...');
+        window.location.href = CONFIG.FALLBACK_URL;
       }
 
       async function init() {
@@ -306,15 +334,14 @@
         
         const photoName = decodeURIComponent(parts[1]);
         DOM.loading.classList.remove('hidden');
-        DOM.btnApp.style.display = 'none'; // Hide dulu sampai data load
+        DOM.btnApp.style.display = 'none';
 
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
           
           const rawData = await res.json();
-          const photosArray = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
-          
+          const photosArray = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);          
           if (!Array.isArray(photosArray)) {
             throw new Error('Struktur JSON nggak dikenali! Harusnya { "photos": [...] } atau array langsung.');
           }
@@ -341,7 +368,8 @@
           
         } catch (err) {
           console.error('[PhotoApp]', err);
-          if (err.message.includes('Failed to fetch')) {            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
+          if (err.message.includes('Failed to fetch')) {
+            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
           } else {
             showError('Error: ' + err.message);
           }
