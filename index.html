@@ -79,9 +79,7 @@
       box-shadow: 0 8px 25px rgba(0,0,0,0.6);
       transition: transform 0.3s ease;
     }
-    #photo-img:hover {
-      transform: scale(1.02);
-    }
+    #photo-img:hover { transform: scale(1.02); }
     
     #photo-desc {
       margin: 15px 0 25px;
@@ -96,9 +94,9 @@
       color: #000;
       text-decoration: none;
       border-radius: 10px;
-      font-weight: 700;      font-size: 1rem;
-      transition: all 0.25s ease;
-      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.25s ease;      border: none;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -107,11 +105,17 @@
       transform: translateY(-3px);
       box-shadow: 0 8px 25px rgba(0,255,136,0.4);
     }
-    .btn:active {
-      transform: translateY(-1px);
+    .btn:active { transform: translateY(-1px); }
+    
+    /* Video styling */
+    #photo-video {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 20px 0;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
     }
     
-    /* Glitch effect untuk judul */
+    /* Glitch effect */
     .glitch {
       position: relative;
       animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -123,7 +127,6 @@
       100% { text-shadow: 0 0 0 var(--accent); }
     }
     
-    /* Responsive */
     @media (max-width: 600px) {
       #photo-title { font-size: 1.4rem; }
       #photo-desc { font-size: 0.95rem; }
@@ -133,25 +136,21 @@
 </head>
 <body>
   <div id="app">
-    <!-- Loading State -->
     <div id="loading" class="hidden">
       <div style="font-size:2rem;margin-bottom:10px;">⏳</div>
       <div>Loading, tunggu bentar bangsat...</div>
     </div>
-    
-    <!-- Error State -->
     <div id="error" class="hidden"></div>
-    
-    <!-- Photo Display -->
     <div id="photo-container" class="hidden">
       <h1 id="photo-title" class="glitch"></h1>
-      <img id="photo-img" src="" alt="Photo" />      <p id="photo-desc"></p>
+      <img id="photo-img" src="" alt="Photo" style="display:none"/>
+      <video id="photo-video" src="" controls style="display:none"></video>
+      <p id="photo-desc"></p>      <p id="photo-meta" style="opacity:0.7;font-size:0.9rem;margin-bottom:15px;"></p>
       <a id="photo-link" href="#" target="_blank" class="btn">🔗 Buka Link Asli</a>
     </div>
   </div>
 
   <script>
-    // === JAVASCRIPT INLINE - SPA ROUTING LOGIC ===
     (function() {
       'use strict';
       
@@ -161,79 +160,80 @@
         container: document.getElementById('photo-container'),
         title: document.getElementById('photo-title'),
         img: document.getElementById('photo-img'),
+        video: document.getElementById('photo-video'),
         desc: document.getElementById('photo-desc'),
+        meta: document.getElementById('photo-meta'),
         link: document.getElementById('photo-link')
       };
 
-      // Helper: Show error message
       function showError(msg) {
         DOM.loading.classList.add('hidden');
         DOM.container.classList.add('hidden');
-        DOM.error.textContent = '❌ ' + msg;
+        DOM.error.innerHTML = '❌ ' + msg;
         DOM.error.classList.remove('hidden');
         console.error('[PhotoApp Error]', msg);
       }
 
-      // Helper: Show photo data
       function showPhoto(data) {
         DOM.loading.classList.add('hidden');
         DOM.error.classList.add('hidden');
+        DOM.container.classList.remove('hidden');
         
-        DOM.title.textContent = data.title || 'Photo ' + data.name;
-        DOM.img.src = data.url || '';
-        DOM.img.alt = data.title || data.name;
-        DOM.desc.textContent = data.desc || data.description || '';
-        DOM.link.href = data.url || data.download_url || '#';
+        DOM.title.textContent = data.title || 'Photo #' + data.name;
         
-        // Kalau ada field tambahan, bisa ditambahin di sini
-        if (data.extra_info) {
-          DOM.desc.innerHTML += '<br><small style="opacity:0.7">' + data.extra_info + '</small>';
+        // Handle gambar vs video
+        const isVideo = data.url.toLowerCase().includes('.mp4') || data.gender === 'video';
+        DOM.img.style.display = isVideo ? 'none' : 'block';
+        DOM.video.style.display = isVideo ? 'block' : 'none';
+        
+        if (isVideo) {
+          DOM.video.src = data.url.trim();
+          DOM.img.src = '';
+        } else {
+          DOM.img.src = data.url.trim();
+          DOM.video.src = '';
         }
         
-        DOM.container.classList.remove('hidden');
+        DOM.desc.textContent = data.desc || data.description || '';        DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
+        DOM.link.href = data.url.trim() || '#';
       }
 
-      // Main: Parse URL & Fetch Data
-      async function init() {        // 1. Ambil path dari URL: /photo/2 -> "2"
-        const path = window.location.pathname; // "/photo/2"
-        const parts = path.split('/').filter(Boolean); // ["photo", "2"]
+      async function init() {
+        const path = window.location.pathname;
+        const parts = path.split('/').filter(Boolean);
         
-        // Validasi route
         if (parts[0] !== 'photo' || !parts[1]) {
-          showError('URL nggak valid, bangsat! Format yang bener: /photo/{name}');
+          showError('URL nggak valid, bangsat! Format: /photo/{name}');
           return;
         }
         
-        const photoName = decodeURIComponent(parts[1]); // "2" (handle special chars)
+        const photoName = decodeURIComponent(parts[1]);
         DOM.loading.classList.remove('hidden');
 
         try {
-          // 2. Fetch JSON dari DB - pakai cache busting kalau perlu
-          const jsonUrl = '/DB/photos.json?t=' + Date.now();
-          const res = await fetch(jsonUrl, { 
-            method: 'GET',
-            headers: { 'Accept': 'application/json' }
-          });
+          const res = await fetch('/DB/photos.json?t=' + Date.now());
+          if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
           
-          if (!res.ok) {
-            throw new Error('Gagal load photos.json (Status: ' + res.status + '), cek lagi bangsat!');
+          const rawData = await res.json();
+          
+          // ⚠️ FIX UTAMA: Akses array di dalam object "photos"
+          const photosArray = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
+          
+          if (!Array.isArray(photosArray)) {
+            throw new Error('Struktur JSON nggak dikenali! Harusnya { "photos": [...] } atau array langsung.');
           }
           
-          const photos = await res.json();
-          
-          // 3. Cari data yang name-nya COCOK (case-insensitive, type-flexible)
-          const photo = photos.find(p => 
+          const photo = photosArray.find(p => 
             String(p.name).toLowerCase() === String(photoName).toLowerCase()
           );
           
           if (!photo) {
-            // Coba kasih saran kalau ada yang mirip
-            const similar = photos.filter(p => 
+            const similar = photosArray.filter(p => 
               String(p.name).toLowerCase().includes(String(photoName).toLowerCase())
             );
-            let msg = 'Foto dengan name "' + photoName + '" nggak ditemukan, ngapain lo request sih?';
+            let msg = 'Foto dengan name "' + photoName + '" nggak ditemukan!';
             if (similar.length > 0) {
-              msg += '<br><br>💡 Mungkin maksud lo: ' + similar.map(s => 
+              msg += '<br><br>💡 Mungkin maksud lo: ' + similar.slice(0,3).map(s => 
                 '<a href="/photo/'+s.name+'" style="color:var(--accent)">/photo/'+s.name+'</a>'
               ).join(', ');
             }
@@ -241,28 +241,24 @@
             return;
           }
           
-          // 4. Tampilin data ke UI
           showPhoto(photo);
-                  } catch (err) {
-          console.error('[PhotoApp]', err);
+          
+        } catch (err) {          console.error('[PhotoApp]', err);
           if (err.message.includes('Failed to fetch')) {
-            showError('Waduh, nggak bisa connect ke server! Cek koneksi internet lo, bangsat!');
+            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
           } else {
-            showError('Error nih: ' + err.message);
+            showError('Error: ' + err.message);
           }
         }
       }
 
-      // Jalankan saat DOM ready
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
       } else {
         init();
       }
       
-      // Optional: Handle browser back/forward button
       window.addEventListener('popstate', init);
-      
     })();
   </script>
 </body>
