@@ -10,349 +10,123 @@
   <style>
     /* === CSS INLINE - DARK THEME === */
     :root {
-      --bg: #121212;
-      --text: #ffffff;
-      --accent: #00ff88;
-      --error: #ff4444;
-      --card-bg: #1e1e1e;
-      --btn-app: #6c5ce7;
-      --btn-app-hover: #5649c3;
-      --list-item-bg: #252525;
-      --list-item-hover: #333;
-      --search-bg: #2a2a2a;
+      --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
+      --card-bg: #1e1e1e; --btn-app: #6c5ce7; --btn-app-hover: #5649c3;
+      --list-item-bg: #252525; --list-item-hover: #333; --search-bg: #2a2a2a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
-      line-height: 1.6;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 15px; line-height: 1.6;
+      user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
     }
     #app { max-width: 800px; width: 100%; }
     .hidden { display: none !important; }
     
-    /* === HEADER & CONTROLS === */
-    .header {
-      text-align: center;
-      padding: 15px 0 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 20px;
-    }
-    .header h1 {      font-size: 1.6rem;
-      color: var(--accent);
-      text-shadow: 0 0 10px rgba(0,255,136,0.3);
-      margin-bottom: 15px;
-    }
+    .header { text-align: center; padding: 15px 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+    .header h1 { font-size: 1.6rem; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); margin-bottom: 15px; }
     
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    #search-input {
-      flex: 1;
-      min-width: 150px;
-      padding: 12px 15px;
-      border: 2px solid var(--accent);
-      border-radius: 10px;
-      background: var(--search-bg);
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+    .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+    #search-input { flex: 1; min-width: 150px; padding: 12px 15px; border: 2px solid var(--accent); border-radius: 10px; background: var(--search-bg); color: var(--text); font-size: 1rem; outline: none; }
     #search-input:focus { border-color: #00cc6a; }
     #search-input::placeholder { color: rgba(255,255,255,0.5); }
     
-    .filter-btn {
-      padding: 12px 18px;
-      background: var(--card-bg);
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      background: var(--accent);
-      color: #000;
-      border-color: var(--accent);
-    }
+    .filter-btn { padding: 12px 18px; background: var(--card-bg); border: 2px solid rgba(255,255,255,0.2); border-radius: 10px; color: var(--text); font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
     
-    .action-bar {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 20px;
-      background: linear-gradient(135deg, var(--accent), #00cc6a);
-      color: #000;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.25s ease;
-      border: none;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
+    .action-bar { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: linear-gradient(135deg, var(--accent), #00cc6a); color: #000; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.25s ease; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px; }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,255,136,0.3); }
     .btn:active { transform: translateY(0); }
-    .btn-app {
-      background: linear-gradient(135deg, var(--btn-app), var(--btn-app-hover));
-      color: #fff;
-    }
+    .btn-app { background: linear-gradient(135deg, var(--btn-app), var(--btn-app-hover)); color: #fff; }
     .btn-app:hover { box-shadow: 0 6px 20px rgba(108,92,231,0.4); }
-    .btn-secondary {
-      background: var(--card-bg);
-      color: var(--text);
-      border: 2px solid rgba(255,255,255,0.2);
-    }
-    .btn-secondary:hover {
-      background: #333;
-      border-color: var(--accent);
-    }
+    .btn-secondary { background: var(--card-bg); color: var(--text); border: 2px solid rgba(255,255,255,0.2); }
+    .btn-secondary:hover { background: #333; border-color: var(--accent); }
     
-    /* === MAIN PHOTO VIEWER === */
-    #photo-container {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-      animation: fadeIn 0.4s ease-out;
-      margin-bottom: 25px;
-    }
+    #photo-container { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); animation: fadeIn 0.4s ease-out; margin-bottom: 25px; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
     
-    #photo-title {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-      color: var(--accent);      text-shadow: 0 0 10px rgba(0,255,136,0.3);
-    }
-    
-    /* Media - CENTERED & PROTECTED */
-    #photo-img, #photo-video {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin: 15px auto;
-      display: block;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-      pointer-events: none;
-      -webkit-user-drag: none;
-      user-drag: none;
-    }
-    #photo-img { -webkit-touch-callout: none; }
+    #photo-img, #photo-video { max-width: 100%; height: auto; border-radius: 12px; margin: 15px auto; display: block; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+    #photo-img { -webkit-touch-callout: none; pointer-events: none; }
+    #photo-video { pointer-events: auto; }
     
     #photo-desc { margin: 12px 0 18px; opacity: 0.95; font-size: 1rem; }
     #photo-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 15px; font-style: italic; }
     
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 15px 0;
-    }
-    .nav-btn {
-      padding: 10px 20px;
-      background: var(--card-bg);
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .nav-btn:hover:not(:disabled) {
-      background: var(--accent);
-      color: #000;
-      border-color: var(--accent);
-    }
+    .nav-buttons { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
+    .nav-btn { padding: 10px 20px; background: var(--card-bg); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--text); font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+    .nav-btn:hover:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); }
     .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     
-    /* === GALLERY LIST (Vertical, Performant) === */
-    #gallery-section {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 15px;
-      margin-top: 10px;
-    }    #gallery-section h2 {
-      text-align: center;
-      margin-bottom: 15px;
-      color: var(--accent);
-      font-size: 1.3rem;
-    }
-    #gallery-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      /* Virtual scroll friendly: no complex layout */
-      contain: content;
-    }
-    .list-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 15px;
-      background: var(--list-item-bg);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
-      position: relative;
-    }
-    .list-item:hover {
-      background: var(--list-item-hover);
-      transform: translateX(5px);
-      border-color: rgba(0,255,136,0.3);
-    }
-    .list-item.active {
-      border-color: var(--accent);
-      background: linear-gradient(135deg, rgba(0,255,136,0.1), transparent);
-      box-shadow: 0 0 0 2px rgba(0,255,136,0.3);
-    }
+    #gallery-section { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-top: 10px; }
+    #gallery-section h2 { text-align: center; margin-bottom: 15px; color: var(--accent); font-size: 1.3rem; }
+    #gallery-list { display: flex; flex-direction: column; gap: 10px; contain: content; }
     
-    /* Thumbnail in list - small & optimized */
-    .list-thumb {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      object-fit: cover;
-      flex-shrink: 0;
-      background: #333;
-      pointer-events: none;
-      -webkit-user-drag: none;
-    }
+    .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; background: var(--list-item-bg); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent; }
+    .list-item:hover { background: var(--list-item-hover); transform: translateX(5px); border-color: rgba(0,255,136,0.3); }
+    .list-item.active { border-color: var(--accent); background: linear-gradient(135deg, rgba(0,255,136,0.1), transparent); box-shadow: 0 0 0 2px rgba(0,255,136,0.3); }
     
-    .list-info {
-      flex: 1;      min-width: 0;
-      text-align: left;
-    }
-    .list-name {
-      font-weight: 600;
-      font-size: 1rem;
-      color: var(--text);
-      margin-bottom: 3px;
-    }
-    .list-meta {
-      font-size: 0.8rem;
-      opacity: 0.7;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .list-badge {
-      background: rgba(0,255,136,0.2);
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }
-    .list-badge.video {
-      background: rgba(108,92,231,0.2);
-      color: #a78bfa;
-    }
+    .list-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #333; pointer-events: none; -webkit-user-drag: none; }
+    .list-info { flex: 1; min-width: 0; text-align: left; }
+    .list-name { font-weight: 600; font-size: 1rem; color: var(--text); margin-bottom: 3px; }
+    .list-meta { font-size: 0.8rem; opacity: 0.7; display: flex; gap: 10px; flex-wrap: wrap; }
+    .list-badge { background: rgba(0,255,136,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+    .list-badge.video { background: rgba(108,92,231,0.2); color: #a78bfa; }
     
-    /* Loading & Error */
-    #loading, #error {
-      font-size: 1.1rem;
-      padding: 25px;
-      background: var(--card-bg);
-      border-radius: 12px;
-      margin: 20px 0;
-      text-align: center;
-    }
+    #loading, #error { font-size: 1.1rem; padding: 25px; background: var(--card-bg); border-radius: 12px; margin: 20px 0; text-align: center; }
     #error { color: var(--error); border: 2px solid var(--error); animation: shake 0.5s ease-in-out; }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
     
-    /* Glitch effect */
     .glitch { position: relative; animation: glitch-skew 3s infinite linear alternate-reverse; }
-    @keyframes glitch-skew {
-      0% { text-shadow: 0 0 0 var(--accent); }
-      2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
-      4% { text-shadow: 0 0 0 var(--accent); }
-      100% { text-shadow: 0 0 0 var(--accent); }
-    }
+    @keyframes glitch-skew { 0% { text-shadow: 0 0 0 var(--accent); } 2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; } 4% { text-shadow: 0 0 0 var(--accent); } 100% { text-shadow: 0 0 0 var(--accent); } }
     
-    /* Toast */    #toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--card-bg);
-      color: var(--text);
-      padding: 12px 24px;
-      border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-      font-size: 0.95rem;
-      text-align: center;
-      max-width: 90vw;
-      white-space: pre-line;
-    }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); color: var(--text); padding: 12px 24px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s ease; z-index: 1000; font-size: 0.95rem; text-align: center; max-width: 90vw; white-space: pre-line; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     
-    /* Responsive */
     @media (max-width: 600px) {
-      .header h1 { font-size: 1.3rem; }
-      #photo-title { font-size: 1.3rem; }
-      #photo-desc, #photo-meta { font-size: 0.9rem; }
-      .btn { padding: 9px 16px; font-size: 0.85rem; }
-      .list-thumb { width: 50px; height: 50px; }
-      .list-name { font-size: 0.95rem; }
-      .controls { flex-direction: column; }
-      #search-input { width: 100%; }
+      .header h1 { font-size: 1.3rem; } #photo-title { font-size: 1.3rem; }
+      #photo-desc, #photo-meta { font-size: 0.9rem; } .btn { padding: 9px 16px; font-size: 0.85rem; }
+      .list-thumb { width: 50px; height: 50px; } .list-name { font-size: 0.95rem; }
+      .controls { flex-direction: column; } #search-input { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <!-- ⚠️ PROTEKSI KONTEN: Block download gestures -->
-  <script>
-    (function blockDownloads() {
+  <!-- ⚠️ PROTEKSI KONTEN: Block download gestures (tapi allow click untuk deep link) -->
+  <script>    (function blockDownloads() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
-      let touchTimer;
+      // Long press protection - tapi jangan block click normal
+      let touchTimer, touchStartPos;
       document.addEventListener('touchstart', e => {
-        touchTimer = setTimeout(() => { e.preventDefault(); }, 500);
+        touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        touchTimer = setTimeout(() => { 
+          // Hanya prevent jika nggak ada movement
+          e.preventDefault(); 
+        }, 500);
       }, { passive: false });
+      document.addEventListener('touchmove', () => { 
+        clearTimeout(touchTimer); 
+        touchTimer = null;
+      }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
-      document.addEventListener('touchmove', () => clearTimeout(touchTimer));
+      document.addEventListener('touchcancel', () => clearTimeout(touchTimer));
     })();
   </script>
 
   <div id="app">
-    <!-- Header -->    <div class="header">
+    <div class="header">
       <h1 class="glitch">📸 TKJ1 Gallery</h1>
-      
-      <!-- Search & Filter -->
       <div class="controls">
         <input type="text" id="search-input" placeholder="🔍 Cari nama foto..." autocomplete="off">
         <button class="filter-btn active" data-filter="all">Semua</button>
         <button class="filter-btn" data-filter="photo">Foto</button>
         <button class="filter-btn" data-filter="video">Video</button>
       </div>
-      
-      <!-- Action Buttons -->
       <div class="action-bar">
         <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
         <button id="btn-share" class="btn btn-secondary">🔗 Bagikan</button>
@@ -360,43 +134,29 @@
       </div>
     </div>
 
-    <!-- Loading & Error -->
-    <div id="loading" class="hidden">
-      <div style="font-size:2rem;margin-bottom:10px;">⏳</div>
-      <div>Loading, tunggu bentar bangsat...</div>
-    </div>
+    <div id="loading" class="hidden"><div style="font-size:2rem;margin-bottom:10px;">⏳</div><div>Loading, tunggu bentar bangsat...</div></div>
     <div id="error" class="hidden"></div>
 
-    <!-- Main Photo Viewer -->
     <div id="photo-container" class="hidden">
       <h1 id="photo-title"></h1>
-      
-      <!-- Navigation -->
       <div class="nav-buttons">
         <button id="btn-prev" class="nav-btn">⬅️ Sebelumnya</button>
         <button id="btn-next" class="nav-btn">Selanjutnya ➡️</button>
       </div>
-      
-      <!-- Media (Protected) -->
       <img id="photo-img" src="" alt="Photo" />
       <video id="photo-video" src="" controls playsinline preload="metadata"></video>
-      
-      <p id="photo-desc"></p>
-      <p id="photo-meta"></p>
-      
-      <!-- App Button Only -->
+      <p id="photo-desc"></p>      <p id="photo-meta"></p>
       <div style="text-align:center;margin-top:10px">
         <button id="btn-app-bottom" class="btn btn-app">📱 Download via TKJ OnE App</button>
       </div>
     </div>
 
-    <!-- Gallery LIST (Vertical, Performant) -->    <div id="gallery-section">
+    <div id="gallery-section">
       <h2>🗂️ Daftar Foto</h2>
       <div id="gallery-list"></div>
     </div>
   </div>
 
-  <!-- Toast Notification (supports multi-line) -->
   <div id="toast"></div>
 
   <script>
@@ -406,47 +166,35 @@
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
+        // ⚠️ PATH HARUS SAMA PERSIS DENGAN YANG DI ANDROID MANIFEST
+        DEEP_LINK_PATH: 'photo',  // <-- INI YANG DIPAKE: tkjone://photo/{id}
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
         BASE_URL: 'https://tkj1.pages.dev'
       };
 
-      // State
-      let allPhotos = [];
-      let filteredPhotos = [];
-      let currentIndex = -1;
+      let allPhotos = [], filteredPhotos = [], currentIndex = -1;
 
       const DOM = {
-        loading: document.getElementById('loading'),
-        error: document.getElementById('error'),
-        container: document.getElementById('photo-container'),
-        title: document.getElementById('photo-title'),
-        img: document.getElementById('photo-img'),
-        video: document.getElementById('photo-video'),
-        desc: document.getElementById('photo-desc'),
-        meta: document.getElementById('photo-meta'),
-        btnApp: document.getElementById('btn-app'),
-        btnAppBottom: document.getElementById('btn-app-bottom'),
-        btnRandom: document.getElementById('btn-random'),
-        btnShare: document.getElementById('btn-share'),
-        btnPrev: document.getElementById('btn-prev'),
-        btnNext: document.getElementById('btn-next'),
+        loading: document.getElementById('loading'), error: document.getElementById('error'),
+        container: document.getElementById('photo-container'), title: document.getElementById('photo-title'),
+        img: document.getElementById('photo-img'), video: document.getElementById('photo-video'),
+        desc: document.getElementById('photo-desc'), meta: document.getElementById('photo-meta'),
+        btnApp: document.getElementById('btn-app'), btnAppBottom: document.getElementById('btn-app-bottom'),
+        btnRandom: document.getElementById('btn-random'), btnShare: document.getElementById('btn-share'),
+        btnPrev: document.getElementById('btn-prev'), btnNext: document.getElementById('btn-next'),
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
-        galleryList: document.getElementById('gallery-list'),
-        toast: document.getElementById('toast')
+        galleryList: document.getElementById('gallery-list'), toast: document.getElementById('toast')
       };
 
-      // === UTILS ===
       function showToast(msg, duration = 3500) {
         DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');
-        DOM.toast.classList.add('show');        setTimeout(() => DOM.toast.classList.remove('show'), duration);
+        DOM.toast.classList.add('show');
+        setTimeout(() => DOM.toast.classList.remove('show'), duration);
       }
 
       function showError(msg) {
-        DOM.loading.classList.add('hidden');
-        DOM.container.classList.add('hidden');
-        DOM.error.innerHTML = '❌ ' + msg;
-        DOM.error.classList.remove('hidden');
+        DOM.loading.classList.add('hidden'); DOM.container.classList.add('hidden');        DOM.error.innerHTML = '❌ ' + msg; DOM.error.classList.remove('hidden');
         console.error('[PhotoApp Error]', msg);
       }
 
@@ -456,42 +204,33 @@
         return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
       }
 
-      function getThumbUrl(url) {
-        return url;
-      }
-
-      // === PROTEKSI MEDIA ===
       function protectMedia(el) {
         if (!el) return;
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
           el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
         );
-        el.style.pointerEvents = 'none';
-        el.style.userSelect = 'none';
-        el.style.webkitUserSelect = 'none';
-        el.style.webkitTouchCallout = 'none';
+        if (el.tagName === 'IMG') {
+          el.style.pointerEvents = 'none';
+          el.style.webkitUserSelect = 'none';
+          el.style.webkitTouchCallout = 'none';
+        }
       }
 
-      // === RENDER GALLERY LIST (Performant Vertical List) ===
       function renderGalleryList(photos) {
         DOM.galleryList.innerHTML = '';
         if (photos.length === 0) {
           DOM.galleryList.innerHTML = '<p style="text-align:center;opacity:0.7;padding:20px">Nggak ada foto yang cocok, bangsat!</p>';
           return;
         }
-        
-        // Document fragment for batch insert (better performance)
         const fragment = document.createDocumentFragment();
-        
         photos.forEach((photo) => {
           const item = document.createElement('div');
           item.className = 'list-item' + (photo.name === getCurrentPhotoName() ? ' active' : '');
           item.dataset.name = photo.name;
-          
-          const isVid = isVideo(photo.url);          const thumb = isVid 
-            ? `<video class="list-thumb" src="${getThumbUrl(photo.url)}" muted preload="none"></video>`
-            : `<img class="list-thumb" src="${getThumbUrl(photo.url)}" alt="${photo.title||photo.name}" loading="lazy">`;
-          
+          const isVid = isVideo(photo.url);
+          const thumb = isVid 
+            ? `<video class="list-thumb" src="${photo.url}" muted preload="none"></video>`
+            : `<img class="list-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">`;
           item.innerHTML = `
             ${thumb}
             <div class="list-info">
@@ -503,20 +242,14 @@
               </div>
             </div>
           `;
-          
           item.addEventListener('click', () => {
-            const photoData = allPhotos.find(p => p.name === photo.name);
-            if (photoData) showPhoto(photoData, true);
+            const photoData = allPhotos.find(p => p.name === photo.name);            if (photoData) showPhoto(photoData, true);
             DOM.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
-          
-          // Protect thumbnail
           const mediaEl = item.querySelector('img, video');
           if (mediaEl) protectMedia(mediaEl);
-          
           fragment.appendChild(item);
         });
-        
         DOM.galleryList.appendChild(fragment);
       }
 
@@ -527,46 +260,26 @@
       }
 
       function getCurrentPhotoName() {
-        return currentIndex >= 0 && filteredPhotos[currentIndex] 
-          ? filteredPhotos[currentIndex].name 
-          : null;
+        return currentIndex >= 0 && filteredPhotos[currentIndex] ? filteredPhotos[currentIndex].name : null;
       }
 
-      // === DISPLAY PHOTO ===
       function showPhoto(data, fromGallery = false) {
-        DOM.loading.classList.add('hidden');
-        DOM.error.classList.add('hidden');
-        DOM.container.classList.remove('hidden');
-                DOM.title.textContent = data.title || 'Photo #' + data.name;
-        
+        DOM.loading.classList.add('hidden'); DOM.error.classList.add('hidden'); DOM.container.classList.remove('hidden');
+        DOM.title.textContent = data.title || 'Photo #' + data.name;
         const mediaUrl = (data.url || '').trim();
         const videoMode = isVideo(mediaUrl);
-        
         DOM.img.style.display = videoMode ? 'none' : 'block';
         DOM.video.style.display = videoMode ? 'block' : 'none';
-        
         if (videoMode) {
-          DOM.video.src = mediaUrl;
-          DOM.video.load();
-          DOM.img.src = '';
-          protectMedia(DOM.video);
+          DOM.video.src = mediaUrl; DOM.video.load(); DOM.img.src = '';
         } else {
-          DOM.img.src = mediaUrl;
-          DOM.video.src = '';
+          DOM.img.src = mediaUrl; DOM.video.src = '';
           protectMedia(DOM.img);
         }
-        
         DOM.desc.textContent = data.desc || data.description || '';
         DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
-        
-        updateNavigation();
-        updateActiveListItem(data.name);
-        setupAppButton(data);
-        
-        if (fromGallery) {
-          history.pushState({ photo: data.name }, '', `/photo/${data.name}`);
-        }
-        
+        updateNavigation(); updateActiveListItem(data.name); setupAppButton(data);
+        if (fromGallery) history.pushState({ photo: data.name }, '', `/photo/${data.name}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
@@ -574,142 +287,175 @@
         const name = getCurrentPhotoName();
         const idx = filteredPhotos.findIndex(p => p.name === name);
         currentIndex = idx >= 0 ? idx : 0;
-        
         DOM.btnPrev.disabled = currentIndex <= 0;
         DOM.btnNext.disabled = currentIndex >= filteredPhotos.length - 1;
       }
 
       function navigate(direction) {
-        const newIndex = currentIndex + direction;
-        if (newIndex >= 0 && newIndex < filteredPhotos.length) {
-          showPhoto(filteredPhotos[newIndex], true);
-        }
+        const newIndex = currentIndex + direction;        if (newIndex >= 0 && newIndex < filteredPhotos.length) showPhoto(filteredPhotos[newIndex], true);
       }
 
-      // === DEEP LINK (UNCHANGED LOGIC) ===      function setupAppButton(data) {
+      // === 🔥 DEEP LINK LOGIC - FIXED VERSION 🔥
+      function setupAppButton(data) {
         const photoName = data.name;
-        const deepLink = data.deep_link || data.app_url || null;
-        
-        const handler = () => openAppWithMultiFallback(deepLink, photoName);
+        const handler = () => openAppWithMultiFallback(photoName);
         DOM.btnApp.onclick = handler;
         DOM.btnAppBottom.onclick = handler;
-        
         DOM.btnApp.style.display = 'inline-flex';
         DOM.btnAppBottom.style.display = 'inline-flex';
       }
 
+      // Build Intent URL yang compatible dengan Android
       function buildIntentUrl(photoId, packageName) {
         const host = 'tkj1.pages.dev';
         const path = `/photo/${photoId}`;
         const scheme = CONFIG.APP_SCHEME;
+        const deepPath = CONFIG.DEEP_LINK_PATH; // 'photo'
         const fallback = encodeURIComponent(CONFIG.FALLBACK_URL);
+        
+        // Format Intent URL standar Android
         return `intent://${host}${path}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${fallback};end`;
       }
 
-      function tryOpenUrl(url) {
+      // Build Custom Scheme URL (paling reliable)
+      function buildCustomSchemeUrl(photoId) {
+        // Format: tkjone://photo/1 (SESUAI REQUEST USER)
+        return `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
+      }
+
+      // Try open URL dengan detection yang lebih reliable
+      function tryOpenUrl(url, timeout = 2500) {
         return new Promise((resolve) => {
           let resolved = false;
-          const onBlur = () => {
-            if (!resolved) {
+          let visibilityChanged = false;
+          
+          // Method 1: visibilitychange event (lebih reliable daripada blur)
+          const onVisibilityChange = () => {
+            if (document.hidden && !resolved) {
+              resolved = true;
+              visibilityChanged = true;
+              document.removeEventListener('visibilitychange', onVisibilityChange);
+              resolve(true);
+            }
+          };
+          document.addEventListener('visibilitychange', onVisibilityChange);
+          
+          // Method 2: blur event (fallback)
+          const onBlur = () => {            if (!resolved) {
               resolved = true;
               window.removeEventListener('blur', onBlur);
               resolve(true);
             }
           };
           window.addEventListener('blur', onBlur, { once: true });
-          console.log('[TKJ OnE] Trying:', url);
-          window.location.href = url;
+          
+          console.log('[TKJ OnE] Opening:', url);
+          
+          // Trigger the URL open
+          // Gunakan location.replace untuk beberapa browser yang lebih strict
+          try {
+            window.location.href = url;
+          } catch (e) {
+            console.error('[TKJ OnE] Error opening URL:', e);
+          }
+          
+          // Fallback timer
           setTimeout(() => {
             if (!resolved) {
+              document.removeEventListener('visibilitychange', onVisibilityChange);
               window.removeEventListener('blur', onBlur);
-              resolve(false);
+              // Kalau visibility berubah tapi kita nggak detect, anggap sukses
+              resolve(visibilityChanged || document.hidden);
             }
-          }, 1200);
+          }, timeout);
         });
       }
 
-      async function openAppWithMultiFallback(customDeepLink, photoId) {
-        console.log('[TKJ OnE] Starting multi-package deep link attempt...');
+      // Main deep link function dengan multi-strategy
+      async function openAppWithMultiFallback(photoId) {
+        console.log('[TKJ OnE] 🚀 Starting deep link attempt for photo:', photoId);
         
-        if (customDeepLink) {
-          const opened = await tryOpenUrl(customDeepLink);
-          if (opened) { console.log('[TKJ OnE] ✅ App opened via custom deep link'); return; }
-          console.log('[TKJ OnE] ❌ Custom deep link failed');
-        } else if (photoId) {          const schemeUrl = `${CONFIG.APP_SCHEME}://gallery/${photoId}`;
-          const opened = await tryOpenUrl(schemeUrl);
-          if (opened) { console.log('[TKJ OnE] ✅ App opened via custom scheme'); return; }
-          console.log('[TKJ OnE] ❌ Custom scheme failed');
+        // Strategy 1: Custom Scheme Direct (paling simple & reliable)
+        // Format: tkjone://photo/1
+        const schemeUrl = buildCustomSchemeUrl(photoId);
+        console.log('[TKJ OnE] Strategy 1: Custom Scheme ->', schemeUrl);
+        const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
+        if (schemeOpened) {
+          console.log('[TKJ OnE] ✅ SUCCESS: App opened via custom scheme');
+          return;
         }
+        console.log('[TKJ OnE] ❌ Custom scheme failed or timeout');
         
+        // Strategy 2: Intent URL dengan Release package
+        console.log('[TKJ OnE] Strategy 2: Intent URL (Release)');
         for (const pkg of CONFIG.APP_PACKAGES) {
-          if (!photoId) continue;
           const intentUrl = buildIntentUrl(photoId, pkg);
-          const opened = await tryOpenUrl(intentUrl);
-          if (opened) { console.log(`[TKJ OnE] ✅ App opened via intent (package: ${pkg})`); return; }
-          console.log(`[TKJ OnE] ❌ Intent failed for package: ${pkg}`);
+          console.log('[TKJ OnE] Trying package:', pkg);          const intentOpened = await tryOpenUrl(intentUrl, 2000);
+          if (intentOpened) {
+            console.log(`[TKJ OnE] ✅ SUCCESS: App opened via intent (package: ${pkg})`);
+            return;
+          }
+          console.log(`[TKJ OnE] ❌ Intent failed for: ${pkg}`);
         }
         
-        console.log('[TKJ OnE] ❌ All attempts failed, redirecting to GitHub Releases...');
-        window.location.href = CONFIG.FALLBACK_URL;
+        // Strategy 3: Direct HTTPS (kalau app support App Links / Digital Asset Links)
+        console.log('[TKJ OnE] Strategy 3: HTTPS fallback');
+        const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
+        const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
+        if (httpsOpened && document.hidden) {
+          console.log('[TKJ OnE] ✅ SUCCESS: App opened via HTTPS App Link');
+          return;
+        }
+        
+        // Strategy 4: FINAL FALLBACK - GitHub Releases
+        console.log('[TKJ OnE] ❌ ALL STRATEGIES FAILED -> Redirect to GitHub');
+        showToast('📱 App tidak ditemukan, redirect ke download...');
+        setTimeout(() => {
+          window.location.href = CONFIG.FALLBACK_URL;
+        }, 800);
       }
 
       // === FILTER & SEARCH ===
       function applyFilters() {
         const query = DOM.searchInput.value.toLowerCase().trim();
         const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        
         filteredPhotos = allPhotos.filter(p => {
-          const matchSearch = !query || 
-            String(p.name).toLowerCase().includes(query) || 
-            (p.title && p.title.toLowerCase().includes(query)) ||
-            (p.desc && p.desc.toLowerCase().includes(query));
-          const matchType = activeFilter === 'all' || 
-            (activeFilter === 'video' && isVideo(p.url)) ||
-            (activeFilter === 'photo' && !isVideo(p.url));
+          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || 
+            (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
+          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
           return matchSearch && matchType;
         });
-        
         renderGalleryList(filteredPhotos);
-        
         const currentName = getCurrentPhotoName();
         if (currentName && !filteredPhotos.find(p => p.name === currentName) && filteredPhotos.length > 0) {
           showPhoto(filteredPhotos[0], false);
         }
       }
 
-      // === SHARE FEATURE - FORMAT PERSIS SESUAI REQUEST ===
+      // === SHARE FEATURE - FORMAT PERSIS ===
       function setupShare() {
         DOM.btnShare.onclick = async () => {
           const name = getCurrentPhotoName();
           if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
-          
-          // Format PERSIS kayak yang lo minta:
-          const shareText = `Buka foto ini di TKJ OnE📷 ${name}
-
+          const shareText = `Buka foto ini di TKJ OnE
+📷 ${name}
 Buka di aplikasi:
 tkjone://photo/${name}
 
 Atau kunjungi:
 ${CONFIG.BASE_URL}/photo/${name}`;
-          
           try {
             if (navigator.share) {
-              await navigator.share({
-                title: 'TKJ OnE Gallery',
-                text: shareText
-              });
+              await navigator.share({ title: 'TKJ OnE Gallery', text: shareText });
               showToast('🔗 Berhasil dibagikan!');
             } else {
               await navigator.clipboard.writeText(shareText);
               showToast('🔗 Link disalin!\n\n' + shareText, 4500);
             }
-          } catch (err) {
-            console.log('Share cancelled or failed');
-          }
+          } catch (err) { console.log('Share cancelled'); }
         };
       }
 
-      // === RANDOM FEATURE ===
       function setupRandom() {
         DOM.btnRandom.onclick = () => {
           if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }
@@ -723,78 +469,41 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-        
         DOM.loading.classList.remove('hidden');
-
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
-          
           const rawData = await res.json();
           allPhotos = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
-          
-          if (!Array.isArray(allPhotos)) {            throw new Error('Struktur JSON nggak dikenali!');
-          }
-          
-          // Sort by name (numeric if possible)
+          if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
           allPhotos.sort((a, b) => {
             const na = parseInt(a.name), nb = parseInt(b.name);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
             return String(a.name).localeCompare(String(b.name));
           });
-          
           filteredPhotos = [...allPhotos];
-          
-          // Setup UI
-          renderGalleryList(filteredPhotos);
-          setupShare();
-          setupRandom();
-          
+          renderGalleryList(filteredPhotos); setupShare(); setupRandom();
           DOM.searchInput.addEventListener('input', applyFilters);
           DOM.filterBtns.forEach(btn => {
             btn.onclick = () => {
               DOM.filterBtns.forEach(b => b.classList.remove('active'));
-              btn.classList.add('active');
-              applyFilters();
-            };
-          });
-          
-          DOM.btnPrev.onclick = () => navigate(-1);
-          DOM.btnNext.onclick = () => navigate(1);
-          
+              btn.classList.add('active'); applyFilters();
+            };          });
+          DOM.btnPrev.onclick = () => navigate(-1); DOM.btnNext.onclick = () => navigate(1);
           if (initialPhotoName) {
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
-            if (photo) {
-              showPhoto(photo, false);
-            } else {
-              showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
-              if (filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false);
-            }
-          } else if (filteredPhotos.length > 0) {
-            showPhoto(filteredPhotos[0], false);
-          }
-          
+            if (photo) showPhoto(photo, false);
+            else { showError(`Foto "${initialPhotoName}" nggak ditemukan!`); if (filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false); }
+          } else if (filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false);
         } catch (err) {
           console.error('[PhotoApp]', err);
-          if (err.message.includes('Failed to fetch')) {
-            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
-          } else {
-            showError('Error: ' + err.message);
-          }
+          if (err.message.includes('Failed to fetch')) showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
+          else showError('Error: ' + err.message);
         }
       }
-      window.addEventListener('popstate', (e) => {
-        if (e.state?.photo) {
-          const photo = allPhotos.find(p => p.name === e.state.photo);
-          if (photo) showPhoto(photo, false);
-        }
-      });
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
+      window.addEventListener('popstate', (e) => { if (e.state?.photo) { const photo = allPhotos.find(p => p.name === e.state.photo); if (photo) showPhoto(photo, false); } });
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
     })();
   </script>
 </body>
