@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#121212"/>
-  <title>Gallery Photo - TKJ1</title>
+  <title>TKJ1 Gallery</title>
   <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   <style>
@@ -12,6 +12,7 @@
       --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
       --card-bg: #1e1e1e; --btn-app: #6c5ce7; --btn-app-hover: #5649c3;
       --list-item-bg: #252525; --list-item-hover: #333; --search-bg: #2a2a2a;
+      --modal-overlay: rgba(0,0,0,0.85); --modal-bg: #1a1a2e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -46,19 +47,12 @@
     
     #photo-container { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); animation: fadeIn 0.4s ease-out; margin-bottom: 25px; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    
-    #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }    
+        #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
     #photo-img, #photo-video { max-width: 100%; height: auto; border-radius: 12px; margin: 15px auto; display: block; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
     #photo-img { -webkit-touch-callout: none; pointer-events: none; }
     #photo-video { pointer-events: auto; }
-    
     #photo-desc { margin: 12px 0 18px; opacity: 0.95; font-size: 1rem; }
     #photo-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 15px; font-style: italic; }
-    
-    .nav-buttons { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
-    .nav-btn { padding: 10px 20px; background: var(--card-bg); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--text); font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
-    .nav-btn:hover:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); }
-    .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     
     #gallery-section { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-top: 10px; }
     #gallery-section h2 { text-align: center; margin-bottom: 15px; color: var(--accent); font-size: 1.3rem; }
@@ -67,7 +61,6 @@
     .list-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; background: var(--list-item-bg); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent; }
     .list-item:hover { background: var(--list-item-hover); transform: translateX(5px); border-color: rgba(0,255,136,0.3); }
     .list-item.active { border-color: var(--accent); background: linear-gradient(135deg, rgba(0,255,136,0.1), transparent); box-shadow: 0 0 0 2px rgba(0,255,136,0.3); }
-    
     .list-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #333; pointer-events: none; -webkit-user-drag: none; }
     .list-info { flex: 1; min-width: 0; text-align: left; }
     .list-name { font-weight: 600; font-size: 1rem; color: var(--text); margin-bottom: 3px; }
@@ -78,37 +71,119 @@
     #loading, #error { font-size: 1.1rem; padding: 25px; background: var(--card-bg); border-radius: 12px; margin: 20px 0; text-align: center; }
     #error { color: var(--error); border: 2px solid var(--error); animation: shake 0.5s ease-in-out; }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    
     .glitch { position: relative; animation: glitch-skew 3s infinite linear alternate-reverse; }
     @keyframes glitch-skew { 0% { text-shadow: 0 0 0 var(--accent); } 2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; } 4% { text-shadow: 0 0 0 var(--accent); } 100% { text-shadow: 0 0 0 var(--accent); } }
     
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); color: var(--text); padding: 12px 24px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s ease; z-index: 1000; font-size: 0.95rem; text-align: center; max-width: 90vw; white-space: pre-line; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     
+    /* === PASSWORD MODAL === */
+    #password-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--modal-overlay);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2000;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    .modal-content {
+      background: var(--modal-bg);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 2px solid var(--accent);
+      animation: modalSlideIn 0.4s ease-out;    }
+    @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    .modal-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }
+    .modal-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
+    
+    .password-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: var(--search-bg);
+      color: var(--text);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .password-input:focus { border-color: var(--accent); }
+    .password-input::placeholder { color: rgba(255,255,255,0.4); }
+    
+    .modal-error {
+      color: var(--error);
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      min-height: 20px;
+    }
+    
+    .modal-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), #00cc6a);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,255,136,0.4); }
+    .modal-btn:active { transform: translateY(0); }
+    
+    .modal-footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      opacity: 0.6;    }
+    
     @media (max-width: 600px) {
       .header h1 { font-size: 1.3rem; } #photo-title { font-size: 1.3rem; }
       #photo-desc, #photo-meta { font-size: 0.9rem; } .btn { padding: 9px 16px; font-size: 0.85rem; }
       .list-thumb { width: 50px; height: 50px; } .list-name { font-size: 0.95rem; }
       .controls { flex-direction: column; } #search-input { width: 100%; }
+      .modal-content { padding: 25px 20px; }
     }
   </style>
 </head>
 <body>
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
-    (function blockDownloads() {      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
+    (function blockDownloads() {
+      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
-      let touchTimer, touchStartPos;
+      let touchTimer;
       document.addEventListener('touchstart', e => {
-        touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         touchTimer = setTimeout(() => { e.preventDefault(); }, 500);
       }, { passive: false });
-      document.addEventListener('touchmove', () => { clearTimeout(touchTimer); touchTimer = null; }, { passive: true });
+      document.addEventListener('touchmove', () => { clearTimeout(touchTimer); }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
       document.addEventListener('touchcancel', () => clearTimeout(touchTimer));
     })();
   </script>
+
+  <!-- 🔐 PASSWORD MODAL -->
+  <div id="password-modal" class="hidden">
+    <div class="modal-content">
+      <div class="modal-title">🔐 Akses Gallery</div>
+      <p class="modal-desc">Masukkan password untuk melihat daftar foto</p>
+      <input type="password" id="password-input" class="password-input" placeholder="Password..." autocomplete="off" maxlength="20">
+      <div id="modal-error" class="modal-error"></div>
+      <button id="modal-submit" class="modal-btn">Masuk</button>
+      <div class="modal-footer">Session tidak disimpan • Refresh = login ulang</div>
+    </div>
+  </div>
 
   <div id="app">
     <div class="header">
@@ -119,10 +194,9 @@
         <button class="filter-btn" data-filter="photo">Foto</button>
         <button class="filter-btn" data-filter="video">Video</button>
       </div>
-      <div class="action-bar">
-        <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
+      <div class="action-bar">        <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
         <button id="btn-share" class="btn btn-secondary">🔗 Bagikan</button>
-        <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE</button>
+        <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE app</button>
       </div>
     </div>
 
@@ -131,24 +205,18 @@
 
     <!-- PHOTO VIEWER -->
     <div id="photo-container" class="hidden">
-      <!-- 🔙 BACK BUTTON -->
-      <button id="btn-back" class="btn btn-secondary" style="margin-bottom:15px;width:100%">⬅️ Kembali ke Daftar Foto</button>
-      
       <h1 id="photo-title"></h1>
-      <div class="nav-buttons">
-        <button id="btn-prev" class="nav-btn">⬅️ Sebelumnya</button>
-        <button id="btn-next" class="nav-btn">Selanjutnya ➡️</button>
-      </div>
       <img id="photo-img" src="" alt="Photo" />
       <video id="photo-video" src="" controls playsinline preload="metadata"></video>
       <p id="photo-desc"></p>
       <p id="photo-meta"></p>
-      <div style="text-align:center;margin-top:10px">
-        <button id="btn-app-bottom" class="btn btn-app">📱 Download via TKJ OnE App</button>
-      </div>    </div>
+      <div style="text-align:center;margin-top:15px">
+        <button id="btn-app-bottom" class="btn btn-app">📱 Buka di TKJ OnE app</button>
+      </div>
+    </div>
 
-    <!-- GALLERY LIST -->
-    <div id="gallery-section">
+    <!-- GALLERY LIST (Protected) -->
+    <div id="gallery-section" class="hidden">
       <h2>🗂️ Daftar Foto</h2>
       <div id="gallery-list"></div>
     </div>
@@ -161,6 +229,7 @@
       'use strict';
       
       const CONFIG = {
+        PASSWORD: 'tkjone',
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
@@ -169,8 +238,12 @@
       };
 
       let allPhotos = [], filteredPhotos = [], currentIndex = -1;
+      let isAuthenticated = false; // ⚠️ TIDAK DISIMPAN, reset tiap refresh
 
       const DOM = {
+        modal: document.getElementById('password-modal'),
+        passwordInput: document.getElementById('password-input'),
+        modalError: document.getElementById('modal-error'),        modalSubmit: document.getElementById('modal-submit'),
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
         container: document.getElementById('photo-container'),
@@ -182,19 +255,18 @@
         meta: document.getElementById('photo-meta'),
         btnApp: document.getElementById('btn-app'),
         btnAppBottom: document.getElementById('btn-app-bottom'),
-        btnBack: document.getElementById('btn-back'),
         btnRandom: document.getElementById('btn-random'),
         btnShare: document.getElementById('btn-share'),
-        btnPrev: document.getElementById('btn-prev'),
-        btnNext: document.getElementById('btn-next'),
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
         galleryList: document.getElementById('gallery-list'),
         toast: document.getElementById('toast')
       };
 
+      // === UTILS ===
       function showToast(msg, duration = 3500) {
-        DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');        DOM.toast.classList.add('show');
+        DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');
+        DOM.toast.classList.add('show');
         setTimeout(() => DOM.toast.classList.remove('show'), duration);
       }
 
@@ -221,7 +293,45 @@
           el.style.webkitTouchCallout = 'none';
         }
       }
+      // === PASSWORD MODAL ===
+      function showPasswordModal() {
+        DOM.modal.classList.remove('hidden');
+        DOM.passwordInput.value = '';
+        DOM.modalError.textContent = '';
+        DOM.passwordInput.focus();
+        // Handle Enter key
+        DOM.passwordInput.onkeydown = (e) => { if (e.key === 'Enter') checkPassword(); };
+        DOM.modalSubmit.onclick = checkPassword;
+      }
 
+      function hidePasswordModal() {
+        DOM.modal.classList.add('hidden');
+        DOM.passwordInput.onkeydown = null;
+        DOM.modalSubmit.onclick = null;
+      }
+
+      function checkPassword() {
+        const input = DOM.passwordInput.value.trim();
+        if (input.toLowerCase() === CONFIG.PASSWORD.toLowerCase()) {
+          // ✅ Password benar
+          isAuthenticated = true;
+          hidePasswordModal();
+          DOM.gallerySection.classList.remove('hidden');
+          renderGalleryList(filteredPhotos);
+          DOM.gallerySection.scrollIntoView({ behavior: 'smooth' });
+          showToast('✅ Akses berhasil!');
+        } else {
+          // ❌ Password salah
+          DOM.modalError.textContent = 'Password salah, coba lagi bangsat!';
+          DOM.passwordInput.value = '';
+          DOM.passwordInput.focus();
+          // Shake animation
+          DOM.modal.querySelector('.modal-content').style.animation = 'none';
+          setTimeout(() => { DOM.modal.querySelector('.modal-content').style.animation = 'modalSlideIn 0.4s ease-out'; }, 10);
+        }
+      }
+
+      // === GALLERY LIST ===
       function renderGalleryList(photos) {
         DOM.galleryList.innerHTML = '';
         if (photos.length === 0) {
@@ -231,8 +341,7 @@
         const fragment = document.createDocumentFragment();
         photos.forEach((photo) => {
           const item = document.createElement('div');
-          item.className = 'list-item' + (photo.name === getCurrentPhotoName() ? ' active' : '');
-          item.dataset.name = photo.name;
+          item.className = 'list-item' + (photo.name === getCurrentPhotoName() ? ' active' : '');          item.dataset.name = photo.name;
           const isVid = isVideo(photo.url);
           const thumb = isVid 
             ? `<video class="list-thumb" src="${photo.url}" muted preload="none"></video>`
@@ -243,14 +352,14 @@
               <div class="list-name">#${photo.name} ${photo.title ? '• ' + photo.title : ''}</div>
               <div class="list-meta">
                 <span class="list-badge ${isVid ? 'video' : ''}">${isVid ? '🎬 Video' : '📷 Foto'}</span>
-                ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}                ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
+                ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
+                ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
               </div>
             </div>
           `;
           item.addEventListener('click', () => {
             const photoData = allPhotos.find(p => p.name === photo.name);
             if (photoData) showPhoto(photoData, true);
-            DOM.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
           const mediaEl = item.querySelector('img, video');
           if (mediaEl) protectMedia(mediaEl);
@@ -269,6 +378,7 @@
         return currentIndex >= 0 && filteredPhotos[currentIndex] ? filteredPhotos[currentIndex].name : null;
       }
 
+      // === DISPLAY PHOTO ===
       function showPhoto(data, fromGallery = false) {
         DOM.loading.classList.add('hidden'); DOM.error.classList.add('hidden'); DOM.container.classList.remove('hidden');
         DOM.title.textContent = data.title || 'Photo #' + data.name;
@@ -276,32 +386,15 @@
         const videoMode = isVideo(mediaUrl);
         DOM.img.style.display = videoMode ? 'none' : 'block';
         DOM.video.style.display = videoMode ? 'block' : 'none';
-        if (videoMode) {
-          DOM.video.src = mediaUrl; DOM.video.load(); DOM.img.src = '';
-        } else {
-          DOM.img.src = mediaUrl; DOM.video.src = '';
-          protectMedia(DOM.img);
-        }
+        if (videoMode) { DOM.video.src = mediaUrl; DOM.video.load(); DOM.img.src = ''; } 
+        else { DOM.img.src = mediaUrl; DOM.video.src = ''; protectMedia(DOM.img); }
         DOM.desc.textContent = data.desc || data.description || '';
         DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
-        updateNavigation(); updateActiveListItem(data.name); setupAppButton(data);
-        if (fromGallery) history.pushState({ photo: data.name }, '', `/photo/${data.name}`);
+        updateActiveListItem(data.name); setupAppButton(data);        if (fromGallery) history.pushState({ photo: data.name }, '', `/photo/${data.name}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      function updateNavigation() {
-        const name = getCurrentPhotoName();
-        const idx = filteredPhotos.findIndex(p => p.name === name);
-        currentIndex = idx >= 0 ? idx : 0;        DOM.btnPrev.disabled = currentIndex <= 0;
-        DOM.btnNext.disabled = currentIndex >= filteredPhotos.length - 1;
-      }
-
-      function navigate(direction) {
-        const newIndex = currentIndex + direction;
-        if (newIndex >= 0 && newIndex < filteredPhotos.length) showPhoto(filteredPhotos[newIndex], true);
-      }
-
-      // === 🔥 DEEP LINK LOGIC - FIXED 🔥
+      // === DEEP LINK LOGIC ===
       function setupAppButton(data) {
         const photoName = data.name;
         const handler = () => openAppWithMultiFallback(photoName);
@@ -312,9 +405,7 @@
       }
 
       function buildIntentUrl(photoId, packageName) {
-        const host = 'tkj1.pages.dev';
-        const path = `/photo/${photoId}`;
-        const scheme = CONFIG.APP_SCHEME;
+        const host = 'tkj1.pages.dev', path = `/photo/${photoId}`, scheme = CONFIG.APP_SCHEME;
         const fallback = encodeURIComponent(CONFIG.FALLBACK_URL);
         return `intent://${host}${path}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${fallback};end`;
       }
@@ -326,58 +417,32 @@
       function tryOpenUrl(url, timeout = 2500) {
         return new Promise((resolve) => {
           let resolved = false, visibilityChanged = false;
-          
-          const onVisibilityChange = () => {
-            if (document.hidden && !resolved) {
-              resolved = true; visibilityChanged = true;
-              document.removeEventListener('visibilitychange', onVisibilityChange);
-              resolve(true);
-            }
-          };
+          const onVisibilityChange = () => { if (document.hidden && !resolved) { resolved = true; visibilityChanged = true; document.removeEventListener('visibilitychange', onVisibilityChange); resolve(true); } };
           document.addEventListener('visibilitychange', onVisibilityChange);
-          
-          const onBlur = () => {
-            if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); }
-          };
+          const onBlur = () => { if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); } };
           window.addEventListener('blur', onBlur, { once: true });
-          
-          console.log('[TKJ OnE] Opening:', url);          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }
-          
-          setTimeout(() => {
-            if (!resolved) {
-              document.removeEventListener('visibilitychange', onVisibilityChange);
-              window.removeEventListener('blur', onBlur);
-              resolve(visibilityChanged || document.hidden);
-            }
-          }, timeout);
+          console.log('[TKJ OnE] Opening:', url);
+          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }
+          setTimeout(() => { if (!resolved) { document.removeEventListener('visibilitychange', onVisibilityChange); window.removeEventListener('blur', onBlur); resolve(visibilityChanged || document.hidden); } }, timeout);
         });
       }
 
       async function openAppWithMultiFallback(photoId) {
-        console.log('[TKJ OnE] 🚀 Deep link attempt for:', photoId);
-        
-        // Strategy 1: Custom Scheme
+        console.log('[TKJ OnE] 🚀 Deep link for:', photoId);
         const schemeUrl = buildCustomSchemeUrl(photoId);
         console.log('[TKJ OnE] Strategy 1: Custom Scheme ->', schemeUrl);
         const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
         if (schemeOpened) { console.log('[TKJ OnE] ✅ App opened via custom scheme'); return; }
         console.log('[TKJ OnE] ❌ Custom scheme failed');
-        
-        // Strategy 2: Intent URL
         for (const pkg of CONFIG.APP_PACKAGES) {
           const intentUrl = buildIntentUrl(photoId, pkg);
           console.log('[TKJ OnE] Trying package:', pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
-          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);
-        }
-        
-        // Strategy 3: HTTPS App Links
+          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);        }
         const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
         const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
         if (httpsOpened && document.hidden) { console.log('[TKJ OnE] ✅ App opened via HTTPS'); return; }
-        
-        // Strategy 4: Fallback to GitHub
         console.log('[TKJ OnE] ❌ ALL FAILED -> GitHub fallback');
         showToast('📱 App tidak ditemukan, redirect ke download...');
         setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 800);
@@ -388,18 +453,16 @@
         const query = DOM.searchInput.value.toLowerCase().trim();
         const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         filteredPhotos = allPhotos.filter(p => {
-          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || 
-            (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
-          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));          return matchSearch && matchType;
+          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
+          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
+          return matchSearch && matchType;
         });
-        renderGalleryList(filteredPhotos);
+        if (isAuthenticated) renderGalleryList(filteredPhotos);
         const currentName = getCurrentPhotoName();
-        if (currentName && !filteredPhotos.find(p => p.name === currentName) && filteredPhotos.length > 0) {
-          showPhoto(filteredPhotos[0], false);
-        }
+        if (currentName && !filteredPhotos.find(p => p.name === currentName) && filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false);
       }
 
-      // === SHARE FEATURE - FORMAT PERSIS ===
+      // === SHARE FEATURE ===
       function setupShare() {
         DOM.btnShare.onclick = async () => {
           const name = getCurrentPhotoName();
@@ -413,13 +476,8 @@ tkjone://photo/${name}
 Atau kunjungi:
 ${CONFIG.BASE_URL}/photo/${name}`;
           try {
-            if (navigator.share) {
-              await navigator.share({ title: 'TKJ OnE Gallery', text: shareText });
-              showToast('🔗 Berhasil dibagikan!');
-            } else {
-              await navigator.clipboard.writeText(shareText);
-              showToast('🔗 Link disalin!\n\n' + shareText, 4500);
-            }
+            if (navigator.share) { await navigator.share({ title: 'TKJ OnE Gallery', text: shareText }); showToast('🔗 Berhasil dibagikan!'); } 
+            else { await navigator.clipboard.writeText(shareText); showToast('🔗 Link disalin!\n\n' + shareText, 4500); }
           } catch (err) { console.log('Share cancelled'); }
         };
       }
@@ -427,100 +485,60 @@ ${CONFIG.BASE_URL}/photo/${name}`;
       function setupRandom() {
         DOM.btnRandom.onclick = () => {
           if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }
+          if (!isAuthenticated) { showToast('Login dulu buat liat gallery, bangsat!'); showPasswordModal(); return; }
           const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
           showPhoto(filteredPhotos[randomIdx], true);
-        };
-      }
+        };      }
 
-      // === INIT - ROOT URL LOGIC ===
+      // === INIT ===
       async function init() {
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-        
-        DOM.loading.classList.remove('hidden');
+
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
-          
           const rawData = await res.json();
           allPhotos = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
           if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
-          
-          allPhotos.sort((a, b) => {
-            const na = parseInt(a.name), nb = parseInt(b.name);
-            if (!isNaN(na) && !isNaN(nb)) return na - nb;
-            return String(a.name).localeCompare(String(b.name));
-          });
-          
+          allPhotos.sort((a, b) => { const na = parseInt(a.name), nb = parseInt(b.name); if (!isNaN(na) && !isNaN(nb)) return na - nb; return String(a.name).localeCompare(String(b.name)); });
           filteredPhotos = [...allPhotos];
           
-          renderGalleryList(filteredPhotos);
+          // Setup UI
           setupShare(); setupRandom();
-          
           DOM.searchInput.addEventListener('input', applyFilters);
-          DOM.filterBtns.forEach(btn => {
-            btn.onclick = () => {
-              DOM.filterBtns.forEach(b => b.classList.remove('active'));
-              btn.classList.add('active'); applyFilters();
-            };
-          });
-          
-          DOM.btnPrev.onclick = () => navigate(-1);
-          DOM.btnNext.onclick = () => navigate(1);
-          
-          // 🔙 BACK BUTTON
-          if (DOM.btnBack) {
-            DOM.btnBack.onclick = () => {
-              DOM.container.classList.add('hidden');
-              DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
-              history.pushState({ gallery: true }, '', '/');
-              updateActiveListItem(null);
-            };
-          }
-          
-          // 🎯 ROOT URL vs PHOTO URL LOGIC
+          DOM.filterBtns.forEach(btn => { btn.onclick = () => { DOM.filterBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }; });
+
+          // 🎯 LOGIC UTAMA
           if (initialPhotoName) {
-            // /photo/{id} → tampilkan foto itu
+            // 🔗 DIRECT LINK /photo/{id} → TAMPILKAN FOTO LANGSUNG (NO PASSWORD)
+            DOM.loading.classList.remove('hidden');
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
             if (photo) {
               showPhoto(photo, false);
               DOM.container.scrollIntoView({ behavior: 'smooth' });
             } else {
               showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
-              DOM.loading.classList.add('hidden');              DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
+              // Tawarin login buat liat gallery
+              setTimeout(() => { showPasswordModal(); }, 1500);
             }
           } else {
-            // 🔥 ROOT (/) → TAMPILKAN GALLERY SAJA, JANGAN AUTO-LOAD FOTO!
+            // 🏠 ROOT URL (/) → PASSWORD MODAL DULU
             DOM.loading.classList.add('hidden');
             DOM.container.classList.add('hidden');
-            DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
-            console.log('[PhotoApp] Root URL: Menampilkan gallery list');
+            DOM.gallerySection.classList.add('hidden'); // Hidden sampai login
+            showPasswordModal();
           }
-          
         } catch (err) {
           console.error('[PhotoApp]', err);
           DOM.loading.classList.add('hidden');
-          if (err.message.includes('Failed to fetch')) {
-            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
-          } else {
-            showError('Error: ' + err.message);
-          }
+          if (err.message.includes('Failed to fetch')) showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
+          else showError('Error: ' + err.message);
         }
       }
-
-      window.addEventListener('popstate', (e) => {
-        if (e.state?.photo) {
-          const photo = allPhotos.find(p => p.name === e.state.photo);
-          if (photo) showPhoto(photo, false);
-        }
-      });
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
+      window.addEventListener('popstate', (e) => { if (e.state?.photo) { const photo = allPhotos.find(p => p.name === e.state.photo); if (photo) showPhoto(photo, false); } });
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
     })();
   </script>
 </body>
