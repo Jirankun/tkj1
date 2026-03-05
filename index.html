@@ -8,7 +8,6 @@
   <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   <style>
-    /* === CSS INLINE - DARK THEME === */
     :root {
       --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
       --card-bg: #1e1e1e; --btn-app: #6c5ce7; --btn-app-hover: #5649c3;
@@ -47,8 +46,8 @@
     
     #photo-container { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); animation: fadeIn 0.4s ease-out; margin-bottom: 25px; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
     
+    #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }    
     #photo-img, #photo-video { max-width: 100%; height: auto; border-radius: 12px; margin: 15px auto; display: block; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
     #photo-img { -webkit-touch-callout: none; pointer-events: none; }
     #photo-video { pointer-events: auto; }
@@ -95,24 +94,17 @@
   </style>
 </head>
 <body>
-  <!-- ⚠️ PROTEKSI KONTEN: Block download gestures (tapi allow click untuk deep link) -->
-  <script>    (function blockDownloads() {
-      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
+  <!-- ⚠️ PROTEKSI KONTEN -->
+  <script>
+    (function blockDownloads() {      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
-      // Long press protection - tapi jangan block click normal
       let touchTimer, touchStartPos;
       document.addEventListener('touchstart', e => {
         touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        touchTimer = setTimeout(() => { 
-          // Hanya prevent jika nggak ada movement
-          e.preventDefault(); 
-        }, 500);
+        touchTimer = setTimeout(() => { e.preventDefault(); }, 500);
       }, { passive: false });
-      document.addEventListener('touchmove', () => { 
-        clearTimeout(touchTimer); 
-        touchTimer = null;
-      }, { passive: true });
+      document.addEventListener('touchmove', () => { clearTimeout(touchTimer); touchTimer = null; }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
       document.addEventListener('touchcancel', () => clearTimeout(touchTimer));
     })();
@@ -137,7 +129,11 @@
     <div id="loading" class="hidden"><div style="font-size:2rem;margin-bottom:10px;">⏳</div><div>Loading, tunggu bentar bangsat...</div></div>
     <div id="error" class="hidden"></div>
 
+    <!-- PHOTO VIEWER -->
     <div id="photo-container" class="hidden">
+      <!-- 🔙 BACK BUTTON -->
+      <button id="btn-back" class="btn btn-secondary" style="margin-bottom:15px;width:100%">⬅️ Kembali ke Daftar Foto</button>
+      
       <h1 id="photo-title"></h1>
       <div class="nav-buttons">
         <button id="btn-prev" class="nav-btn">⬅️ Sebelumnya</button>
@@ -145,12 +141,13 @@
       </div>
       <img id="photo-img" src="" alt="Photo" />
       <video id="photo-video" src="" controls playsinline preload="metadata"></video>
-      <p id="photo-desc"></p>      <p id="photo-meta"></p>
+      <p id="photo-desc"></p>
+      <p id="photo-meta"></p>
       <div style="text-align:center;margin-top:10px">
         <button id="btn-app-bottom" class="btn btn-app">📱 Download via TKJ OnE App</button>
-      </div>
-    </div>
+      </div>    </div>
 
+    <!-- GALLERY LIST -->
     <div id="gallery-section">
       <h2>🗂️ Daftar Foto</h2>
       <div id="gallery-list"></div>
@@ -166,8 +163,7 @@
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
-        // ⚠️ PATH HARUS SAMA PERSIS DENGAN YANG DI ANDROID MANIFEST
-        DEEP_LINK_PATH: 'photo',  // <-- INI YANG DIPAKE: tkjone://photo/{id}
+        DEEP_LINK_PATH: 'photo',
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
         BASE_URL: 'https://tkj1.pages.dev'
       };
@@ -175,26 +171,36 @@
       let allPhotos = [], filteredPhotos = [], currentIndex = -1;
 
       const DOM = {
-        loading: document.getElementById('loading'), error: document.getElementById('error'),
-        container: document.getElementById('photo-container'), title: document.getElementById('photo-title'),
-        img: document.getElementById('photo-img'), video: document.getElementById('photo-video'),
-        desc: document.getElementById('photo-desc'), meta: document.getElementById('photo-meta'),
-        btnApp: document.getElementById('btn-app'), btnAppBottom: document.getElementById('btn-app-bottom'),
-        btnRandom: document.getElementById('btn-random'), btnShare: document.getElementById('btn-share'),
-        btnPrev: document.getElementById('btn-prev'), btnNext: document.getElementById('btn-next'),
+        loading: document.getElementById('loading'),
+        error: document.getElementById('error'),
+        container: document.getElementById('photo-container'),
+        gallerySection: document.getElementById('gallery-section'),
+        title: document.getElementById('photo-title'),
+        img: document.getElementById('photo-img'),
+        video: document.getElementById('photo-video'),
+        desc: document.getElementById('photo-desc'),
+        meta: document.getElementById('photo-meta'),
+        btnApp: document.getElementById('btn-app'),
+        btnAppBottom: document.getElementById('btn-app-bottom'),
+        btnBack: document.getElementById('btn-back'),
+        btnRandom: document.getElementById('btn-random'),
+        btnShare: document.getElementById('btn-share'),
+        btnPrev: document.getElementById('btn-prev'),
+        btnNext: document.getElementById('btn-next'),
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
-        galleryList: document.getElementById('gallery-list'), toast: document.getElementById('toast')
+        galleryList: document.getElementById('gallery-list'),
+        toast: document.getElementById('toast')
       };
 
       function showToast(msg, duration = 3500) {
-        DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');
-        DOM.toast.classList.add('show');
+        DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');        DOM.toast.classList.add('show');
         setTimeout(() => DOM.toast.classList.remove('show'), duration);
       }
 
       function showError(msg) {
-        DOM.loading.classList.add('hidden'); DOM.container.classList.add('hidden');        DOM.error.innerHTML = '❌ ' + msg; DOM.error.classList.remove('hidden');
+        DOM.loading.classList.add('hidden'); DOM.container.classList.add('hidden');
+        DOM.error.innerHTML = '❌ ' + msg; DOM.error.classList.remove('hidden');
         console.error('[PhotoApp Error]', msg);
       }
 
@@ -237,13 +243,13 @@
               <div class="list-name">#${photo.name} ${photo.title ? '• ' + photo.title : ''}</div>
               <div class="list-meta">
                 <span class="list-badge ${isVid ? 'video' : ''}">${isVid ? '🎬 Video' : '📷 Foto'}</span>
-                ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
-                ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
+                ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}                ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
               </div>
             </div>
           `;
           item.addEventListener('click', () => {
-            const photoData = allPhotos.find(p => p.name === photo.name);            if (photoData) showPhoto(photoData, true);
+            const photoData = allPhotos.find(p => p.name === photo.name);
+            if (photoData) showPhoto(photoData, true);
             DOM.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
           const mediaEl = item.querySelector('img, video');
@@ -286,16 +292,16 @@
       function updateNavigation() {
         const name = getCurrentPhotoName();
         const idx = filteredPhotos.findIndex(p => p.name === name);
-        currentIndex = idx >= 0 ? idx : 0;
-        DOM.btnPrev.disabled = currentIndex <= 0;
+        currentIndex = idx >= 0 ? idx : 0;        DOM.btnPrev.disabled = currentIndex <= 0;
         DOM.btnNext.disabled = currentIndex >= filteredPhotos.length - 1;
       }
 
       function navigate(direction) {
-        const newIndex = currentIndex + direction;        if (newIndex >= 0 && newIndex < filteredPhotos.length) showPhoto(filteredPhotos[newIndex], true);
+        const newIndex = currentIndex + direction;
+        if (newIndex >= 0 && newIndex < filteredPhotos.length) showPhoto(filteredPhotos[newIndex], true);
       }
 
-      // === 🔥 DEEP LINK LOGIC - FIXED VERSION 🔥
+      // === 🔥 DEEP LINK LOGIC - FIXED 🔥
       function setupAppButton(data) {
         const photoName = data.name;
         const handler = () => openAppWithMultiFallback(photoName);
@@ -305,114 +311,76 @@
         DOM.btnAppBottom.style.display = 'inline-flex';
       }
 
-      // Build Intent URL yang compatible dengan Android
       function buildIntentUrl(photoId, packageName) {
         const host = 'tkj1.pages.dev';
         const path = `/photo/${photoId}`;
         const scheme = CONFIG.APP_SCHEME;
-        const deepPath = CONFIG.DEEP_LINK_PATH; // 'photo'
         const fallback = encodeURIComponent(CONFIG.FALLBACK_URL);
-        
-        // Format Intent URL standar Android
         return `intent://${host}${path}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${fallback};end`;
       }
 
-      // Build Custom Scheme URL (paling reliable)
       function buildCustomSchemeUrl(photoId) {
-        // Format: tkjone://photo/1 (SESUAI REQUEST USER)
         return `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
       }
 
-      // Try open URL dengan detection yang lebih reliable
       function tryOpenUrl(url, timeout = 2500) {
         return new Promise((resolve) => {
-          let resolved = false;
-          let visibilityChanged = false;
+          let resolved = false, visibilityChanged = false;
           
-          // Method 1: visibilitychange event (lebih reliable daripada blur)
           const onVisibilityChange = () => {
             if (document.hidden && !resolved) {
-              resolved = true;
-              visibilityChanged = true;
+              resolved = true; visibilityChanged = true;
               document.removeEventListener('visibilitychange', onVisibilityChange);
               resolve(true);
             }
           };
           document.addEventListener('visibilitychange', onVisibilityChange);
           
-          // Method 2: blur event (fallback)
-          const onBlur = () => {            if (!resolved) {
-              resolved = true;
-              window.removeEventListener('blur', onBlur);
-              resolve(true);
-            }
+          const onBlur = () => {
+            if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); }
           };
           window.addEventListener('blur', onBlur, { once: true });
           
-          console.log('[TKJ OnE] Opening:', url);
+          console.log('[TKJ OnE] Opening:', url);          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }
           
-          // Trigger the URL open
-          // Gunakan location.replace untuk beberapa browser yang lebih strict
-          try {
-            window.location.href = url;
-          } catch (e) {
-            console.error('[TKJ OnE] Error opening URL:', e);
-          }
-          
-          // Fallback timer
           setTimeout(() => {
             if (!resolved) {
               document.removeEventListener('visibilitychange', onVisibilityChange);
               window.removeEventListener('blur', onBlur);
-              // Kalau visibility berubah tapi kita nggak detect, anggap sukses
               resolve(visibilityChanged || document.hidden);
             }
           }, timeout);
         });
       }
 
-      // Main deep link function dengan multi-strategy
       async function openAppWithMultiFallback(photoId) {
-        console.log('[TKJ OnE] 🚀 Starting deep link attempt for photo:', photoId);
+        console.log('[TKJ OnE] 🚀 Deep link attempt for:', photoId);
         
-        // Strategy 1: Custom Scheme Direct (paling simple & reliable)
-        // Format: tkjone://photo/1
+        // Strategy 1: Custom Scheme
         const schemeUrl = buildCustomSchemeUrl(photoId);
         console.log('[TKJ OnE] Strategy 1: Custom Scheme ->', schemeUrl);
         const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
-        if (schemeOpened) {
-          console.log('[TKJ OnE] ✅ SUCCESS: App opened via custom scheme');
-          return;
-        }
-        console.log('[TKJ OnE] ❌ Custom scheme failed or timeout');
+        if (schemeOpened) { console.log('[TKJ OnE] ✅ App opened via custom scheme'); return; }
+        console.log('[TKJ OnE] ❌ Custom scheme failed');
         
-        // Strategy 2: Intent URL dengan Release package
-        console.log('[TKJ OnE] Strategy 2: Intent URL (Release)');
+        // Strategy 2: Intent URL
         for (const pkg of CONFIG.APP_PACKAGES) {
           const intentUrl = buildIntentUrl(photoId, pkg);
-          console.log('[TKJ OnE] Trying package:', pkg);          const intentOpened = await tryOpenUrl(intentUrl, 2000);
-          if (intentOpened) {
-            console.log(`[TKJ OnE] ✅ SUCCESS: App opened via intent (package: ${pkg})`);
-            return;
-          }
-          console.log(`[TKJ OnE] ❌ Intent failed for: ${pkg}`);
+          console.log('[TKJ OnE] Trying package:', pkg);
+          const intentOpened = await tryOpenUrl(intentUrl, 2000);
+          if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
+          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);
         }
         
-        // Strategy 3: Direct HTTPS (kalau app support App Links / Digital Asset Links)
-        console.log('[TKJ OnE] Strategy 3: HTTPS fallback');
+        // Strategy 3: HTTPS App Links
         const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
         const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
-        if (httpsOpened && document.hidden) {
-          console.log('[TKJ OnE] ✅ SUCCESS: App opened via HTTPS App Link');
-          return;
-        }
+        if (httpsOpened && document.hidden) { console.log('[TKJ OnE] ✅ App opened via HTTPS'); return; }
         
-        // Strategy 4: FINAL FALLBACK - GitHub Releases
-        console.log('[TKJ OnE] ❌ ALL STRATEGIES FAILED -> Redirect to GitHub');
+        // Strategy 4: Fallback to GitHub
+        console.log('[TKJ OnE] ❌ ALL FAILED -> GitHub fallback');
         showToast('📱 App tidak ditemukan, redirect ke download...');
-        setTimeout(() => {
-          window.location.href = CONFIG.FALLBACK_URL;
-        }, 800);
+        setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 800);
       }
 
       // === FILTER & SEARCH ===
@@ -422,8 +390,7 @@
         filteredPhotos = allPhotos.filter(p => {
           const matchSearch = !query || String(p.name).toLowerCase().includes(query) || 
             (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
-          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
-          return matchSearch && matchType;
+          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));          return matchSearch && matchType;
         });
         renderGalleryList(filteredPhotos);
         const currentName = getCurrentPhotoName();
@@ -439,6 +406,7 @@
           if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
           const shareText = `Buka foto ini di TKJ OnE
 📷 ${name}
+
 Buka di aplikasi:
 tkjone://photo/${name}
 
@@ -464,46 +432,95 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         };
       }
 
-      // === INIT ===
+      // === INIT - ROOT URL LOGIC ===
       async function init() {
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
+        
         DOM.loading.classList.remove('hidden');
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
+          
           const rawData = await res.json();
           allPhotos = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
           if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
+          
           allPhotos.sort((a, b) => {
             const na = parseInt(a.name), nb = parseInt(b.name);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
             return String(a.name).localeCompare(String(b.name));
           });
+          
           filteredPhotos = [...allPhotos];
-          renderGalleryList(filteredPhotos); setupShare(); setupRandom();
+          
+          renderGalleryList(filteredPhotos);
+          setupShare(); setupRandom();
+          
           DOM.searchInput.addEventListener('input', applyFilters);
           DOM.filterBtns.forEach(btn => {
             btn.onclick = () => {
               DOM.filterBtns.forEach(b => b.classList.remove('active'));
               btn.classList.add('active'); applyFilters();
-            };          });
-          DOM.btnPrev.onclick = () => navigate(-1); DOM.btnNext.onclick = () => navigate(1);
+            };
+          });
+          
+          DOM.btnPrev.onclick = () => navigate(-1);
+          DOM.btnNext.onclick = () => navigate(1);
+          
+          // 🔙 BACK BUTTON
+          if (DOM.btnBack) {
+            DOM.btnBack.onclick = () => {
+              DOM.container.classList.add('hidden');
+              DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
+              history.pushState({ gallery: true }, '', '/');
+              updateActiveListItem(null);
+            };
+          }
+          
+          // 🎯 ROOT URL vs PHOTO URL LOGIC
           if (initialPhotoName) {
+            // /photo/{id} → tampilkan foto itu
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
-            if (photo) showPhoto(photo, false);
-            else { showError(`Foto "${initialPhotoName}" nggak ditemukan!`); if (filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false); }
-          } else if (filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false);
+            if (photo) {
+              showPhoto(photo, false);
+              DOM.container.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
+              DOM.loading.classList.add('hidden');              DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
+            }
+          } else {
+            // 🔥 ROOT (/) → TAMPILKAN GALLERY SAJA, JANGAN AUTO-LOAD FOTO!
+            DOM.loading.classList.add('hidden');
+            DOM.container.classList.add('hidden');
+            DOM.gallerySection?.scrollIntoView({ behavior: 'smooth' });
+            console.log('[PhotoApp] Root URL: Menampilkan gallery list');
+          }
+          
         } catch (err) {
           console.error('[PhotoApp]', err);
-          if (err.message.includes('Failed to fetch')) showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
-          else showError('Error: ' + err.message);
+          DOM.loading.classList.add('hidden');
+          if (err.message.includes('Failed to fetch')) {
+            showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
+          } else {
+            showError('Error: ' + err.message);
+          }
         }
       }
 
-      window.addEventListener('popstate', (e) => { if (e.state?.photo) { const photo = allPhotos.find(p => p.name === e.state.photo); if (photo) showPhoto(photo, false); } });
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+      window.addEventListener('popstate', (e) => {
+        if (e.state?.photo) {
+          const photo = allPhotos.find(p => p.name === e.state.photo);
+          if (photo) showPhoto(photo, false);
+        }
+      });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
     })();
   </script>
 </body>
