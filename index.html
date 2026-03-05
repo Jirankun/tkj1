@@ -12,7 +12,7 @@
       --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
       --card-bg: #1e1e1e; --btn-app: #6c5ce7; --btn-app-hover: #5649c3;
       --list-item-bg: #252525; --list-item-hover: #333; --search-bg: #2a2a2a;
-      --modal-overlay: rgba(0,0,0,0.85); --modal-bg: #1a1a2e;
+      --modal-overlay: rgba(0,0,0,0.9); --modal-bg: #1a1a2e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -21,11 +21,15 @@
       display: flex; flex-direction: column; align-items: center;
       padding: 15px; line-height: 1.6;
       user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
+      overflow-x: hidden;
     }
+    body.modal-open { overflow: hidden; }
     #app { max-width: 800px; width: 100%; }
     .hidden { display: none !important; }
     
+    /* Header */
     .header { text-align: center; padding: 15px 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+    .header.hidden { display: none; }
     .header h1 { font-size: 1.6rem; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); margin-bottom: 15px; }
     
     .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
@@ -43,18 +47,17 @@
     .btn-app { background: linear-gradient(135deg, var(--btn-app), var(--btn-app-hover)); color: #fff; }
     .btn-app:hover { box-shadow: 0 6px 20px rgba(108,92,231,0.4); }
     .btn-secondary { background: var(--card-bg); color: var(--text); border: 2px solid rgba(255,255,255,0.2); }
-    .btn-secondary:hover { background: #333; border-color: var(--accent); }
+    .btn-secondary:hover { background: #333; border-color: var(--accent); }    
+    /* Loading & Error */
+    #loading, #error { font-size: 1.1rem; padding: 25px; background: var(--card-bg); border-radius: 12px; margin: 20px 0; text-align: center; }
+    #error { color: var(--error); border: 2px solid var(--error); animation: shake 0.5s ease-in-out; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    .glitch { position: relative; animation: glitch-skew 3s infinite linear alternate-reverse; }
+    @keyframes glitch-skew { 0% { text-shadow: 0 0 0 var(--accent); } 2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; } 4% { text-shadow: 0 0 0 var(--accent); } 100% { text-shadow: 0 0 0 var(--accent); } }
     
-    #photo-container { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); animation: fadeIn 0.4s ease-out; margin-bottom: 25px; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        #photo-title { font-size: 1.6rem; margin-bottom: 12px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
-    #photo-img, #photo-video { max-width: 100%; height: auto; border-radius: 12px; margin: 15px auto; display: block; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
-    #photo-img { -webkit-touch-callout: none; pointer-events: none; }
-    #photo-video { pointer-events: auto; }
-    #photo-desc { margin: 12px 0 18px; opacity: 0.95; font-size: 1rem; }
-    #photo-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 15px; font-style: italic; }
-    
+    /* Gallery List */
     #gallery-section { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-top: 10px; }
+    #gallery-section.hidden { display: none; }
     #gallery-section h2 { text-align: center; margin-bottom: 15px; color: var(--accent); font-size: 1.3rem; }
     #gallery-list { display: flex; flex-direction: column; gap: 10px; contain: content; }
     
@@ -68,13 +71,8 @@
     .list-badge { background: rgba(0,255,136,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
     .list-badge.video { background: rgba(108,92,231,0.2); color: #a78bfa; }
     
-    #loading, #error { font-size: 1.1rem; padding: 25px; background: var(--card-bg); border-radius: 12px; margin: 20px 0; text-align: center; }
-    #error { color: var(--error); border: 2px solid var(--error); animation: shake 0.5s ease-in-out; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    .glitch { position: relative; animation: glitch-skew 3s infinite linear alternate-reverse; }
-    @keyframes glitch-skew { 0% { text-shadow: 0 0 0 var(--accent); } 2% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; } 4% { text-shadow: 0 0 0 var(--accent); } 100% { text-shadow: 0 0 0 var(--accent); } }
-    
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); color: var(--text); padding: 12px 24px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s ease; z-index: 1000; font-size: 0.95rem; text-align: center; max-width: 90vw; white-space: pre-line; }
+    /* Toast */
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); color: var(--text); padding: 12px 24px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s ease; z-index: 3000; font-size: 0.95rem; text-align: center; max-width: 90vw; white-space: pre-line; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     
     /* === PASSWORD MODAL === */
@@ -86,73 +84,118 @@
       animation: modalFadeIn 0.3s ease-out;
     }
     @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    
     .modal-content {
-      background: var(--modal-bg);
-      border-radius: 20px;
-      padding: 30px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      border: 2px solid var(--accent);
-      animation: modalSlideIn 0.4s ease-out;    }
+      background: var(--modal-bg); border-radius: 20px; padding: 30px;
+      width: 90%; max-width: 400px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
+      animation: modalSlideIn 0.4s ease-out;
+    }
     @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    
     .modal-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }
     .modal-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
-    
     .password-input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      background: var(--search-bg);
-      color: var(--text);
-      font-size: 1.1rem;
-      text-align: center;
-      margin-bottom: 15px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+      width: 100%; padding: 14px 18px; border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px; background: var(--search-bg); color: var(--text);
+      font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none;    }
     .password-input:focus { border-color: var(--accent); }
     .password-input::placeholder { color: rgba(255,255,255,0.4); }
-    
-    .modal-error {
-      color: var(--error);
-      font-size: 0.9rem;
-      margin-bottom: 15px;
-      min-height: 20px;
-    }
-    
+    .modal-error { color: var(--error); font-size: 0.9rem; margin-bottom: 15px; min-height: 20px; }
     .modal-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--accent), #00cc6a);
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #00cc6a);
+      color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: transform 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
     }
     .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,255,136,0.4); }
     .modal-btn:active { transform: translateY(0); }
+    .modal-footer { margin-top: 20px; font-size: 0.8rem; opacity: 0.6; }
     
-    .modal-footer {
-      margin-top: 20px;
-      font-size: 0.8rem;
-      opacity: 0.6;    }
+    /* === PHOTO POPUP MODAL === */
+    #photo-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--modal-overlay);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2500;
+      padding: 20px;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+    #photo-modal.hidden { display: none; }
+    
+    .photo-modal-content {
+      background: var(--modal-bg);
+      border-radius: 20px;
+      padding: 25px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 2px solid var(--accent);
+      animation: modalSlideIn 0.4s ease-out;
+      position: relative;
+    }
+    
+    /* Close button (X) */
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.8rem;
+      color: var(--text);
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 36px;      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 10;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.1); }
+    
+    .photo-modal-title {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(0,255,136,0.3);
+    }
+    
+    .photo-modal-media {
+      max-width: 100%;
+      max-height: 50vh;
+      border-radius: 12px;
+      margin: 10px auto;
+      display: block;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    }
+    .photo-modal-media img {
+      -webkit-touch-callout: none;
+      pointer-events: none;
+    }
+    
+    .photo-modal-desc { margin: 15px 0; opacity: 0.95; font-size: 1rem; }
+    .photo-modal-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 20px; font-style: italic; }
+    
+    .photo-modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
     
     @media (max-width: 600px) {
-      .header h1 { font-size: 1.3rem; } #photo-title { font-size: 1.3rem; }
-      #photo-desc, #photo-meta { font-size: 0.9rem; } .btn { padding: 9px 16px; font-size: 0.85rem; }
-      .list-thumb { width: 50px; height: 50px; } .list-name { font-size: 0.95rem; }
-      .controls { flex-direction: column; } #search-input { width: 100%; }
-      .modal-content { padding: 25px 20px; }
+      .header h1 { font-size: 1.3rem; }
+      .photo-modal-title { font-size: 1.3rem; }
+      .photo-modal-desc, .photo-modal-meta { font-size: 0.9rem; }
+      .btn { padding: 9px 16px; font-size: 0.85rem; }
+      .list-thumb { width: 50px; height: 50px; }
+      .list-name { font-size: 0.95rem; }
+      .controls { flex-direction: column; }
+      #search-input { width: 100%; }      .modal-content, .photo-modal-content { padding: 20px 15px; }
+      .photo-modal-media { max-height: 45vh; }
     }
   </style>
 </head>
@@ -164,9 +207,7 @@
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
       let touchTimer;
-      document.addEventListener('touchstart', e => {
-        touchTimer = setTimeout(() => { e.preventDefault(); }, 500);
-      }, { passive: false });
+      document.addEventListener('touchstart', e => { touchTimer = setTimeout(() => { e.preventDefault(); }, 500); }, { passive: false });
       document.addEventListener('touchmove', () => { clearTimeout(touchTimer); }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
       document.addEventListener('touchcancel', () => clearTimeout(touchTimer));
@@ -185,8 +226,24 @@
     </div>
   </div>
 
+  <!-- 🖼️ PHOTO POPUP MODAL -->
+  <div id="photo-modal" class="hidden">
+    <div class="photo-modal-content">
+      <button class="modal-close" id="photo-modal-close" aria-label="Tutup">✕</button>
+      <h2 class="photo-modal-title" id="photo-modal-title"></h2>
+      <img class="photo-modal-media" id="photo-modal-img" src="" alt="Photo" />
+      <video class="photo-modal-media" id="photo-modal-video" src="" controls playsinline preload="metadata"></video>
+      <p class="photo-modal-desc" id="photo-modal-desc"></p>
+      <p class="photo-modal-meta" id="photo-modal-meta"></p>
+      <div class="photo-modal-footer">
+        <button id="btn-app-modal" class="btn btn-app">📱 Buka di TKJ OnE app</button>
+        <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+      </div>
+    </div>
+  </div>
+
   <div id="app">
-    <div class="header">
+    <!-- 🎯 HEADER -->    <div class="header" id="main-header">
       <h1 class="glitch">📸 TKJ1 Gallery</h1>
       <div class="controls">
         <input type="text" id="search-input" placeholder="🔍 Cari nama foto..." autocomplete="off">
@@ -194,7 +251,8 @@
         <button class="filter-btn" data-filter="photo">Foto</button>
         <button class="filter-btn" data-filter="video">Video</button>
       </div>
-      <div class="action-bar">        <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
+      <div class="action-bar">
+        <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
         <button id="btn-share" class="btn btn-secondary">🔗 Bagikan</button>
         <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE app</button>
       </div>
@@ -202,18 +260,6 @@
 
     <div id="loading" class="hidden"><div style="font-size:2rem;margin-bottom:10px;">⏳</div><div>Loading, tunggu bentar bangsat...</div></div>
     <div id="error" class="hidden"></div>
-
-    <!-- PHOTO VIEWER -->
-    <div id="photo-container" class="hidden">
-      <h1 id="photo-title"></h1>
-      <img id="photo-img" src="" alt="Photo" />
-      <video id="photo-video" src="" controls playsinline preload="metadata"></video>
-      <p id="photo-desc"></p>
-      <p id="photo-meta"></p>
-      <div style="text-align:center;margin-top:15px">
-        <button id="btn-app-bottom" class="btn btn-app">📱 Buka di TKJ OnE app</button>
-      </div>
-    </div>
 
     <!-- GALLERY LIST (Protected) -->
     <div id="gallery-section" class="hidden">
@@ -238,28 +284,35 @@
       };
 
       let allPhotos = [], filteredPhotos = [], currentIndex = -1;
-      let isAuthenticated = false; // ⚠️ TIDAK DISIMPAN, reset tiap refresh
+      let isAuthenticated = false;
+      let isDirectPhotoView = false;
 
       const DOM = {
-        modal: document.getElementById('password-modal'),
+        // Modals
+        passwordModal: document.getElementById('password-modal'),
         passwordInput: document.getElementById('password-input'),
-        modalError: document.getElementById('modal-error'),        modalSubmit: document.getElementById('modal-submit'),
+        modalError: document.getElementById('modal-error'),
+        modalSubmit: document.getElementById('modal-submit'),        photoModal: document.getElementById('photo-modal'),
+        photoModalClose: document.getElementById('photo-modal-close'),
+        photoModalTitle: document.getElementById('photo-modal-title'),
+        photoModalImg: document.getElementById('photo-modal-img'),
+        photoModalVideo: document.getElementById('photo-modal-video'),
+        photoModalDesc: document.getElementById('photo-modal-desc'),
+        photoModalMeta: document.getElementById('photo-modal-meta'),
+        btnAppModal: document.getElementById('btn-app-modal'),
+        btnShareModal: document.getElementById('btn-share-modal'),
+        
+        // UI
+        header: document.getElementById('main-header'),
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
-        container: document.getElementById('photo-container'),
         gallerySection: document.getElementById('gallery-section'),
-        title: document.getElementById('photo-title'),
-        img: document.getElementById('photo-img'),
-        video: document.getElementById('photo-video'),
-        desc: document.getElementById('photo-desc'),
-        meta: document.getElementById('photo-meta'),
-        btnApp: document.getElementById('btn-app'),
-        btnAppBottom: document.getElementById('btn-app-bottom'),
-        btnRandom: document.getElementById('btn-random'),
-        btnShare: document.getElementById('btn-share'),
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
         galleryList: document.getElementById('gallery-list'),
+        btnApp: document.getElementById('btn-app'),
+        btnShare: document.getElementById('btn-share'),
+        btnRandom: document.getElementById('btn-random'),
         toast: document.getElementById('toast')
       };
 
@@ -271,8 +324,9 @@
       }
 
       function showError(msg) {
-        DOM.loading.classList.add('hidden'); DOM.container.classList.add('hidden');
-        DOM.error.innerHTML = '❌ ' + msg; DOM.error.classList.remove('hidden');
+        DOM.loading.classList.add('hidden');
+        DOM.error.innerHTML = '❌ ' + msg;
+        DOM.error.classList.remove('hidden');
         console.error('[PhotoApp Error]', msg);
       }
 
@@ -287,25 +341,24 @@
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
           el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
         );
-        if (el.tagName === 'IMG') {
-          el.style.pointerEvents = 'none';
+        if (el.tagName === 'IMG') {          el.style.pointerEvents = 'none';
           el.style.webkitUserSelect = 'none';
           el.style.webkitTouchCallout = 'none';
         }
       }
+
       // === PASSWORD MODAL ===
       function showPasswordModal() {
-        DOM.modal.classList.remove('hidden');
+        DOM.passwordModal.classList.remove('hidden');
         DOM.passwordInput.value = '';
         DOM.modalError.textContent = '';
         DOM.passwordInput.focus();
-        // Handle Enter key
         DOM.passwordInput.onkeydown = (e) => { if (e.key === 'Enter') checkPassword(); };
         DOM.modalSubmit.onclick = checkPassword;
       }
 
       function hidePasswordModal() {
-        DOM.modal.classList.add('hidden');
+        DOM.passwordModal.classList.add('hidden');
         DOM.passwordInput.onkeydown = null;
         DOM.modalSubmit.onclick = null;
       }
@@ -313,7 +366,6 @@
       function checkPassword() {
         const input = DOM.passwordInput.value.trim();
         if (input.toLowerCase() === CONFIG.PASSWORD.toLowerCase()) {
-          // ✅ Password benar
           isAuthenticated = true;
           hidePasswordModal();
           DOM.gallerySection.classList.remove('hidden');
@@ -321,15 +373,73 @@
           DOM.gallerySection.scrollIntoView({ behavior: 'smooth' });
           showToast('✅ Akses berhasil!');
         } else {
-          // ❌ Password salah
           DOM.modalError.textContent = 'Password salah, coba lagi bangsat!';
           DOM.passwordInput.value = '';
           DOM.passwordInput.focus();
-          // Shake animation
-          DOM.modal.querySelector('.modal-content').style.animation = 'none';
-          setTimeout(() => { DOM.modal.querySelector('.modal-content').style.animation = 'modalSlideIn 0.4s ease-out'; }, 10);
+          DOM.passwordModal.querySelector('.modal-content').style.animation = 'none';
+          setTimeout(() => { DOM.passwordModal.querySelector('.modal-content').style.animation = 'modalSlideIn 0.4s ease-out'; }, 10);
         }
       }
+
+      // === PHOTO POPUP MODAL ===
+      function showPhotoModal(data) {
+        DOM.photoModal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        DOM.photoModalTitle.textContent = data.title || 'Photo #' + data.name;
+        const mediaUrl = (data.url || '').trim();
+        const videoMode = isVideo(mediaUrl);
+        
+        DOM.photoModalImg.style.display = videoMode ? 'none' : 'block';        DOM.photoModalVideo.style.display = videoMode ? 'block' : 'none';
+        
+        if (videoMode) {
+          DOM.photoModalVideo.src = mediaUrl;
+          DOM.photoModalVideo.load();
+          DOM.photoModalImg.src = '';
+        } else {
+          DOM.photoModalImg.src = mediaUrl;
+          DOM.photoModalVideo.src = '';
+          protectMedia(DOM.photoModalImg);
+        }
+        
+        DOM.photoModalDesc.textContent = data.desc || data.description || '';
+        DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
+        
+        // Setup buttons in modal
+        setupAppButtonModal(data);
+        setupShareModal(data);
+        
+        // Close handlers
+        DOM.photoModalClose.onclick = closePhotoModal;
+        DOM.photoModal.onclick = (e) => { if (e.target === DOM.photoModal) closePhotoModal(); };
+        document.addEventListener('keydown', handleModalKeydown);
+      }
+
+      function closePhotoModal() {
+        DOM.photoModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+        DOM.photoModalVideo.pause();
+        DOM.photoModalVideo.src = '';
+        DOM.photoModalImg.src = '';
+        DOM.photoModalClose.onclick = null;
+        DOM.photoModal.onclick = null;
+        document.removeEventListener('keydown', handleModalKeydown);
+        
+        // If direct view, go back to password modal after close
+        if (isDirectPhotoView && !isAuthenticated) {
+          setTimeout(() => { showPasswordModal(); }, 300);
+        }
+      }
+
+      function handleModalKeydown(e) {
+        if (e.key === 'Escape') closePhotoModal();
+      }
+
+      function protectPhotoModalMedia() {
+        protectMedia(DOM.photoModalImg);
+        ['contextmenu','dragstart','selectstart'].forEach(evt => 
+          DOM.photoModalVideo.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
+        );      }
 
       // === GALLERY LIST ===
       function renderGalleryList(photos) {
@@ -341,7 +451,8 @@
         const fragment = document.createDocumentFragment();
         photos.forEach((photo) => {
           const item = document.createElement('div');
-          item.className = 'list-item' + (photo.name === getCurrentPhotoName() ? ' active' : '');          item.dataset.name = photo.name;
+          item.className = 'list-item';
+          item.dataset.name = photo.name;
           const isVid = isVideo(photo.url);
           const thumb = isVid 
             ? `<video class="list-thumb" src="${photo.url}" muted preload="none"></video>`
@@ -359,49 +470,30 @@
           `;
           item.addEventListener('click', () => {
             const photoData = allPhotos.find(p => p.name === photo.name);
-            if (photoData) showPhoto(photoData, true);
+            if (photoData) showPhotoModal(photoData);
           });
           const mediaEl = item.querySelector('img, video');
-          if (mediaEl) protectMedia(mediaEl);
+          if (mediaEl) {
+            ['contextmenu','dragstart','selectstart'].forEach(evt => 
+              mediaEl.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
+            );
+            mediaEl.style.pointerEvents = 'none';
+          }
           fragment.appendChild(item);
         });
         DOM.galleryList.appendChild(fragment);
       }
 
-      function updateActiveListItem(name) {
-        DOM.galleryList.querySelectorAll('.list-item').forEach(el => {
-          el.classList.toggle('active', el.dataset.name === name);
-        });
-      }
-
-      function getCurrentPhotoName() {
-        return currentIndex >= 0 && filteredPhotos[currentIndex] ? filteredPhotos[currentIndex].name : null;
-      }
-
-      // === DISPLAY PHOTO ===
-      function showPhoto(data, fromGallery = false) {
-        DOM.loading.classList.add('hidden'); DOM.error.classList.add('hidden'); DOM.container.classList.remove('hidden');
-        DOM.title.textContent = data.title || 'Photo #' + data.name;
-        const mediaUrl = (data.url || '').trim();
-        const videoMode = isVideo(mediaUrl);
-        DOM.img.style.display = videoMode ? 'none' : 'block';
-        DOM.video.style.display = videoMode ? 'block' : 'none';
-        if (videoMode) { DOM.video.src = mediaUrl; DOM.video.load(); DOM.img.src = ''; } 
-        else { DOM.img.src = mediaUrl; DOM.video.src = ''; protectMedia(DOM.img); }
-        DOM.desc.textContent = data.desc || data.description || '';
-        DOM.meta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
-        updateActiveListItem(data.name); setupAppButton(data);        if (fromGallery) history.pushState({ photo: data.name }, '', `/photo/${data.name}`);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
       // === DEEP LINK LOGIC ===
       function setupAppButton(data) {
-        const photoName = data.name;
-        const handler = () => openAppWithMultiFallback(photoName);
+        const handler = () => openAppWithMultiFallback(data.name);
         DOM.btnApp.onclick = handler;
-        DOM.btnAppBottom.onclick = handler;
-        DOM.btnApp.style.display = 'inline-flex';
-        DOM.btnAppBottom.style.display = 'inline-flex';
+        DOM.btnApp.style.display = 'inline-flex';      }
+
+      function setupAppButtonModal(data) {
+        const handler = () => openAppWithMultiFallback(data.name);
+        DOM.btnAppModal.onclick = handler;
+        DOM.btnAppModal.style.display = 'inline-flex';
       }
 
       function buildIntentUrl(photoId, packageName) {
@@ -439,35 +531,32 @@
           console.log('[TKJ OnE] Trying package:', pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
-          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);        }
+          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);
+        }
         const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
         const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
         if (httpsOpened && document.hidden) { console.log('[TKJ OnE] ✅ App opened via HTTPS'); return; }
         console.log('[TKJ OnE] ❌ ALL FAILED -> GitHub fallback');
-        showToast('📱 App tidak ditemukan, redirect ke download...');
-        setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 800);
-      }
-
-      // === FILTER & SEARCH ===
-      function applyFilters() {
-        const query = DOM.searchInput.value.toLowerCase().trim();
-        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        filteredPhotos = allPhotos.filter(p => {
-          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
-          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
-          return matchSearch && matchType;
-        });
-        if (isAuthenticated) renderGalleryList(filteredPhotos);
-        const currentName = getCurrentPhotoName();
-        if (currentName && !filteredPhotos.find(p => p.name === currentName) && filteredPhotos.length > 0) showPhoto(filteredPhotos[0], false);
+        showToast('📱 App tidak ditemukan, redirect ke download...');        setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 800);
       }
 
       // === SHARE FEATURE ===
       function setupShare() {
         DOM.btnShare.onclick = async () => {
-          const name = getCurrentPhotoName();
+          // Get current photo from active list item or modal
+          const activeItem = DOM.galleryList.querySelector('.list-item.active');
+          const name = activeItem?.dataset.name || getCurrentPhotoName();
           if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
-          const shareText = `Buka foto ini di TKJ OnE
+          showShareDialog(name);
+        };
+      }
+
+      function setupShareModal(data) {
+        DOM.btnShareModal.onclick = () => showShareDialog(data.name);
+      }
+
+      function showShareDialog(name) {
+        const shareText = `Buka foto ini di TKJ OnE
 📷 ${name}
 
 Buka di aplikasi:
@@ -475,11 +564,32 @@ tkjone://photo/${name}
 
 Atau kunjungi:
 ${CONFIG.BASE_URL}/photo/${name}`;
-          try {
-            if (navigator.share) { await navigator.share({ title: 'TKJ OnE Gallery', text: shareText }); showToast('🔗 Berhasil dibagikan!'); } 
-            else { await navigator.clipboard.writeText(shareText); showToast('🔗 Link disalin!\n\n' + shareText, 4500); }
-          } catch (err) { console.log('Share cancelled'); }
-        };
+        
+        if (navigator.share) {
+          navigator.share({ title: 'TKJ OnE Gallery', text: shareText })
+            .then(() => showToast('🔗 Berhasil dibagikan!'))
+            .catch(() => {});
+        } else {
+          navigator.clipboard.writeText(shareText)
+            .then(() => showToast('🔗 Link disalin!\n\n' + shareText, 4500))
+            .catch(() => showToast('Gagal menyalin link'));
+        }
+      }
+
+      function getCurrentPhotoName() {
+        const active = DOM.galleryList.querySelector('.list-item.active');
+        return active ? active.dataset.name : null;
+      }
+
+      // === FILTER & SEARCH ===
+      function applyFilters() {
+        const query = DOM.searchInput.value.toLowerCase().trim();
+        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+        filteredPhotos = allPhotos.filter(p => {
+          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
+          return matchSearch && matchType;
+        });
+        if (isAuthenticated) renderGalleryList(filteredPhotos);
       }
 
       function setupRandom() {
@@ -487,8 +597,14 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }
           if (!isAuthenticated) { showToast('Login dulu buat liat gallery, bangsat!'); showPasswordModal(); return; }
           const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
-          showPhoto(filteredPhotos[randomIdx], true);
-        };      }
+          showPhotoModal(filteredPhotos[randomIdx]);
+        };
+      }
+
+      // === HIDE/SHOW HEADER ===
+      function setHeaderVisibility(show) {
+        if (DOM.header) DOM.header.classList.toggle('hidden', !show);
+      }
 
       // === INIT ===
       async function init() {
@@ -502,32 +618,50 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           const rawData = await res.json();
           allPhotos = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
           if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
-          allPhotos.sort((a, b) => { const na = parseInt(a.name), nb = parseInt(b.name); if (!isNaN(na) && !isNaN(nb)) return na - nb; return String(a.name).localeCompare(String(b.name)); });
+          
+          allPhotos.sort((a, b) => {
+            const na = parseInt(a.name), nb = parseInt(b.name);
+            if (!isNaN(na) && !isNaN(nb)) return na - nb;
+            return String(a.name).localeCompare(String(b.name));
+          });
+          
           filteredPhotos = [...allPhotos];
           
           // Setup UI
           setupShare(); setupRandom();
           DOM.searchInput.addEventListener('input', applyFilters);
-          DOM.filterBtns.forEach(btn => { btn.onclick = () => { DOM.filterBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }; });
-
+          DOM.filterBtns.forEach(btn => {
+            btn.onclick = () => {
+              DOM.filterBtns.forEach(b => b.classList.remove('active'));
+              btn.classList.add('active'); applyFilters();
+            };
+          });          
           // 🎯 LOGIC UTAMA
           if (initialPhotoName) {
-            // 🔗 DIRECT LINK /photo/{id} → TAMPILKAN FOTO LANGSUNG (NO PASSWORD)
+            // 🔗 DIRECT LINK /photo/{id} → HIDE ALL, SHOW PHOTO MODAL ONLY
+            isDirectPhotoView = true;
+            setHeaderVisibility(false);
+            DOM.gallerySection.classList.add('hidden');
             DOM.loading.classList.remove('hidden');
+            
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
             if (photo) {
-              showPhoto(photo, false);
-              DOM.container.scrollIntoView({ behavior: 'smooth' });
+              DOM.loading.classList.add('hidden');
+              showPhotoModal(photo);
             } else {
+              DOM.loading.classList.add('hidden');
               showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
-              // Tawarin login buat liat gallery
-              setTimeout(() => { showPasswordModal(); }, 1500);
+              setTimeout(() => { 
+                setHeaderVisibility(true);
+                showPasswordModal();
+              }, 1500);
             }
           } else {
-            // 🏠 ROOT URL (/) → PASSWORD MODAL DULU
+            // 🏠 ROOT URL (/) → PASSWORD MODAL + FULL UI
+            isDirectPhotoView = false;
+            setHeaderVisibility(true);
             DOM.loading.classList.add('hidden');
-            DOM.container.classList.add('hidden');
-            DOM.gallerySection.classList.add('hidden'); // Hidden sampai login
+            DOM.gallerySection.classList.add('hidden');
             showPasswordModal();
           }
         } catch (err) {
@@ -537,9 +671,20 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           else showError('Error: ' + err.message);
         }
       }
-      window.addEventListener('popstate', (e) => { if (e.state?.photo) { const photo = allPhotos.find(p => p.name === e.state.photo); if (photo) showPhoto(photo, false); } });
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-    })();
+
+      // Handle browser back/forward
+      window.addEventListener('popstate', (e) => {
+        if (e.state?.photo && !DOM.photoModal.classList.contains('hidden')) {
+          const photo = allPhotos.find(p => p.name === e.state.photo);
+          if (photo) showPhotoModal(photo);
+        }
+      });
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }    })();
   </script>
 </body>
 </html>
