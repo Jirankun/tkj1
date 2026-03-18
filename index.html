@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#121212"/>
   <title>TKJ1 Gallery</title>
+  
   <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
+  
+  <!-- 🔐 Cloudflare Turnstile Script -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  
   <style>
     :root {
       --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
@@ -42,12 +47,12 @@
     
     .action-bar { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background: linear-gradient(135deg, var(--accent), #00cc6a); color: #000; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.25s ease; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,255,136,0.3); }
-    .btn:active { transform: translateY(0); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,255,136,0.3); }    .btn:active { transform: translateY(0); }
     .btn-app { background: linear-gradient(135deg, var(--btn-app), var(--btn-app-hover)); color: #fff; }
     .btn-app:hover { box-shadow: 0 6px 20px rgba(108,92,231,0.4); }
     .btn-secondary { background: var(--card-bg); color: var(--text); border: 2px solid rgba(255,255,255,0.2); }
     .btn-secondary:hover { background: #333; border-color: var(--accent); }    
+    
     /* Loading & Error */
     #loading, #error { font-size: 1.1rem; padding: 25px; background: var(--card-bg); border-radius: 12px; margin: 20px 0; text-align: center; }
     #error { color: var(--error); border: 2px solid var(--error); animation: shake 0.5s ease-in-out; }
@@ -91,12 +96,12 @@
       animation: modalSlideIn 0.4s ease-out;
     }
     @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }
-    .modal-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
+    .modal-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }    .modal-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
     .password-input {
       width: 100%; padding: 14px 18px; border: 2px solid rgba(255,255,255,0.2);
       border-radius: 12px; background: var(--search-bg); color: var(--text);
-      font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none;    }
+      font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none;
+    }
     .password-input:focus { border-color: var(--accent); }
     .password-input::placeholder { color: rgba(255,255,255,0.4); }
     .modal-error { color: var(--error); font-size: 0.9rem; margin-bottom: 15px; min-height: 20px; }
@@ -135,56 +140,39 @@
       position: relative;
     }
     
-    /* Close button (X) */
     .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 1.8rem;
-      color: var(--text);
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 36px;      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      z-index: 10;
-    }
+      position: absolute; top: 15px; right: 20px;
+      font-size: 1.8rem; color: var(--text); background: none;
+      border: none; cursor: pointer; width: 36px; height: 36px;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; transition: background 0.2s; z-index: 10;    }
     .modal-close:hover { background: rgba(255,255,255,0.1); }
     
-    .photo-modal-title {
-      font-size: 1.5rem;
-      color: var(--accent);
-      margin-bottom: 15px;
-      text-shadow: 0 0 10px rgba(0,255,136,0.3);
-    }
-    
-    .photo-modal-media {
-      max-width: 100%;
-      max-height: 50vh;
-      border-radius: 12px;
-      margin: 10px auto;
-      display: block;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    }
-    .photo-modal-media img {
-      -webkit-touch-callout: none;
-      pointer-events: none;
-    }
-    
+    .photo-modal-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
+    .photo-modal-media { max-width: 100%; max-height: 50vh; border-radius: 12px; margin: 10px auto; display: block; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+    .photo-modal-media img { -webkit-touch-callout: none; pointer-events: none; }
     .photo-modal-desc { margin: 15px 0; opacity: 0.95; font-size: 1rem; }
     .photo-modal-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 20px; font-style: italic; }
+    .photo-modal-footer { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     
-    .photo-modal-footer {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 10px;
+    /* 🔐 DOWNLOAD TURNSTILE MODAL */
+    #download-turnstile-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--modal-overlay);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2200;
+      animation: modalFadeIn 0.3s ease-out;
     }
+    #download-turnstile-modal.hidden { display: none; }
+    
+    .turnstile-modal-content {
+      background: var(--modal-bg); border-radius: 20px; padding: 30px;
+      width: 90%; max-width: 420px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
+      animation: modalSlideIn 0.4s ease-out;
+    }
+    .turnstile-box { display: flex; justify-content: center; margin: 20px 0; min-height: 65px; }
+    .turnstile-note { font-size: 0.85rem; opacity: 0.8; margin-top: 15px; }
     
     @media (max-width: 600px) {
       .header h1 { font-size: 1.3rem; }
@@ -194,7 +182,8 @@
       .list-thumb { width: 50px; height: 50px; }
       .list-name { font-size: 0.95rem; }
       .controls { flex-direction: column; }
-      #search-input { width: 100%; }      .modal-content, .photo-modal-content { padding: 20px 15px; }
+      #search-input { width: 100%; }
+      .modal-content, .photo-modal-content, .turnstile-modal-content { padding: 20px 15px; }
       .photo-modal-media { max-height: 45vh; }
     }
   </style>
@@ -205,8 +194,7 @@
     (function blockDownloads() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
-      );
-      let touchTimer;
+      );      let touchTimer;
       document.addEventListener('touchstart', e => { touchTimer = setTimeout(() => { e.preventDefault(); }, 500); }, { passive: false });
       document.addEventListener('touchmove', () => { clearTimeout(touchTimer); }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
@@ -226,6 +214,25 @@
     </div>
   </div>
 
+  <!-- 🔐 DOWNLOAD TURNSTILE MODAL -->
+  <div id="download-turnstile-modal" class="hidden">
+    <div class="turnstile-modal-content">
+      <div class="modal-title">🤖 Verifikasi Download</div>
+      <p class="modal-desc">Buktikan kamu manusia sebelum download APK</p>
+      <div class="turnstile-box">
+        <div class="cf-turnstile"
+             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
+             data-callback="onDownloadVerifySuccess"
+             data-error-callback="onDownloadVerifyError"
+             data-theme="dark"
+             data-size="compact">
+        </div>
+      </div>
+      <div id="turnstile-error" class="modal-error"></div>
+      <p class="turnstile-note">✅ Setelah verifikasi, download akan mulai otomatis</p>
+    </div>
+  </div>
+
   <!-- 🖼️ PHOTO POPUP MODAL -->
   <div id="photo-modal" class="hidden">
     <div class="photo-modal-content">
@@ -236,14 +243,14 @@
       <p class="photo-modal-desc" id="photo-modal-desc"></p>
       <p class="photo-modal-meta" id="photo-modal-meta"></p>
       <div class="photo-modal-footer">
-        <button id="btn-app-modal" class="btn btn-app">📱 Buka di TKJ OnE app</button>
-        <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+        <button id="btn-app-modal" class="btn btn-app">📱 Buka di TKJ OnE app</button>        <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
       </div>
     </div>
   </div>
 
   <div id="app">
-    <!-- 🎯 HEADER -->    <div class="header" id="main-header">
+    <!-- 🎯 HEADER -->
+    <div class="header" id="main-header">
       <h1 class="glitch">📸 TKJ1 Gallery</h1>
       <div class="controls">
         <input type="text" id="search-input" placeholder="🔍 Cari nama foto..." autocomplete="off">
@@ -255,6 +262,8 @@
         <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
         <button id="btn-share" class="btn btn-secondary">🔗 Bagikan</button>
         <button id="btn-app" class="btn btn-app">📱 Buka di TKJ OnE app</button>
+        <!-- 🔐 Tombol Download dengan Turnstile -->
+        <button id="btn-download" class="btn btn-secondary">⬇️ Download APK</button>
       </div>
     </div>
 
@@ -283,16 +292,21 @@
         BASE_URL: 'https://tkj1.pages.dev'
       };
 
-      let allPhotos = [], filteredPhotos = [], currentIndex = -1;
-      let isAuthenticated = false;
+      let allPhotos = [], filteredPhotos = [], currentIndex = -1;      let isAuthenticated = false;
       let isDirectPhotoView = false;
+      let pendingDownloadUrl = null; // Simpan URL download sambil nunggu Turnstile
 
       const DOM = {
         // Modals
         passwordModal: document.getElementById('password-modal'),
         passwordInput: document.getElementById('password-input'),
         modalError: document.getElementById('modal-error'),
-        modalSubmit: document.getElementById('modal-submit'),        photoModal: document.getElementById('photo-modal'),
+        modalSubmit: document.getElementById('modal-submit'),
+        
+        downloadTurnstileModal: document.getElementById('download-turnstile-modal'),
+        turnstileError: document.getElementById('turnstile-error'),
+        
+        photoModal: document.getElementById('photo-modal'),
         photoModalClose: document.getElementById('photo-modal-close'),
         photoModalTitle: document.getElementById('photo-modal-title'),
         photoModalImg: document.getElementById('photo-modal-img'),
@@ -313,6 +327,7 @@
         btnApp: document.getElementById('btn-app'),
         btnShare: document.getElementById('btn-share'),
         btnRandom: document.getElementById('btn-random'),
+        btnDownload: document.getElementById('btn-download'), // 🔐 Tombol download baru
         toast: document.getElementById('toast')
       };
 
@@ -326,8 +341,7 @@
       function showError(msg) {
         DOM.loading.classList.add('hidden');
         DOM.error.innerHTML = '❌ ' + msg;
-        DOM.error.classList.remove('hidden');
-        console.error('[PhotoApp Error]', msg);
+        DOM.error.classList.remove('hidden');        console.error('[PhotoApp Error]', msg);
       }
 
       function isVideo(url) {
@@ -341,7 +355,8 @@
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
           el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
         );
-        if (el.tagName === 'IMG') {          el.style.pointerEvents = 'none';
+        if (el.tagName === 'IMG') {
+          el.style.pointerEvents = 'none';
           el.style.webkitUserSelect = 'none';
           el.style.webkitTouchCallout = 'none';
         }
@@ -375,14 +390,56 @@
         } else {
           DOM.modalError.textContent = 'Password salah, coba lagi bangsat!';
           DOM.passwordInput.value = '';
-          DOM.passwordInput.focus();
-          DOM.passwordModal.querySelector('.modal-content').style.animation = 'none';
+          DOM.passwordInput.focus();          DOM.passwordModal.querySelector('.modal-content').style.animation = 'none';
           setTimeout(() => { DOM.passwordModal.querySelector('.modal-content').style.animation = 'modalSlideIn 0.4s ease-out'; }, 10);
         }
       }
 
-      // === PHOTO POPUP MODAL ===
-      function showPhotoModal(data) {
+      // 🔐 === DOWNLOAD TURNSTILE MODAL ===
+      function showDownloadTurnstileModal(downloadUrl) {
+        pendingDownloadUrl = downloadUrl;
+        DOM.downloadTurnstileModal.classList.remove('hidden');
+        DOM.turnstileError.textContent = '';
+        document.body.classList.add('modal-open');
+        
+        // Reset turnstile kalau udah ada instance sebelumnya
+        if (window.turnstile) {
+          setTimeout(() => turnstile.reset(), 100);
+        }
+      }
+
+      function hideDownloadTurnstileModal() {
+        DOM.downloadTurnstileModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+        pendingDownloadUrl = null;
+        if (window.turnstile) turnstile.reset();
+      }
+
+      // Callback Turnstile sukses untuk download
+      window.onDownloadVerifySuccess = function(token) {
+        console.log('✓ Download Turnstile token:', token);
+        DOM.turnstileError.textContent = '';
+        
+        // Redirect ke URL download setelah verifikasi
+        if (pendingDownloadUrl) {
+          showToast('✅ Verifikasi berhasil! Download dimulai...');
+          setTimeout(() => {
+            window.location.href = pendingDownloadUrl;
+            hideDownloadTurnstileModal();
+          }, 800);
+        }
+      };
+
+      // Callback Turnstile error untuk download
+      window.onDownloadVerifyError = function() {
+        console.error('✗ Download Turnstile error');
+        DOM.turnstileError.textContent = 'Verifikasi gagal. Coba lagi.';
+        setTimeout(() => {
+          if (window.turnstile) turnstile.reset();
+        }, 3000);
+      };
+
+      // === PHOTO POPUP MODAL ===      function showPhotoModal(data) {
         DOM.photoModal.classList.remove('hidden');
         document.body.classList.add('modal-open');
         
@@ -390,7 +447,8 @@
         const mediaUrl = (data.url || '').trim();
         const videoMode = isVideo(mediaUrl);
         
-        DOM.photoModalImg.style.display = videoMode ? 'none' : 'block';        DOM.photoModalVideo.style.display = videoMode ? 'block' : 'none';
+        DOM.photoModalImg.style.display = videoMode ? 'none' : 'block';
+        DOM.photoModalVideo.style.display = videoMode ? 'block' : 'none';
         
         if (videoMode) {
           DOM.photoModalVideo.src = mediaUrl;
@@ -405,11 +463,9 @@
         DOM.photoModalDesc.textContent = data.desc || data.description || '';
         DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
         
-        // Setup buttons in modal
         setupAppButtonModal(data);
         setupShareModal(data);
         
-        // Close handlers
         DOM.photoModalClose.onclick = closePhotoModal;
         DOM.photoModal.onclick = (e) => { if (e.target === DOM.photoModal) closePhotoModal(); };
         document.addEventListener('keydown', handleModalKeydown);
@@ -425,7 +481,6 @@
         DOM.photoModal.onclick = null;
         document.removeEventListener('keydown', handleModalKeydown);
         
-        // If direct view, go back to password modal after close
         if (isDirectPhotoView && !isAuthenticated) {
           setTimeout(() => { showPasswordModal(); }, 300);
         }
@@ -434,12 +489,12 @@
       function handleModalKeydown(e) {
         if (e.key === 'Escape') closePhotoModal();
       }
-
       function protectPhotoModalMedia() {
         protectMedia(DOM.photoModalImg);
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
           DOM.photoModalVideo.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
-        );      }
+        );
+      }
 
       // === GALLERY LIST ===
       function renderGalleryList(photos) {
@@ -483,12 +538,12 @@
         });
         DOM.galleryList.appendChild(fragment);
       }
-
-      // === DEEP LINK LOGIC ===
+      // === DEEP LINK LOGIC (NO TURNSTILE - Smooth for APK users) ===
       function setupAppButton(data) {
         const handler = () => openAppWithMultiFallback(data.name);
         DOM.btnApp.onclick = handler;
-        DOM.btnApp.style.display = 'inline-flex';      }
+        DOM.btnApp.style.display = 'inline-flex';
+      }
 
       function setupAppButtonModal(data) {
         const handler = () => openAppWithMultiFallback(data.name);
@@ -521,29 +576,48 @@
 
       async function openAppWithMultiFallback(photoId) {
         console.log('[TKJ OnE] 🚀 Deep link for:', photoId);
+        
+        // 🔥 STRATEGY 1: Custom Scheme (NO TURNSTILE)
         const schemeUrl = buildCustomSchemeUrl(photoId);
         console.log('[TKJ OnE] Strategy 1: Custom Scheme ->', schemeUrl);
         const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
         if (schemeOpened) { console.log('[TKJ OnE] ✅ App opened via custom scheme'); return; }
+        
         console.log('[TKJ OnE] ❌ Custom scheme failed');
-        for (const pkg of CONFIG.APP_PACKAGES) {
-          const intentUrl = buildIntentUrl(photoId, pkg);
+        
+        // 🔥 STRATEGY 2: Intent URLs (NO TURNSTILE)
+        for (const pkg of CONFIG.APP_PACKAGES) {          const intentUrl = buildIntentUrl(photoId, pkg);
           console.log('[TKJ OnE] Trying package:', pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
           console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);
         }
+        
+        // 🔥 STRATEGY 3: HTTPS fallback (NO TURNSTILE)
         const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
         const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
         if (httpsOpened && document.hidden) { console.log('[TKJ OnE] ✅ App opened via HTTPS'); return; }
-        console.log('[TKJ OnE] ❌ ALL FAILED -> GitHub fallback');
-        showToast('📱 App tidak ditemukan, redirect ke download...');        setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 800);
+        
+        // 🔥 STRATEGY 4: GitHub fallback (TURNSTILE HERE!)
+        console.log('[TKJ OnE] ❌ ALL FAILED -> Show Turnstile for download');
+        showToast('📱 App tidak ditemukan. Verifikasi dulu buat download...');
+        setTimeout(() => {
+          showDownloadTurnstileModal(CONFIG.FALLBACK_URL);
+        }, 500);
+      }
+
+      // 🔐 === DOWNLOAD BUTTON HANDLER (Turnstile Protected) ===
+      function setupDownloadButton() {
+        DOM.btnDownload.onclick = (e) => {
+          e.preventDefault();
+          // Langsung tampilkan Turnstile modal buat download
+          showDownloadTurnstileModal(CONFIG.FALLBACK_URL);
+        };
       }
 
       // === SHARE FEATURE ===
       function setupShare() {
         DOM.btnShare.onclick = async () => {
-          // Get current photo from active list item or modal
           const activeItem = DOM.galleryList.querySelector('.list-item.active');
           const name = activeItem?.dataset.name || getCurrentPhotoName();
           if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
@@ -561,7 +635,6 @@
 
 Buka di aplikasi:
 tkjone://photo/${name}
-
 Atau kunjungi:
 ${CONFIG.BASE_URL}/photo/${name}`;
         
@@ -586,7 +659,8 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         const query = DOM.searchInput.value.toLowerCase().trim();
         const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         filteredPhotos = allPhotos.filter(p => {
-          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
+          const matchSearch = !query || String(p.name).toLowerCase().includes(query) || (p.title && p.title.toLowerCase().includes(query)) || (p.desc && p.desc.toLowerCase().includes(query));
+          const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
           return matchSearch && matchType;
         });
         if (isAuthenticated) renderGalleryList(filteredPhotos);
@@ -611,7 +685,6 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-
         try {
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
@@ -628,7 +701,10 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           filteredPhotos = [...allPhotos];
           
           // Setup UI
-          setupShare(); setupRandom();
+          setupShare(); 
+          setupRandom(); 
+          setupDownloadButton(); // 🔐 Setup tombol download
+          
           DOM.searchInput.addEventListener('input', applyFilters);
           DOM.filterBtns.forEach(btn => {
             btn.onclick = () => {
@@ -636,6 +712,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
               btn.classList.add('active'); applyFilters();
             };
           });          
+          
           // 🎯 LOGIC UTAMA
           if (initialPhotoName) {
             // 🔗 DIRECT LINK /photo/{id} → HIDE ALL, SHOW PHOTO MODAL ONLY
@@ -656,8 +733,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
                 showPasswordModal();
               }, 1500);
             }
-          } else {
-            // 🏠 ROOT URL (/) → PASSWORD MODAL + FULL UI
+          } else {            // 🏠 ROOT URL (/) → PASSWORD MODAL + FULL UI
             isDirectPhotoView = false;
             setHeaderVisibility(true);
             DOM.loading.classList.add('hidden');
@@ -684,7 +760,8 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         document.addEventListener('DOMContentLoaded', init);
       } else {
         init();
-      }    })();
+      }
+    })();
   </script>
 </body>
 </html>
