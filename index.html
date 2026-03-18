@@ -31,7 +31,6 @@
       --card-bg: rgba(30, 30, 46, 0.6);
       --card-border: rgba(255, 255, 255, 0.1);
       --glass: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
       --modal-overlay: rgba(0, 0, 0, 0.95);
     }
 
@@ -47,11 +46,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;      line-height: 1.6;
-      overflow-x: hidden;
+      padding: 20px;
+      line-height: 1.6;      overflow-x: hidden;
     }
 
-    /* Animated Background Blobs */
     body::before {
       content: '';
       position: fixed;
@@ -86,17 +84,25 @@
 
     body.modal-open { overflow: hidden; }
     #app { max-width: 900px; width: 100%; z-index: 1; }
-    .hidden { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+    
+    /* === FORCE HIDE CLASS (Turnstile Fix) === */
+    .hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      z-index: -9999 !important;
+    }
 
     /* === HEADER === */
     .header {
-      text-align: center;
-      padding: 30px 20px;
+      text-align: center;      padding: 30px 25px;
       margin-bottom: 30px;
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
       box-shadow: 0 10px 40px rgba(0,0,0,0.3);
       animation: slideDown 0.6s ease-out;
     }
@@ -109,22 +115,25 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       text-shadow: 0 0 30px var(--accent-glow);
       letter-spacing: -0.5px;
     }
 
-    .controls {
+    /* Search & Filter Row */
+    .search-row {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 25px;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
     }
 
     #search-input {
       flex: 1;
       min-width: 200px;
+      max-width: 400px;
       padding: 14px 20px;
       border: 2px solid var(--card-border);
       border-radius: 16px;
@@ -136,18 +145,25 @@
       transition: all 0.3s;
     }
     #search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px var(--accent-glow);
+      border-color: var(--accent);      box-shadow: 0 0 20px var(--accent-glow);
       background: rgba(0,0,0,0.5);
     }
     #search-input::placeholder { color: var(--text-muted); }
 
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .filter-btn {
-      padding: 14px 24px;
+      padding: 12px 20px;
       background: var(--card-bg);
-      border: 1px solid var(--card-border);      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
@@ -157,16 +173,16 @@
       background: var(--accent);
       color: #000;
       border-color: var(--accent);
-      box-shadow: 0 0 20px var(--accent-glow);
+      box-shadow: 0 0 15px var(--accent-glow);
       transform: translateY(-2px);
     }
 
-    .action-bar {
+    /* Action Buttons Row */
+    .action-row {
       display: flex;
       gap: 12px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 25px;
       padding-top: 25px;
       border-top: 1px solid var(--card-border);
     }
@@ -176,10 +192,9 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 14px 28px;
+      padding: 14px 24px;
       border-radius: 16px;
-      font-weight: 700;
-      font-size: 0.95rem;
+      font-weight: 700;      font-size: 0.9rem;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: none;
       cursor: pointer;
@@ -187,6 +202,7 @@
       letter-spacing: 0.5px;
       font-family: inherit;
       text-decoration: none;
+      white-space: nowrap;
     }
     .btn:hover { transform: translateY(-3px); }
     .btn:active { transform: translateY(-1px); }
@@ -194,7 +210,8 @@
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #00cc6a);
       color: #000;
-      box-shadow: 0 5px 20px var(--accent-glow);    }
+      box-shadow: 0 5px 20px var(--accent-glow);
+    }
     .btn-primary:hover { box-shadow: 0 10px 30px var(--accent-glow); }
 
     .btn-secondary {
@@ -225,25 +242,14 @@
       margin: 40px 0;
       text-align: center;
       border: 1px solid var(--card-border);
-      animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    #loading { animation: pulse 2s infinite; }    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     #error { color: var(--error); border-color: var(--error); animation: none; }
-
-    .glitch { position: relative; }
-    .glitch::before, .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-    }
-    .glitch::before { left: 2px; text-shadow: -1px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
-    .glitch::after { left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
-    @keyframes glitch-anim { 0% { clip: rect(31px, 9999px, 91px, 0); } 20% { clip: rect(6px, 9999px, 86px, 0); } 40% { clip: rect(20px, 9999px, 66px, 0); } 60% { clip: rect(59px, 9999px, 19px, 0); } 80% { clip: rect(79px, 9999px, 85px, 0); } 100% { clip: rect(3px, 9999px, 36px, 0); } }
-    @keyframes glitch-anim2 { 0% { clip: rect(65px, 9999px, 100px, 0); } 20% { clip: rect(4px, 9999px, 5px, 0); } 40% { clip: rect(58px, 9999px, 19px, 0); } 60% { clip: rect(19px, 9999px, 86px, 0); } 80% { clip: rect(9px, 9999px, 10px, 0); } 100% { clip: rect(83px, 9999px, 46px, 0); } }
 
     /* === GALLERY LIST === */
     #gallery-section {
-      background: var(--card-bg);      backdrop-filter: blur(20px);
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
       border-radius: 24px;
       padding: 25px;
       margin-top: 20px;
@@ -264,8 +270,8 @@
 
     #gallery-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
     }
 
     .list-item {
@@ -286,13 +292,13 @@
       position: absolute;
       top: 0; left: 0; width: 4px; height: 100%;
       background: var(--accent);
-      opacity: 0;
-      transition: opacity 0.3s;
+      opacity: 0;      transition: opacity 0.3s;
     }
     .list-item:hover {
       background: rgba(255,255,255,0.08);
       transform: translateX(5px);
-      border-color: var(--accent-glow);    }
+      border-color: var(--accent-glow);
+    }
     .list-item:hover::before { opacity: 1; }
     .list-item.active {
       border-color: var(--accent);
@@ -335,13 +341,13 @@
       padding: 3px 10px;
       border-radius: 6px;
       font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
+      font-weight: 700;      text-transform: uppercase;
     }
     .list-badge.video {
       background: rgba(108,92,231,0.1);
       color: #a78bfa;
     }
+
     /* === TOAST === */
     #toast {
       position: fixed;
@@ -365,12 +371,12 @@
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
-    /* === MODALS === */
+    /* === MODALS (Turnstile Fix) === */
     .modal-base {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: var(--modal-overlay);
-      display: flex !important;
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
@@ -378,19 +384,20 @@
       backdrop-filter: blur(10px);
     }
     .modal-base.hidden { 
-      display: none !important; 
+      display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
       pointer-events: none !important;
+      z-index: -9999 !important;
     }
     @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     .modal-content-base {
       background: rgba(26, 26, 46, 0.95);
       border-radius: 24px;
       padding: 40px 30px;
       width: 90%;
-      max-width: 450px;      text-align: center;
+      max-width: 450px;
+      text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
       border: 1px solid var(--card-border);
       animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -411,7 +418,7 @@
     .turnstile-box { display: flex; justify-content: center; margin: 25px 0; min-height: 65px; }
     .modal-note { font-size: 0.85rem; opacity: 0.6; margin-top: 20px; }
 
-    /* Photo Modal Specific */
+    /* Photo Modal */
     .photo-modal-content {
       max-width: 800px;
       max-height: 90vh;
@@ -432,14 +439,14 @@
       border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      justify-content: center;      transition: all 0.2s;
       z-index: 10;
     }
     .modal-close:hover { background: var(--error); color: #fff; transform: rotate(90deg); }
 
     .photo-modal-media {
-      max-width: 100%;      max-height: 50vh;
+      max-width: 100%;
+      max-height: 50vh;
       border-radius: 16px;
       margin: 20px auto;
       display: block;
@@ -457,9 +464,10 @@
 
     @media (max-width: 600px) {
       .header h1 { font-size: 1.6rem; }
-      .controls { flex-direction: column; }
-      #search-input { width: 100%; }
-      .action-bar { flex-direction: column; }
+      .search-row { flex-direction: column; }
+      #search-input { width: 100%; max-width: none; }
+      .filter-group { width: 100%; justify-content: center; }
+      .action-row { flex-direction: column; }
       .btn { width: 100%; }
       #gallery-list { grid-template-columns: 1fr; }
       .modal-content-base, .photo-modal-content { padding: 25px 20px; }
@@ -481,14 +489,14 @@
       document.addEventListener('touchcancel', () => clearTimeout(touchTimer));
     })();
   </script>
-
   <!-- 🔐 MAIN TURNSTILE MODAL (GATEKEEPER) -->
   <div id="main-turnstile-modal" class="modal-base">
     <div class="modal-content-base">
       <div class="modal-title">🔐 Verifikasi Keamanan</div>
       <p class="modal-desc">Lakuin verifikasi dulu bre, biar aman dari bot bangsat</p>
       <div class="turnstile-box">
-        <div class="cf-turnstile"             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
+        <div class="cf-turnstile"
+             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onMainVerifySuccess"
              data-error-callback="onMainVerifyError"
              data-theme="dark"
@@ -519,24 +527,26 @@
   <!-- 🎯 APP CONTENT (Hidden Until Verified) -->
   <div id="app" class="hidden">
     <div class="header">
-      <h1 class="glitch" data-text="📸 TKJ1 Gallery">📸 TKJ1 Gallery</h1>
+      <h1>📸 TKJ1 Gallery</h1>
       
-      <div class="controls">
+      <!-- Search & Filter Row -->
+      <div class="search-row">
         <input type="text" id="search-input" placeholder="🔍 Cari nama foto..." autocomplete="off">
-        <button class="filter-btn active" data-filter="all">Semua</button>
-        <button class="filter-btn" data-filter="photo">Foto</button>
-        <button class="filter-btn" data-filter="video">Video</button>
-      </div>
-      
-      <div class="action-bar">
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all">Semua</button>
+          <button class="filter-btn" data-filter="photo">Foto</button>
+          <button class="filter-btn" data-filter="video">Video</button>
+        </div>
+      </div>      
+      <!-- Action Buttons Row -->
+      <div class="action-row">
         <button id="btn-random" class="btn btn-secondary">🎲 Random</button>
         <button id="btn-share" class="btn btn-secondary">🔗 Bagikan</button>
-        <!-- ✅ Tombol Utama (Buka & Download) -->
         <button id="btn-app" class="btn btn-primary">📱 Buka & Download TKJ OnE</button>
-        <!-- ✅ Tombol Download Langsung (No Turnstile) -->
         <button id="btn-download" class="btn btn-download">⬇️ Download APK</button>
       </div>
     </div>
+
     <div id="loading" class="hidden">
       <div style="font-size:3rem;margin-bottom:15px;">⏳</div>
       <div style="font-weight:600;">Loading, tunggu bentar bre...</div>
@@ -576,23 +586,22 @@
         photoModalClose: document.getElementById('photo-modal-close'),
         photoModalTitle: document.getElementById('photo-modal-title'),
         photoModalImg: document.getElementById('photo-modal-img'),
-        photoModalVideo: document.getElementById('photo-modal-video'),
-        photoModalDesc: document.getElementById('photo-modal-desc'),
+        photoModalVideo: document.getElementById('photo-modal-video'),        photoModalDesc: document.getElementById('photo-modal-desc'),
         photoModalMeta: document.getElementById('photo-modal-meta'),
         btnAppModal: document.getElementById('btn-app-modal'),
         btnShareModal: document.getElementById('btn-share-modal'),
         
         appContainer: document.getElementById('app'),
-        header: document.getElementById('main-header'),
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
-        gallerySection: document.getElementById('gallery-section'),        searchInput: document.getElementById('search-input'),
+        gallerySection: document.getElementById('gallery-section'),
+        searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
         galleryList: document.getElementById('gallery-list'),
         btnApp: document.getElementById('btn-app'),
         btnShare: document.getElementById('btn-share'),
         btnRandom: document.getElementById('btn-random'),
-        btnDownload: document.getElementById('btn-download'), // Direct download
+        btnDownload: document.getElementById('btn-download'),
         toast: document.getElementById('toast')
       };
 
@@ -627,20 +636,32 @@
           el.style.webkitTouchCallout = 'none';
         }
       }
-
-      // 🔐 === MAIN TURNSTILE CALLBACKS ===
+      // 🔐 === MAIN TURNSTILE CALLBACKS (FIXED) ===
       window.onMainVerifySuccess = function(token) {
         console.log('✓ Main Turnstile verified:', token);
         DOM.mainTurnstileError.textContent = '';
         isVerified = true;
         
+        // Reset Turnstile first
+        if (window.turnstile) {
+          turnstile.reset();
+        }
+        
+        // Force hide modal dengan multiple methods
         setTimeout(() => {
-          DOM.mainTurnstileModal.classList.add('hidden');          DOM.mainTurnstileModal.style.display = 'none';
+          DOM.mainTurnstileModal.classList.add('hidden');
+          DOM.mainTurnstileModal.style.setProperty('display', 'none', 'important');
+          DOM.mainTurnstileModal.setAttribute('aria-hidden', 'true');
+          
           DOM.appContainer.classList.remove('hidden');
+          DOM.appContainer.style.setProperty('display', 'block', 'important');
           document.body.classList.remove('modal-open');
           
-          setTimeout(() => { initGallery(); }, 100);
-        }, 300);
+          // Init gallery after modal fully hidden
+          setTimeout(() => {
+            initGallery();
+          }, 150);
+        }, 400);
       };
 
       window.onMainVerifyError = function() {
@@ -652,7 +673,7 @@
       // === PHOTO POPUP MODAL ===
       function showPhotoModal(data) {
         DOM.photoModal.classList.remove('hidden');
-        DOM.photoModal.style.display = 'flex';
+        DOM.photoModal.style.setProperty('display', 'flex', 'important');
         document.body.classList.add('modal-open');
         
         DOM.photoModalTitle.textContent = data.title || 'Photo #' + data.name;
@@ -663,8 +684,7 @@
         DOM.photoModalVideo.style.display = videoMode ? 'block' : 'none';
         
         if (videoMode) {
-          DOM.photoModalVideo.src = mediaUrl;
-          DOM.photoModalVideo.load();
+          DOM.photoModalVideo.src = mediaUrl;          DOM.photoModalVideo.load();
           DOM.photoModalImg.src = '';
         } else {
           DOM.photoModalImg.src = mediaUrl;
@@ -684,7 +704,8 @@
       }
 
       function closePhotoModal() {
-        DOM.photoModal.classList.add('hidden');        DOM.photoModal.style.display = 'none';
+        DOM.photoModal.classList.add('hidden');
+        DOM.photoModal.style.setProperty('display', 'none', 'important');
         document.body.classList.remove('modal-open');
         DOM.photoModalVideo.pause();
         DOM.photoModalVideo.src = '';
@@ -712,8 +733,7 @@
           item.dataset.name = photo.name;
           const isVid = isVideo(photo.url);
           const thumb = isVid 
-            ? `<video class="list-thumb" src="${photo.url}" muted preload="none"></video>`
-            : `<img class="list-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">`;
+            ? `<video class="list-thumb" src="${photo.url}" muted preload="none"></video>`            : `<img class="list-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">`;
           item.innerHTML = `
             ${thumb}
             <div class="list-info">
@@ -733,23 +753,22 @@
             ['contextmenu','dragstart','selectstart'].forEach(evt => 
               mediaEl.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
             );
-            mediaEl.style.pointerEvents = 'none';          }
+            mediaEl.style.pointerEvents = 'none';
+          }
           fragment.appendChild(item);
         });
         DOM.galleryList.appendChild(fragment);
       }
 
-      // === DEEP LINK LOGIC (NO TURNSTILE - Smooth) ===
+      // === DEEP LINK LOGIC ===
       function setupAppButton(data) {
         const handler = () => openAppWithMultiFallback(data.name);
         DOM.btnApp.onclick = handler;
-        DOM.btnApp.style.display = 'inline-flex';
       }
 
       function setupAppButtonModal(data) {
         const handler = () => openAppWithMultiFallback(data.name);
         DOM.btnAppModal.onclick = handler;
-        DOM.btnAppModal.style.display = 'inline-flex';
       }
 
       function buildIntentUrl(photoId, packageName) {
@@ -763,8 +782,7 @@
       }
 
       function tryOpenUrl(url, timeout = 2500) {
-        return new Promise((resolve) => {
-          let resolved = false, visibilityChanged = false;
+        return new Promise((resolve) => {          let resolved = false, visibilityChanged = false;
           const onVisibilityChange = () => { if (document.hidden && !resolved) { resolved = true; visibilityChanged = true; document.removeEventListener('visibilitychange', onVisibilityChange); resolve(true); } };
           document.addEventListener('visibilitychange', onVisibilityChange);
           const onBlur = () => { if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); } };
@@ -777,18 +795,16 @@
       async function openAppWithMultiFallback(photoId) {
         console.log('[TKJ OnE] 🚀 Deep link for:', photoId);
         
-        // Strategy 1: Custom Scheme
         const schemeUrl = buildCustomSchemeUrl(photoId);
         const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
         if (schemeOpened) { console.log('[TKJ OnE] ✅ App opened'); return; }
         
-        // Strategy 2: Intent URLs        for (const pkg of CONFIG.APP_PACKAGES) {
+        for (const pkg of CONFIG.APP_PACKAGES) {
           const intentUrl = buildIntentUrl(photoId, pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log('[TKJ OnE] ✅ App opened via intent'); return; }
         }
         
-        // Strategy 3: Direct Download (NO TURNSTILE)
         console.log('[TKJ OnE] ❌ App not found -> Direct Download');
         showToast('📱 App nggak ditemukan. Download langsung bre...');
         setTimeout(() => {
@@ -816,7 +832,6 @@
           showShareDialog(name);
         };
       }
-
       function setupShareModal(data) {
         DOM.btnShareModal.onclick = () => showShareDialog(data.name);
       }
@@ -831,7 +846,8 @@
         } else {
           navigator.clipboard.writeText(shareText)
             .then(() => showToast('🔗 Link disalin!'))
-            .catch(() => showToast('Gagal menyalin link'));        }
+            .catch(() => showToast('Gagal menyalin link'));
+        }
       }
 
       function getCurrentPhotoName() {
@@ -859,17 +875,11 @@
         };
       }
 
-      function setHeaderVisibility(show) {
-        const headerEl = document.querySelector('.header');
-        if (headerEl) headerEl.classList.toggle('hidden', !show);
-      }
-
       // === INIT GALLERY ===
       async function initGallery() {
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-
         try {
           DOM.loading.classList.remove('hidden');
           
@@ -880,7 +890,8 @@
           if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
           
           allPhotos.sort((a, b) => {
-            const na = parseInt(a.name), nb = parseInt(b.name);            if (!isNaN(na) && !isNaN(nb)) return na - nb;
+            const na = parseInt(a.name), nb = parseInt(b.name);
+            if (!isNaN(na) && !isNaN(nb)) return na - nb;
             return String(a.name).localeCompare(String(b.name));
           });
           
@@ -902,7 +913,6 @@
           
           if (initialPhotoName) {
             isDirectPhotoView = true;
-            setHeaderVisibility(false);
             DOM.gallerySection.classList.add('hidden');
             
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
@@ -911,34 +921,28 @@
             } else {
               showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
               setTimeout(() => { 
-                setHeaderVisibility(true);
                 DOM.gallerySection.classList.remove('hidden');
                 renderGalleryList(filteredPhotos);
               }, 1500);
             }
           } else {
             isDirectPhotoView = false;
-            setHeaderVisibility(true);
             DOM.gallerySection.classList.remove('hidden');
             renderGalleryList(filteredPhotos);
-          }
-        } catch (err) {
+          }        } catch (err) {
           console.error('[PhotoApp]', err);
           DOM.loading.classList.add('hidden');
           if (err.message.includes('Failed to fetch')) showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
           else showError('Error: ' + err.message);
         }
       }
+
       window.addEventListener('popstate', (e) => {
         if (e.state?.photo && !DOM.photoModal.classList.contains('hidden')) {
           const photo = allPhotos.find(p => p.name === e.state.photo);
           if (photo) showPhotoModal(photo);
         }
       });
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {});
-      }
     })();
   </script>
 </body>
