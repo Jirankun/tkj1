@@ -30,7 +30,7 @@
     }
     body.modal-open { overflow: hidden; }
     #app { max-width: 800px; width: 100%; }
-    .hidden { display: none !important; }
+    .hidden { display: none !important; visibility: hidden !important; }
     
     /* Header */
     .header { text-align: center; padding: 15px 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
@@ -84,19 +84,24 @@
     #main-turnstile-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--modal-overlay);
-      display: flex; align-items: center; justify-content: center;
+      display: flex !important; align-items: center; justify-content: center;
       z-index: 9999;
       animation: modalFadeIn 0.3s ease-out;
       backdrop-filter: blur(5px);
     }
-    #main-turnstile-modal.hidden { display: none; }
+    #main-turnstile-modal.hidden { 
+      display: none !important; 
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
     
-    .main-turnstile-content {
-      background: var(--modal-bg); border-radius: 20px; padding: 40px 30px;
+    .main-turnstile-content {      background: var(--modal-bg); border-radius: 20px; padding: 40px 30px;
       width: 90%; max-width: 450px; text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
       animation: modalSlideIn 0.4s ease-out;
-    }    .main-turnstile-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 10px; }
+    }
+    .main-turnstile-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 10px; }
     .main-turnstile-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
     .turnstile-box { display: flex; justify-content: center; margin: 20px 0; min-height: 65px; }
     .turnstile-note { font-size: 0.85rem; opacity: 0.7; margin-top: 15px; }
@@ -105,11 +110,16 @@
     #download-turnstile-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--modal-overlay);
-      display: flex; align-items: center; justify-content: center;
+      display: flex !important; align-items: center; justify-content: center;
       z-index: 2200;
       animation: modalFadeIn 0.3s ease-out;
     }
-    #download-turnstile-modal.hidden { display: none; }
+    #download-turnstile-modal.hidden { 
+      display: none !important; 
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
     
     .turnstile-modal-content {
       background: var(--modal-bg); border-radius: 20px; padding: 30px;
@@ -122,16 +132,20 @@
     #photo-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--modal-overlay);
-      display: flex; align-items: center; justify-content: center;
+      display: flex !important; align-items: center; justify-content: center;
       z-index: 2500;
       padding: 20px;
       animation: modalFadeIn 0.3s ease-out;
     }
-    #photo-modal.hidden { display: none; }
+    #photo-modal.hidden { 
+      display: none !important; 
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
     
     .photo-modal-content {
-      background: var(--modal-bg);
-      border-radius: 20px;
+      background: var(--modal-bg);      border-radius: 20px;
       padding: 25px;
       width: 100%;
       max-width: 700px;
@@ -145,7 +159,8 @@
     }
     
     .modal-close {
-      position: absolute; top: 15px; right: 20px;      font-size: 1.8rem; color: var(--text); background: none;
+      position: absolute; top: 15px; right: 20px;
+      font-size: 1.8rem; color: var(--text); background: none;
       border: none; cursor: pointer; width: 36px; height: 36px;
       border-radius: 50%; display: flex; align-items: center;
       justify-content: center; transition: background 0.2s; z-index: 10;
@@ -179,8 +194,7 @@
 <body>
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
-    (function blockDownloads() {
-      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
+    (function blockDownloads() {      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
       let touchTimer;
@@ -194,7 +208,8 @@
   <!-- 🔐 MAIN TURNSTILE MODAL (GATEKEEPER) -->
   <div id="main-turnstile-modal">
     <div class="main-turnstile-content">
-      <div class="main-turnstile-title">🔐 Verifikasi Akses</div>      <p class="main-turnstile-desc">Buktikan kamu manusia sebelum masuk ke gallery</p>
+      <div class="main-turnstile-title">🔐 Verifikasi Akses</div>
+      <p class="main-turnstile-desc">Buktikan kamu manusia sebelum masuk ke gallery</p>
       <div class="turnstile-box">
         <div class="cf-turnstile"
              data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
@@ -204,7 +219,7 @@
              data-size="normal">
         </div>
       </div>
-      <div id="main-turnstile-error" class="modal-error" style="color:var(--error);font-size:0.9rem;margin-top:10px;"></div>
+      <div id="main-turnstile-error" class="modal-error" style="color:var(--error);font-size:0.9rem;margin-top:10px;min-height:20px;"></div>
       <p class="turnstile-note">⚠️ Wajib verifikasi buat liat konten</p>
     </div>
   </div>
@@ -223,13 +238,12 @@
              data-size="compact">
         </div>
       </div>
-      <div id="turnstile-error" class="modal-error"></div>
+      <div id="turnstile-error" class="modal-error" style="min-height:20px;"></div>
       <p class="turnstile-note">✅ Setelah verifikasi, download akan mulai otomatis</p>
     </div>
   </div>
 
-  <!-- 🖼️ PHOTO POPUP MODAL -->
-  <div id="photo-modal" class="hidden">
+  <!-- 🖼️ PHOTO POPUP MODAL -->  <div id="photo-modal" class="hidden">
     <div class="photo-modal-content">
       <button class="modal-close" id="photo-modal-close" aria-label="Tutup">✕</button>
       <h2 class="photo-modal-title" id="photo-modal-title"></h2>
@@ -243,6 +257,7 @@
       </div>
     </div>
   </div>
+
   <!-- 🎯 APP CONTENT (Hidden Until Verified) -->
   <div id="app" class="hidden">
     <div class="header" id="main-header">
@@ -277,8 +292,7 @@
   <script>
     (function() {
       'use strict';
-      
-      const CONFIG = {
+            const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
@@ -287,12 +301,13 @@
       };
 
       let allPhotos = [], filteredPhotos = [], currentIndex = -1;
-      let isVerified = false; // Status verifikasi utama
+      let isVerified = false;
       let isDirectPhotoView = false;
       let pendingDownloadUrl = null;
+      let mainTurnstileWidgetId = null; // Store widget ID for reset
 
       const DOM = {
-        // Modals        mainTurnstileModal: document.getElementById('main-turnstile-modal'),
+        mainTurnstileModal: document.getElementById('main-turnstile-modal'),
         mainTurnstileError: document.getElementById('main-turnstile-error'),
         
         downloadTurnstileModal: document.getElementById('download-turnstile-modal'),
@@ -308,7 +323,6 @@
         btnAppModal: document.getElementById('btn-app-modal'),
         btnShareModal: document.getElementById('btn-share-modal'),
         
-        // UI
         appContainer: document.getElementById('app'),
         header: document.getElementById('main-header'),
         loading: document.getElementById('loading'),
@@ -327,8 +341,7 @@
       // === UTILS ===
       function showToast(msg, duration = 3500) {
         DOM.toast.innerHTML = msg.replace(/\n/g, '<br>');
-        DOM.toast.classList.add('show');
-        setTimeout(() => DOM.toast.classList.remove('show'), duration);
+        DOM.toast.classList.add('show');        setTimeout(() => DOM.toast.classList.remove('show'), duration);
       }
 
       function showError(msg) {
@@ -341,7 +354,8 @@
       function isVideo(url) {
         if (!url) return false;
         const lower = url.toLowerCase();
-        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');      }
+        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
+      }
 
       function protectMedia(el) {
         if (!el) return;
@@ -355,26 +369,37 @@
         }
       }
 
-      // 🔐 === MAIN TURNSTILE CALLBACKS (GATEKEEPER) ===
+      // 🔐 === MAIN TURNSTILE CALLBACKS (GATEKEEPER) - FIXED ===
       window.onMainVerifySuccess = function(token) {
         console.log('✓ Main Turnstile verified:', token);
         DOM.mainTurnstileError.textContent = '';
         isVerified = true;
         
-        // Hide modal, show app
-        DOM.mainTurnstileModal.classList.add('hidden');
-        DOM.appContainer.classList.remove('hidden');
-        document.body.classList.remove('modal-open');
+        // Reset Turnstile widget dulu
+        if (window.turnstile && mainTurnstileWidgetId) {
+          turnstile.reset(mainTurnstileWidgetId);
+        }
         
-        // Init gallery after verification
-        initGallery();
+        // Hide modal dengan delay biar Turnstile selesai render
+        setTimeout(() => {
+          DOM.mainTurnstileModal.classList.add('hidden');
+          DOM.mainTurnstileModal.style.display = 'none';
+          DOM.appContainer.classList.remove('hidden');
+          document.body.classList.remove('modal-open');
+          
+          // Init gallery setelah modal ilang
+          setTimeout(() => {
+            initGallery();
+          }, 100);        }, 300);
       };
 
       window.onMainVerifyError = function() {
         console.error('✗ Main Turnstile error');
         DOM.mainTurnstileError.textContent = 'Verifikasi gagal. Coba lagi.';
         setTimeout(() => {
-          if (window.turnstile) turnstile.reset();
+          if (window.turnstile && mainTurnstileWidgetId) {
+            turnstile.reset(mainTurnstileWidgetId);
+          }
         }, 3000);
       };
 
@@ -382,6 +407,7 @@
       function showDownloadTurnstileModal(downloadUrl) {
         pendingDownloadUrl = downloadUrl;
         DOM.downloadTurnstileModal.classList.remove('hidden');
+        DOM.downloadTurnstileModal.style.display = 'flex';
         DOM.turnstileError.textContent = '';
         document.body.classList.add('modal-open');
         
@@ -390,7 +416,9 @@
         }
       }
 
-      function hideDownloadTurnstileModal() {        DOM.downloadTurnstileModal.classList.add('hidden');
+      function hideDownloadTurnstileModal() {
+        DOM.downloadTurnstileModal.classList.add('hidden');
+        DOM.downloadTurnstileModal.style.display = 'none';
         document.body.classList.remove('modal-open');
         pendingDownloadUrl = null;
         if (window.turnstile) turnstile.reset();
@@ -411,8 +439,7 @@
 
       window.onDownloadVerifyError = function() {
         console.error('✗ Download Turnstile error');
-        DOM.turnstileError.textContent = 'Verifikasi gagal. Coba lagi.';
-        setTimeout(() => {
+        DOM.turnstileError.textContent = 'Verifikasi gagal. Coba lagi.';        setTimeout(() => {
           if (window.turnstile) turnstile.reset();
         }, 3000);
       };
@@ -420,6 +447,7 @@
       // === PHOTO POPUP MODAL ===
       function showPhotoModal(data) {
         DOM.photoModal.classList.remove('hidden');
+        DOM.photoModal.style.display = 'flex';
         document.body.classList.add('modal-open');
         
         DOM.photoModalTitle.textContent = data.title || 'Photo #' + data.name;
@@ -439,7 +467,8 @@
           protectMedia(DOM.photoModalImg);
         }
         
-        DOM.photoModalDesc.textContent = data.desc || data.description || '';        DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
+        DOM.photoModalDesc.textContent = data.desc || data.description || '';
+        DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
         
         setupAppButtonModal(data);
         setupShareModal(data);
@@ -451,6 +480,7 @@
 
       function closePhotoModal() {
         DOM.photoModal.classList.add('hidden');
+        DOM.photoModal.style.display = 'none';
         document.body.classList.remove('modal-open');
         DOM.photoModalVideo.pause();
         DOM.photoModalVideo.src = '';
@@ -459,7 +489,6 @@
         DOM.photoModal.onclick = null;
         document.removeEventListener('keydown', handleModalKeydown);
       }
-
       function handleModalKeydown(e) {
         if (e.key === 'Escape') closePhotoModal();
       }
@@ -488,7 +517,8 @@
                 <span class="list-badge ${isVid ? 'video' : ''}">${isVid ? '🎬 Video' : '📷 Foto'}</span>
                 ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
                 ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
-              </div>            </div>
+              </div>
+            </div>
           `;
           item.addEventListener('click', () => {
             const photoData = allPhotos.find(p => p.name === photo.name);
@@ -507,8 +537,7 @@
       }
 
       // === DEEP LINK LOGIC (NO TURNSTILE - Smooth for APK users) ===
-      function setupAppButton(data) {
-        const handler = () => openAppWithMultiFallback(data.name);
+      function setupAppButton(data) {        const handler = () => openAppWithMultiFallback(data.name);
         DOM.btnApp.onclick = handler;
         DOM.btnApp.style.display = 'inline-flex';
       }
@@ -537,14 +566,14 @@
           const onBlur = () => { if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); } };
           window.addEventListener('blur', onBlur, { once: true });
           console.log('[TKJ OnE] Opening:', url);
-          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }          setTimeout(() => { if (!resolved) { document.removeEventListener('visibilitychange', onVisibilityChange); window.removeEventListener('blur', onBlur); resolve(visibilityChanged || document.hidden); } }, timeout);
+          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }
+          setTimeout(() => { if (!resolved) { document.removeEventListener('visibilitychange', onVisibilityChange); window.removeEventListener('blur', onBlur); resolve(visibilityChanged || document.hidden); } }, timeout);
         });
       }
 
       async function openAppWithMultiFallback(photoId) {
         console.log('[TKJ OnE] 🚀 Deep link for:', photoId);
         
-        // 🔥 STRATEGY 1: Custom Scheme (NO TURNSTILE)
         const schemeUrl = buildCustomSchemeUrl(photoId);
         console.log('[TKJ OnE] Strategy 1: Custom Scheme ->', schemeUrl);
         const schemeOpened = await tryOpenUrl(schemeUrl, 2000);
@@ -552,21 +581,17 @@
         
         console.log('[TKJ OnE] ❌ Custom scheme failed');
         
-        // 🔥 STRATEGY 2: Intent URLs (NO TURNSTILE)
         for (const pkg of CONFIG.APP_PACKAGES) {
           const intentUrl = buildIntentUrl(photoId, pkg);
           console.log('[TKJ OnE] Trying package:', pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
-          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);
-        }
+          console.log(`[TKJ OnE] ❌ Intent failed: ${pkg}`);        }
         
-        // 🔥 STRATEGY 3: HTTPS fallback (NO TURNSTILE)
         const httpsUrl = `${CONFIG.BASE_URL}/photo/${photoId}`;
         const httpsOpened = await tryOpenUrl(httpsUrl, 1500);
         if (httpsOpened && document.hidden) { console.log('[TKJ OnE] ✅ App opened via HTTPS'); return; }
         
-        // 🔥 STRATEGY 4: GitHub fallback (TURNSTILE HERE!)
         console.log('[TKJ OnE] ❌ ALL FAILED -> Show Turnstile for download');
         showToast('📱 App tidak ditemukan. Verifikasi dulu buat download...');
         setTimeout(() => {
@@ -586,7 +611,8 @@
       function setupShare() {
         DOM.btnShare.onclick = async () => {
           const activeItem = DOM.galleryList.querySelector('.list-item.active');
-          const name = activeItem?.dataset.name || getCurrentPhotoName();          if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
+          const name = activeItem?.dataset.name || getCurrentPhotoName();
+          if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
           showShareDialog(name);
         };
       }
@@ -609,8 +635,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           navigator.share({ title: 'TKJ OnE Gallery', text: shareText })
             .then(() => showToast('🔗 Berhasil dibagikan!'))
             .catch(() => {});
-        } else {
-          navigator.clipboard.writeText(shareText)
+        } else {          navigator.clipboard.writeText(shareText)
             .then(() => showToast('🔗 Link disalin!\n\n' + shareText, 4500))
             .catch(() => showToast('Gagal menyalin link'));
         }
@@ -635,7 +660,8 @@ ${CONFIG.BASE_URL}/photo/${name}`;
 
       function setupRandom() {
         DOM.btnRandom.onclick = () => {
-          if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }          const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
+          if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }
+          const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
           showPhotoModal(filteredPhotos[randomIdx]);
         };
       }
@@ -658,8 +684,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
           const rawData = await res.json();
           allPhotos = Array.isArray(rawData) ? rawData : (rawData.photos || rawData.data || []);
-          if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');
-          
+          if (!Array.isArray(allPhotos)) throw new Error('Struktur JSON nggak dikenali!');          
           allPhotos.sort((a, b) => {
             const na = parseInt(a.name), nb = parseInt(b.name);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
@@ -668,7 +693,6 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           
           filteredPhotos = [...allPhotos];
           
-          // Setup UI
           setupShare(); 
           setupRandom(); 
           setupDownloadButton();
@@ -683,8 +707,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           
           DOM.loading.classList.add('hidden');
           
-          // 🎯 LOGIC UTAMA
-          if (initialPhotoName) {            // 🔗 DIRECT LINK /photo/{id} → SHOW PHOTO MODAL ONLY
+          if (initialPhotoName) {
             isDirectPhotoView = true;
             setHeaderVisibility(false);
             DOM.gallerySection.classList.add('hidden');
@@ -701,7 +724,6 @@ ${CONFIG.BASE_URL}/photo/${name}`;
               }, 1500);
             }
           } else {
-            // 🏠 ROOT URL (/) → SHOW FULL UI
             isDirectPhotoView = false;
             setHeaderVisibility(true);
             DOM.gallerySection.classList.remove('hidden');
@@ -711,11 +733,9 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           console.error('[PhotoApp]', err);
           DOM.loading.classList.add('hidden');
           if (err.message.includes('Failed to fetch')) showError('Nggak bisa connect ke server! Cek koneksi internet lo!');
-          else showError('Error: ' + err.message);
-        }
+          else showError('Error: ' + err.message);        }
       }
 
-      // Handle browser back/forward
       window.addEventListener('popstate', (e) => {
         if (e.state?.photo && !DOM.photoModal.classList.contains('hidden')) {
           const photo = allPhotos.find(p => p.name === e.state.photo);
@@ -723,7 +743,11 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         }
       });
 
-      // Init only after DOM ready (Turnstile will trigger actual content load)
+      // Capture Turnstile widget ID when rendered
+      document.addEventListener('DOMContentLoaded', () => {
+        // Turnstile will auto-render based on data-callback
+      });
+
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {});
       }
