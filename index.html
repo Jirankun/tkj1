@@ -17,7 +17,7 @@
       --bg: #121212; --text: #ffffff; --accent: #00ff88; --error: #ff4444;
       --card-bg: #1e1e1e; --btn-app: #6c5ce7; --btn-app-hover: #5649c3;
       --list-item-bg: #252525; --list-item-hover: #333; --search-bg: #2a2a2a;
-      --modal-overlay: rgba(0,0,0,0.9); --modal-bg: #1a1a2e;
+      --modal-overlay: rgba(0,0,0,0.95); --modal-bg: #1a1a2e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -80,39 +80,43 @@
     #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); color: var(--text); padding: 12px 24px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s ease; z-index: 3000; font-size: 0.95rem; text-align: center; max-width: 90vw; white-space: pre-line; }
     #toast.show { transform: translateX(-50%) translateY(0); }
     
-    /* === PASSWORD MODAL === */
-    #password-modal {
+    /* === MAIN TURNSTILE MODAL (GATEKEEPER) === */
+    #main-turnstile-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--modal-overlay);
       display: flex; align-items: center; justify-content: center;
-      z-index: 2000;
+      z-index: 9999;
+      animation: modalFadeIn 0.3s ease-out;
+      backdrop-filter: blur(5px);
+    }
+    #main-turnstile-modal.hidden { display: none; }
+    
+    .main-turnstile-content {
+      background: var(--modal-bg); border-radius: 20px; padding: 40px 30px;
+      width: 90%; max-width: 450px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
+      animation: modalSlideIn 0.4s ease-out;
+    }    .main-turnstile-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 10px; }
+    .main-turnstile-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
+    .turnstile-box { display: flex; justify-content: center; margin: 20px 0; min-height: 65px; }
+    .turnstile-note { font-size: 0.85rem; opacity: 0.7; margin-top: 15px; }
+    
+    /* === DOWNLOAD TURNSTILE MODAL === */
+    #download-turnstile-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--modal-overlay);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2200;
       animation: modalFadeIn 0.3s ease-out;
     }
-    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal-content {
+    #download-turnstile-modal.hidden { display: none; }
+    
+    .turnstile-modal-content {
       background: var(--modal-bg); border-radius: 20px; padding: 30px;
-      width: 90%; max-width: 400px; text-align: center;
+      width: 90%; max-width: 420px; text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
       animation: modalSlideIn 0.4s ease-out;
     }
-    @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 10px; }    .modal-desc { opacity: 0.8; margin-bottom: 25px; font-size: 0.95rem; }
-    .password-input {
-      width: 100%; padding: 14px 18px; border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 12px; background: var(--search-bg); color: var(--text);
-      font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none;
-    }
-    .password-input:focus { border-color: var(--accent); }
-    .password-input::placeholder { color: rgba(255,255,255,0.4); }
-    .modal-error { color: var(--error); font-size: 0.9rem; margin-bottom: 15px; min-height: 20px; }
-    .modal-btn {
-      width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #00cc6a);
-      color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem;
-      cursor: pointer; transition: transform 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .modal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,255,136,0.4); }
-    .modal-btn:active { transform: translateY(0); }
-    .modal-footer { margin-top: 20px; font-size: 0.8rem; opacity: 0.6; }
     
     /* === PHOTO POPUP MODAL === */
     #photo-modal {
@@ -141,11 +145,11 @@
     }
     
     .modal-close {
-      position: absolute; top: 15px; right: 20px;
-      font-size: 1.8rem; color: var(--text); background: none;
+      position: absolute; top: 15px; right: 20px;      font-size: 1.8rem; color: var(--text); background: none;
       border: none; cursor: pointer; width: 36px; height: 36px;
       border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; transition: background 0.2s; z-index: 10;    }
+      justify-content: center; transition: background 0.2s; z-index: 10;
+    }
     .modal-close:hover { background: rgba(255,255,255,0.1); }
     
     .photo-modal-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; text-shadow: 0 0 10px rgba(0,255,136,0.3); }
@@ -155,24 +159,8 @@
     .photo-modal-meta { opacity: 0.7; font-size: 0.85rem; margin-bottom: 20px; font-style: italic; }
     .photo-modal-footer { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     
-    /* 🔐 DOWNLOAD TURNSTILE MODAL */
-    #download-turnstile-modal {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--modal-overlay);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 2200;
-      animation: modalFadeIn 0.3s ease-out;
-    }
-    #download-turnstile-modal.hidden { display: none; }
-    
-    .turnstile-modal-content {
-      background: var(--modal-bg); border-radius: 20px; padding: 30px;
-      width: 90%; max-width: 420px; text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 2px solid var(--accent);
-      animation: modalSlideIn 0.4s ease-out;
-    }
-    .turnstile-box { display: flex; justify-content: center; margin: 20px 0; min-height: 65px; }
-    .turnstile-note { font-size: 0.85rem; opacity: 0.8; margin-top: 15px; }
+    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     
     @media (max-width: 600px) {
       .header h1 { font-size: 1.3rem; }
@@ -183,7 +171,7 @@
       .list-name { font-size: 0.95rem; }
       .controls { flex-direction: column; }
       #search-input { width: 100%; }
-      .modal-content, .photo-modal-content, .turnstile-modal-content { padding: 20px 15px; }
+      .modal-content, .photo-modal-content, .turnstile-modal-content, .main-turnstile-content { padding: 20px 15px; }
       .photo-modal-media { max-height: 45vh; }
     }
   </style>
@@ -194,7 +182,8 @@
     (function blockDownloads() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
-      );      let touchTimer;
+      );
+      let touchTimer;
       document.addEventListener('touchstart', e => { touchTimer = setTimeout(() => { e.preventDefault(); }, 500); }, { passive: false });
       document.addEventListener('touchmove', () => { clearTimeout(touchTimer); }, { passive: true });
       document.addEventListener('touchend', () => clearTimeout(touchTimer));
@@ -202,15 +191,21 @@
     })();
   </script>
 
-  <!-- 🔐 PASSWORD MODAL -->
-  <div id="password-modal" class="hidden">
-    <div class="modal-content">
-      <div class="modal-title">🔐 Akses Gallery</div>
-      <p class="modal-desc">Masukkan password untuk melihat daftar foto</p>
-      <input type="password" id="password-input" class="password-input" placeholder="Password..." autocomplete="off" maxlength="20">
-      <div id="modal-error" class="modal-error"></div>
-      <button id="modal-submit" class="modal-btn">Masuk</button>
-      <div class="modal-footer">Session tidak disimpan • Refresh = login ulang</div>
+  <!-- 🔐 MAIN TURNSTILE MODAL (GATEKEEPER) -->
+  <div id="main-turnstile-modal">
+    <div class="main-turnstile-content">
+      <div class="main-turnstile-title">🔐 Verifikasi Akses</div>      <p class="main-turnstile-desc">Buktikan kamu manusia sebelum masuk ke gallery</p>
+      <div class="turnstile-box">
+        <div class="cf-turnstile"
+             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
+             data-callback="onMainVerifySuccess"
+             data-error-callback="onMainVerifyError"
+             data-theme="dark"
+             data-size="normal">
+        </div>
+      </div>
+      <div id="main-turnstile-error" class="modal-error" style="color:var(--error);font-size:0.9rem;margin-top:10px;"></div>
+      <p class="turnstile-note">⚠️ Wajib verifikasi buat liat konten</p>
     </div>
   </div>
 
@@ -243,13 +238,13 @@
       <p class="photo-modal-desc" id="photo-modal-desc"></p>
       <p class="photo-modal-meta" id="photo-modal-meta"></p>
       <div class="photo-modal-footer">
-        <button id="btn-app-modal" class="btn btn-app">📱 Buka di TKJ OnE app</button>        <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+        <button id="btn-app-modal" class="btn btn-app">📱 Buka di TKJ OnE app</button>
+        <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
       </div>
     </div>
   </div>
-
-  <div id="app">
-    <!-- 🎯 HEADER -->
+  <!-- 🎯 APP CONTENT (Hidden Until Verified) -->
+  <div id="app" class="hidden">
     <div class="header" id="main-header">
       <h1 class="glitch">📸 TKJ1 Gallery</h1>
       <div class="controls">
@@ -270,7 +265,7 @@
     <div id="loading" class="hidden"><div style="font-size:2rem;margin-bottom:10px;">⏳</div><div>Loading, tunggu bentar bangsat...</div></div>
     <div id="error" class="hidden"></div>
 
-    <!-- GALLERY LIST (Protected) -->
+    <!-- GALLERY LIST -->
     <div id="gallery-section" class="hidden">
       <h2>🗂️ Daftar Foto</h2>
       <div id="gallery-list"></div>
@@ -284,7 +279,6 @@
       'use strict';
       
       const CONFIG = {
-        PASSWORD: 'tkjone',
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
@@ -292,16 +286,14 @@
         BASE_URL: 'https://tkj1.pages.dev'
       };
 
-      let allPhotos = [], filteredPhotos = [], currentIndex = -1;      let isAuthenticated = false;
+      let allPhotos = [], filteredPhotos = [], currentIndex = -1;
+      let isVerified = false; // Status verifikasi utama
       let isDirectPhotoView = false;
-      let pendingDownloadUrl = null; // Simpan URL download sambil nunggu Turnstile
+      let pendingDownloadUrl = null;
 
       const DOM = {
-        // Modals
-        passwordModal: document.getElementById('password-modal'),
-        passwordInput: document.getElementById('password-input'),
-        modalError: document.getElementById('modal-error'),
-        modalSubmit: document.getElementById('modal-submit'),
+        // Modals        mainTurnstileModal: document.getElementById('main-turnstile-modal'),
+        mainTurnstileError: document.getElementById('main-turnstile-error'),
         
         downloadTurnstileModal: document.getElementById('download-turnstile-modal'),
         turnstileError: document.getElementById('turnstile-error'),
@@ -317,6 +309,7 @@
         btnShareModal: document.getElementById('btn-share-modal'),
         
         // UI
+        appContainer: document.getElementById('app'),
         header: document.getElementById('main-header'),
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
@@ -327,7 +320,7 @@
         btnApp: document.getElementById('btn-app'),
         btnShare: document.getElementById('btn-share'),
         btnRandom: document.getElementById('btn-random'),
-        btnDownload: document.getElementById('btn-download'), // 🔐 Tombol download baru
+        btnDownload: document.getElementById('btn-download'),
         toast: document.getElementById('toast')
       };
 
@@ -341,14 +334,14 @@
       function showError(msg) {
         DOM.loading.classList.add('hidden');
         DOM.error.innerHTML = '❌ ' + msg;
-        DOM.error.classList.remove('hidden');        console.error('[PhotoApp Error]', msg);
+        DOM.error.classList.remove('hidden');
+        console.error('[PhotoApp Error]', msg);
       }
 
       function isVideo(url) {
         if (!url) return false;
         const lower = url.toLowerCase();
-        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
-      }
+        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');      }
 
       function protectMedia(el) {
         if (!el) return;
@@ -362,65 +355,51 @@
         }
       }
 
-      // === PASSWORD MODAL ===
-      function showPasswordModal() {
-        DOM.passwordModal.classList.remove('hidden');
-        DOM.passwordInput.value = '';
-        DOM.modalError.textContent = '';
-        DOM.passwordInput.focus();
-        DOM.passwordInput.onkeydown = (e) => { if (e.key === 'Enter') checkPassword(); };
-        DOM.modalSubmit.onclick = checkPassword;
-      }
+      // 🔐 === MAIN TURNSTILE CALLBACKS (GATEKEEPER) ===
+      window.onMainVerifySuccess = function(token) {
+        console.log('✓ Main Turnstile verified:', token);
+        DOM.mainTurnstileError.textContent = '';
+        isVerified = true;
+        
+        // Hide modal, show app
+        DOM.mainTurnstileModal.classList.add('hidden');
+        DOM.appContainer.classList.remove('hidden');
+        document.body.classList.remove('modal-open');
+        
+        // Init gallery after verification
+        initGallery();
+      };
 
-      function hidePasswordModal() {
-        DOM.passwordModal.classList.add('hidden');
-        DOM.passwordInput.onkeydown = null;
-        DOM.modalSubmit.onclick = null;
-      }
+      window.onMainVerifyError = function() {
+        console.error('✗ Main Turnstile error');
+        DOM.mainTurnstileError.textContent = 'Verifikasi gagal. Coba lagi.';
+        setTimeout(() => {
+          if (window.turnstile) turnstile.reset();
+        }, 3000);
+      };
 
-      function checkPassword() {
-        const input = DOM.passwordInput.value.trim();
-        if (input.toLowerCase() === CONFIG.PASSWORD.toLowerCase()) {
-          isAuthenticated = true;
-          hidePasswordModal();
-          DOM.gallerySection.classList.remove('hidden');
-          renderGalleryList(filteredPhotos);
-          DOM.gallerySection.scrollIntoView({ behavior: 'smooth' });
-          showToast('✅ Akses berhasil!');
-        } else {
-          DOM.modalError.textContent = 'Password salah, coba lagi bangsat!';
-          DOM.passwordInput.value = '';
-          DOM.passwordInput.focus();          DOM.passwordModal.querySelector('.modal-content').style.animation = 'none';
-          setTimeout(() => { DOM.passwordModal.querySelector('.modal-content').style.animation = 'modalSlideIn 0.4s ease-out'; }, 10);
-        }
-      }
-
-      // 🔐 === DOWNLOAD TURNSTILE MODAL ===
+      // 🔐 === DOWNLOAD TURNSTILE CALLBACKS ===
       function showDownloadTurnstileModal(downloadUrl) {
         pendingDownloadUrl = downloadUrl;
         DOM.downloadTurnstileModal.classList.remove('hidden');
         DOM.turnstileError.textContent = '';
         document.body.classList.add('modal-open');
         
-        // Reset turnstile kalau udah ada instance sebelumnya
         if (window.turnstile) {
           setTimeout(() => turnstile.reset(), 100);
         }
       }
 
-      function hideDownloadTurnstileModal() {
-        DOM.downloadTurnstileModal.classList.add('hidden');
+      function hideDownloadTurnstileModal() {        DOM.downloadTurnstileModal.classList.add('hidden');
         document.body.classList.remove('modal-open');
         pendingDownloadUrl = null;
         if (window.turnstile) turnstile.reset();
       }
 
-      // Callback Turnstile sukses untuk download
       window.onDownloadVerifySuccess = function(token) {
         console.log('✓ Download Turnstile token:', token);
         DOM.turnstileError.textContent = '';
         
-        // Redirect ke URL download setelah verifikasi
         if (pendingDownloadUrl) {
           showToast('✅ Verifikasi berhasil! Download dimulai...');
           setTimeout(() => {
@@ -430,7 +409,6 @@
         }
       };
 
-      // Callback Turnstile error untuk download
       window.onDownloadVerifyError = function() {
         console.error('✗ Download Turnstile error');
         DOM.turnstileError.textContent = 'Verifikasi gagal. Coba lagi.';
@@ -439,7 +417,8 @@
         }, 3000);
       };
 
-      // === PHOTO POPUP MODAL ===      function showPhotoModal(data) {
+      // === PHOTO POPUP MODAL ===
+      function showPhotoModal(data) {
         DOM.photoModal.classList.remove('hidden');
         document.body.classList.add('modal-open');
         
@@ -460,8 +439,7 @@
           protectMedia(DOM.photoModalImg);
         }
         
-        DOM.photoModalDesc.textContent = data.desc || data.description || '';
-        DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
+        DOM.photoModalDesc.textContent = data.desc || data.description || '';        DOM.photoModalMeta.textContent = `Gender: ${data.gender || '-'} | Date: ${data.date || '-'}`;
         
         setupAppButtonModal(data);
         setupShareModal(data);
@@ -480,20 +458,10 @@
         DOM.photoModalClose.onclick = null;
         DOM.photoModal.onclick = null;
         document.removeEventListener('keydown', handleModalKeydown);
-        
-        if (isDirectPhotoView && !isAuthenticated) {
-          setTimeout(() => { showPasswordModal(); }, 300);
-        }
       }
 
       function handleModalKeydown(e) {
         if (e.key === 'Escape') closePhotoModal();
-      }
-      function protectPhotoModalMedia() {
-        protectMedia(DOM.photoModalImg);
-        ['contextmenu','dragstart','selectstart'].forEach(evt => 
-          DOM.photoModalVideo.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
-        );
       }
 
       // === GALLERY LIST ===
@@ -520,8 +488,7 @@
                 <span class="list-badge ${isVid ? 'video' : ''}">${isVid ? '🎬 Video' : '📷 Foto'}</span>
                 ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
                 ${photo.date ? `<span>📅 ${photo.date}</span>` : ''}
-              </div>
-            </div>
+              </div>            </div>
           `;
           item.addEventListener('click', () => {
             const photoData = allPhotos.find(p => p.name === photo.name);
@@ -538,6 +505,7 @@
         });
         DOM.galleryList.appendChild(fragment);
       }
+
       // === DEEP LINK LOGIC (NO TURNSTILE - Smooth for APK users) ===
       function setupAppButton(data) {
         const handler = () => openAppWithMultiFallback(data.name);
@@ -569,8 +537,7 @@
           const onBlur = () => { if (!resolved) { resolved = true; window.removeEventListener('blur', onBlur); resolve(true); } };
           window.addEventListener('blur', onBlur, { once: true });
           console.log('[TKJ OnE] Opening:', url);
-          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }
-          setTimeout(() => { if (!resolved) { document.removeEventListener('visibilitychange', onVisibilityChange); window.removeEventListener('blur', onBlur); resolve(visibilityChanged || document.hidden); } }, timeout);
+          try { window.location.href = url; } catch (e) { console.error('[TKJ OnE] Error:', e); }          setTimeout(() => { if (!resolved) { document.removeEventListener('visibilitychange', onVisibilityChange); window.removeEventListener('blur', onBlur); resolve(visibilityChanged || document.hidden); } }, timeout);
         });
       }
 
@@ -586,7 +553,8 @@
         console.log('[TKJ OnE] ❌ Custom scheme failed');
         
         // 🔥 STRATEGY 2: Intent URLs (NO TURNSTILE)
-        for (const pkg of CONFIG.APP_PACKAGES) {          const intentUrl = buildIntentUrl(photoId, pkg);
+        for (const pkg of CONFIG.APP_PACKAGES) {
+          const intentUrl = buildIntentUrl(photoId, pkg);
           console.log('[TKJ OnE] Trying package:', pkg);
           const intentOpened = await tryOpenUrl(intentUrl, 2000);
           if (intentOpened) { console.log(`[TKJ OnE] ✅ App opened via intent (${pkg})`); return; }
@@ -610,7 +578,6 @@
       function setupDownloadButton() {
         DOM.btnDownload.onclick = (e) => {
           e.preventDefault();
-          // Langsung tampilkan Turnstile modal buat download
           showDownloadTurnstileModal(CONFIG.FALLBACK_URL);
         };
       }
@@ -619,8 +586,7 @@
       function setupShare() {
         DOM.btnShare.onclick = async () => {
           const activeItem = DOM.galleryList.querySelector('.list-item.active');
-          const name = activeItem?.dataset.name || getCurrentPhotoName();
-          if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
+          const name = activeItem?.dataset.name || getCurrentPhotoName();          if (!name) { showToast('Pilih foto dulu, bangsat!'); return; }
           showShareDialog(name);
         };
       }
@@ -635,6 +601,7 @@
 
 Buka di aplikasi:
 tkjone://photo/${name}
+
 Atau kunjungi:
 ${CONFIG.BASE_URL}/photo/${name}`;
         
@@ -663,14 +630,12 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           const matchType = activeFilter === 'all' || (activeFilter === 'video' && isVideo(p.url)) || (activeFilter === 'photo' && !isVideo(p.url));
           return matchSearch && matchType;
         });
-        if (isAuthenticated) renderGalleryList(filteredPhotos);
+        if (isVerified) renderGalleryList(filteredPhotos);
       }
 
       function setupRandom() {
         DOM.btnRandom.onclick = () => {
-          if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }
-          if (!isAuthenticated) { showToast('Login dulu buat liat gallery, bangsat!'); showPasswordModal(); return; }
-          const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
+          if (filteredPhotos.length === 0) { showToast('Nggak ada foto, bangsat!'); return; }          const randomIdx = Math.floor(Math.random() * filteredPhotos.length);
           showPhotoModal(filteredPhotos[randomIdx]);
         };
       }
@@ -680,12 +645,15 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         if (DOM.header) DOM.header.classList.toggle('hidden', !show);
       }
 
-      // === INIT ===
-      async function init() {
+      // === INIT GALLERY (Called AFTER Turnstile Success) ===
+      async function initGallery() {
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const initialPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
+
         try {
+          DOM.loading.classList.remove('hidden');
+          
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load JSON (Status: ' + res.status + ')');
           const rawData = await res.json();
@@ -703,7 +671,7 @@ ${CONFIG.BASE_URL}/photo/${name}`;
           // Setup UI
           setupShare(); 
           setupRandom(); 
-          setupDownloadButton(); // 🔐 Setup tombol download
+          setupDownloadButton();
           
           DOM.searchInput.addEventListener('input', applyFilters);
           DOM.filterBtns.forEach(btn => {
@@ -713,32 +681,31 @@ ${CONFIG.BASE_URL}/photo/${name}`;
             };
           });          
           
+          DOM.loading.classList.add('hidden');
+          
           // 🎯 LOGIC UTAMA
-          if (initialPhotoName) {
-            // 🔗 DIRECT LINK /photo/{id} → HIDE ALL, SHOW PHOTO MODAL ONLY
+          if (initialPhotoName) {            // 🔗 DIRECT LINK /photo/{id} → SHOW PHOTO MODAL ONLY
             isDirectPhotoView = true;
             setHeaderVisibility(false);
             DOM.gallerySection.classList.add('hidden');
-            DOM.loading.classList.remove('hidden');
             
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(initialPhotoName).toLowerCase());
             if (photo) {
-              DOM.loading.classList.add('hidden');
               showPhotoModal(photo);
             } else {
-              DOM.loading.classList.add('hidden');
               showError(`Foto "${initialPhotoName}" nggak ditemukan!`);
               setTimeout(() => { 
                 setHeaderVisibility(true);
-                showPasswordModal();
+                DOM.gallerySection.classList.remove('hidden');
+                renderGalleryList(filteredPhotos);
               }, 1500);
             }
-          } else {            // 🏠 ROOT URL (/) → PASSWORD MODAL + FULL UI
+          } else {
+            // 🏠 ROOT URL (/) → SHOW FULL UI
             isDirectPhotoView = false;
             setHeaderVisibility(true);
-            DOM.loading.classList.add('hidden');
-            DOM.gallerySection.classList.add('hidden');
-            showPasswordModal();
+            DOM.gallerySection.classList.remove('hidden');
+            renderGalleryList(filteredPhotos);
           }
         } catch (err) {
           console.error('[PhotoApp]', err);
@@ -756,10 +723,9 @@ ${CONFIG.BASE_URL}/photo/${name}`;
         }
       });
 
+      // Init only after DOM ready (Turnstile will trigger actual content load)
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
+        document.addEventListener('DOMContentLoaded', () => {});
       }
     })();
   </script>
