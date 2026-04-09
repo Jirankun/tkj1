@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0f0f1a"/>
+  <meta name="theme-color" content="#0a0a0f"/>
   <meta name="description" content="TKJ1 Gallery - Koleksi foto dan video TKJ OnE"/>
   <title>TKJ1 Gallery</title>
   
@@ -29,16 +29,12 @@
       --accent-hover: #00b894;
       --border: #2a2a3a;
       --error: #ff4757;
+      --warning: #ffa502;
       --success: #2ed573;
+      --info: #70a1ff;
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
     
     body {
@@ -47,517 +43,236 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
-      overflow-x: hidden;    }
-
+      overflow-x: hidden;
+    }
     body.modal-open { overflow: hidden; }
 
-    /* === UTILITIES === */
-    .hidden { 
-      display: none !important; 
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    .hidden { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
     /* === HEADER === */
     .header {
       background: var(--card);
       border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 16px 0;
+      position: sticky; top: 0; z-index: 100;
       backdrop-filter: blur(10px);
     }
-
     .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
     }
-
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.4rem; font-weight: 700;
       background: linear-gradient(135deg, var(--accent), #00a8ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       white-space: nowrap;
     }
-
     .search-box {
-      flex: 1;
-      min-width: 200px;
-      max-width: 400px;      position: relative;
+      flex: 1; min-width: 200px; max-width: 400px; position: relative;
     }
-
     .search-box input {
-      width: 100%;
-      padding: 12px 20px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.3s;
+      width: 100%; padding: 10px 18px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-size: 0.9rem; outline: none; transition: all 0.2s;
     }
-
     .search-box input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
     }
-
     .search-box input::placeholder { color: var(--text-muted); }
-
-    .filter-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .filter-btn {
-      padding: 10px 18px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      padding: 8px 16px; background: transparent;
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text-muted); font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
     }
-
     .filter-btn:hover, .filter-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
+      background: var(--accent); color: var(--bg); border-color: var(--accent);
     }
 
-    /* === MAIN CONTENT === */
-    .main {
-      padding: 30px 0;      min-height: calc(100vh - 200px);
-    }
-
-    /* === GALLERY GRID === */
+    /* === MAIN === */
+    .main { padding: 24px 0; min-height: calc(100vh - 180px); }
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;    }
     .gallery-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden; cursor: pointer;
+      transition: all 0.2s; position: relative;
     }
-
     .gallery-item:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
+      transform: translateY(-3px); border-color: var(--accent);
+      box-shadow: 0 8px 30px rgba(0, 212, 170, 0.12);
     }
-
     .gallery-thumb {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      background: var(--bg);
-      pointer-events: none;
-      user-select: none;
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      background: var(--bg); pointer-events: none; user-select: none;
     }
-
-    .gallery-info {
-      padding: 16px;
-    }
-
+    .gallery-info { padding: 14px; }
     .gallery-title {
-      font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: 600; font-size: 0.95rem; margin-bottom: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     .gallery-meta {
-      display: flex;      gap: 12px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
+      display: flex; gap: 10px; font-size: 0.75rem; color: var(--text-muted);
     }
-
     .badge {
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
+      padding: 2px 8px; border-radius: 5px; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase;
     }
+    .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
+    .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
 
-    .badge-photo {
-      background: rgba(0, 212, 170, 0.15);
-      color: var(--accent);
-    }
-
-    .badge-video {
-      background: rgba(0, 168, 255, 0.15);
-      color: #00a8ff;
-    }
-
-    /* === DIRECT PHOTO VIEW (FULL PAGE) === */
+    /* === PHOTO VIEW (FULL PAGE) === */
     .photo-view {
       min-height: calc(100vh - 80px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 16px;
     }
-
     .photo-view-container {
-      width: 100%;
-      max-width: 1000px;
-      background: var(--card);
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid var(--border);
+      width: 100%; max-width: 900px;
+      background: var(--card); border-radius: 18px;
+      overflow: hidden; border: 1px solid var(--border);
     }
-
     .photo-view-media {
-      width: 100%;
-      max-height: 70vh;
-      object-fit: contain;
-      background: var(--bg);
-      display: block;
-      pointer-events: none;
-      user-select: none;
+      width: 100%; max-height: 65vh; object-fit: contain;
+      background: var(--bg); display: block;
+      pointer-events: none; user-select: none;
     }
-    .photo-view-info {
-      padding: 24px;
-    }
-
-    .photo-view-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .photo-view-desc {
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.7;
-    }
-
-    .photo-view-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
+    .photo-view-info { padding: 20px; }
+    .photo-view-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+    .photo-view-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    .photo-view-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     /* === BUTTONS === */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      text-decoration: none;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; font-size: 0.85rem; border: none;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+      text-decoration: none; white-space: nowrap;
     }
-
-    .btn:hover { transform: translateY(-2px); }
+    .btn:hover { transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 16px rgba(0, 212, 170, 0.25); }
+    .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-warning { background: var(--warning); color: #000; }
+    .btn-warning:hover { filter: brightness(0.95); }
+    .btn-error { background: var(--error); color: #fff; }
+    .btn-error:hover { filter: brightness(0.95); }
 
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);      box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3);
-    }
-
-    .btn-secondary {
-      background: var(--card-hover);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--border);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* === MODAL (POPUP) === */
+    /* === MODALS === */
     .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-      backdrop-filter: blur(10px);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px; backdrop-filter: blur(8px);
     }
-
-    .modal.hidden { 
-      display: none !important; 
-    }
-
+    .modal.hidden { display: none !important; }
     .modal-content {
-      background: var(--card);
-      border-radius: 20px;
-      max-width: 800px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      position: relative;    }
-
+      background: var(--card); border-radius: 18px;
+      max-width: 520px; width: 100%; max-height: 90vh;
+      overflow-y: auto; border: 1px solid var(--border);
+      position: relative; animation: modalIn 0.25s ease-out;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    
     .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      z-index: 10;
+      position: absolute; top: 14px; right: 14px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; z-index: 10;
     }
-
-    .modal-close:hover {
-      background: var(--error);
-      border-color: var(--error);
-      transform: rotate(90deg);
-    }
-
+    .modal-close:hover { background: var(--error); border-color: var(--error); transform: rotate(90deg); }
+    
     .modal-media {
-      width: 100%;
-      max-height: 60vh;
-      object-fit: contain;
-      background: var(--bg);
-      display: block;
-      pointer-events: none;
+      width: 100%; max-height: 55vh; object-fit: contain;
+      background: var(--bg); display: block; pointer-events: none;
+    }    .modal-body { padding: 22px; }
+    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+    .modal-desc { color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    
+    .modal-note {
+      font-size: 0.8rem; color: var(--text-muted);
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .path-list {
+      background: var(--bg); padding: 12px; border-radius: 8px;
+      font-family: monospace; font-size: 0.8rem;
+      margin: 12px 0; color: var(--accent);
     }
 
-    .modal-body {
-      padding: 24px;
-    }
-
-    .modal-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .modal-desc {
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* === TURNSTILE MODAL === */
+    /* === TURNSTILE === */
     .turnstile-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 20px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; padding: 20px;
     }
-
     .turnstile-box {
-      background: var(--card);
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
-      border: 1px solid var(--border);
+      background: var(--card); padding: 32px 24px;
+      border-radius: 18px; text-align: center;
+      max-width: 420px; width: 100%; border: 1px solid var(--border);
     }
-
-    .turnstile-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .turnstile-desc {
-      color: var(--text-muted);
-      margin-bottom: 30px;
-    }
-
+    .turnstile-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+    .turnstile-desc { color: var(--text-muted); margin-bottom: 24px; }
     .turnstile-widget {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      min-height: 65px;
+      display: flex; justify-content: center; margin: 16px 0; min-height: 65px;
     }
 
-    /* === LOADING & ERROR === */
-    .loading, .error {
-      text-align: center;      padding: 60px 20px;
-    }
-
-    .loading-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .error {
-      color: var(--error);
-    }
-
-    .error-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    /* === EMPTY STATE === */
+    /* === LOADING / ERROR === */
+    .loading, .error { text-align: center; padding: 50px 20px; }
+    .loading-icon { font-size: 2.5rem; margin-bottom: 12px; animation: pulse 1.4s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .error { color: var(--error); }
+    .error-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      grid-column: 1 / -1;
+      text-align: center; padding: 50px 20px;
+      color: var(--text-muted); grid-column: 1 / -1;
     }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
+    .empty-icon { font-size: 3.5rem; margin-bottom: 12px; opacity: 0.4; }
 
     /* === TOAST === */
     .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
+      position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--card);
-      color: var(--text);
-      padding: 14px 28px;
-      border-radius: 12px;
+      background: var(--card); color: var(--text);      padding: 12px 24px; border-radius: 10px;
       border: 1px solid var(--border);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      transition: transform 0.3s;      z-index: 9999;
-      font-weight: 500;
-      max-width: 90vw;
-      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: transform 0.25s; z-index: 9999;
+      font-weight: 500; max-width: 90vw; text-align: center;
     }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
     /* === RESPONSIVE === */
     @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-box {
-        max-width: none;
-        order: 2;
-      }
-
-      .filter-group {
-        order: 1;
-        justify-content: center;
-      }
-
-      .gallery-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .photo-view-actions,
-      .modal-actions {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .turnstile-box {
-        padding: 30px 20px;
-      }
+      .header-content { flex-direction: column; align-items: stretch; }
+      .search-box { max-width: none; order: 2; }
+      .filter-group { order: 1; justify-content: center; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .photo-view-actions, .modal-actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .turnstile-box { padding: 24px 18px; }
     }
 
-    /* === SCROLLBAR === */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--accent);
-    }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
 </head>
 <body>
 
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
-    (function blockDownloads() {
+    (function() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
@@ -574,28 +289,91 @@
              data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onVerifySuccess"
              data-error-callback="onVerifyError"
-             data-theme="dark"
-             data-size="normal">
+             data-theme="dark" data-size="normal">
         </div>
       </div>
-      <div id="turnstile-error" style="color:var(--error);font-size:0.9rem;margin-top:10px;min-height:20px;"></div>
-    </div>
+      <div id="turnstile-error" style="color:var(--error);font-size:0.85rem;margin-top:8px;min-height:18px;"></div>    </div>
   </div>
 
-  <!-- ️ PHOTO POPUP MODAL (untuk browsing dari homepage) -->
+  <!-- 🖼️ PHOTO POPUP MODAL (Browsing from home) -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
-      <img class="modal-media" id="modal-img" src="" alt="Photo" />      <video class="modal-media" id="modal-video" src="" controls playsinline></video>
+      <img class="modal-media" id="modal-img" src="" alt="Photo" />
+      <video class="modal-media" id="modal-video" src="" controls playsinline></video>
       <div class="modal-body">
         <h2 class="modal-title" id="modal-title"></h2>
         <p class="modal-desc" id="modal-desc"></p>
-        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px;" id="modal-meta"></p>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;" id="modal-meta"></p>
         <div class="modal-actions">
           <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
           <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
-          <button id="btn-back-gallery" class="btn btn-outline">← Kembali ke Gallery</button>
+          <button id="btn-back-gallery" class="btn btn-outline">← Gallery</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚠️ APK DETECTION POPUPS -->
+  
+  <!-- Debug Version Warning -->
+  <div id="modal-debug" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" data-close="modal-debug">×</button>
+      <div class="modal-body">
+        <div style="font-size:2.5rem;margin-bottom:12px;">⚠️</div>
+        <h2 class="modal-title">Terdeteksi Versi Debug</h2>
+        <p class="modal-desc">
+          Bre, kami deteksi lu pake APK Debug (<code style="background:var(--bg);padding:2px 6px;border-radius:4px;">com.tkjone.app.debug</code>). 
+          Untuk keamanan & kestabilan, <strong>mohon download versi Stabil</strong> ya.
+        </p>
+        <div class="modal-actions">
+          <button id="btn-download-stable" class="btn btn-primary">⬇️ Download Stabil</button>
+          <button id="btn-continue-debug" class="btn btn-outline">Lanjut Debug</button>
+        </div>
+        <p class="modal-note">Versi Debug cuma buat testing, bisa ada bug atau crash.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Beta Version Thanks -->
+  <div id="modal-beta" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" data-close="modal-beta">×</button>
+      <div class="modal-body">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🎉</div>        <h2 class="modal-title">Makasih udah pake Beta!</h2>
+        <p class="modal-desc">
+          Terima kasih sudah menggunakan versi Beta (<code style="background:var(--bg);padding:2px 6px;border-radius:4px;">com.tkjone.app.beta</code>). 
+          Kami sangat menunggu penilaian & feedback lu buat fitur terbaru!
+        </p>
+        <div class="modal-actions">
+          <button id="btn-continue-beta" class="btn btn-primary">✅ Lanjut Buka</button>
+          <button id="btn-cancel-beta" class="btn btn-outline">Batal</button>
+        </div>
+        <p class="modal-note">Feedback lu sangat berharga buat pengembangan TKJ OnE 🙏</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-APK Warning -->
+  <div id="modal-multi" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" data-close="modal-multi">×</button>
+      <div class="modal-body">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🚫</div>
+        <h2 class="modal-title">Multi-APK Terdeteksi</h2>
+        <p class="modal-desc">
+          Kami deteksi beberapa versi APK terinstall di perangkat lu:
+        </p>
+        <div id="multi-paths-list" class="path-list"></div>
+        <p class="modal-desc" style="margin-top:8px;">
+          <strong>Kami tidak menyarankan</strong> install banyak versi sekaligus. 
+          Mohon uninstall sisanya, tinggalin 1 aja: <strong>BETA</strong> atau <strong>STABIL</strong>.
+        </p>
+        <div class="modal-actions">
+          <button id="btn-multi-ok" class="btn btn-primary">👌 Mengerti</button>
+        </div>
+        <p class="modal-note">Konflik data bisa terjadi kalo multi-APK aktif bersamaan.</p>
       </div>
     </div>
   </div>
@@ -605,29 +383,23 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">📸 TKJ1 Gallery</div>
-        
         <div class="search-box">
           <input type="text" id="search-input" placeholder="🔍 Cari foto..." autocomplete="off">
         </div>
-        
         <div class="filter-group">
           <button class="filter-btn active" data-filter="all">Semua</button>
           <button class="filter-btn" data-filter="photo">Foto</button>
           <button class="filter-btn" data-filter="video">Video</button>
-        </div>
-      </div>
+        </div>      </div>
     </div>
   </header>
 
   <main class="main">
     <div class="container">
-      <!-- Loading State -->
       <div id="loading" class="loading">
         <div class="loading-icon">⏳</div>
         <div>Loading bre, sabar dikit...</div>
       </div>
-
-      <!-- Error State -->
       <div id="error" class="error hidden">
         <div class="error-icon">❌</div>
         <div id="error-msg"></div>
@@ -635,16 +407,17 @@
 
       <!-- Direct Photo View (Full Page) -->
       <div id="photo-view" class="photo-view hidden">
-        <div class="photo-view-container">          <img class="photo-view-media" id="view-img" src="" alt="Photo" />
+        <div class="photo-view-container">
+          <img class="photo-view-media" id="view-img" src="" alt="Photo" />
           <video class="photo-view-media" id="view-video" src="" controls playsinline></video>
           <div class="photo-view-info">
             <h1 class="photo-view-title" id="view-title"></h1>
             <p class="photo-view-desc" id="view-desc"></p>
-            <p style="color:var(--text-muted);margin-bottom:20px;" id="view-meta"></p>
+            <p style="color:var(--text-muted);margin-bottom:16px;" id="view-meta"></p>
             <div class="photo-view-actions">
               <button id="btn-app-view" class="btn btn-primary">📱 Buka & Download di App</button>
               <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
-              <button id="btn-back-home" class="btn btn-outline">← Kembali ke Home</button>
+              <button id="btn-back-home" class="btn btn-outline">← Home</button>
             </div>
           </div>
         </div>
@@ -666,9 +439,12 @@
   <script>
     (function() {
       'use strict';
-      
-      const CONFIG = {
-        APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
+            const CONFIG = {
+        APPS: {
+          STABLE: { id: 'stable', pkg: 'com.tkjone.app', name: 'Versi Stabil', direct: true },
+          DEBUG:  { id: 'debug',  pkg: 'com.tkjone.app.debug',  name: 'Versi Debug',  direct: false },
+          BETA:   { id: 'beta',   pkg: 'com.tkjone.app.beta',   name: 'Versi Beta',   direct: false }
+        },
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
@@ -678,13 +454,14 @@
       let allPhotos = [], filteredPhotos = [];
       let isVerified = false;
       let currentPhoto = null;
+      let detectedApps = [];
 
-      // DOM Elements
       const els = {
         turnstileModal: document.getElementById('turnstile-modal'),
         turnstileError: document.getElementById('turnstile-error'),
         
-        photoModal: document.getElementById('photo-modal'),        modalClose: document.getElementById('modal-close'),
+        photoModal: document.getElementById('photo-modal'),
+        modalClose: document.getElementById('modal-close'),
         modalImg: document.getElementById('modal-img'),
         modalVideo: document.getElementById('modal-video'),
         modalTitle: document.getElementById('modal-title'),
@@ -694,13 +471,24 @@
         btnShareModal: document.getElementById('btn-share-modal'),
         btnBackGallery: document.getElementById('btn-back-gallery'),
         
+        modalDebug: document.getElementById('modal-debug'),
+        btnDownloadStable: document.getElementById('btn-download-stable'),
+        btnContinueDebug: document.getElementById('btn-continue-debug'),
+        
+        modalBeta: document.getElementById('modal-beta'),
+        btnContinueBeta: document.getElementById('btn-continue-beta'),
+        btnCancelBeta: document.getElementById('btn-cancel-beta'),
+        
+        modalMulti: document.getElementById('modal-multi'),
+        multiPathsList: document.getElementById('multi-paths-list'),
+        btnMultiOk: document.getElementById('btn-multi-ok'),
+        
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
         errorMsg: document.getElementById('error-msg'),
         
         photoView: document.getElementById('photo-view'),
-        viewImg: document.getElementById('view-img'),
-        viewVideo: document.getElementById('view-video'),
+        viewImg: document.getElementById('view-img'),        viewVideo: document.getElementById('view-video'),
         viewTitle: document.getElementById('view-title'),
         viewDesc: document.getElementById('view-desc'),
         viewMeta: document.getElementById('view-meta'),
@@ -733,39 +521,192 @@
       function protectMedia(el) {
         if (!el) return;
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
-          el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })        );
+          el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
+        );
         if (el.tagName === 'IMG') {
           el.style.pointerEvents = 'none';
           el.style.userSelect = 'none';
         }
       }
 
-      // === TURNSTILE ===
-      window.onVerifySuccess = function(token) {
-        console.log('✓ Verified:', token);
-        els.turnstileError.textContent = '';
-        isVerified = true;
-        
-        setTimeout(() => {
-          els.turnstileModal.classList.add('hidden');
+      function closeModalById(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+          modal.classList.add('hidden');
           document.body.classList.remove('modal-open');
-          initGallery();
-        }, 400);
-      };
+        }
+      }
 
-      window.onVerifyError = function() {
-        console.error('✗ Verify error');
-        els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';
-        setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
-      };
+      // === APK DETECTION LOGIC ===      async function detectInstalledApps() {
+        const apps = Object.values(CONFIG.APPS);
+        const detected = [];
+        
+        for (const app of apps) {
+          const isOpened = await pingAppPackage(app.pkg, 1200);
+          if (isOpened) {
+            detected.push(app);
+          }
+        }
+        
+        return detected;
+      }
 
-      // === SHOW PHOTO (Popup vs Full Page) ===
+      function pingAppPackage(packageName, timeout = 1200) {
+        return new Promise((resolve) => {
+          let resolved = false;
+          
+          const cleanup = () => {
+            document.removeEventListener('visibilitychange', onVisibilityChange);
+            window.removeEventListener('blur', onBlur);
+          };
+          
+          const onVisibilityChange = () => {
+            if (document.hidden && !resolved) {
+              resolved = true;
+              cleanup();
+              resolve(true);
+            }
+          };
+          
+          const onBlur = () => {
+            if (!resolved) {
+              resolved = true;
+              cleanup();
+              resolve(true);
+            }
+          };
+          
+          document.addEventListener('visibilitychange', onVisibilityChange);
+          window.addEventListener('blur', onBlur);
+          
+          // Try intent URL (Android)
+          const intentUrl = `intent://#Intent;package=${packageName};end`;
+          try {
+            window.location.href = intentUrl;
+          } catch (e) {}
+          
+          // Also try custom scheme as fallback ping
+          setTimeout(() => {            if (!resolved) {
+              try {
+                window.location.href = `${CONFIG.APP_SCHEME}://ping/${packageName}`;
+              } catch (e) {}
+            }
+          }, 400);
+          
+          setTimeout(() => {
+            if (!resolved) {
+              cleanup();
+              resolve(false);
+            }
+          }, timeout);
+        });
+      }
+
+      function buildIntentUrl(packageName, photoId) {
+        const host = CONFIG.BASE_URL;
+        const path = `/photo/${photoId}`;
+        const scheme = CONFIG.APP_SCHEME;
+        const fallback = encodeURIComponent(CONFIG.FALLBACK_URL);
+        return `intent://${host}${path}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${fallback};end`;
+      }
+
+      function openAppDirect(packageName, photoId) {
+        const intentUrl = buildIntentUrl(packageName, photoId);
+        try {
+          window.location.href = intentUrl;
+        } catch (e) {
+          window.location.href = CONFIG.FALLBACK_URL;
+        }
+      }
+
+      // === APK DETECTION HANDLER ===
+      async function handleAppDetection(photoId) {
+        detectedApps = await detectInstalledApps();
+        
+        if (detectedApps.length === 0) {
+          // No app detected → fallback to download
+          showToast('📱 App gak ditemukan. Download dulu bre...');
+          setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 1000);
+          return;
+        }
+        
+        // Check for multi-APK first (priority)
+        if (detectedApps.length >= 2) {
+          showMultiApkModal(detectedApps);
+          return;
+        }
+                // Single app detected
+        const app = detectedApps[0];
+        
+        if (app.id === 'stable' && CONFIG.APPS.STABLE.direct) {
+          // Stable → open directly
+          openAppDirect(app.pkg, photoId);
+          return;
+        }
+        
+        if (app.id === 'debug') {
+          showDebugModal(photoId);
+          return;
+        }
+        
+        if (app.id === 'beta') {
+          showBetaModal(photoId);
+          return;
+        }
+        
+        // Fallback
+        openAppDirect(app.pkg, photoId);
+      }
+
+      // === MODAL SHOW FUNCTIONS ===
+      function showDebugModal(photoId) {
+        els.modalDebug.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        els.btnDownloadStable.onclick = () => {
+          closeModalById('modal-debug');
+          window.location.href = CONFIG.FALLBACK_URL;
+        };
+        
+        els.btnContinueDebug.onclick = () => {
+          closeModalById('modal-debug');
+          openAppDirect(CONFIG.APPS.DEBUG.pkg, photoId);
+        };
+      }
+
+      function showBetaModal(photoId) {
+        els.modalBeta.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        els.btnContinueBeta.onclick = () => {
+          closeModalById('modal-beta');
+          openAppDirect(CONFIG.APPS.BETA.pkg, photoId);
+        };
+        
+        els.btnCancelBeta.onclick = () => {
+          closeModalById('modal-beta');        };
+      }
+
+      function showMultiApkModal(detectedList) {
+        // Build path list display
+        const paths = detectedList.map(a => `• ${a.pkg} (${a.name})`).join('<br>');
+        els.multiPathsList.innerHTML = paths;
+        
+        els.modalMulti.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        els.btnMultiOk.onclick = () => {
+          closeModalById('modal-multi');
+        };
+      }
+
+      // === PHOTO DISPLAY LOGIC ===
       function showPhoto(photo, usePopup = true) {
         currentPhoto = photo;
         const isVid = isVideo(photo.url);
         
         if (usePopup) {
-          // Show as popup
+          // Popup modal for browsing
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = isVid ? 'none' : 'block';
           els.modalVideo.style.display = isVid ? 'block' : 'none';
@@ -782,18 +723,17 @@
           
           els.modalDesc.textContent = photo.desc || photo.description || 'No description';
           els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-                    els.photoModal.classList.remove('hidden');
+          
+          els.photoModal.classList.remove('hidden');
           document.body.classList.add('modal-open');
           
-          // Setup buttons
-          els.btnAppModal.onclick = () => openApp(photo.name);
+          els.btnAppModal.onclick = () => handleAppDetection(photo.name);
           els.btnShareModal.onclick = () => sharePhoto(photo);
           els.btnBackGallery.onclick = closeModal;
           els.modalClose.onclick = closeModal;
           els.photoModal.onclick = (e) => { if (e.target === els.photoModal) closeModal(); };
           
-        } else {
-          // Show as full page (direct link)
+        } else {          // Full page view for direct link
           showFullPhotoView(photo);
         }
       }
@@ -822,8 +762,7 @@
         els.photoView.classList.remove('hidden');
         document.body.classList.remove('modal-open');
         
-        // Setup buttons
-        els.btnAppView.onclick = () => openApp(photo.name);
+        els.btnAppView.onclick = () => handleAppDetection(photo.name);
         els.btnShareView.onclick = () => sharePhoto(photo);
         els.btnBackHome.onclick = () => {
           els.photoView.classList.add('hidden');
@@ -831,7 +770,8 @@
           window.history.pushState({}, '', '/');
         };
         
-        window.scrollTo(0, 0);      }
+        window.scrollTo(0, 0);
+      }
 
       function closeModal() {
         els.photoModal.classList.add('hidden');
@@ -841,48 +781,13 @@
         els.modalImg.src = '';
       }
 
-      // === DEEP LINK / APP OPEN ===
-      function openApp(photoId) {
-        const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
-        const fallback = CONFIG.FALLBACK_URL;
-        
-        // Try custom scheme first
-        let opened = false;
-        const timeout = setTimeout(() => {
-          if (!opened) {
-            window.location.href = fallback;
-          }
-        }, 2500);
-        
-        try {
-          window.location.href = schemeUrl;
-          opened = true;
-          clearTimeout(timeout);
-        } catch (e) {
-          window.location.href = fallback;
-        }
-        
-        // For Android intent
-        const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(fallback)};end`;
-        
-        setTimeout(() => {
-          if (document.hidden) {
-            // App opened
-          } else {
-            // Try intent for Android
-            window.location.href = intentUrl;
-          }
-        }, 100);
-      }
-
       // === SHARE ===
-      function sharePhoto(photo) {
-        const shareText = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
+      function sharePhoto(photo) {        const shareText = `Check this!\n📷 ${photo.title || '#' + photo.name}\n\nApp: ${CONFIG.APP_SCHEME}://photo/${photo.name}\nWeb: ${CONFIG.BASE_URL}/photo/${photo.name}`;
         
         if (navigator.share) {
-          navigator.share({             title: 'TKJ1 Gallery', 
-            text: shareText 
-          }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
+          navigator.share({ title: 'TKJ1 Gallery', text: shareText })
+            .then(() => showToast('✅ Berhasil dibagikan!'))
+            .catch(() => {});
         } else {
           navigator.clipboard.writeText(shareText)
             .then(() => showToast('🔗 Link copied!'))
@@ -893,12 +798,10 @@
       // === RENDER GALLERY ===
       function renderGallery(photos) {
         els.galleryGrid.innerHTML = '';
-        
         if (photos.length === 0) {
           els.emptyState.classList.remove('hidden');
           return;
         }
-        
         els.emptyState.classList.add('hidden');
         
         photos.forEach(photo => {
@@ -918,10 +821,8 @@
               </div>
             </div>
           `;
-          
           item.addEventListener('click', () => showPhoto(photo, true));
           
-          // Protect media
           const mediaEl = item.querySelector('img, video');
           if (mediaEl) {
             ['contextmenu','dragstart','selectstart'].forEach(evt => 
@@ -929,9 +830,8 @@
             );
             mediaEl.style.pointerEvents = 'none';
           }
-                    els.galleryGrid.appendChild(item);
-        });
-      }
+          els.galleryGrid.appendChild(item);
+        });      }
 
       // === FILTER & SEARCH ===
       function applyFilters() {
@@ -942,14 +842,11 @@
           const matchSearch = !query || 
             String(p.name).toLowerCase().includes(query) || 
             (p.title && p.title.toLowerCase().includes(query));
-          
           const matchType = activeFilter === 'all' || 
             (activeFilter === 'video' && isVideo(p.url)) || 
             (activeFilter === 'photo' && !isVideo(p.url));
-          
           return matchSearch && matchType;
         });
-        
         renderGallery(filteredPhotos);
       }
 
@@ -967,10 +864,8 @@
           
           const data = await res.json();
           allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
-          
           if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
           
-          // Sort by name/number
           allPhotos.sort((a, b) => {
             const na = parseInt(a.name), nb = parseInt(b.name);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
@@ -978,23 +873,26 @@
           });
           
           filteredPhotos = [...allPhotos];
-                    // Search & filter events
+          
           els.searchInput.addEventListener('input', applyFilters);
           els.filterBtns.forEach(btn => {
             btn.onclick = () => {
               els.filterBtns.forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
               applyFilters();
-            };
+            };          });
+          
+          // Close buttons for custom modals
+          document.querySelectorAll('[data-close]').forEach(btn => {
+            btn.onclick = () => closeModalById(btn.dataset.close);
           });
           
           els.loading.classList.add('hidden');
           
-          // Check if direct link
           if (directPhotoName) {
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
-              showPhoto(photo, false); // false = full page view
+              showPhoto(photo, false); // Full page view
             } else {
               els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
@@ -1007,14 +905,31 @@
         } catch (err) {
           console.error('[Error]', err);
           els.loading.classList.add('hidden');
-          els.errorMsg.textContent = err.message || 'Gagal load gallery. Cek koneksi internet bre!';
+          els.errorMsg.textContent = err.message || 'Gagal load gallery. Cek koneksi bre!';
           els.error.classList.remove('hidden');
         }
       }
 
-      // Handle browser back/forward
-      window.addEventListener('popstate', () => {
-        const path = window.location.pathname;
+      // === TURNSTILE CALLBACKS ===
+      window.onVerifySuccess = function(token) {
+        console.log('✓ Verified:', token);
+        els.turnstileError.textContent = '';
+        isVerified = true;
+        setTimeout(() => {
+          els.turnstileModal.classList.add('hidden');
+          document.body.classList.remove('modal-open');
+          initGallery();
+        }, 400);
+      };
+
+      window.onVerifyError = function() {
+        console.error('✗ Verify error');
+        els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';
+        setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
+      };
+
+      // Handle browser navigation
+      window.addEventListener('popstate', () => {        const path = window.location.pathname;
         if (!path.includes('/photo/')) {
           els.photoView.classList.add('hidden');
           els.gallerySection.classList.remove('hidden');
