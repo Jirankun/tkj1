@@ -47,7 +47,15 @@
     }
     body.modal-open { overflow: hidden; }
 
-    .hidden { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .hidden {       display: none !important; 
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      left: -9999px !important;
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
     /* === HEADER === */
     .header {
@@ -88,15 +96,15 @@
       color: var(--text-muted); font-size: 0.8rem; font-weight: 600;
       cursor: pointer; transition: all 0.2s; font-family: inherit;
     }
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--accent); color: var(--bg); border-color: var(--accent);
+    .filter-btn:hover, .filter-btn.active {      background: var(--accent); color: var(--bg); border-color: var(--accent);
     }
 
     /* === MAIN === */
     .main { padding: 24px 0; min-height: calc(100vh - 180px); }
     .gallery-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;    }
+      gap: 16px;
+    }
     .gallery-item {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 14px; overflow: hidden; cursor: pointer;
@@ -137,14 +145,14 @@
       overflow: hidden; border: 1px solid var(--border);
     }
     .photo-view-media {
-      width: 100%; max-height: 65vh; object-fit: contain;
-      background: var(--bg); display: block;
+      width: 100%; max-height: 65vh; object-fit: contain;      background: var(--bg); display: block;
       pointer-events: none; user-select: none;
     }
     .photo-view-info { padding: 20px; }
     .photo-view-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
     .photo-view-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
     .photo-view-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
     /* === BUTTONS === */
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
@@ -172,7 +180,12 @@
       display: flex; align-items: center; justify-content: center;
       z-index: 1000; padding: 20px; backdrop-filter: blur(8px);
     }
-    .modal.hidden { display: none !important; }
+    .modal.hidden { 
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
     .modal-content {
       background: var(--card); border-radius: 18px;
       max-width: 520px; width: 100%; max-height: 90vh;
@@ -181,8 +194,7 @@
     }
     @keyframes modalIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     
-    .modal-close {
-      position: absolute; top: 14px; right: 14px;
+    .modal-close {      position: absolute; top: 14px; right: 14px;
       width: 36px; height: 36px; border-radius: 50%;
       background: var(--bg); border: 1px solid var(--border);
       color: var(--text); font-size: 1.3rem; cursor: pointer;
@@ -194,7 +206,8 @@
     .modal-media {
       width: 100%; max-height: 55vh; object-fit: contain;
       background: var(--bg); display: block; pointer-events: none;
-    }    .modal-body { padding: 22px; }
+    }
+    .modal-body { padding: 22px; }
     .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
     .modal-desc { color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
     .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -212,9 +225,16 @@
 
     /* === TURNSTILE === */
     .turnstile-modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.95);
       display: flex; align-items: center; justify-content: center;
       z-index: 9999; padding: 20px;
+    }
+    .turnstile-modal.hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      z-index: -9999 !important;
     }
     .turnstile-box {
       background: var(--card); padding: 32px 24px;
@@ -223,8 +243,7 @@
     }
     .turnstile-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
     .turnstile-desc { color: var(--text-muted); margin-bottom: 24px; }
-    .turnstile-widget {
-      display: flex; justify-content: center; margin: 16px 0; min-height: 65px;
+    .turnstile-widget {      display: flex; justify-content: center; margin: 16px 0; min-height: 65px;
     }
 
     /* === LOADING / ERROR === */
@@ -243,7 +262,8 @@
     .toast {
       position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--card); color: var(--text);      padding: 12px 24px; border-radius: 10px;
+      background: var(--card); color: var(--text);
+      padding: 12px 24px; border-radius: 10px;
       border: 1px solid var(--border);
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       transition: transform 0.25s; z-index: 9999;
@@ -272,8 +292,7 @@
 
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
-    (function() {
-      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
+    (function() {      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
     })();
@@ -292,7 +311,8 @@
              data-theme="dark" data-size="normal">
         </div>
       </div>
-      <div id="turnstile-error" style="color:var(--error);font-size:0.85rem;margin-top:8px;min-height:18px;"></div>    </div>
+      <div id="turnstile-error" style="color:var(--error);font-size:0.85rem;margin-top:8px;min-height:18px;"></div>
+    </div>
   </div>
 
   <!-- 🖼️ PHOTO POPUP MODAL (Browsing from home) -->
@@ -321,8 +341,7 @@
     <div class="modal-content">
       <button class="modal-close" data-close="modal-debug">×</button>
       <div class="modal-body">
-        <div style="font-size:2.5rem;margin-bottom:12px;">⚠️</div>
-        <h2 class="modal-title">Terdeteksi Versi Debug</h2>
+        <div style="font-size:2.5rem;margin-bottom:12px;">⚠️</div>        <h2 class="modal-title">Terdeteksi Versi Debug</h2>
         <p class="modal-desc">
           Bre, kami deteksi lu pake APK Debug (<code style="background:var(--bg);padding:2px 6px;border-radius:4px;">com.tkjone.app.debug</code>). 
           Untuk keamanan & kestabilan, <strong>mohon download versi Stabil</strong> ya.
@@ -341,7 +360,8 @@
     <div class="modal-content">
       <button class="modal-close" data-close="modal-beta">×</button>
       <div class="modal-body">
-        <div style="font-size:2.5rem;margin-bottom:12px;">🎉</div>        <h2 class="modal-title">Makasih udah pake Beta!</h2>
+        <div style="font-size:2.5rem;margin-bottom:12px;">🎉</div>
+        <h2 class="modal-title">Makasih udah pake Beta!</h2>
         <p class="modal-desc">
           Terima kasih sudah menggunakan versi Beta (<code style="background:var(--bg);padding:2px 6px;border-radius:4px;">com.tkjone.app.beta</code>). 
           Kami sangat menunggu penilaian & feedback lu buat fitur terbaru!
@@ -370,8 +390,7 @@
           <strong>Kami tidak menyarankan</strong> install banyak versi sekaligus. 
           Mohon uninstall sisanya, tinggalin 1 aja: <strong>BETA</strong> atau <strong>STABIL</strong>.
         </p>
-        <div class="modal-actions">
-          <button id="btn-multi-ok" class="btn btn-primary">👌 Mengerti</button>
+        <div class="modal-actions">          <button id="btn-multi-ok" class="btn btn-primary">👌 Mengerti</button>
         </div>
         <p class="modal-note">Konflik data bisa terjadi kalo multi-APK aktif bersamaan.</p>
       </div>
@@ -390,7 +409,8 @@
           <button class="filter-btn active" data-filter="all">Semua</button>
           <button class="filter-btn" data-filter="photo">Foto</button>
           <button class="filter-btn" data-filter="video">Video</button>
-        </div>      </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -417,10 +437,9 @@
             <div class="photo-view-actions">
               <button id="btn-app-view" class="btn btn-primary">📱 Buka & Download di App</button>
               <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
-              <button id="btn-back-home" class="btn btn-outline">← Home</button>
+              <!-- NO BACK BUTTON FOR DIRECT LINKS - Auto close on leave -->
             </div>
-          </div>
-        </div>
+          </div>        </div>
       </div>
 
       <!-- Gallery Grid -->
@@ -439,7 +458,8 @@
   <script>
     (function() {
       'use strict';
-            const CONFIG = {
+      
+      const CONFIG = {
         APPS: {
           STABLE: { id: 'stable', pkg: 'com.tkjone.app', name: 'Versi Stabil', direct: true },
           DEBUG:  { id: 'debug',  pkg: 'com.tkjone.app.debug',  name: 'Versi Debug',  direct: false },
@@ -454,6 +474,7 @@
       let allPhotos = [], filteredPhotos = [];
       let isVerified = false;
       let currentPhoto = null;
+      let isDirectPhotoView = false;
       let detectedApps = [];
 
       const els = {
@@ -467,8 +488,7 @@
         modalTitle: document.getElementById('modal-title'),
         modalDesc: document.getElementById('modal-desc'),
         modalMeta: document.getElementById('modal-meta'),
-        btnAppModal: document.getElementById('btn-app-modal'),
-        btnShareModal: document.getElementById('btn-share-modal'),
+        btnAppModal: document.getElementById('btn-app-modal'),        btnShareModal: document.getElementById('btn-share-modal'),
         btnBackGallery: document.getElementById('btn-back-gallery'),
         
         modalDebug: document.getElementById('modal-debug'),
@@ -488,13 +508,13 @@
         errorMsg: document.getElementById('error-msg'),
         
         photoView: document.getElementById('photo-view'),
-        viewImg: document.getElementById('view-img'),        viewVideo: document.getElementById('view-video'),
+        viewImg: document.getElementById('view-img'),
+        viewVideo: document.getElementById('view-video'),
         viewTitle: document.getElementById('view-title'),
         viewDesc: document.getElementById('view-desc'),
         viewMeta: document.getElementById('view-meta'),
         btnAppView: document.getElementById('btn-app-view'),
         btnShareView: document.getElementById('btn-share-view'),
-        btnBackHome: document.getElementById('btn-back-home'),
         
         gallerySection: document.getElementById('gallery-section'),
         galleryGrid: document.getElementById('gallery-grid'),
@@ -517,7 +537,6 @@
         const lower = url.toLowerCase();
         return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
       }
-
       function protectMedia(el) {
         if (!el) return;
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
@@ -537,7 +556,8 @@
         }
       }
 
-      // === APK DETECTION LOGIC ===      async function detectInstalledApps() {
+      // === APK DETECTION LOGIC (Only called on button click) ===
+      async function detectInstalledApps() {
         const apps = Object.values(CONFIG.APPS);
         const detected = [];
         
@@ -566,8 +586,7 @@
               cleanup();
               resolve(true);
             }
-          };
-          
+          };          
           const onBlur = () => {
             if (!resolved) {
               resolved = true;
@@ -586,7 +605,8 @@
           } catch (e) {}
           
           // Also try custom scheme as fallback ping
-          setTimeout(() => {            if (!resolved) {
+          setTimeout(() => {
+            if (!resolved) {
               try {
                 window.location.href = `${CONFIG.APP_SCHEME}://ping/${packageName}`;
               } catch (e) {}
@@ -615,18 +635,20 @@
         try {
           window.location.href = intentUrl;
         } catch (e) {
-          window.location.href = CONFIG.FALLBACK_URL;
-        }
+          window.location.href = CONFIG.FALLBACK_URL;        }
       }
 
-      // === APK DETECTION HANDLER ===
+      // === APK DETECTION HANDLER (Called only on button click) ===
       async function handleAppDetection(photoId) {
+        showToast('🔍 Ngecek APK yang terinstall...');
         detectedApps = await detectInstalledApps();
         
         if (detectedApps.length === 0) {
-          // No app detected → fallback to download
-          showToast('📱 App gak ditemukan. Download dulu bre...');
-          setTimeout(() => { window.location.href = CONFIG.FALLBACK_URL; }, 1000);
+          // No app detected → auto redirect to GitHub
+          showToast('📱 App gak ditemukan. Redirect ke download...');
+          setTimeout(() => { 
+            window.location.href = CONFIG.FALLBACK_URL; 
+          }, 1000);
           return;
         }
         
@@ -635,11 +657,13 @@
           showMultiApkModal(detectedApps);
           return;
         }
-                // Single app detected
+        
+        // Single app detected
         const app = detectedApps[0];
         
         if (app.id === 'stable' && CONFIG.APPS.STABLE.direct) {
           // Stable → open directly
+          showToast('✅ Membuka TKJ OnE...');
           openAppDirect(app.pkg, photoId);
           return;
         }
@@ -660,8 +684,7 @@
 
       // === MODAL SHOW FUNCTIONS ===
       function showDebugModal(photoId) {
-        els.modalDebug.classList.remove('hidden');
-        document.body.classList.add('modal-open');
+        els.modalDebug.classList.remove('hidden');        document.body.classList.add('modal-open');
         
         els.btnDownloadStable.onclick = () => {
           closeModalById('modal-debug');
@@ -684,7 +707,8 @@
         };
         
         els.btnCancelBeta.onclick = () => {
-          closeModalById('modal-beta');        };
+          closeModalById('modal-beta');
+        };
       }
 
       function showMultiApkModal(detectedList) {
@@ -709,8 +733,7 @@
           // Popup modal for browsing
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = isVid ? 'none' : 'block';
-          els.modalVideo.style.display = isVid ? 'block' : 'none';
-          
+          els.modalVideo.style.display = isVid ? 'block' : 'none';          
           if (isVid) {
             els.modalVideo.src = photo.url;
             els.modalVideo.load();
@@ -733,12 +756,14 @@
           els.modalClose.onclick = closeModal;
           els.photoModal.onclick = (e) => { if (e.target === els.photoModal) closeModal(); };
           
-        } else {          // Full page view for direct link
+        } else {
+          // Full page view for direct link
           showFullPhotoView(photo);
         }
       }
 
       function showFullPhotoView(photo) {
+        isDirectPhotoView = true;
         const isVid = isVideo(photo.url);
         
         els.viewTitle.textContent = photo.title || `#${photo.name}`;
@@ -757,32 +782,62 @@
         
         els.viewDesc.textContent = photo.desc || photo.description || 'No description';
         els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-        
-        els.gallerySection.classList.add('hidden');
+                els.gallerySection.classList.add('hidden');
         els.photoView.classList.remove('hidden');
         document.body.classList.remove('modal-open');
         
         els.btnAppView.onclick = () => handleAppDetection(photo.name);
         els.btnShareView.onclick = () => sharePhoto(photo);
-        els.btnBackHome.onclick = () => {
-          els.photoView.classList.add('hidden');
-          els.gallerySection.classList.remove('hidden');
-          window.history.pushState({}, '', '/');
-        };
+        
+        // NO BACK BUTTON - Auto close on visibility change
+        setupDirectPhotoAutoClose();
         
         window.scrollTo(0, 0);
+      }
+
+      function setupDirectPhotoAutoClose() {
+        // Close/redirect when user leaves the page
+        const handleVisibilityChange = () => {
+          if (document.hidden && isDirectPhotoView) {
+            // User left the page, close the photo view
+            closeDirectPhotoView();
+          }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Also handle page unload
+        window.addEventListener('beforeunload', () => {
+          if (isDirectPhotoView) {
+            closeDirectPhotoView();
+          }
+        });
+      }
+
+      function closeDirectPhotoView() {
+        // Just close and redirect to home or close window
+        els.photoView.classList.add('hidden');
+        isDirectPhotoView = false;
+        
+        // Try to close window or redirect to home
+        try {
+          window.close();
+        } catch(e) {
+          // If can't close, redirect to home
+          window.location.href = '/';
+        }
       }
 
       function closeModal() {
         els.photoModal.classList.add('hidden');
         document.body.classList.remove('modal-open');
-        els.modalVideo.pause();
-        els.modalVideo.src = '';
+        els.modalVideo.pause();        els.modalVideo.src = '';
         els.modalImg.src = '';
       }
 
       // === SHARE ===
-      function sharePhoto(photo) {        const shareText = `Check this!\n📷 ${photo.title || '#' + photo.name}\n\nApp: ${CONFIG.APP_SCHEME}://photo/${photo.name}\nWeb: ${CONFIG.BASE_URL}/photo/${photo.name}`;
+      function sharePhoto(photo) {
+        const shareText = `Check this!\n📷 ${photo.title || '#' + photo.name}\n\nApp: ${CONFIG.APP_SCHEME}://photo/${photo.name}\nWeb: ${CONFIG.BASE_URL}/photo/${photo.name}`;
         
         if (navigator.share) {
           navigator.share({ title: 'TKJ1 Gallery', text: shareText })
@@ -825,13 +880,13 @@
           
           const mediaEl = item.querySelector('img, video');
           if (mediaEl) {
-            ['contextmenu','dragstart','selectstart'].forEach(evt => 
-              mediaEl.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
+            ['contextmenu','dragstart','selectstart'].forEach(evt =>               mediaEl.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
             );
             mediaEl.style.pointerEvents = 'none';
           }
           els.galleryGrid.appendChild(item);
-        });      }
+        });
+      }
 
       // === FILTER & SEARCH ===
       function applyFilters() {
@@ -874,13 +929,13 @@
           
           filteredPhotos = [...allPhotos];
           
-          els.searchInput.addEventListener('input', applyFilters);
-          els.filterBtns.forEach(btn => {
+          els.searchInput.addEventListener('input', applyFilters);          els.filterBtns.forEach(btn => {
             btn.onclick = () => {
               els.filterBtns.forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
               applyFilters();
-            };          });
+            };
+          });
           
           // Close buttons for custom modals
           document.querySelectorAll('[data-close]').forEach(btn => {
@@ -890,14 +945,16 @@
           els.loading.classList.add('hidden');
           
           if (directPhotoName) {
+            isDirectPhotoView = true;
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
-              showPhoto(photo, false); // Full page view
+              showPhoto(photo, false); // Full page view (no back button)
             } else {
               els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
             }
           } else {
+            isDirectPhotoView = false;
             els.gallerySection.classList.remove('hidden');
             renderGallery(filteredPhotos);
           }
@@ -915,11 +972,19 @@
         console.log('✓ Verified:', token);
         els.turnstileError.textContent = '';
         isVerified = true;
+        
+        // Force hide dengan multiple methods
         setTimeout(() => {
           els.turnstileModal.classList.add('hidden');
-          document.body.classList.remove('modal-open');
-          initGallery();
-        }, 400);
+          els.turnstileModal.style.setProperty('display', 'none', 'important');
+          els.turnstileModal.setAttribute('aria-hidden', 'true');
+                    document.body.classList.remove('modal-open');
+          
+          // Init gallery after modal fully hidden
+          setTimeout(() => {
+            initGallery();
+          }, 200);
+        }, 300);
       };
 
       window.onVerifyError = function() {
@@ -929,10 +994,12 @@
       };
 
       // Handle browser navigation
-      window.addEventListener('popstate', () => {        const path = window.location.pathname;
+      window.addEventListener('popstate', () => {
+        const path = window.location.pathname;
         if (!path.includes('/photo/')) {
           els.photoView.classList.add('hidden');
           els.gallerySection.classList.remove('hidden');
+          isDirectPhotoView = false;
         }
       });
 
