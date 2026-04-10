@@ -52,6 +52,7 @@
     }
 
     body.modal-open { overflow: hidden; }
+    body.view-open { overflow: hidden; }
 
     /* === DESKTOP BLOCK SCREEN (HORROR MODE) === */
     #desktop-block {
@@ -95,8 +96,8 @@
     #desktop-block p {
       font-size: 1.2rem;
       color: #ff4444;
-      margin-bottom: 30px;
-      font-weight: 600;    }
+      margin-bottom: 30px;      font-weight: 600;
+    }
 
     #desktop-block .close-btn {
       padding: 15px 40px;
@@ -138,14 +139,19 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
+      transition: transform 0.3s;
     }
 
+    .header.hidden {
+      transform: translateY(-100%);
+    }
     .header-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      flex-wrap: wrap;    }
+      flex-wrap: wrap;
+    }
 
     .logo {
       font-size: 1.5rem;
@@ -188,13 +194,13 @@
       flex-wrap: wrap;
     }
 
-    .filter-btn {
-      padding: 10px 18px;
+    .filter-btn {      padding: 10px 18px;
       background: transparent;
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text-muted);
-      font-size: 0.85rem;      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
       font-family: inherit;
@@ -210,6 +216,12 @@
     .main {
       padding: 30px 0;
       min-height: calc(100vh - 200px);
+      transition: padding 0.3s;
+    }
+
+    .main.full-view {
+      padding: 20px 0;
+      min-height: 100vh;
     }
 
     /* === GALLERY GRID === */
@@ -231,8 +243,7 @@
 
     .gallery-item:hover {
       transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
+      border-color: var(--accent);      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
     }
 
     .gallery-thumb {
@@ -244,6 +255,7 @@
       user-select: none;
       display: block;
     }
+
     .gallery-thumb.video-thumb {
       object-fit: contain;
       background: #000;
@@ -281,7 +293,6 @@
       background: rgba(0, 212, 170, 0.15);
       color: var(--accent);
     }
-
     .badge-video {
       background: rgba(0, 168, 255, 0.15);
       color: #00a8ff;
@@ -289,10 +300,16 @@
 
     /* === DIRECT PHOTO VIEW (FULL PAGE) === */
     .photo-view {
-      min-height: calc(100vh - 80px);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;      padding: 20px;
+      align-items: center;
+      padding: 20px;
+      background: var(--bg);
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      overflow-y: auto;
     }
 
     .photo-view-container {
@@ -302,24 +319,29 @@
       border-radius: 20px;
       overflow: hidden;
       border: 1px solid var(--border);
+      margin-top: 20px;
     }
 
     .photo-view-media {
       width: 100%;
-      max-height: 70vh;
+      max-height: 65vh;
       object-fit: contain;
       background: var(--bg);
       display: block;
-      pointer-events: none;
       user-select: none;
+    }
+    
+    /* Allow interaction with video in full view */
+    .photo-view-media[controls] {
+      pointer-events: auto;
+      user-select: auto;
     }
 
     .photo-view-info {
       padding: 24px;
     }
 
-    .photo-view-title {
-      font-size: 1.5rem;
+    .photo-view-title {      font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 12px;
     }
@@ -341,7 +363,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 24px;      border-radius: 10px;
+      padding: 12px 24px;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 0.9rem;
       border: none;
@@ -367,30 +390,19 @@
 
     .btn-secondary {
       background: var(--card-hover);
-      color: var(--text);
-      border: 1px solid var(--border);
+      color: var(--text);      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
       background: var(--border);
     }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
     /* === MODAL (POPUP) === */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.95);      display: flex;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
@@ -427,8 +439,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      justify-content: center;      transition: all 0.2s;
       z-index: 10;
     }
 
@@ -439,11 +450,18 @@
     }
 
     .modal-media {
-      width: 100%;      max-height: 60vh;
+      width: 100%;
+      max-height: 60vh;
       object-fit: contain;
       background: var(--bg);
       display: block;
-      pointer-events: none;
+      user-select: none;
+    }
+    
+    /* Allow interaction with video in modal */
+    .modal-media[controls] {
+      pointer-events: auto;
+      user-select: auto;
     }
 
     .modal-body {
@@ -470,8 +488,7 @@
     /* === TURNSTILE MODAL === */
     .turnstile-modal {
       position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
+      inset: 0;      background: rgba(0, 0, 0, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -488,6 +505,7 @@
       width: 100%;
       border: 1px solid var(--border);
     }
+
     .turnstile-title {
       font-size: 1.5rem;
       font-weight: 700;
@@ -519,8 +537,7 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; }      50% { opacity: 0.5; }
     }
 
     .error {
@@ -537,7 +554,8 @@
       text-align: center;
       padding: 60px 20px;
       color: var(--text-muted);
-      grid-column: 1 / -1;    }
+      grid-column: 1 / -1;
+    }
 
     .empty-icon {
       font-size: 4rem;
@@ -568,8 +586,7 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* === RESPONSIVE === */
-    @media (max-width: 768px) {
+    /* === RESPONSIVE === */    @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
         align-items: stretch;
@@ -586,7 +603,8 @@
       }
 
       .gallery-grid {
-        grid-template-columns: 1fr;      }
+        grid-template-columns: 1fr;
+      }
 
       .photo-view-actions,
       .modal-actions {
@@ -617,7 +635,6 @@
       background: var(--border);
       border-radius: 4px;
     }
-
     ::-webkit-scrollbar-thumb:hover {
       background: var(--accent);
     }
@@ -635,7 +652,8 @@
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
     (function blockDownloads() {
-      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt =>         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
+      ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
+        document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
     })();
 
@@ -648,13 +666,11 @@
         document.getElementById('desktop-block').style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Force close attempts
         setInterval(() => {
           try { window.close(); } catch(e) {}
           document.title = "⚠️ TUTUP HALAMAN INI ⚠️";
         }, 100);
         
-        // Prevent navigation
         window.onbeforeunload = function() {
           return "Tutup halaman ini!";
         };
@@ -668,8 +684,7 @@
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
       <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak</p>
       <div class="turnstile-widget">
-        <div class="cf-turnstile"
-             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
+        <div class="cf-turnstile"             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onVerifySuccess"
              data-error-callback="onVerifyError"
              data-theme="dark"
@@ -684,7 +699,8 @@
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
-      <img class="modal-media" id="modal-img" src="" alt="Photo" />      <video class="modal-media" id="modal-video" src="" controls playsinline></video>
+      <img class="modal-media" id="modal-img" src="" alt="Photo" />
+      <video class="modal-media" id="modal-video" src="" controls playsinline></video>
       <div class="modal-body">
         <h2 class="modal-title" id="modal-title"></h2>
         <p class="modal-desc" id="modal-desc"></p>
@@ -692,14 +708,13 @@
         <div class="modal-actions">
           <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
           <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
-          <button id="btn-back-gallery" class="btn btn-outline">← Kembali ke Gallery</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 📱 MAIN APP -->
-  <header class="header">
+  <header class="header" id="main-header">
     <div class="container">
       <div class="header-content">
         <div class="logo">📸 TKJ1 Gallery</div>
@@ -717,9 +732,8 @@
     </div>
   </header>
 
-  <main class="main">
-    <div class="container">
-      <!-- Loading State -->
+  <main class="main" id="main-content">
+    <div class="container">      <!-- Loading State -->
       <div id="loading" class="loading">
         <div class="loading-icon">⏳</div>
         <div>Loading bre, sabar dikit...</div>
@@ -733,16 +747,16 @@
 
       <!-- Direct Photo View (Full Page) -->
       <div id="photo-view" class="photo-view hidden">
-        <div class="photo-view-container">          <img class="photo-view-media" id="view-img" src="" alt="Photo" />
+        <div class="photo-view-container">
+          <img class="photo-view-media" id="view-img" src="" alt="Photo" />
           <video class="photo-view-media" id="view-video" src="" controls playsinline></video>
           <div class="photo-view-info">
             <h1 class="photo-view-title" id="view-title"></h1>
             <p class="photo-view-desc" id="view-desc"></p>
             <p style="color:var(--text-muted);margin-bottom:20px;" id="view-meta"></p>
             <div class="photo-view-actions">
-              <button id="btn-app-view" class="btn btn-primary">📱 Buka & Download di App</button>
+              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
               <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
-              <button id="btn-back-home" class="btn btn-outline">← Kembali ke Home</button>
             </div>
           </div>
         </div>
@@ -768,8 +782,7 @@
       // 🚫 Early exit if desktop blocked
       if (document.getElementById('desktop-block').style.display === 'flex') {
         return;
-      }
-      
+      }      
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
@@ -782,6 +795,8 @@
       let isVerified = false;
       let currentPhoto = null;
       let videoObserver = null;
+      let playingThumbnailVideo = null; // Track which thumbnail video is playing
+
       // DOM Elements
       const els = {
         turnstileModal: document.getElementById('turnstile-modal'),
@@ -796,7 +811,6 @@
         modalMeta: document.getElementById('modal-meta'),
         btnAppModal: document.getElementById('btn-app-modal'),
         btnShareModal: document.getElementById('btn-share-modal'),
-        btnBackGallery: document.getElementById('btn-back-gallery'),
         
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
@@ -810,7 +824,6 @@
         viewMeta: document.getElementById('view-meta'),
         btnAppView: document.getElementById('btn-app-view'),
         btnShareView: document.getElementById('btn-share-view'),
-        btnBackHome: document.getElementById('btn-back-home'),
         
         gallerySection: document.getElementById('gallery-section'),
         galleryGrid: document.getElementById('gallery-grid'),
@@ -818,7 +831,8 @@
         
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
-        toast: document.getElementById('toast')
+        toast: document.getElementById('toast'),        mainHeader: document.getElementById('main-header'),
+        mainContent: document.getElementById('main-content')
       };
 
       // === UTILS ===
@@ -831,7 +845,8 @@
       function isVideo(url) {
         if (!url) return false;
         const lower = url.toLowerCase();
-        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');      }
+        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
+      }
 
       function protectMedia(el) {
         if (!el) return;
@@ -851,17 +866,21 @@
         videoObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             const video = entry.target;
+            // Don't auto-play if modal or full view is open
+            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden')) {
+              video.pause();
+              return;
+            }
+            
             if (entry.isIntersecting) {
               video.muted = true;
               video.playsInline = true;
               video.loop = true;
               video.play().catch(() => {
-                // Fallback if autoplay blocked
                 video.pause();
               });
             } else {
-              video.pause();
-              video.currentTime = 0;
+              video.pause();              video.currentTime = 0;
             }
           });
         }, { threshold: 0.5 });
@@ -873,6 +892,30 @@
         }
       }
 
+      // Pause all gallery videos
+      function pauseAllGalleryVideos() {
+        document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => {
+          if (!vid.paused) {
+            playingThumbnailVideo = vid;
+          }
+          vid.pause();
+        });
+      }
+
+      // Resume thumbnail video if it was playing
+      function resumeThumbnailVideo() {
+        if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) {
+          // Check if still in viewport
+          const rect = playingThumbnailVideo.getBoundingClientRect();
+          const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+          
+          if (isInView) {
+            playingThumbnailVideo.play().catch(() => {});
+          }
+          playingThumbnailVideo = null;
+        }
+      }
+
       // === TURNSTILE ===
       window.onVerifySuccess = function(token) {
         console.log('✓ Verified:', token);
@@ -880,13 +923,13 @@
         isVerified = true;
         
         setTimeout(() => {
-          els.turnstileModal.classList.add('hidden');          document.body.classList.remove('modal-open');
+          els.turnstileModal.classList.add('hidden');
+          document.body.classList.remove('modal-open');
           initGallery();
         }, 400);
       };
 
-      window.onVerifyError = function() {
-        console.error('✗ Verify error');
+      window.onVerifyError = function() {        console.error('✗ Verify error');
         els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';
         setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
       };
@@ -897,6 +940,9 @@
         const isVid = isVideo(photo.url);
         
         if (usePopup) {
+          // Pause gallery videos before opening modal
+          pauseAllGalleryVideos();
+          
           // Show as popup
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = isVid ? 'none' : 'block';
@@ -906,6 +952,7 @@
             els.modalVideo.src = photo.url;
             els.modalVideo.load();
             els.modalImg.src = '';
+            // Video will play when user taps play button (browser policy)
           } else {
             els.modalImg.src = photo.url;
             els.modalVideo.src = '';
@@ -921,7 +968,6 @@
           // Setup buttons
           els.btnAppModal.onclick = () => openApp(photo.name);
           els.btnShareModal.onclick = () => sharePhoto(photo);
-          els.btnBackGallery.onclick = closeModal;
           els.modalClose.onclick = closeModal;
           els.photoModal.onclick = (e) => { if (e.target === els.photoModal) closeModal(); };
           
@@ -930,7 +976,11 @@
           showFullPhotoView(photo);
         }
       }
+
       function showFullPhotoView(photo) {
+        // Hide header for full view focus        els.mainHeader.classList.add('hidden');
+        els.mainContent.classList.add('full-view');
+        
         const isVid = isVideo(photo.url);
         
         els.viewTitle.textContent = photo.title || `#${photo.name}`;
@@ -952,73 +1002,92 @@
         
         els.gallerySection.classList.add('hidden');
         els.photoView.classList.remove('hidden');
-        document.body.classList.remove('modal-open');
+        document.body.classList.add('view-open');
         
-        // Setup buttons
+        // Setup buttons - ONLY Share & Open App (NO back button)
         els.btnAppView.onclick = () => openApp(photo.name);
         els.btnShareView.onclick = () => sharePhoto(photo);
-        els.btnBackHome.onclick = () => {
-          els.photoView.classList.add('hidden');
-          els.gallerySection.classList.remove('hidden');
-          window.history.pushState({}, '', '/');
-        };
         
-        // 🔐 AUTO-CLOSE LOGIC: Close/redirect if user tries to leave
-        window.onbeforeunload = function() {
-          return "Yakin mau keluar?";
-        };
-        
-        // Listen for visibility change (tab switch/minimize)
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) {
-            // User switched tab or minimized - auto close for safety
-            try { window.close(); } catch(e) {}
-            window.location.href = '/';
-          }
-        });
+        // Auto-close logic for safety
+        document.addEventListener('visibilitychange', handleViewVisibilityChange);
         
         window.scrollTo(0, 0);
       }
+
       function closeModal() {
         els.photoModal.classList.add('hidden');
         document.body.classList.remove('modal-open');
+        
+        // Stop modal video
         els.modalVideo.pause();
         els.modalVideo.src = '';
         els.modalImg.src = '';
+        
+        // Resume thumbnail video if it was playing
+        resumeThumbnailVideo();
       }
 
-      // === DEEP LINK / APP OPEN ===
+      function closeFullView() {        els.photoView.classList.add('hidden');
+        els.gallerySection.classList.remove('hidden');
+        els.mainHeader.classList.remove('hidden');
+        els.mainContent.classList.remove('full-view');
+        document.body.classList.remove('view-open');
+        
+        // Cleanup
+        els.viewVideo.pause();
+        els.viewVideo.src = '';
+        els.viewImg.src = '';
+        document.removeEventListener('visibilitychange', handleViewVisibilityChange);
+        window.onbeforeunload = null;
+        
+        // Go back to gallery
+        window.history.pushState({}, '', '/');
+      }
+
+      function handleViewVisibilityChange() {
+        if (document.hidden && !els.photoView.classList.contains('hidden')) {
+          // User switched away - for safety, don't auto-close anymore
+          // Just let them navigate naturally
+        }
+      }
+
+      // === DEEP LINK / APP OPEN (Fixed - No weird GitHub redirect) ===
       function openApp(photoId) {
         const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
-        const fallback = CONFIG.FALLBACK_URL;
         
-        // Try custom scheme first
-        let opened = false;
-        const timeout = setTimeout(() => {
-          if (!opened) {
-            window.location.href = fallback;
-          }
-        }, 2500);
+        // Try custom scheme directly
+        let hasOpened = false;
         
-        try {
-          window.location.href = schemeUrl;
-          opened = true;
-          clearTimeout(timeout);
-        } catch (e) {
-          window.location.href = fallback;
-        }
+        // Create invisible iframe to trigger scheme
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = schemeUrl;
+        document.body.appendChild(iframe);
         
-        // For Android intent
-        const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(fallback)};end`;
-        
+        // Fallback timeout - but DON'T redirect to GitHub, just stay on page
         setTimeout(() => {
+          if (!document.hidden && !hasOpened) {
+            // App didn't open, but we stay on page (no annoying redirect)
+            showToast('📱 Kalau app belum kebuka, cek dulu udah install belum bre!');
+          }
+          document.body.removeChild(iframe);
+        }, 1500);
+        
+        // Detect if page was hidden (app opened)
+        const onVisibilityChange = () => {
           if (document.hidden) {
-            // App opened
-          } else {
-            // Try intent for Android
+            hasOpened = true;            document.removeEventListener('visibilitychange', onVisibilityChange);
+          }
+        };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        
+        // Also try Android intent as backup
+        setTimeout(() => {
+          if (!hasOpened) {
+            const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
             window.location.href = intentUrl;
           }
-        }, 100);
+        }, 800);
       }
 
       // === SHARE ===
@@ -1027,7 +1096,8 @@
         
         if (navigator.share) {
           navigator.share({
-            title: 'TKJ1 Gallery',             text: shareText 
+            title: 'TKJ1 Gallery', 
+            text: shareText 
           }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
         } else {
           navigator.clipboard.writeText(shareText)
@@ -1053,11 +1123,9 @@
           item.className = 'gallery-item';
           
           if (isVid) {
-            // Video thumbnail with auto-play on scroll
             item.innerHTML = `
               <video class="gallery-thumb video-thumb" 
-                     src="${photo.url}" 
-                     muted 
+                     src="${photo.url}"                      muted 
                      preload="none"
                      playsinline
                      loop></video>
@@ -1073,10 +1141,10 @@
             observeVideo(videoEl);
             protectMedia(videoEl);
           } else {
-            // Photo thumbnail
             item.innerHTML = `
               <img class="gallery-thumb" 
-                   src="${photo.url}"                    alt="${photo.title||photo.name}" 
+                   src="${photo.url}" 
+                   alt="${photo.title||photo.name}" 
                    loading="lazy">
               <div class="gallery-info">
                 <div class="gallery-title">${photo.title || '#' + photo.name}</div>
@@ -1106,8 +1174,7 @@
           
           const matchType = activeFilter === 'all' || 
             (activeFilter === 'video' && isVideo(p.url)) || 
-            (activeFilter === 'photo' && !isVideo(p.url));
-          
+            (activeFilter === 'photo' && !isVideo(p.url));          
           return matchSearch && matchType;
         });
         
@@ -1125,7 +1192,8 @@
           
           const res = await fetch('/DB/photos.json?t=' + Date.now());
           if (!res.ok) throw new Error('Gagal load data (Status: ' + res.status + ')');
-                    const data = await res.json();
+          
+          const data = await res.json();
           allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
           
           if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
@@ -1155,8 +1223,7 @@
           if (directPhotoName) {
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
-              showPhoto(photo, false); // false = full page view, NOT popup
-            } else {
+              showPhoto(photo, false); // false = full page view            } else {
               els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
             }
@@ -1174,14 +1241,19 @@
           els.error.classList.remove('hidden');
         }
       }
+
       // Handle browser back/forward
       window.addEventListener('popstate', () => {
         const path = window.location.pathname;
-        if (!path.includes('/photo/')) {
-          els.photoView.classList.add('hidden');
-          els.gallerySection.classList.remove('hidden');
-          // Reset unload handler
-          window.onbeforeunload = null;
+        if (!path.includes('/photo/') && !els.photoView.classList.contains('hidden')) {
+          closeFullView();
+        }
+      });
+
+      // Close modal on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !els.photoModal.classList.contains('hidden')) {
+          closeModal();
         }
       });
 
