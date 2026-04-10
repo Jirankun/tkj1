@@ -12,9 +12,6 @@
   <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   
-  <!-- 🔐 Cloudflare Turnstile Script -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  
   <!-- 🎨 Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,10 +44,10 @@
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;      line-height: 1.6;
+      min-height: 100vh;
+      line-height: 1.6;
       overflow-x: hidden;
     }
-
     body.modal-open { overflow: hidden; }
     body.view-open { overflow: hidden; }
 
@@ -96,9 +93,9 @@
     #desktop-block p {
       font-size: 1.2rem;
       color: #ff4444;
-      margin-bottom: 30px;      font-weight: 600;
+      margin-bottom: 30px;
+      font-weight: 600;
     }
-
     #desktop-block .close-btn {
       padding: 15px 40px;
       background: #ff0000;
@@ -145,10 +142,10 @@
     .header.hidden {
       transform: translateY(-100%);
     }
+
     .header-content {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      align-items: center;      justify-content: space-between;
       gap: 20px;
       flex-wrap: wrap;
     }
@@ -194,10 +191,10 @@
       flex-wrap: wrap;
     }
 
-    .filter-btn {      padding: 10px 18px;
+    .filter-btn {
+      padding: 10px 18px;
       background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      border: 1px solid var(--border);      border-radius: 8px;
       color: var(--text-muted);
       font-size: 0.85rem;
       font-weight: 600;
@@ -243,9 +240,9 @@
 
     .gallery-item:hover {
       transform: translateY(-4px);
-      border-color: var(--accent);      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
     }
-
     .gallery-thumb {
       width: 100%;
       aspect-ratio: 4/3;
@@ -293,9 +290,9 @@
       background: rgba(0, 212, 170, 0.15);
       color: var(--accent);
     }
+
     .badge-video {
-      background: rgba(0, 168, 255, 0.15);
-      color: #00a8ff;
+      background: rgba(0, 168, 255, 0.15);      color: #00a8ff;
     }
 
     /* === DIRECT PHOTO VIEW (FULL PAGE) === */
@@ -341,10 +338,10 @@
     }
 
     .photo-view-title {
-      font-size: 1.5rem;      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 700;
       margin-bottom: 12px;
     }
-
     .photo-view-desc {
       color: var(--text-muted);
       margin-bottom: 20px;
@@ -390,10 +387,10 @@
     .btn-secondary {
       background: var(--card-hover);
       color: var(--text);
-      border: 1px solid var(--border);    }
+      border: 1px solid var(--border);
+    }
 
-    .btn-secondary:hover {
-      background: var(--border);
+    .btn-secondary:hover {      background: var(--border);
     }
 
     .btn-danger {
@@ -439,10 +436,10 @@
       top: 16px;
       right: 16px;
       width: 40px;
-      height: 40px;      border-radius: 50%;
+      height: 40px;
+      border-radius: 50%;
       background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
+      border: 1px solid var(--border);      color: var(--text);
       font-size: 1.5rem;
       cursor: pointer;
       display: flex;
@@ -488,10 +485,10 @@
     }
 
     .modal-actions {
-      display: flex;      gap: 12px;
+      display: flex;
+      gap: 12px;
       flex-wrap: wrap;
     }
-
     /* === APP OPEN CONFIRMATION MODAL === */
     .app-open-modal {
       position: fixed;
@@ -521,14 +518,8 @@
     }
 
     @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .app-open-icon {
@@ -537,7 +528,8 @@
       animation: bounce 1s infinite;
     }
 
-    @keyframes bounce {      0%, 100% { transform: translateY(0); }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
 
@@ -545,8 +537,7 @@
       font-size: 1.3rem;
       font-weight: 700;
       margin-bottom: 12px;
-      color: var(--accent);
-    }
+      color: var(--accent);    }
 
     .app-open-desc {
       color: var(--text-muted);
@@ -572,7 +563,7 @@
     .turnstile-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -582,11 +573,13 @@
 
     .turnstile-box {
       background: var(--card);
-      padding: 40px;
+      padding: 40px 30px;
       border-radius: 20px;
       text-align: center;
       max-width: 450px;
-      width: 100%;      border: 1px solid var(--border);
+      width: 100%;
+      border: 1px solid var(--border);
+      animation: modalSlideIn 0.4s ease;
     }
 
     .turnstile-title {
@@ -594,10 +587,10 @@
       font-weight: 700;
       margin-bottom: 12px;
     }
-
     .turnstile-desc {
       color: var(--text-muted);
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+      line-height: 1.5;
     }
 
     .turnstile-widget {
@@ -605,6 +598,32 @@
       justify-content: center;
       margin: 20px 0;
       min-height: 65px;
+    }
+
+    .turnstile-error {
+      color: var(--error);
+      font-size: 0.9rem;
+      margin-top: 10px;
+      min-height: 20px;
+      transition: opacity 0.3s;
+    }
+
+    .turnstile-fallback-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: none;
+      transition: all 0.2s;
+    }
+
+    .turnstile-fallback-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     /* === LOADING & ERROR === */
@@ -616,8 +635,7 @@
     .loading-icon {
       font-size: 3rem;
       margin-bottom: 16px;
-      animation: pulse 1.5s infinite;
-    }
+      animation: pulse 1.5s infinite;    }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -635,7 +653,8 @@
 
     /* === EMPTY STATE === */
     .empty-state {
-      text-align: center;      padding: 60px 20px;
+      text-align: center;
+      padding: 60px 20px;
       color: var(--text-muted);
       grid-column: 1 / -1;
     }
@@ -665,8 +684,7 @@
       text-align: center;
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
+    .toast.show {      transform: translateX(-50%) translateY(0);
     }
 
     /* === RESPONSIVE === */
@@ -685,6 +703,7 @@
         order: 1;
         justify-content: center;
       }
+
       .gallery-grid {
         grid-template-columns: 1fr;
       }
@@ -715,7 +734,6 @@
     ::-webkit-scrollbar-track {
       background: var(--bg);
     }
-
     ::-webkit-scrollbar-thumb {
       background: var(--border);
       border-radius: 4px;
@@ -734,6 +752,7 @@
     <p>AKSES DITOLAK! Website ini cuma buat Android bre!<br/>Tutup halaman ini SEKARANG!</p>
     <button class="close-btn" onclick="window.close(); window.location.href='about:blank';">TUTUP SEKARANG</button>
   </div>
+
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
     (function blockDownloads() {
@@ -761,28 +780,69 @@
         };
       }
     })();
+
+    // 🔐 GLOBAL TURNSTILE CALLBACKS (MUST BE ON WINDOW BEFORE SCRIPT LOADS)
+    window.onVerifySuccess = function(token) {      console.log('✅ Turnstile Verified:', token);
+      window.isTurnstileVerified = true;
+      
+      const modal = document.getElementById('turnstile-modal');
+      if (modal) {
+        modal.style.display = 'none'; // Force hide
+        modal.classList.add('hidden');
+      }
+      document.body.classList.remove('modal-open');
+      
+      if (window.__initGallery && typeof window.__initGallery === 'function') {
+        window.__initGallery();
+      }
+    };
+
+    window.onVerifyError = function(errCode) {
+      console.error('❌ Turnstile Error:', errCode);
+      const errorEl = document.getElementById('turnstile-error');
+      if (errorEl) {
+        errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'}). Coba refresh atau klik tombol di bawah.`;
+        errorEl.style.color = 'var(--error)';
+      }
+      // Show fallback button
+      const fallbackBtn = document.getElementById('turnstile-fallback');
+      if (fallbackBtn) fallbackBtn.style.display = 'block';
+    };
+
+    // Show fallback if Turnstile doesn't load in 10s
+    setTimeout(() => {
+      if (!window.turnstile && !window.isTurnstileVerified) {
+        console.warn('⚠️ Turnstile script not loaded or blocked');
+        const fallbackBtn = document.getElementById('turnstile-fallback');
+        if (fallbackBtn) fallbackBtn.style.display = 'block';
+      }
+    }, 10000);
   </script>
+
+  <!-- 🔐 Cloudflare Turnstile Script -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <!-- 🔐 TURNSTILE VERIFICATION -->
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
-      <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak</p>
+      <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak. Tunggu sampe centang hijau muncul.</p>
       <div class="turnstile-widget">
         <div class="cf-turnstile"
              data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onVerifySuccess"
-             data-error-callback="onVerifyError"
-             data-theme="dark"
+             data-error-callback="onVerifyError"             data-theme="dark"
              data-size="normal">
         </div>
       </div>
-      <div id="turnstile-error" style="color:var(--error);font-size:0.9rem;margin-top:10px;min-height:20px;"></div>
+      <div id="turnstile-error" class="turnstile-error"></div>
+      <button id="turnstile-fallback" class="turnstile-fallback-btn">⚠️ Klik jika verifikasi stuck / gagal load</button>
     </div>
   </div>
 
   <!-- 📱 PHOTO POPUP MODAL (untuk browsing dari homepage) -->
-  <div id="photo-modal" class="modal hidden">    <div class="modal-content">
+  <div id="photo-modal" class="modal hidden">
+    <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo" />
       <video class="modal-media" id="modal-video" src="" controls playsinline></video>
@@ -820,8 +880,7 @@
         <div class="search-box">
           <input type="text" id="search-input" placeholder="🔍 Cari foto..." autocomplete="off">
         </div>
-        
-        <div class="filter-group">
+                <div class="filter-group">
           <button class="filter-btn active" data-filter="all">Semua</button>
           <button class="filter-btn" data-filter="photo">Foto</button>
           <button class="filter-btn" data-filter="video">Video</button>
@@ -831,7 +890,8 @@
   </header>
 
   <main class="main" id="main-content">
-    <div class="container">      <!-- Loading State -->
+    <div class="container">
+      <!-- Loading State -->
       <div id="loading" class="loading">
         <div class="loading-icon">⏳</div>
         <div>Loading bre, sabar dikit...</div>
@@ -870,7 +930,6 @@
       </div>
     </div>
   </main>
-
   <div id="toast" class="toast"></div>
 
   <script>
@@ -880,7 +939,8 @@
       // 🚫 Early exit if desktop blocked
       if (document.getElementById('desktop-block').style.display === 'flex') {
         return;
-      }      
+      }
+      
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
@@ -890,7 +950,6 @@
       };
 
       let allPhotos = [], filteredPhotos = [];
-      let isVerified = false;
       let currentPhoto = null;
       let videoObserver = null;
       let playingThumbnailVideo = null;
@@ -901,6 +960,7 @@
       const els = {
         turnstileModal: document.getElementById('turnstile-modal'),
         turnstileError: document.getElementById('turnstile-error'),
+        turnstileFallback: document.getElementById('turnstile-fallback'),
         
         photoModal: document.getElementById('photo-modal'),
         modalClose: document.getElementById('modal-close'),
@@ -918,8 +978,7 @@
         
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
-        errorMsg: document.getElementById('error-msg'),
-        
+        errorMsg: document.getElementById('error-msg'),        
         photoView: document.getElementById('photo-view'),
         viewImg: document.getElementById('view-img'),
         viewVideo: document.getElementById('view-video'),
@@ -929,7 +988,8 @@
         btnAppView: document.getElementById('btn-app-view'),
         btnShareView: document.getElementById('btn-share-view'),
         
-        gallerySection: document.getElementById('gallery-section'),        galleryGrid: document.getElementById('gallery-grid'),
+        gallerySection: document.getElementById('gallery-section'),
+        galleryGrid: document.getElementById('gallery-grid'),
         emptyState: document.getElementById('empty-state'),
         
         searchInput: document.getElementById('search-input'),
@@ -967,10 +1027,13 @@
       function initVideoObserver() {
         if (videoObserver) videoObserver.disconnect();
         
-        videoObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
+        videoObserver = new IntersectionObserver((entries) => {          entries.forEach(entry => {
             const video = entry.target;
-            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || !els.appOpenModal.classList.contains('hidden')) {
+            const isModalOpen = !els.photoModal.classList.contains('hidden');
+            const isViewOpen = !els.photoView.classList.contains('hidden');
+            const isAppModalOpen = !els.appOpenModal.classList.contains('hidden');
+            
+            if (isModalOpen || isViewOpen || isAppModalOpen) {
               video.pause();
               return;
             }
@@ -978,7 +1041,8 @@
             if (entry.isIntersecting) {
               video.muted = true;
               video.playsInline = true;
-              video.loop = true;              video.play().catch(() => { video.pause(); });
+              video.loop = true;
+              video.play().catch(() => { video.pause(); });
             } else {
               video.pause();
               video.currentTime = 0;
@@ -1012,24 +1076,6 @@
           playingThumbnailVideo = null;
         }
       }
-
-      // === TURNSTILE ===
-      window.onVerifySuccess = function(token) {
-        console.log('✓ Verified:', token);
-        els.turnstileError.textContent = '';
-        isVerified = true;
-        setTimeout(() => {
-          els.turnstileModal.classList.add('hidden');
-          document.body.classList.remove('modal-open');
-          initGallery();
-        }, 400);
-      };
-
-      window.onVerifyError = function() {
-        console.error('✗ Verify error');
-        els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';        setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
-      };
-
       // === SHOW PHOTO ===
       function showPhoto(photo, usePopup = true) {
         currentPhoto = photo;
@@ -1076,10 +1122,10 @@
         
         els.viewTitle.textContent = photo.title || `#${photo.name}`;
         els.viewImg.style.display = isVid ? 'none' : 'block';
-        els.viewVideo.style.display = isVid ? 'block' : 'none';        
+        els.viewVideo.style.display = isVid ? 'block' : 'none';
+        
         if (isVid) {
-          els.viewVideo.src = photo.url;
-          els.viewVideo.load();
+          els.viewVideo.src = photo.url;          els.viewVideo.load();
           els.viewImg.src = '';
         } else {
           els.viewImg.src = photo.url;
@@ -1125,36 +1171,30 @@
       }
 
       function handleViewVisibilityChange() {
-        if (document.hidden && !els.photoView.classList.contains('hidden')) {          // Natural navigation, don't force close
+        if (document.hidden && !els.photoView.classList.contains('hidden')) {
+          // Natural navigation, don't force close
         }
       }
-
       // === APP OPEN LOGIC WITH CONFIRMATION POPUP ===
       function openApp(photoId) {
-        // Show confirmation modal AFTER attempting to open app
         const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
         const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
         
-        // Try to open app via iframe (custom scheme)
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         iframe.src = schemeUrl;
         document.body.appendChild(iframe);
         
-        // Also try Android intent
         setTimeout(() => {
-          window.location.href = intentUrl;
+          try { window.location.href = intentUrl; } catch(e) {}
         }, 300);
         
-        // Show confirmation popup after short delay
         appOpenTimeout = setTimeout(() => {
           showAppOpenModal();
         }, 1200);
         
-        // Listen for visibility change (app opened)
         appOpenVisibilityHandler = () => {
           if (document.hidden) {
-            // App opened successfully, cancel the popup timer
             if (appOpenTimeout) clearTimeout(appOpenTimeout);
             hideAppOpenModal();
             document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
@@ -1162,7 +1202,6 @@
         };
         document.addEventListener('visibilitychange', appOpenVisibilityHandler);
         
-        // Cleanup iframe after attempt
         setTimeout(() => {
           if (document.body.contains(iframe)) {
             document.body.removeChild(iframe);
@@ -1174,9 +1213,8 @@
         els.appOpenModal.classList.remove('hidden');
         document.body.classList.add('modal-open');
         
-        // Setup button handlers        els.btnAppDownload.onclick = () => {
+        els.btnAppDownload.onclick = () => {
           hideAppOpenModal();
-          // Redirect to GitHub Releases for download
           window.location.href = CONFIG.FALLBACK_URL;
         };
         
@@ -1185,19 +1223,13 @@
           showToast('✅ Oke bre, tetap di web aja');
         };
         
-        // Close on backdrop click
-        els.appOpenModal.onclick = (e) => {
-          if (e.target === els.appOpenModal) {
-            hideAppOpenModal();
-          }
+        els.appOpenModal.onclick = (e) => {          if (e.target === els.appOpenModal) hideAppOpenModal();
         };
       }
 
       function hideAppOpenModal() {
         els.appOpenModal.classList.add('hidden');
         document.body.classList.remove('modal-open');
-        
-        // Cleanup listeners
         if (appOpenTimeout) clearTimeout(appOpenTimeout);
         if (appOpenVisibilityHandler) {
           document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
@@ -1210,10 +1242,9 @@
         const shareText = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
         
         if (navigator.share) {
-          navigator.share({
-            title: 'TKJ1 Gallery', 
-            text: shareText 
-          }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
+          navigator.share({ title: 'TKJ1 Gallery', text: shareText })
+            .then(() => showToast('✅ Berhasil dibagikan!'))
+            .catch(() => {});
         } else {
           navigator.clipboard.writeText(shareText)
             .then(() => showToast('🔗 Link copied!'))
@@ -1223,7 +1254,8 @@
 
       // === RENDER GALLERY ===
       function renderGallery(photos) {
-        els.galleryGrid.innerHTML = '';        
+        els.galleryGrid.innerHTML = '';
+        
         if (photos.length === 0) {
           els.emptyState.classList.remove('hidden');
           return;
@@ -1240,8 +1272,7 @@
             item.innerHTML = `
               <video class="gallery-thumb video-thumb" 
                      src="${photo.url}" 
-                     muted 
-                     preload="none"
+                     muted                      preload="none"
                      playsinline
                      loop></video>
               <div class="gallery-info">
@@ -1272,7 +1303,8 @@
             protectMedia(item.querySelector('img'));
           }
           
-          item.addEventListener('click', () => showPhoto(photo, true));          els.galleryGrid.appendChild(item);
+          item.addEventListener('click', () => showPhoto(photo, true));
+          els.galleryGrid.appendChild(item);
         });
       }
 
@@ -1289,15 +1321,17 @@
           const matchType = activeFilter === 'all' || 
             (activeFilter === 'video' && isVideo(p.url)) || 
             (activeFilter === 'photo' && !isVideo(p.url));
-          
-          return matchSearch && matchType;
+                    return matchSearch && matchType;
         });
         
         renderGallery(filteredPhotos);
       }
 
-      // === INIT ===
+      // === INIT GALLERY (Exposed globally for Turnstile) ===
       async function initGallery() {
+        if (window.galleryInitialized) return;
+        window.galleryInitialized = true;
+
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         const directPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
@@ -1321,7 +1355,8 @@
           
           filteredPhotos = [...allPhotos];
           
-          els.searchInput.addEventListener('input', applyFilters);          els.filterBtns.forEach(btn => {
+          els.searchInput.addEventListener('input', applyFilters);
+          els.filterBtns.forEach(btn => {
             btn.onclick = () => {
               els.filterBtns.forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
@@ -1335,8 +1370,7 @@
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
               showPhoto(photo, false);
-            } else {
-              els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
+            } else {              els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
             }
           } else {
@@ -1352,6 +1386,15 @@
           els.error.classList.remove('hidden');
         }
       }
+
+      // Expose initGallery globally for Turnstile callback
+      window.__initGallery = initGallery;
+
+      // Fallback button handler (if Turnstile stuck)
+      els.turnstileFallback.addEventListener('click', () => {
+        console.log('⚠️ Manual verification bypass triggered');
+        window.onVerifySuccess('manual-bypass');
+      });
 
       // Handle browser back/forward
       window.addEventListener('popstate', () => {
@@ -1370,5 +1413,6 @@
       });
 
     })();
-  </script></body>
+  </script>
+</body>
 </html>
