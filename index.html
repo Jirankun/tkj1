@@ -331,7 +331,6 @@
       user-select: none;
     }
     
-    /* Allow interaction with video in full view */
     .photo-view-media[controls] {
       pointer-events: auto;
       user-select: auto;
@@ -341,8 +340,8 @@
       padding: 24px;
     }
 
-    .photo-view-title {      font-size: 1.5rem;
-      font-weight: 700;
+    .photo-view-title {
+      font-size: 1.5rem;      font-weight: 700;
       margin-bottom: 12px;
     }
 
@@ -390,11 +389,21 @@
 
     .btn-secondary {
       background: var(--card-hover);
-      color: var(--text);      border: 1px solid var(--border);
-    }
+      color: var(--text);
+      border: 1px solid var(--border);    }
 
     .btn-secondary:hover {
       background: var(--border);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #ff6b7a;
+      box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
     }
 
     /* === MODAL (POPUP) === */
@@ -430,8 +439,7 @@
       top: 16px;
       right: 16px;
       width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      height: 40px;      border-radius: 50%;
       background: var(--bg);
       border: 1px solid var(--border);
       color: var(--text);
@@ -439,7 +447,8 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;      transition: all 0.2s;
+      justify-content: center;
+      transition: all 0.2s;
       z-index: 10;
     }
 
@@ -458,7 +467,6 @@
       user-select: none;
     }
     
-    /* Allow interaction with video in modal */
     .modal-media[controls] {
       pointer-events: auto;
       user-select: auto;
@@ -480,15 +488,91 @@
     }
 
     .modal-actions {
+      display: flex;      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* === APP OPEN CONFIRMATION MODAL === */
+    .app-open-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .app-open-modal.hidden {
+      display: none !important;
+    }
+
+    .app-open-box {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid var(--border);
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .app-open-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .app-open-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .app-open-desc {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .app-open-actions {
       display: flex;
       gap: 12px;
-      flex-wrap: wrap;
+      flex-direction: column;
+    }
+
+    .app-open-actions .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 1rem;
     }
 
     /* === TURNSTILE MODAL === */
     .turnstile-modal {
       position: fixed;
-      inset: 0;      background: rgba(0, 0, 0, 0.9);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -502,8 +586,7 @@
       border-radius: 20px;
       text-align: center;
       max-width: 450px;
-      width: 100%;
-      border: 1px solid var(--border);
+      width: 100%;      border: 1px solid var(--border);
     }
 
     .turnstile-title {
@@ -537,7 +620,8 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .error {
@@ -551,8 +635,7 @@
 
     /* === EMPTY STATE === */
     .empty-state {
-      text-align: center;
-      padding: 60px 20px;
+      text-align: center;      padding: 60px 20px;
       color: var(--text-muted);
       grid-column: 1 / -1;
     }
@@ -586,7 +669,8 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* === RESPONSIVE === */    @media (max-width: 768px) {
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
         align-items: stretch;
@@ -601,13 +685,13 @@
         order: 1;
         justify-content: center;
       }
-
       .gallery-grid {
         grid-template-columns: 1fr;
       }
 
       .photo-view-actions,
-      .modal-actions {
+      .modal-actions,
+      .app-open-actions {
         flex-direction: column;
       }
 
@@ -616,7 +700,8 @@
         justify-content: center;
       }
 
-      .turnstile-box {
+      .turnstile-box,
+      .app-open-box {
         padding: 30px 20px;
       }
     }
@@ -635,6 +720,7 @@
       background: var(--border);
       border-radius: 4px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: var(--accent);
     }
@@ -648,7 +734,6 @@
     <p>AKSES DITOLAK! Website ini cuma buat Android bre!<br/>Tutup halaman ini SEKARANG!</p>
     <button class="close-btn" onclick="window.close(); window.location.href='about:blank';">TUTUP SEKARANG</button>
   </div>
-
   <!-- ⚠️ PROTEKSI KONTEN -->
   <script>
     (function blockDownloads() {
@@ -684,7 +769,8 @@
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
       <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak</p>
       <div class="turnstile-widget">
-        <div class="cf-turnstile"             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
+        <div class="cf-turnstile"
+             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onVerifySuccess"
              data-error-callback="onVerifyError"
              data-theme="dark"
@@ -696,8 +782,7 @@
   </div>
 
   <!-- 📱 PHOTO POPUP MODAL (untuk browsing dari homepage) -->
-  <div id="photo-modal" class="modal hidden">
-    <div class="modal-content">
+  <div id="photo-modal" class="modal hidden">    <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo" />
       <video class="modal-media" id="modal-video" src="" controls playsinline></video>
@@ -709,6 +794,19 @@
           <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
           <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📱 APP OPEN CONFIRMATION MODAL -->
+  <div id="app-open-modal" class="app-open-modal hidden">
+    <div class="app-open-box">
+      <div class="app-open-icon">📱</div>
+      <h3 class="app-open-title">Aplikasi Dibuka...</h3>
+      <p class="app-open-desc">Jika aplikasi masih belum terbuka, silahkan download dan install aplikasi terlebih dahulu.</p>
+      <div class="app-open-actions">
+        <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
+        <button id="btn-app-cancel" class="btn btn-secondary">❌ Batal</button>
       </div>
     </div>
   </div>
@@ -795,7 +893,9 @@
       let isVerified = false;
       let currentPhoto = null;
       let videoObserver = null;
-      let playingThumbnailVideo = null; // Track which thumbnail video is playing
+      let playingThumbnailVideo = null;
+      let appOpenTimeout = null;
+      let appOpenVisibilityHandler = null;
 
       // DOM Elements
       const els = {
@@ -812,6 +912,10 @@
         btnAppModal: document.getElementById('btn-app-modal'),
         btnShareModal: document.getElementById('btn-share-modal'),
         
+        appOpenModal: document.getElementById('app-open-modal'),
+        btnAppDownload: document.getElementById('btn-app-download'),
+        btnAppCancel: document.getElementById('btn-app-cancel'),
+        
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
         errorMsg: document.getElementById('error-msg'),
@@ -825,13 +929,13 @@
         btnAppView: document.getElementById('btn-app-view'),
         btnShareView: document.getElementById('btn-share-view'),
         
-        gallerySection: document.getElementById('gallery-section'),
-        galleryGrid: document.getElementById('gallery-grid'),
+        gallerySection: document.getElementById('gallery-section'),        galleryGrid: document.getElementById('gallery-grid'),
         emptyState: document.getElementById('empty-state'),
         
         searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'),
-        toast: document.getElementById('toast'),        mainHeader: document.getElementById('main-header'),
+        toast: document.getElementById('toast'),
+        mainHeader: document.getElementById('main-header'),
         mainContent: document.getElementById('main-content')
       };
 
@@ -866,8 +970,7 @@
         videoObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             const video = entry.target;
-            // Don't auto-play if modal or full view is open
-            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden')) {
+            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || !els.appOpenModal.classList.contains('hidden')) {
               video.pause();
               return;
             }
@@ -875,12 +978,10 @@
             if (entry.isIntersecting) {
               video.muted = true;
               video.playsInline = true;
-              video.loop = true;
-              video.play().catch(() => {
-                video.pause();
-              });
+              video.loop = true;              video.play().catch(() => { video.pause(); });
             } else {
-              video.pause();              video.currentTime = 0;
+              video.pause();
+              video.currentTime = 0;
             }
           });
         }, { threshold: 0.5 });
@@ -892,7 +993,6 @@
         }
       }
 
-      // Pause all gallery videos
       function pauseAllGalleryVideos() {
         document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => {
           if (!vid.paused) {
@@ -902,13 +1002,10 @@
         });
       }
 
-      // Resume thumbnail video if it was playing
       function resumeThumbnailVideo() {
         if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) {
-          // Check if still in viewport
           const rect = playingThumbnailVideo.getBoundingClientRect();
           const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-          
           if (isInView) {
             playingThumbnailVideo.play().catch(() => {});
           }
@@ -921,7 +1018,6 @@
         console.log('✓ Verified:', token);
         els.turnstileError.textContent = '';
         isVerified = true;
-        
         setTimeout(() => {
           els.turnstileModal.classList.add('hidden');
           document.body.classList.remove('modal-open');
@@ -929,21 +1025,19 @@
         }, 400);
       };
 
-      window.onVerifyError = function() {        console.error('✗ Verify error');
-        els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';
-        setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
+      window.onVerifyError = function() {
+        console.error('✗ Verify error');
+        els.turnstileError.textContent = 'Verifikasi gagal. Coba lagi bre.';        setTimeout(() => { if (window.turnstile) turnstile.reset(); }, 3000);
       };
 
-      // === SHOW PHOTO (Popup vs Full Page) ===
+      // === SHOW PHOTO ===
       function showPhoto(photo, usePopup = true) {
         currentPhoto = photo;
         const isVid = isVideo(photo.url);
         
         if (usePopup) {
-          // Pause gallery videos before opening modal
           pauseAllGalleryVideos();
           
-          // Show as popup
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = isVid ? 'none' : 'block';
           els.modalVideo.style.display = isVid ? 'block' : 'none';
@@ -952,7 +1046,6 @@
             els.modalVideo.src = photo.url;
             els.modalVideo.load();
             els.modalImg.src = '';
-            // Video will play when user taps play button (browser policy)
           } else {
             els.modalImg.src = photo.url;
             els.modalVideo.src = '';
@@ -965,28 +1058,25 @@
           els.photoModal.classList.remove('hidden');
           document.body.classList.add('modal-open');
           
-          // Setup buttons
           els.btnAppModal.onclick = () => openApp(photo.name);
           els.btnShareModal.onclick = () => sharePhoto(photo);
           els.modalClose.onclick = closeModal;
           els.photoModal.onclick = (e) => { if (e.target === els.photoModal) closeModal(); };
           
         } else {
-          // Show as full page (direct link) - NOT POPUP
           showFullPhotoView(photo);
         }
       }
 
       function showFullPhotoView(photo) {
-        // Hide header for full view focus        els.mainHeader.classList.add('hidden');
+        els.mainHeader.classList.add('hidden');
         els.mainContent.classList.add('full-view');
         
         const isVid = isVideo(photo.url);
         
         els.viewTitle.textContent = photo.title || `#${photo.name}`;
         els.viewImg.style.display = isVid ? 'none' : 'block';
-        els.viewVideo.style.display = isVid ? 'block' : 'none';
-        
+        els.viewVideo.style.display = isVid ? 'block' : 'none';        
         if (isVid) {
           els.viewVideo.src = photo.url;
           els.viewVideo.load();
@@ -1004,90 +1094,115 @@
         els.photoView.classList.remove('hidden');
         document.body.classList.add('view-open');
         
-        // Setup buttons - ONLY Share & Open App (NO back button)
         els.btnAppView.onclick = () => openApp(photo.name);
         els.btnShareView.onclick = () => sharePhoto(photo);
         
-        // Auto-close logic for safety
         document.addEventListener('visibilitychange', handleViewVisibilityChange);
-        
         window.scrollTo(0, 0);
       }
 
       function closeModal() {
         els.photoModal.classList.add('hidden');
         document.body.classList.remove('modal-open');
-        
-        // Stop modal video
         els.modalVideo.pause();
         els.modalVideo.src = '';
         els.modalImg.src = '';
-        
-        // Resume thumbnail video if it was playing
         resumeThumbnailVideo();
       }
 
-      function closeFullView() {        els.photoView.classList.add('hidden');
+      function closeFullView() {
+        els.photoView.classList.add('hidden');
         els.gallerySection.classList.remove('hidden');
         els.mainHeader.classList.remove('hidden');
         els.mainContent.classList.remove('full-view');
         document.body.classList.remove('view-open');
-        
-        // Cleanup
         els.viewVideo.pause();
         els.viewVideo.src = '';
         els.viewImg.src = '';
         document.removeEventListener('visibilitychange', handleViewVisibilityChange);
         window.onbeforeunload = null;
-        
-        // Go back to gallery
         window.history.pushState({}, '', '/');
       }
 
       function handleViewVisibilityChange() {
-        if (document.hidden && !els.photoView.classList.contains('hidden')) {
-          // User switched away - for safety, don't auto-close anymore
-          // Just let them navigate naturally
+        if (document.hidden && !els.photoView.classList.contains('hidden')) {          // Natural navigation, don't force close
         }
       }
 
-      // === DEEP LINK / APP OPEN (Fixed - No weird GitHub redirect) ===
+      // === APP OPEN LOGIC WITH CONFIRMATION POPUP ===
       function openApp(photoId) {
+        // Show confirmation modal AFTER attempting to open app
         const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
+        const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
         
-        // Try custom scheme directly
-        let hasOpened = false;
-        
-        // Create invisible iframe to trigger scheme
+        // Try to open app via iframe (custom scheme)
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         iframe.src = schemeUrl;
         document.body.appendChild(iframe);
         
-        // Fallback timeout - but DON'T redirect to GitHub, just stay on page
+        // Also try Android intent
         setTimeout(() => {
-          if (!document.hidden && !hasOpened) {
-            // App didn't open, but we stay on page (no annoying redirect)
-            showToast('📱 Kalau app belum kebuka, cek dulu udah install belum bre!');
-          }
-          document.body.removeChild(iframe);
-        }, 1500);
+          window.location.href = intentUrl;
+        }, 300);
         
-        // Detect if page was hidden (app opened)
-        const onVisibilityChange = () => {
+        // Show confirmation popup after short delay
+        appOpenTimeout = setTimeout(() => {
+          showAppOpenModal();
+        }, 1200);
+        
+        // Listen for visibility change (app opened)
+        appOpenVisibilityHandler = () => {
           if (document.hidden) {
-            hasOpened = true;            document.removeEventListener('visibilitychange', onVisibilityChange);
+            // App opened successfully, cancel the popup timer
+            if (appOpenTimeout) clearTimeout(appOpenTimeout);
+            hideAppOpenModal();
+            document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
           }
         };
-        document.addEventListener('visibilitychange', onVisibilityChange);
+        document.addEventListener('visibilitychange', appOpenVisibilityHandler);
         
-        // Also try Android intent as backup
+        // Cleanup iframe after attempt
         setTimeout(() => {
-          if (!hasOpened) {
-            const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
-            window.location.href = intentUrl;
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
           }
-        }, 800);
+        }, 2000);
+      }
+
+      function showAppOpenModal() {
+        els.appOpenModal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        
+        // Setup button handlers        els.btnAppDownload.onclick = () => {
+          hideAppOpenModal();
+          // Redirect to GitHub Releases for download
+          window.location.href = CONFIG.FALLBACK_URL;
+        };
+        
+        els.btnAppCancel.onclick = () => {
+          hideAppOpenModal();
+          showToast('✅ Oke bre, tetap di web aja');
+        };
+        
+        // Close on backdrop click
+        els.appOpenModal.onclick = (e) => {
+          if (e.target === els.appOpenModal) {
+            hideAppOpenModal();
+          }
+        };
+      }
+
+      function hideAppOpenModal() {
+        els.appOpenModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+        
+        // Cleanup listeners
+        if (appOpenTimeout) clearTimeout(appOpenTimeout);
+        if (appOpenVisibilityHandler) {
+          document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
+          appOpenVisibilityHandler = null;
+        }
       }
 
       // === SHARE ===
@@ -1108,8 +1223,7 @@
 
       // === RENDER GALLERY ===
       function renderGallery(photos) {
-        els.galleryGrid.innerHTML = '';
-        
+        els.galleryGrid.innerHTML = '';        
         if (photos.length === 0) {
           els.emptyState.classList.remove('hidden');
           return;
@@ -1125,7 +1239,8 @@
           if (isVid) {
             item.innerHTML = `
               <video class="gallery-thumb video-thumb" 
-                     src="${photo.url}"                      muted 
+                     src="${photo.url}" 
+                     muted 
                      preload="none"
                      playsinline
                      loop></video>
@@ -1157,8 +1272,7 @@
             protectMedia(item.querySelector('img'));
           }
           
-          item.addEventListener('click', () => showPhoto(photo, true));
-          els.galleryGrid.appendChild(item);
+          item.addEventListener('click', () => showPhoto(photo, true));          els.galleryGrid.appendChild(item);
         });
       }
 
@@ -1174,7 +1288,8 @@
           
           const matchType = activeFilter === 'all' || 
             (activeFilter === 'video' && isVideo(p.url)) || 
-            (activeFilter === 'photo' && !isVideo(p.url));          
+            (activeFilter === 'photo' && !isVideo(p.url));
+          
           return matchSearch && matchType;
         });
         
@@ -1198,7 +1313,6 @@
           
           if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
           
-          // Sort by name/number
           allPhotos.sort((a, b) => {
             const na = parseInt(a.name), nb = parseInt(b.name);
             if (!isNaN(na) && !isNaN(nb)) return na - nb;
@@ -1207,9 +1321,7 @@
           
           filteredPhotos = [...allPhotos];
           
-          // Search & filter events
-          els.searchInput.addEventListener('input', applyFilters);
-          els.filterBtns.forEach(btn => {
+          els.searchInput.addEventListener('input', applyFilters);          els.filterBtns.forEach(btn => {
             btn.onclick = () => {
               els.filterBtns.forEach(b => b.classList.remove('active'));
               btn.classList.add('active');
@@ -1219,16 +1331,15 @@
           
           els.loading.classList.add('hidden');
           
-          // Check if direct link
           if (directPhotoName) {
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
-              showPhoto(photo, false); // false = full page view            } else {
+              showPhoto(photo, false);
+            } else {
               els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
             }
           } else {
-            // Init video observer for gallery
             initVideoObserver();
             els.gallerySection.classList.remove('hidden');
             renderGallery(filteredPhotos);
@@ -1250,14 +1361,14 @@
         }
       });
 
-      // Close modal on escape key
+      // Close modals on escape key
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !els.photoModal.classList.contains('hidden')) {
-          closeModal();
+        if (e.key === 'Escape') {
+          if (!els.photoModal.classList.contains('hidden')) closeModal();
+          if (!els.appOpenModal.classList.contains('hidden')) hideAppOpenModal();
         }
       });
 
     })();
-  </script>
-</body>
+  </script></body>
 </html>
