@@ -1,4 +1,4 @@
-8<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -9,10 +9,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>TKJ1 Gallery</title>
   
-  <!-- ⚠️ IKLAN SCRIPT (Jangan diubah) -->
+  <!-- ⚠️ IKLAN SCRIPT (JANGAN DIUBAH BRE, NANTI RUGI) -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   
-  <!-- 🎨 Google Fonts -->
+  <!-- 🎨 Google Fonts - Biar font-nya gak norak -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -47,11 +47,11 @@
       min-height: 100vh;
       line-height: 1.6;
       overflow-x: hidden;
-    }
-    body.modal-open { overflow: hidden; }
+    }    body.modal-open { overflow: hidden; }
     body.view-open { overflow: hidden; }
+    body.comments-fullscreen { overflow: hidden; }
 
-    /* === DESKTOP BLOCK SCREEN (HORROR MODE) === */
+    /* === DESKTOP BLOCK SCREEN (HORROR MODE - BUAT NGUSIR PENGGUNA PC) === */
     #desktop-block {
       position: fixed;
       inset: 0;
@@ -96,8 +96,7 @@
       margin-bottom: 30px;
       font-weight: 600;
     }
-    #desktop-block .close-btn {
-      padding: 15px 40px;
+    #desktop-block .close-btn {      padding: 15px 40px;
       background: #ff0000;
       color: #000;
       border: none;
@@ -113,7 +112,7 @@
       50% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); }
     }
 
-    /* === UTILITIES === */
+    /* === UTILITIES - CLASS BANTUAN === */
     .hidden { 
       display: none !important; 
       visibility: hidden !important;
@@ -127,7 +126,7 @@
       padding: 0 20px;
     }
 
-    /* === HEADER === */
+    /* === HEADER - NAVIGASI ATAS === */
     .header {
       background: var(--card);
       border-bottom: 1px solid var(--border);
@@ -145,8 +144,8 @@
 
     .header-content {
       display: flex;
-      align-items: center;      justify-content: space-between;
-      gap: 20px;
+      align-items: center;
+      justify-content: space-between;      gap: 20px;
       flex-wrap: wrap;
     }
 
@@ -194,8 +193,8 @@
     .filter-btn {
       padding: 10px 18px;
       background: transparent;
-      border: 1px solid var(--border);      border-radius: 8px;
-      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;      color: var(--text-muted);
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
@@ -209,7 +208,30 @@
       border-color: var(--accent);
     }
 
-    /* === MAIN CONTENT === */
+    /* 💬 COMMENTS TRIGGER BUTTON - TOMBOL BUKA KOMENTAR */
+    .comments-trigger {
+      padding: 10px 18px;
+      background: linear-gradient(135deg, var(--accent), #00a8ff);
+      border: none;
+      border-radius: 8px;
+      color: var(--bg);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .comments-trigger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3);
+    }
+
+    /* === MAIN CONTENT - AREA UTAMA === */
     .main {
       padding: 30px 0;
       min-height: calc(100vh - 200px);
@@ -221,8 +243,7 @@
       min-height: 100vh;
     }
 
-    /* === GALLERY GRID === */
-    .gallery-grid {
+    /* === GALLERY GRID - TEMPAT FOTO-FOTO MUNCUL === */    .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
@@ -243,6 +264,7 @@
       border-color: var(--accent);
       box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
     }
+
     .gallery-thumb {
       width: 100%;
       aspect-ratio: 4/3;
@@ -270,7 +292,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .gallery-meta {
       display: flex;
       gap: 12px;
@@ -292,7 +313,199 @@
     }
 
     .badge-video {
-      background: rgba(0, 168, 255, 0.15);      color: #00a8ff;
+      background: rgba(0, 168, 255, 0.15);
+      color: #00a8ff;
+    }
+
+    /* === GISCUS HIDDEN SECTION - DEFAULT TERSEMBUNYI === */
+    #giscus-hidden-section {
+      display: none; /* Selalu hidden, cuma buat placeholder */
+    }
+
+    /* === GISCUS FULLSCREEN MODAL - MODE KHUSUS DEV === */
+    #giscus-fullscreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #giscus-fullscreen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .giscus-fullscreen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .giscus-fullscreen-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .giscus-fullscreen-title .badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+    }
+
+    .giscus-close-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--error);
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .giscus-close-btn:hover {
+      background: #ff6b7a;
+      transform: rotate(90deg);
+    }
+
+    .giscus-fullscreen-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .giscus-fullscreen-container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .giscus-iframe-wrapper {
+      width: 100%;
+      min-height: 600px;
+      background: var(--bg);
+    }
+
+    .giscus-iframe-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+      border: none;
+      display: block;
+    }
+
+    .giscus-login-hint {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--card-hover);
+    }
+
+    /* === CONFIRMATION MODAL - POPUP LOGIN WARNING === */
+    .confirm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .confirm-modal.hidden {
+      display: none !important;
+    }
+    .confirm-box {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+      border: 1px solid var(--border);
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .confirm-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .confirm-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .confirm-desc {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    .confirm-desc strong {
+      color: var(--error);
+      font-weight: 700;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 12px;      flex-direction: column;
+    }
+
+    .confirm-actions .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    .btn-cancel {
+      background: var(--card-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-cancel:hover {
+      background: var(--border);
     }
 
     /* === DIRECT PHOTO VIEW (FULL PAGE) === */
@@ -324,8 +537,7 @@
       max-height: 65vh;
       object-fit: contain;
       background: var(--bg);
-      display: block;
-      user-select: none;
+      display: block;      user-select: none;
     }
     
     .photo-view-media[controls] {
@@ -354,7 +566,7 @@
       flex-wrap: wrap;
     }
 
-    /* === BUTTONS === */
+    /* === BUTTONS - TOMBOL-TOMBOL KEREN === */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -374,8 +586,7 @@
     .btn:hover { transform: translateY(-2px); }
     .btn:active { transform: translateY(0); }
 
-    .btn-primary {
-      background: var(--accent);
+    .btn-primary {      background: var(--accent);
       color: var(--bg);
     }
 
@@ -390,7 +601,8 @@
       border: 1px solid var(--border);
     }
 
-    .btn-secondary:hover {      background: var(--border);
+    .btn-secondary:hover {
+      background: var(--border);
     }
 
     .btn-danger {
@@ -403,7 +615,7 @@
       box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
     }
 
-    /* === MODAL (POPUP) === */
+    /* === MODAL (POPUP) - WINDOW MENGAMBANG === */
     .modal {
       position: fixed;
       inset: 0;
@@ -423,8 +635,7 @@
     .modal-content {
       background: var(--card);
       border-radius: 20px;
-      max-width: 800px;
-      width: 100%;
+      max-width: 800px;      width: 100%;
       max-height: 90vh;
       overflow-y: auto;
       border: 1px solid var(--border);
@@ -439,7 +650,8 @@
       height: 40px;
       border-radius: 50%;
       background: var(--bg);
-      border: 1px solid var(--border);      color: var(--text);
+      border: 1px solid var(--border);
+      color: var(--text);
       font-size: 1.5rem;
       cursor: pointer;
       display: flex;
@@ -472,7 +684,6 @@
     .modal-body {
       padding: 24px;
     }
-
     .modal-title {
       font-size: 1.3rem;
       font-weight: 700;
@@ -489,6 +700,7 @@
       gap: 12px;
       flex-wrap: wrap;
     }
+
     /* === APP OPEN CONFIRMATION MODAL === */
     .app-open-modal {
       position: fixed;
@@ -521,7 +733,6 @@
       from { opacity: 0; transform: translateY(-20px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-
     .app-open-icon {
       font-size: 3rem;
       margin-bottom: 16px;
@@ -537,7 +748,8 @@
       font-size: 1.3rem;
       font-weight: 700;
       margin-bottom: 12px;
-      color: var(--accent);    }
+      color: var(--accent);
+    }
 
     .app-open-desc {
       color: var(--text-muted);
@@ -559,7 +771,7 @@
       font-size: 1rem;
     }
 
-    /* === TURNSTILE MODAL === */
+    /* === TURNSTILE MODAL - VERIFIKASI ANTI BOT === */
     .turnstile-modal {
       position: fixed;
       inset: 0;
@@ -570,7 +782,6 @@
       z-index: 9999;
       padding: 20px;
     }
-
     .turnstile-box {
       background: var(--card);
       padding: 40px 30px;
@@ -620,13 +831,12 @@
       display: none;
       transition: all 0.2s;
     }
-
     .turnstile-fallback-btn:hover {
       border-color: var(--accent);
       color: var(--accent);
     }
 
-    /* === LOADING & ERROR === */
+    /* === LOADING & ERROR - STATUS LOAD === */
     .loading, .error {
       text-align: center;
       padding: 60px 20px;
@@ -635,7 +845,8 @@
     .loading-icon {
       font-size: 3rem;
       margin-bottom: 16px;
-      animation: pulse 1.5s infinite;    }
+      animation: pulse 1.5s infinite;
+    }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -651,7 +862,7 @@
       margin-bottom: 16px;
     }
 
-    /* === EMPTY STATE === */
+    /* === EMPTY STATE - KALO GAK ADA FOTO === */
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -665,12 +876,11 @@
       opacity: 0.5;
     }
 
-    /* === TOAST === */
+    /* === TOAST - NOTIFIKASI KECIL === */
     .toast {
       position: fixed;
       bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
+      left: 50%;      transform: translateX(-50%) translateY(100px);
       background: var(--card);
       color: var(--text);
       padding: 14px 28px;
@@ -684,10 +894,11 @@
       text-align: center;
     }
 
-    .toast.show {      transform: translateX(-50%) translateY(0);
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
     }
 
-    /* === RESPONSIVE === */
+    /* === RESPONSIVE - BUAT HP LAYAR KECIL === */
     @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
@@ -710,7 +921,8 @@
 
       .photo-view-actions,
       .modal-actions,
-      .app-open-actions {
+      .app-open-actions,
+      .confirm-actions {
         flex-direction: column;
       }
 
@@ -718,14 +930,26 @@
         width: 100%;
         justify-content: center;
       }
-
       .turnstile-box,
-      .app-open-box {
+      .app-open-box,
+      .confirm-box {
         padding: 30px 20px;
+      }
+
+      .giscus-fullscreen-header {
+        padding: 12px 16px;
+      }
+
+      .giscus-fullscreen-title {
+        font-size: 1rem;
+      }
+
+      .giscus-fullscreen-body {
+        padding: 10px;
       }
     }
 
-    /* === SCROLLBAR === */
+    /* === SCROLLBAR - BIAR GAK JELEK === */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
@@ -746,22 +970,21 @@
 </head>
 <body>
 
-  <!-- 🚫 DESKTOP BLOCK SCREEN -->
+  <!-- 🚫 DESKTOP BLOCK SCREEN - NGUSIR PENGGUNA PC -->
   <div id="desktop-block">
     <h1>⚠️ FAILED TO OPEN PAGE ⚠️</h1>
     <p>AKSES DITOLAK! Website ini cuma buat Android bre!<br/>Tutup halaman ini SEKARANG!</p>
     <button class="close-btn" onclick="window.close(); window.location.href='about:blank';">TUTUP SEKARANG</button>
   </div>
 
-  <!-- ⚠️ PROTEKSI KONTEN -->
-  <script>
-    (function blockDownloads() {
+  <!-- ⚠️ PROTEKSI KONTEN - ANTI KLIK KANAN & DOWNLOAD -->
+  <script>    (function blockDownloads() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
     })();
 
-    // 🚫 DESKTOP DETECTION & BLOCK
+    // 🚫 DESKTOP DETECTION & BLOCK - DETEKSI PC LANGSUNG BLOKIR
     (function detectAndBlockDesktop() {
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isDesktop = !isMobile && window.innerWidth > 768;
@@ -781,13 +1004,14 @@
       }
     })();
 
-    // 🔐 GLOBAL TURNSTILE CALLBACKS (MUST BE ON WINDOW BEFORE SCRIPT LOADS)
-    window.onVerifySuccess = function(token) {      console.log('✅ Turnstile Verified:', token);
+    // 🔐 GLOBAL TURNSTILE CALLBACKS - WAJIB ADA SEBELUM SCRIPT LOAD
+    window.onVerifySuccess = function(token) {
+      console.log('✅ Turnstile Verified:', token);
       window.isTurnstileVerified = true;
       
       const modal = document.getElementById('turnstile-modal');
       if (modal) {
-        modal.style.display = 'none'; // Force hide
+        modal.style.display = 'none';
         modal.classList.add('hidden');
       }
       document.body.classList.remove('modal-open');
@@ -803,13 +1027,11 @@
       if (errorEl) {
         errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'}). Coba refresh atau klik tombol di bawah.`;
         errorEl.style.color = 'var(--error)';
-      }
-      // Show fallback button
-      const fallbackBtn = document.getElementById('turnstile-fallback');
+      }      const fallbackBtn = document.getElementById('turnstile-fallback');
       if (fallbackBtn) fallbackBtn.style.display = 'block';
     };
 
-    // Show fallback if Turnstile doesn't load in 10s
+    // Fallback kalo Turnstile gak load dalam 10 detik
     setTimeout(() => {
       if (!window.turnstile && !window.isTurnstileVerified) {
         console.warn('⚠️ Turnstile script not loaded or blocked');
@@ -819,10 +1041,10 @@
     }, 10000);
   </script>
 
-  <!-- 🔐 Cloudflare Turnstile Script -->
+  <!-- 🔐 Cloudflare Turnstile Script - ANTI BOT BANGSAT -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-  <!-- 🔐 TURNSTILE VERIFICATION -->
+  <!-- 🔐 TURNSTILE VERIFICATION MODAL -->
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
@@ -831,7 +1053,8 @@
         <div class="cf-turnstile"
              data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
              data-callback="onVerifySuccess"
-             data-error-callback="onVerifyError"             data-theme="dark"
+             data-error-callback="onVerifyError"
+             data-theme="dark"
              data-size="normal">
         </div>
       </div>
@@ -839,6 +1062,8 @@
       <button id="turnstile-fallback" class="turnstile-fallback-btn">⚠️ Klik jika verifikasi stuck / gagal load</button>
     </div>
   </div>
+
+  <!-- 💬 GISCUS SCRIPT - LOAD DI BACKGROUND (JANGAN DIHAPUS) -->
   <script src="https://giscus.app/client.js"
         data-repo="Jirankun/tkj1"
         data-repo-id="R_kgDOQWmG8Q"
@@ -851,11 +1076,10 @@
         data-input-position="top"
         data-theme="dark_tritanopia"
         data-lang="id"
-        crossorigin="anonymous"
-        async>
+        crossorigin="anonymous"        async>
   </script>
 
-  <!-- 📱 PHOTO POPUP MODAL (untuk browsing dari homepage) -->
+  <!-- 📱 PHOTO POPUP MODAL - BUAT PREVIEW FOTO -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
@@ -873,7 +1097,7 @@
     </div>
   </div>
 
-  <!-- 📱 APP OPEN CONFIRMATION MODAL -->
+  <!-- 📱 APP OPEN CONFIRMATION MODAL - KONFIRMASI BUKA APP -->
   <div id="app-open-modal" class="app-open-modal hidden">
     <div class="app-open-box">
       <div class="app-open-icon">📱</div>
@@ -886,7 +1110,45 @@
     </div>
   </div>
 
-  <!-- 📱 MAIN APP -->
+  <!-- 💬 CONFIRMATION MODAL - POPUP LOGIN GITHUB WARNING -->
+  <div id="confirm-modal" class="confirm-modal hidden">
+    <div class="confirm-box">
+      <div class="confirm-icon">🔐</div>
+      <h3 class="confirm-title">⚠️ Wajib Login GitHub</h3>
+      <p class="confirm-desc">
+        <strong>Elu wajib login GitHub</strong> buat make fitur ini.<br/><br/>
+        Ini cuma buat <strong>diskusi fitur layanan TKJ OnE</strong> aja bre, bukan buat spam atau ngomong ngalor-ngidul.<br/><br/>
+        Kalo elu Dev atau contributor, silakan lanjut. Kalo cuma iseng, mending balik ke gallery.
+      </p>
+      <div class="confirm-actions">
+        <button id="btn-confirm-ok" class="btn btn-primary">✅ Oke, Buka Chat</button>
+        <button id="btn-confirm-cancel" class="btn btn-cancel">❌ Batal, Kembali</button>
+      </div>
+    </div>
+  </div>
+  <!-- 💬 GISCUS FULLSCREEN MODAL - MODE KHUSUS DEV -->
+  <div id="giscus-fullscreen" class="giscus-fullscreen">
+    <div class="giscus-fullscreen-header">
+      <div class="giscus-fullscreen-title">
+        💬 Diskusi Fitur TKJ OnE
+        <span class="badge badge-video">DEV ONLY</span>
+      </div>
+      <button class="giscus-close-btn" id="giscus-close" aria-label="Tutup">×</button>
+    </div>
+    <div class="giscus-login-hint">
+      🔐 Login GitHub dulu di iframe bawah kalo belum, baru bisa komen bre!
+    </div>
+    <div class="giscus-fullscreen-body">
+      <div class="giscus-fullscreen-container">
+        <div class="giscus-iframe-wrapper">
+          <!-- Giscus akan di-inject di sini via JS -->
+          <div id="giscus-iframe-target"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📱 MAIN APP - STRUKTUR UTAMA -->
   <header class="header" id="main-header">
     <div class="container">
       <div class="header-content">
@@ -895,10 +1157,13 @@
         <div class="search-box">
           <input type="text" id="search-input" placeholder="🔍 Cari foto..." autocomplete="off">
         </div>
-                <div class="filter-group">
+        
+        <div class="filter-group">
           <button class="filter-btn active" data-filter="all">Semua</button>
           <button class="filter-btn" data-filter="photo">Foto</button>
           <button class="filter-btn" data-filter="video">Video</button>
+          <!-- 💬 TOMBOL BUKA KOMENTAR -->
+          <button class="comments-trigger" id="btn-open-comments">💬 Diskusi</button>
         </div>
       </div>
     </div>
@@ -906,19 +1171,18 @@
 
   <main class="main" id="main-content">
     <div class="container">
-      <!-- Loading State -->
+      <!-- Loading State - TUNGGU DULU BRE -->
       <div id="loading" class="loading">
         <div class="loading-icon">⏳</div>
-        <div>Loading bre, sabar dikit...</div>
-      </div>
+        <div>Loading bre, sabar dikit...</div>      </div>
 
-      <!-- Error State -->
+      <!-- Error State - KALO ADA MASALAH -->
       <div id="error" class="error hidden">
         <div class="error-icon">❌</div>
         <div id="error-msg"></div>
       </div>
 
-      <!-- Direct Photo View (Full Page) -->
+      <!-- Direct Photo View (Full Page) - LIHAT FOTO FULL SCREEN -->
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
           <img class="photo-view-media" id="view-img" src="" alt="Photo" />
@@ -935,33 +1199,54 @@
         </div>
       </div>
 
-      <!-- Gallery Grid -->
+      <!-- Gallery Grid - INI TEMPAT FOTO-FOTO MUNCUL BRE -->
       <div id="gallery-section" class="hidden">
         <div id="gallery-grid" class="gallery-grid"></div>
         <div id="empty-state" class="empty-state hidden">
           <div class="empty-icon">🔍</div>
           <div>Gak ada foto yang cocok, bre!</div>
         </div>
+
+        <!-- 💬 GISCUS HIDDEN SECTION - DEFAULT TERSEMBUNYI, CUMA PLACEHOLDER -->
+        <div id="giscus-hidden-section">
+          <div class="giscus" data-giscus-loaded="false"></div>
+        </div>
       </div>
     </div>
   </main>
+
+  <!-- Toast Notification - NOTIF KECIL DI BAWAH -->
   <div id="toast" class="toast"></div>
 
   <script>
     (function() {
       'use strict';
       
-      // 🚫 Early exit if desktop blocked
-      if (document.getElementById('desktop-block').style.display === 'flex') {
-        return;
+      // 🚫 Early exit if desktop blocked - KALO PC LANGSUNG STOP
+      if (document.getElementById('desktop-block').style.display === 'flex') {        return;
       }
       
+      // ⚙️ CONFIG - SETTINGAN INTI JANGAN DIUBAH
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
-        BASE_URL: 'https://tkj1.pages.dev'
+        BASE_URL: 'https://tkj1.pages.dev',
+        // 💬 GISCUS CONFIG
+        GISCUS: {
+          repo: 'Jirankun/tkj1',
+          repoId: 'R_kgDOQWmG8Q',
+          category: 'Show and tell',
+          categoryId: 'DIC_kwDOQWmG8c4C63kb',
+          mapping: 'pathname',
+          strict: '0',
+          reactionsEnabled: '1',
+          emitMetadata: '1',
+          inputPosition: 'top',
+          theme: 'dark_tritanopia',
+          lang: 'id'
+        }
       };
 
       let allPhotos = [], filteredPhotos = [];
@@ -970,8 +1255,9 @@
       let playingThumbnailVideo = null;
       let appOpenTimeout = null;
       let appOpenVisibilityHandler = null;
+      let giscusInitialized = false; // 💬 Flag buat giscus
 
-      // DOM Elements
+      // 🎯 DOM Elements - KUMPULIN SEMUA ELEMEN PENTING
       const els = {
         turnstileModal: document.getElementById('turnstile-modal'),
         turnstileError: document.getElementById('turnstile-error'),
@@ -986,14 +1272,22 @@
         modalMeta: document.getElementById('modal-meta'),
         btnAppModal: document.getElementById('btn-app-modal'),
         btnShareModal: document.getElementById('btn-share-modal'),
-        
-        appOpenModal: document.getElementById('app-open-modal'),
+                appOpenModal: document.getElementById('app-open-modal'),
         btnAppDownload: document.getElementById('btn-app-download'),
         btnAppCancel: document.getElementById('btn-app-cancel'),
         
+        // 💬 COMMENT MODALS
+        confirmModal: document.getElementById('confirm-modal'),
+        btnConfirmOk: document.getElementById('btn-confirm-ok'),
+        btnConfirmCancel: document.getElementById('btn-confirm-cancel'),
+        giscusFullscreen: document.getElementById('giscus-fullscreen'),
+        giscusClose: document.getElementById('giscus-close'),
+        giscusIframeTarget: document.getElementById('giscus-iframe-target'),
+        btnOpenComments: document.getElementById('btn-open-comments'),
+        
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
-        errorMsg: document.getElementById('error-msg'),        
+        errorMsg: document.getElementById('error-msg'),
         photoView: document.getElementById('photo-view'),
         viewImg: document.getElementById('view-img'),
         viewVideo: document.getElementById('view-video'),
@@ -1014,7 +1308,7 @@
         mainContent: document.getElementById('main-content')
       };
 
-      // === UTILS ===
+      // === UTILS - FUNGSI BANTUAN ===
       function showToast(msg, duration = 3000) {
         els.toast.textContent = msg;
         els.toast.classList.add('show');
@@ -1027,8 +1321,7 @@
         return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
       }
 
-      function protectMedia(el) {
-        if (!el) return;
+      function protectMedia(el) {        if (!el) return;
         ['contextmenu','dragstart','selectstart'].forEach(evt => 
           el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
         );
@@ -1038,17 +1331,63 @@
         }
       }
 
-      // === VIDEO THUMBNAIL AUTO-PLAY ON SCROLL ===
+      // 💬 GISCUS FUNCTIONS - KHUSUS BUAT KOMENTAR MODE DEV
+      function buildGiscusScript() {
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.setAttribute('data-repo', CONFIG.GISCUS.repo);
+        script.setAttribute('data-repo-id', CONFIG.GISCUS.repoId);
+        script.setAttribute('data-category', CONFIG.GISCUS.category);
+        script.setAttribute('data-category-id', CONFIG.GISCUS.categoryId);
+        script.setAttribute('data-mapping', CONFIG.GISCUS.mapping);
+        script.setAttribute('data-strict', CONFIG.GISCUS.strict);
+        script.setAttribute('data-reactions-enabled', CONFIG.GISCUS.reactionsEnabled);
+        script.setAttribute('data-emit-metadata', CONFIG.GISCUS.emitMetadata);
+        script.setAttribute('data-input-position', CONFIG.GISCUS.inputPosition);
+        script.setAttribute('data-theme', CONFIG.GISCUS.theme);
+        script.setAttribute('data-lang', CONFIG.GISCUS.lang);
+        return script;
+      }
+
+      function initGiscusFullscreen() {
+        if (giscusInitialized) return;
+        
+        els.giscusIframeTarget.innerHTML = '';
+        const giscusScript = buildGiscusScript();
+        els.giscusIframeTarget.appendChild(giscusScript);
+        
+        giscusInitialized = true;
+        console.log('💬 Giscus fullscreen initialized bre!');
+      }
+
+      function openCommentsFlow() {
+        // Tampilkan popup konfirmasi dulu
+        els.confirmModal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+      }
+
+      function closeCommentsFlow() {
+        els.confirmModal.classList.add('hidden');
+        els.giscusFullscreen.classList.remove('active');        document.body.classList.remove('modal-open', 'comments-fullscreen');
+        // Optional: reset giscus kalo perlu
+        // giscusInitialized = false;
+      }
+
+      // === VIDEO THUMBNAIL AUTO-PLAY ON SCROLL - VIDEO AUTO MAIN PAS SCROLL ===
       function initVideoObserver() {
         if (videoObserver) videoObserver.disconnect();
         
-        videoObserver = new IntersectionObserver((entries) => {          entries.forEach(entry => {
+        videoObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
             const video = entry.target;
             const isModalOpen = !els.photoModal.classList.contains('hidden');
             const isViewOpen = !els.photoView.classList.contains('hidden');
             const isAppModalOpen = !els.appOpenModal.classList.contains('hidden');
+            const isCommentsOpen = els.giscusFullscreen.classList.contains('active');
             
-            if (isModalOpen || isViewOpen || isAppModalOpen) {
+            if (isModalOpen || isViewOpen || isAppModalOpen || isCommentsOpen) {
               video.pause();
               return;
             }
@@ -1080,7 +1419,6 @@
           vid.pause();
         });
       }
-
       function resumeThumbnailVideo() {
         if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) {
           const rect = playingThumbnailVideo.getBoundingClientRect();
@@ -1091,7 +1429,8 @@
           playingThumbnailVideo = null;
         }
       }
-      // === SHOW PHOTO ===
+
+      // === SHOW PHOTO - TAMPILIN FOTO DI MODAL ===
       function showPhoto(photo, usePopup = true) {
         currentPhoto = photo;
         const isVid = isVideo(photo.url);
@@ -1129,7 +1468,7 @@
         }
       }
 
-      function showFullPhotoView(photo) {
+      // === SHOW FULL PHOTO VIEW - MODE FULL SCREEN ===      function showFullPhotoView(photo) {
         els.mainHeader.classList.add('hidden');
         els.mainContent.classList.add('full-view');
         
@@ -1140,7 +1479,8 @@
         els.viewVideo.style.display = isVid ? 'block' : 'none';
         
         if (isVid) {
-          els.viewVideo.src = photo.url;          els.viewVideo.load();
+          els.viewVideo.src = photo.url;
+          els.viewVideo.load();
           els.viewImg.src = '';
         } else {
           els.viewImg.src = photo.url;
@@ -1177,8 +1517,7 @@
         els.mainHeader.classList.remove('hidden');
         els.mainContent.classList.remove('full-view');
         document.body.classList.remove('view-open');
-        els.viewVideo.pause();
-        els.viewVideo.src = '';
+        els.viewVideo.pause();        els.viewVideo.src = '';
         els.viewImg.src = '';
         document.removeEventListener('visibilitychange', handleViewVisibilityChange);
         window.onbeforeunload = null;
@@ -1190,7 +1529,8 @@
           // Natural navigation, don't force close
         }
       }
-      // === APP OPEN LOGIC WITH CONFIRMATION POPUP ===
+
+      // === APP OPEN LOGIC WITH CONFIRMATION POPUP - BUKA APP LOGIC ===
       function openApp(photoId) {
         const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
         const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
@@ -1226,8 +1566,7 @@
 
       function showAppOpenModal() {
         els.appOpenModal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-        
+        document.body.classList.add('modal-open');        
         els.btnAppDownload.onclick = () => {
           hideAppOpenModal();
           window.location.href = CONFIG.FALLBACK_URL;
@@ -1238,7 +1577,8 @@
           showToast('✅ Oke bre, tetap di web aja');
         };
         
-        els.appOpenModal.onclick = (e) => {          if (e.target === els.appOpenModal) hideAppOpenModal();
+        els.appOpenModal.onclick = (e) => {
+          if (e.target === els.appOpenModal) hideAppOpenModal();
         };
       }
 
@@ -1252,7 +1592,7 @@
         }
       }
 
-      // === SHARE ===
+      // === SHARE - FITUR BAGIKAN LINK ===
       function sharePhoto(photo) {
         const shareText = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
         
@@ -1267,7 +1607,7 @@
         }
       }
 
-      // === RENDER GALLERY ===
+      // === RENDER GALLERY - RENDER FOTO-FOTO KE GRID ===
       function renderGallery(photos) {
         els.galleryGrid.innerHTML = '';
         
@@ -1275,8 +1615,7 @@
           els.emptyState.classList.remove('hidden');
           return;
         }
-        
-        els.emptyState.classList.add('hidden');
+                els.emptyState.classList.add('hidden');
         
         photos.forEach(photo => {
           const isVid = isVideo(photo.url);
@@ -1287,7 +1626,8 @@
             item.innerHTML = `
               <video class="gallery-thumb video-thumb" 
                      src="${photo.url}" 
-                     muted                      preload="none"
+                     muted
+                     preload="none"
                      playsinline
                      loop></video>
               <div class="gallery-info">
@@ -1323,9 +1663,8 @@
         });
       }
 
-      // === FILTER & SEARCH ===
-      function applyFilters() {
-        const query = els.searchInput.value.toLowerCase().trim();
+      // === FILTER & SEARCH - FITUR CARI & FILTER ===
+      function applyFilters() {        const query = els.searchInput.value.toLowerCase().trim();
         const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         
         filteredPhotos = allPhotos.filter(p => {
@@ -1336,13 +1675,14 @@
           const matchType = activeFilter === 'all' || 
             (activeFilter === 'video' && isVideo(p.url)) || 
             (activeFilter === 'photo' && !isVideo(p.url));
-                    return matchSearch && matchType;
+          
+          return matchSearch && matchType;
         });
         
         renderGallery(filteredPhotos);
       }
 
-      // === INIT GALLERY (Exposed globally for Turnstile) ===
+      // === INIT GALLERY - FUNGSI UTAMA LOAD GALLERY ===
       async function initGallery() {
         if (window.galleryInitialized) return;
         window.galleryInitialized = true;
@@ -1373,8 +1713,7 @@
           els.searchInput.addEventListener('input', applyFilters);
           els.filterBtns.forEach(btn => {
             btn.onclick = () => {
-              els.filterBtns.forEach(b => b.classList.remove('active'));
-              btn.classList.add('active');
+              els.filterBtns.forEach(b => b.classList.remove('active'));              btn.classList.add('active');
               applyFilters();
             };
           });
@@ -1385,7 +1724,8 @@
             const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
             if (photo) {
               showPhoto(photo, false);
-            } else {              els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
+            } else {
+              els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
               els.error.classList.remove('hidden');
             }
           } else {
@@ -1400,6 +1740,53 @@
           els.errorMsg.textContent = err.message || 'Gagal load gallery. Cek koneksi internet bre!';
           els.error.classList.remove('hidden');
         }
+      }
+
+      // === EVENT LISTENERS - 💬 KHUSUS KOMENTAR FLOW ===
+      function setupCommentEvents() {
+        // Tombol buka komentar di header
+        els.btnOpenComments.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCommentsFlow();
+        });
+
+        // Tombol Oke di popup konfirmasi
+        els.btnConfirmOk.addEventListener('click', () => {
+          els.confirmModal.classList.add('hidden');
+          els.giscusFullscreen.classList.add('active');
+          document.body.classList.add('comments-fullscreen');
+          initGiscusFullscreen();
+          showToast('💬 Login GitHub dulu di iframe bawah bre!');
+        });
+
+        // Tombol Batal di popup konfirmasi
+        els.btnConfirmCancel.addEventListener('click', () => {
+          closeCommentsFlow();
+          showToast('✅ Oke bre, balik ke gallery');        });
+
+        // Tombol close di fullscreen giscus
+        els.giscusClose.addEventListener('click', () => {
+          closeCommentsFlow();
+        });
+
+        // Close fullscreen kalo klik background (opsional)
+        els.giscusFullscreen.addEventListener('click', (e) => {
+          if (e.target === els.giscusFullscreen) {
+            closeCommentsFlow();
+          }
+        });
+
+        // Escape key buat close modals
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            if (!els.confirmModal.classList.contains('hidden')) {
+              closeCommentsFlow();
+            }
+            if (els.giscusFullscreen.classList.contains('active')) {
+              closeCommentsFlow();
+            }
+          }
+        });
       }
 
       // Expose initGallery globally for Turnstile callback
@@ -1417,14 +1804,27 @@
         if (!path.includes('/photo/') && !els.photoView.classList.contains('hidden')) {
           closeFullView();
         }
+        // 💬 Kalo ada di fullscreen comments, close juga
+        if (els.giscusFullscreen.classList.contains('active')) {
+          closeCommentsFlow();
+        }
       });
 
-      // Close modals on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+      // Close modals on escape key (global)
+      document.addEventListener('keydown', (e) => {        if (e.key === 'Escape') {
           if (!els.photoModal.classList.contains('hidden')) closeModal();
           if (!els.appOpenModal.classList.contains('hidden')) hideAppOpenModal();
+          // 💬 Tambahin close comments
+          if (!els.confirmModal.classList.contains('hidden') || els.giscusFullscreen.classList.contains('active')) {
+            closeCommentsFlow();
+          }
         }
+      });
+
+      // === INIT ===
+      // Setup comment events pas DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        setupCommentEvents();
       });
 
     })();
