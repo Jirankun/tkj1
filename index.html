@@ -9,7 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>TKJ1 Gallery</title>
   
-  <!-- ⚠️ IKLAN SCRIPT (JANGAN DIUBAH BRE, NANTI RUGI) -->
+  <!-- ⚠️ IKLAN SCRIPT -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   
   <!-- 🎨 Google Fonts -->
@@ -17,6 +17,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- 💬 GISCUS SCRIPT (CUMA 1, JANGAN DIHAPUS/DIGANDAKAN) -->
+  <script src="https://giscus.app/client.js"
+        data-repo="Jirankun/tkj1"
+        data-repo-id="R_kgDOQWmG8Q"
+        data-category="Show and tell"
+        data-category-id="DIC_kwDOQWmG8c4C63kb"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="dark_tritanopia"
+        data-lang="id"
+        crossorigin="anonymous"
+        async></script>
+
   <style>
     :root {
       --bg: #0a0a0f;
@@ -31,1069 +47,289 @@
       --success: #2ed573;
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    
-    html { scroll-behavior: smooth; }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }    html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }    body.modal-open { overflow: hidden; }
-    body.view-open { overflow: hidden; }
-    body.comments-fullscreen { overflow: hidden; }
-
-    /* === DESKTOP BLOCK SCREEN === */
-    #desktop-block {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      color: #fff;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-      text-align: center;
-      padding: 20px;
-      animation: horrorFlicker 0.05s infinite;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh; line-height: 1.6; overflow-x: hidden;
     }
+    body.modal-open, body.view-open, body.comments-fullscreen { overflow: hidden; }
 
+    #desktop-block {
+      position: fixed; inset: 0; background: #000; color: #fff; display: none;
+      flex-direction: column; align-items: center; justify-content: center; z-index: 99999;
+      text-align: center; padding: 20px; animation: horrorFlicker 0.05s infinite;
+    }
     @keyframes horrorFlicker {
       0%, 100% { background: #000; color: #fff; }
       25% { background: #fff; color: #000; }
       50% { background: #111; color: #f00; text-shadow: 2px 2px 0 #fff; }
       75% { background: #000; color: #fff; }
     }
-
-    #desktop-block h1 {
-      font-size: 2.5rem;
-      font-weight: 900;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      animation: textShake 0.1s infinite;
-    }
-
+    #desktop-block h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 3px; animation: textShake 0.1s infinite; }
     @keyframes textShake {
       0%, 100% { transform: translate(0, 0); }
       25% { transform: translate(-2px, 2px); }
       50% { transform: translate(2px, -2px); }
       75% { transform: translate(-2px, -2px); }
     }
-
-    #desktop-block p {
-      font-size: 1.2rem;
-      color: #ff4444;
-      margin-bottom: 30px;
-      font-weight: 600;
+    #desktop-block p { font-size: 1.2rem; color: #ff4444; margin-bottom: 30px; font-weight: 600; }
+    #desktop-block .close-btn {
+      padding: 15px 40px; background: #ff0000; color: #000; border: none; border-radius: 10px;
+      font-size: 1.1rem; font-weight: 700; cursor: pointer; animation: pulseRed 1s infinite;
     }
-    #desktop-block .close-btn {      padding: 15px 40px;
-      background: #ff0000;
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      animation: pulseRed 1s infinite;
-    }
-
     @keyframes pulseRed {
       0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
       50% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); }
     }
 
-    /* === UTILITIES === */
-    .hidden { 
-      display: none !important; 
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
+    .hidden { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* === HEADER === */
     .header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s;
+      background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 0;
+      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); transition: transform 0.3s;
     }
-
-    .header.hidden {
-      transform: translateY(-100%);
-    }
-
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;      gap: 20px;
-      flex-wrap: wrap;
-    }
-
+    .header.hidden { transform: translateY(-100%); }
+    .header-content { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), #00a8ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      white-space: nowrap;
+      font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #00a8ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap;
     }
-
-    .search-box {
-      flex: 1;
-      min-width: 200px;
-      max-width: 400px;
-      position: relative;
+    .search-box { flex: 1; min-width: 200px; max-width: 400px; position: relative; }
+    .search-box input {      width: 100%; padding: 12px 20px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text); font-size: 0.95rem; outline: none; transition: all 0.3s;
     }
-
-    .search-box input {
-      width: 100%;
-      padding: 12px 20px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.3s;
-    }
-
-    .search-box input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
-    }
-
+    .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1); }
     .search-box input::placeholder { color: var(--text-muted); }
-
-    .filter-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .filter-group { display: flex; gap: 10px; flex-wrap: wrap; }
     .filter-btn {
-      padding: 10px 18px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      padding: 10px 18px; background: transparent; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;
     }
+    .filter-btn:hover, .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-    }
-
-    /* 💬 COMMENTS TRIGGER BUTTON */
     .comments-trigger {
-      padding: 10px 18px;
-      background: linear-gradient(135deg, var(--accent), #00a8ff);
-      border: none;
-      border-radius: 8px;
-      color: var(--bg);
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
+      padding: 10px 18px; background: linear-gradient(135deg, var(--accent), #00a8ff); border: none;
+      border-radius: 8px; color: var(--bg); font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap;
     }
+    .comments-trigger:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3); }
 
-    .comments-trigger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3);
-    }
-
-    /* === MAIN CONTENT === */
-    .main {
-      padding: 30px 0;
-      min-height: calc(100vh - 200px);
-      transition: padding 0.3s;
-    }
-
-    .main.full-view {
-      padding: 20px 0;
-      min-height: 100vh;
-    }
-
-    /* === GALLERY GRID === */    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
+    .main { padding: 30px 0; min-height: calc(100vh - 200px); transition: padding 0.3s; }
+    .main.full-view { padding: 20px 0; min-height: 100vh; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .gallery-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+      cursor: pointer; transition: all 0.3s; position: relative;
     }
+    .gallery-item:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15); }
+    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--bg); pointer-events: none; user-select: none; display: block; }
+    .gallery-thumb.video-thumb { object-fit: contain; background: #000; }
+    .gallery-info { padding: 16px; }
+    .gallery-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gallery-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); }
+    .badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
+    .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
 
-    .gallery-item:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 40px rgba(0, 212, 170, 0.15);
-    }
-
-    .gallery-thumb {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      background: var(--bg);
-      pointer-events: none;
-      user-select: none;
-      display: block;
-    }
-
-    .gallery-thumb.video-thumb {
-      object-fit: contain;
-      background: #000;
-    }
-
-    .gallery-info {
-      padding: 16px;
-    }
-
-    .gallery-title {
-      font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .gallery-meta {
-      display: flex;
-      gap: 12px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .badge {
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .badge-photo {
-      background: rgba(0, 212, 170, 0.15);
-      color: var(--accent);
-    }
-
-    .badge-video {
-      background: rgba(0, 168, 255, 0.15);
-      color: #00a8ff;
-    }
-
-    /* === GISCUS HIDDEN SECTION === */
-    #giscus-hidden-section {
-      display: none;
-    }
-
-    /* === GISCUS FULLSCREEN MODAL === */
     #giscus-fullscreen {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 10000;
-      display: none;
-      flex-direction: column;
-      animation: fadeIn 0.3s ease;
+      position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none;
+      flex-direction: column; animation: fadeIn 0.3s ease;
     }
-
-    #giscus-fullscreen.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    #giscus-fullscreen.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .giscus-fullscreen-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 24px;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between; padding: 16px 24px;
+      background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-
-    .giscus-fullscreen-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .giscus-fullscreen-title .badge {
-      font-size: 0.7rem;
-      padding: 2px 8px;
-    }
-
+    .giscus-fullscreen-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .giscus-fullscreen-title .badge { font-size: 0.7rem; padding: 2px 8px; }
     .giscus-close-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--error);
-      border: none;
-      color: #fff;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      width: 40px; height: 40px; border-radius: 50%; background: var(--error); border: none; color: #fff;      font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
-
-    .giscus-close-btn:hover {
-      background: #ff6b7a;
-      transform: rotate(90deg);
-    }
-
-    .giscus-fullscreen-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
+    .giscus-close-btn:hover { background: #ff6b7a; transform: rotate(90deg); }
+    .giscus-fullscreen-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; }
     .giscus-fullscreen-container {
-      width: 100%;
-      max-width: 900px;
-      background: var(--card);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      overflow: hidden;
+      width: 100%; max-width: 900px; background: var(--card); border-radius: 16px;
+      border: 1px solid var(--border); overflow: hidden;
     }
-
-    .giscus-iframe-wrapper {
-      width: 100%;
-      min-height: 600px;
-      background: var(--bg);
-    }
-
-    .giscus-iframe-wrapper iframe {
-      width: 100%;
-      height: 100%;
-      min-height: 600px;
-      border: none;
-      display: block;
-    }
-
+    .giscus-iframe-wrapper { width: 100%; min-height: 600px; background: var(--bg); }
     .giscus-login-hint {
-      padding: 20px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--card-hover);
+      padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;
+      border-bottom: 1px solid var(--border); background: var(--card-hover);
     }
 
-    /* === CONFIRMATION MODAL === */
     .confirm-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-      padding: 20px;
-      backdrop-filter: blur(10px);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center;
+      justify-content: center; z-index: 9998; padding: 20px; backdrop-filter: blur(10px);
     }
-
-    .confirm-modal.hidden {
-      display: none !important;
-    }
+    .confirm-modal.hidden { display: none !important; }
     .confirm-box {
-      background: var(--card);
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
-      border: 1px solid var(--border);
-      animation: modalSlideIn 0.3s ease;
+      background: var(--card); padding: 30px; border-radius: 20px; text-align: center;
+      max-width: 450px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.3s ease;
     }
+    @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .confirm-icon { font-size: 3rem; margin-bottom: 16px; animation: bounce 1s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .confirm-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--accent); }
+    .confirm-desc { color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; font-size: 0.95rem; text-align: left; }
+    .confirm-desc strong { color: var(--error); font-weight: 700; }
+    .confirm-actions { display: flex; gap: 12px; flex-direction: column; }
+    .confirm-actions .btn { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; }
+    .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+    .btn-cancel:hover { background: var(--border); }
 
-    @keyframes modalSlideIn {
-      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .confirm-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      animation: bounce 1s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .confirm-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--accent);
-    }
-
-    .confirm-desc {
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      line-height: 1.6;
-      font-size: 0.95rem;
-      text-align: left;
-    }
-
-    .confirm-desc strong {
-      color: var(--error);
-      font-weight: 700;
-    }
-
-    .confirm-actions {
-      display: flex;
-      gap: 12px;      flex-direction: column;
-    }
-
-    .confirm-actions .btn {
-      width: 100%;
-      justify-content: center;
-      padding: 14px;
-      font-size: 1rem;
-    }
-
-    .btn-cancel {
-      background: var(--card-hover);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-cancel:hover {
-      background: var(--border);
-    }
-
-    /* === DIRECT PHOTO VIEW === */
     .photo-view {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      background: var(--bg);
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      overflow-y: auto;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px;
+      background: var(--bg); position: fixed; inset: 0; z-index: 500; overflow-y: auto;
     }
-
     .photo-view-container {
-      width: 100%;
-      max-width: 1000px;
-      background: var(--card);
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      margin-top: 20px;
+      width: 100%; max-width: 1000px; background: var(--card); border-radius: 20px;
+      overflow: hidden; border: 1px solid var(--border); margin-top: 20px;
     }
+    .photo-view-media { width: 100%; max-height: 65vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
+    .photo-view-media[controls] { pointer-events: auto; user-select: auto; }
+    .photo-view-info { padding: 24px; }
+    .photo-view-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+    .photo-view-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.7; }
+    .photo-view-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    .photo-view-media {
-      width: 100%;
-      max-height: 65vh;
-      object-fit: contain;
-      background: var(--bg);
-      display: block;      user-select: none;
+    .btn {      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s;
+      font-family: inherit; text-decoration: none; white-space: nowrap;
     }
-    
-    .photo-view-media[controls] {
-      pointer-events: auto;
-      user-select: auto;
-    }
+    .btn:hover { transform: translateY(-2px); } .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3); }
+    .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: var(--error); color: #fff; }
+    .btn-danger:hover { background: #ff6b7a; box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3); }
 
-    .photo-view-info {
-      padding: 24px;
-    }
+    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
+    .modal.hidden { display: none !important; }
+    .modal-content { background: var(--card); border-radius: 20px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+    .modal-close:hover { background: var(--error); border-color: var(--error); transform: rotate(90deg); }
+    .modal-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
+    .modal-media[controls] { pointer-events: auto; user-select: auto; }
+    .modal-body { padding: 24px; }
+    .modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+    .modal-desc { color: var(--text-muted); margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    .photo-view-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .photo-view-desc {
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      line-height: 1.7;
-    }
+    .app-open-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(10px); }
+    .app-open-modal.hidden { display: none !important; }
+    .app-open-box { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.3s ease; }
+    .app-open-icon { font-size: 3rem; margin-bottom: 16px; animation: bounce 1s infinite; }
+    .app-open-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: var(--accent); }
+    .app-open-desc { color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; font-size: 0.95rem; }
+    .app-open-actions { display: flex; gap: 12px; flex-direction: column; }
+    .app-open-actions .btn { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; }
 
-    .photo-view-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .turnstile-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
+    .turnstile-box { background: var(--card); padding: 40px 30px; border-radius: 20px; text-align: center; max-width: 450px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.4s ease; }
+    .turnstile-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+    .turnstile-desc { color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+    .turnstile-widget { display: flex; justify-content: center; margin: 20px 0; min-height: 65px; }
+    .turnstile-error { color: var(--error); font-size: 0.9rem; margin-top: 10px; min-height: 20px; transition: opacity 0.3s; }
+    .turnstile-fallback-btn { margin-top: 15px; padding: 10px 20px; background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; font-size: 0.85rem; cursor: pointer; display: none; transition: all 0.2s; }
+    .turnstile-fallback-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* === BUTTONS === */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      text-decoration: none;
-      white-space: nowrap;
-    }
+    .loading, .error { text-align: center; padding: 60px 20px; }
+    .loading-icon { font-size: 3rem; margin-bottom: 16px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .error { color: var(--error); } .error-icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); grid-column: 1 / -1; }
+    .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.5; }
 
-    .btn:hover { transform: translateY(-2px); }
-    .btn:active { transform: translateY(0); }
+    .toast {      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--card); color: var(--text); padding: 14px 28px; border-radius: 12px;
+      border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: transform 0.3s;
+      z-index: 9999; font-weight: 500; max-width: 90vw; text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .btn-primary {      background: var(--accent);
-      color: var(--bg);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3);
-    }
-
-    .btn-secondary {
-      background: var(--card-hover);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--border);
-    }
-
-    .btn-danger {
-      background: var(--error);
-      color: #fff;
-    }
-
-    .btn-danger:hover {
-      background: #ff6b7a;
-      box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
-    }
-
-    /* === MODAL === */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-      backdrop-filter: blur(10px);
-    }
-
-    .modal.hidden { 
-      display: none !important; 
-    }
-
-    .modal-content {
-      background: var(--card);
-      border-radius: 20px;
-      max-width: 800px;      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      z-index: 10;
-    }
-
-    .modal-close:hover {
-      background: var(--error);
-      border-color: var(--error);
-      transform: rotate(90deg);
-    }
-
-    .modal-media {
-      width: 100%;
-      max-height: 60vh;
-      object-fit: contain;
-      background: var(--bg);
-      display: block;
-      user-select: none;
-    }
-    
-    .modal-media[controls] {
-      pointer-events: auto;
-      user-select: auto;
-    }
-
-    .modal-body {
-      padding: 24px;
-    }
-    .modal-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .modal-desc {
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* === APP OPEN CONFIRMATION MODAL === */
-    .app-open-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      padding: 20px;
-      backdrop-filter: blur(10px);
-    }
-
-    .app-open-modal.hidden {
-      display: none !important;
-    }
-
-    .app-open-box {
-      background: var(--card);
-      padding: 30px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-      border: 1px solid var(--border);
-      animation: modalSlideIn 0.3s ease;
-    }
-
-    @keyframes modalSlideIn {
-      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .app-open-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      animation: bounce 1s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .app-open-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--accent);
-    }
-
-    .app-open-desc {
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .app-open-actions {
-      display: flex;
-      gap: 12px;
-      flex-direction: column;
-    }
-
-    .app-open-actions .btn {
-      width: 100%;
-      justify-content: center;
-      padding: 14px;
-      font-size: 1rem;
-    }
-
-    /* === TURNSTILE MODAL === */
-    .turnstile-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      padding: 20px;
-    }
-    .turnstile-box {
-      background: var(--card);
-      padding: 40px 30px;
-      border-radius: 20px;
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
-      border: 1px solid var(--border);
-      animation: modalSlideIn 0.4s ease;
-    }
-
-    .turnstile-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .turnstile-desc {
-      color: var(--text-muted);
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-
-    .turnstile-widget {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      min-height: 65px;
-    }
-
-    .turnstile-error {
-      color: var(--error);
-      font-size: 0.9rem;
-      margin-top: 10px;
-      min-height: 20px;
-      transition: opacity 0.3s;
-    }
-
-    .turnstile-fallback-btn {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background: transparent;
-      border: 1px dashed var(--border);
-      color: var(--text-muted);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: none;
-      transition: all 0.2s;
-    }
-    .turnstile-fallback-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* === LOADING & ERROR === */
-    .loading, .error {
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .loading-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .error {
-      color: var(--error);
-    }
-
-    .error-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    /* === EMPTY STATE === */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      grid-column: 1 / -1;
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    /* === TOAST === */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;      transform: translateX(-50%) translateY(100px);
-      background: var(--card);
-      color: var(--text);
-      padding: 14px 28px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      transition: transform 0.3s;
-      z-index: 9999;
-      font-weight: 500;
-      max-width: 90vw;
-      text-align: center;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* === RESPONSIVE === */
     @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-box {
-        max-width: none;
-        order: 2;
-      }
-
-      .filter-group {
-        order: 1;
-        justify-content: center;
-      }
-
-      .gallery-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .photo-view-actions,
-      .modal-actions,
-      .app-open-actions,
-      .confirm-actions {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-      .turnstile-box,
-      .app-open-box,
-      .confirm-box {
-        padding: 30px 20px;
-      }
-
-      .giscus-fullscreen-header {
-        padding: 12px 16px;
-      }
-
-      .giscus-fullscreen-title {
-        font-size: 1rem;
-      }
-
-      .giscus-fullscreen-body {
-        padding: 10px;
-      }
+      .header-content { flex-direction: column; align-items: stretch; }
+      .search-box { max-width: none; order: 2; }
+      .filter-group { order: 1; justify-content: center; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .photo-view-actions, .modal-actions, .app-open-actions, .confirm-actions { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+      .turnstile-box, .app-open-box, .confirm-box { padding: 30px 20px; }
+      .giscus-fullscreen-header { padding: 12px 16px; }
+      .giscus-fullscreen-title { font-size: 1rem; }
+      .giscus-fullscreen-body { padding: 10px; }
     }
-
-    /* === SCROLLBAR === */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--accent);
-    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
 </head>
 <body>
 
-  <!-- 🚫 DESKTOP BLOCK SCREEN -->
   <div id="desktop-block">
     <h1>⚠️ FAILED TO OPEN PAGE ⚠️</h1>
     <p>AKSES DITOLAK! Website ini cuma buat Android bre!<br/>Tutup halaman ini SEKARANG!</p>
     <button class="close-btn" onclick="window.close(); window.location.href='about:blank';">TUTUP SEKARANG</button>
   </div>
 
-  <!-- ⚠️ PROTEKSI KONTEN -->
-  <script>    (function blockDownloads() {
+  <script>
+    (function blockDownloads() {
       ['contextmenu','selectstart','dragstart','copy','cut'].forEach(evt => 
         document.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })
       );
     })();
-
-    // 🚫 DESKTOP DETECTION & BLOCK
     (function detectAndBlockDesktop() {
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       const isDesktop = !isMobile && window.innerWidth > 768;
-      
       if (isDesktop) {
         document.getElementById('desktop-block').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
-        setInterval(() => {
-          try { window.close(); } catch(e) {}
-          document.title = "⚠️ TUTUP HALAMAN INI ⚠️";
-        }, 100);
-        
-        window.onbeforeunload = function() {
-          return "Tutup halaman ini!";
-        };
+        setInterval(() => { try { window.close(); } catch(e) {} document.title = "⚠️ TUTUP HALAMAN INI ⚠️"; }, 100);
+        window.onbeforeunload = function() { return "Tutup halaman ini!"; };
       }
     })();
-
-    // 🔐 GLOBAL TURNSTILE CALLBACKS
-    window.onVerifySuccess = function(token) {
-      console.log('✅ Turnstile Verified:', token);
-      window.isTurnstileVerified = true;
-      
-      const modal = document.getElementById('turnstile-modal');
-      if (modal) {
-        modal.style.display = 'none';
-        modal.classList.add('hidden');
-      }
+    window.onVerifySuccess = function(token) {      window.isTurnstileVerified = true;
+      document.getElementById('turnstile-modal').style.display = 'none';
+      document.getElementById('turnstile-modal').classList.add('hidden');
       document.body.classList.remove('modal-open');
-      
-      // ✅ PASTIKAN GALLERY INIT DIPANGGIL
-      if (typeof window.__initGallery === 'function') {
-        console.log('🔄 Calling __initGallery after Turnstile...');
-        window.__initGallery();
-      } else {
-        console.warn('⚠️ __initGallery not found, trying direct initGallery...');
-        if (typeof initGallery === 'function') initGallery();
-      }
+      if (typeof window.__initGallery === 'function') window.__initGallery();
     };
-
     window.onVerifyError = function(errCode) {
-      console.error('❌ Turnstile Error:', errCode);      const errorEl = document.getElementById('turnstile-error');
-      if (errorEl) {
-        errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'}). Coba refresh.`;
-        errorEl.style.color = 'var(--error)';
-      }
+      const errorEl = document.getElementById('turnstile-error');
+      if (errorEl) { errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'}). Coba refresh.`; errorEl.style.color = 'var(--error)'; }
       const fallbackBtn = document.getElementById('turnstile-fallback');
       if (fallbackBtn) fallbackBtn.style.display = 'block';
     };
-
     setTimeout(() => {
       if (!window.turnstile && !window.isTurnstileVerified) {
-        console.warn('⚠️ Turnstile script not loaded, using fallback...');
         const fallbackBtn = document.getElementById('turnstile-fallback');
         if (fallbackBtn) fallbackBtn.style.display = 'block';
-        // Auto bypass after 15s for testing
-        setTimeout(() => {
-          if (!window.isTurnstileVerified) {
-            console.log('🔄 Auto bypass Turnstile for testing...');
-            window.onVerifySuccess('auto-bypass');
-          }
-        }, 15000);
+        setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);
       }
     }, 10000);
   </script>
 
-  <!-- 🔐 Cloudflare Turnstile Script -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-  <!-- 🔐 TURNSTILE VERIFICATION MODAL -->
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
       <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak. Tunggu sampe centang hijau muncul.</p>
       <div class="turnstile-widget">
-        <div class="cf-turnstile"
-             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ"
-             data-callback="onVerifySuccess"
-             data-error-callback="onVerifyError"
-             data-theme="dark"
-             data-size="normal">
-        </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div>
       </div>
       <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn">⚠️ Klik jika verifikasi stuck</button>
+      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik jika verifikasi stuck</button>
     </div>
   </div>
 
-  <!-- 💬 GISCUS SCRIPT -->
-  <script src="https://giscus.app/client.js"
-        data-repo="Jirankun/tkj1"        data-repo-id="R_kgDOQWmG8Q"
-        data-category="Show and tell"
-        data-category-id="DIC_kwDOQWmG8c4C63kb"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="1"
-        data-input-position="top"
-        data-theme="dark_tritanopia"
-        data-lang="id"
-        crossorigin="anonymous"
-        async>
-  </script>
-
-  <!-- 📱 PHOTO POPUP MODAL -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
-      <button class="modal-close" id="modal-close" aria-label="Tutup">×</button>
+      <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo" />
       <video class="modal-media" id="modal-video" src="" controls playsinline></video>
       <div class="modal-body">
@@ -1105,10 +341,8 @@
           <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
         </div>
       </div>
-    </div>
-  </div>
+    </div>  </div>
 
-  <!-- 📱 APP OPEN CONFIRMATION MODAL -->
   <div id="app-open-modal" class="app-open-modal hidden">
     <div class="app-open-box">
       <div class="app-open-icon">📱</div>
@@ -1116,79 +350,60 @@
       <p class="app-open-desc">Jika aplikasi masih belum terbuka, silahkan download dan install aplikasi terlebih dahulu.</p>
       <div class="app-open-actions">
         <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
-        <button id="btn-app-cancel" class="btn btn-secondary">❌ Batal</button>
+        <button id="btn-app-cancel" class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
       </div>
     </div>
   </div>
 
-  <!-- 💬 CONFIRMATION MODAL -->
   <div id="confirm-modal" class="confirm-modal hidden">
     <div class="confirm-box">
       <div class="confirm-icon">🔐</div>
-      <h3 class="confirm-title">⚠️ Wajib Login GitHub</h3>      <p class="confirm-desc">
+      <h3 class="confirm-title">⚠️ Wajib Login GitHub</h3>
+      <p class="confirm-desc">
         <strong>Elu wajib login GitHub</strong> buat make fitur ini.<br/><br/>
         Ini cuma buat <strong>diskusi fitur layanan TKJ OnE</strong> aja bre.<br/><br/>
         Kalo elu Dev atau contributor, silakan lanjut. Kalo cuma iseng, mending balik ke gallery.
       </p>
       <div class="confirm-actions">
-        <button id="btn-confirm-ok" class="btn btn-primary">✅ Oke, Buka Chat</button>
-        <button id="btn-confirm-cancel" class="btn btn-cancel">❌ Batal, Kembali</button>
+        <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
+        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal, Kembali</button>
       </div>
     </div>
   </div>
 
-  <!-- 💬 GISCUS FULLSCREEN MODAL -->
   <div id="giscus-fullscreen" class="giscus-fullscreen">
     <div class="giscus-fullscreen-header">
-      <div class="giscus-fullscreen-title">
-        💬 Diskusi Fitur TKJ OnE
-        <span class="badge badge-video">DEV ONLY</span>
-      </div>
-      <button class="giscus-close-btn" id="giscus-close" aria-label="Tutup">×</button>
+      <div class="giscus-fullscreen-title">💬 Diskusi Fitur TKJ OnE <span class="badge badge-video">DEV ONLY</span></div>
+      <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
     </div>
-    <div class="giscus-login-hint">
-      🔐 Login GitHub dulu di iframe bawah kalo belum, baru bisa komen bre!
-    </div>
+    <div class="giscus-login-hint">🔐 Login GitHub dulu di bawah kalo belum, baru bisa komen bre!</div>
     <div class="giscus-fullscreen-body">
       <div class="giscus-fullscreen-container">
-        <div class="giscus-iframe-wrapper">
-          <div id="giscus-iframe-target"></div>
-        </div>
+        <div class="giscus-iframe-wrapper" id="giscus-target"></div>
       </div>
     </div>
   </div>
 
-  <!-- 📱 MAIN APP -->
   <header class="header" id="main-header">
     <div class="container">
       <div class="header-content">
         <div class="logo">📸 TKJ1 Gallery</div>
-        
         <div class="search-box">
           <input type="text" id="search-input" placeholder="🔍 Cari foto..." autocomplete="off">
+        </div>        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all" onclick="window.setFilter(this, 'all')">Semua</button>
+          <button class="filter-btn" data-filter="photo" onclick="window.setFilter(this, 'photo')">Foto</button>
+          <button class="filter-btn" data-filter="video" onclick="window.setFilter(this, 'video')">Video</button>
+          <button class="comments-trigger" onclick="window.openConfirmModal()">💬 Diskusi</button>
         </div>
-        
-        <div class="filter-group">
-          <button class="filter-btn active" data-filter="all">Semua</button>
-          <button class="filter-btn" data-filter="photo">Foto</button>
-          <button class="filter-btn" data-filter="video">Video</button>
-          <button class="comments-trigger" id="btn-open-comments">💬 Diskusi</button>
-        </div>
-      </div>    </div>
+      </div>
+    </div>
   </header>
 
   <main class="main" id="main-content">
     <div class="container">
-      <div id="loading" class="loading">
-        <div class="loading-icon">⏳</div>
-        <div>Loading bre, sabar dikit...</div>
-      </div>
-
-      <div id="error" class="error hidden">
-        <div class="error-icon">❌</div>
-        <div id="error-msg"></div>
-      </div>
-
+      <div id="loading" class="loading"><div class="loading-icon">⏳</div><div>Loading bre, sabar dikit...</div></div>
+      <div id="error" class="error hidden"><div class="error-icon">❌</div><div id="error-msg"></div></div>
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
           <img class="photo-view-media" id="view-img" src="" alt="Photo" />
@@ -1204,16 +419,9 @@
           </div>
         </div>
       </div>
-
       <div id="gallery-section" class="hidden">
         <div id="gallery-grid" class="gallery-grid"></div>
-        <div id="empty-state" class="empty-state hidden">
-          <div class="empty-icon">🔍</div>
-          <div>Gak ada foto yang cocok, bre!</div>
-        </div>
-        <div id="giscus-hidden-section">
-          <div class="giscus" data-giscus-loaded="false"></div>
-        </div>
+        <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok, bre!</div></div>
       </div>
     </div>
   </main>
@@ -1223,684 +431,213 @@
   <script>
     (function() {
       'use strict';
-            if (document.getElementById('desktop-block').style.display === 'flex') return;
-      
+      if (document.getElementById('desktop-block').style.display === 'flex') return;
+
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
         APP_SCHEME: 'tkjone',
         DEEP_LINK_PATH: 'photo',
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
-        BASE_URL: 'https://tkj1.pages.dev',
-        GISCUS: {
-          repo: 'Jirankun/tkj1',
-          repoId: 'R_kgDOQWmG8Q',
-          category: 'Show and tell',
-          categoryId: 'DIC_kwDOQWmG8c4C63kb',
-          mapping: 'pathname',
-          strict: '0',
-          reactionsEnabled: '1',
-          emitMetadata: '1',
-          inputPosition: 'top',
-          theme: 'dark_tritanopia',
-          lang: 'id'
-        }
+        BASE_URL: 'https://tkj1.pages.dev'
       };
-
       let allPhotos = [], filteredPhotos = [];
-      let currentPhoto = null;
-      let videoObserver = null;
-      let playingThumbnailVideo = null;
-      let appOpenTimeout = null;
-      let appOpenVisibilityHandler = null;
-      let giscusInitialized = false;
+      let currentPhoto = null, videoObserver = null, playingThumbnailVideo = null;
+      let appOpenTimeout = null, appOpenVisibilityHandler = null;
 
-      // 🎯 DOM Elements
       const els = {
-        turnstileModal: document.getElementById('turnstile-modal'),
-        turnstileError: document.getElementById('turnstile-error'),
-        turnstileFallback: document.getElementById('turnstile-fallback'),
-        
-        photoModal: document.getElementById('photo-modal'),
-        modalClose: document.getElementById('modal-close'),
-        modalImg: document.getElementById('modal-img'),
-        modalVideo: document.getElementById('modal-video'),
-        modalTitle: document.getElementById('modal-title'),
-        modalDesc: document.getElementById('modal-desc'),
-        modalMeta: document.getElementById('modal-meta'),
-        btnAppModal: document.getElementById('btn-app-modal'),
-        btnShareModal: document.getElementById('btn-share-modal'),
-        
-        appOpenModal: document.getElementById('app-open-modal'),
-        btnAppDownload: document.getElementById('btn-app-download'),
-        btnAppCancel: document.getElementById('btn-app-cancel'),        
-        confirmModal: document.getElementById('confirm-modal'),
-        btnConfirmOk: document.getElementById('btn-confirm-ok'),
-        btnConfirmCancel: document.getElementById('btn-confirm-cancel'),
-        giscusFullscreen: document.getElementById('giscus-fullscreen'),
-        giscusClose: document.getElementById('giscus-close'),
-        giscusIframeTarget: document.getElementById('giscus-iframe-target'),
-        btnOpenComments: document.getElementById('btn-open-comments'),
-        
-        loading: document.getElementById('loading'),
-        error: document.getElementById('error'),
-        errorMsg: document.getElementById('error-msg'),
-        photoView: document.getElementById('photo-view'),
-        viewImg: document.getElementById('view-img'),
-        viewVideo: document.getElementById('view-video'),
-        viewTitle: document.getElementById('view-title'),
-        viewDesc: document.getElementById('view-desc'),
-        viewMeta: document.getElementById('view-meta'),
-        btnAppView: document.getElementById('btn-app-view'),
-        btnShareView: document.getElementById('btn-share-view'),
-        
-        gallerySection: document.getElementById('gallery-section'),
-        galleryGrid: document.getElementById('gallery-grid'),
-        emptyState: document.getElementById('empty-state'),
-        
-        searchInput: document.getElementById('search-input'),
-        filterBtns: document.querySelectorAll('.filter-btn'),
-        toast: document.getElementById('toast'),
-        mainHeader: document.getElementById('main-header'),
-        mainContent: document.getElementById('main-content')
+        photoModal: document.getElementById('photo-modal'), modalImg: document.getElementById('modal-img'),
+        modalVideo: document.getElementById('modal-video'), modalTitle: document.getElementById('modal-title'),
+        modalDesc: document.getElementById('modal-desc'), modalMeta: document.getElementById('modal-meta'),
+        btnAppModal: document.getElementById('btn-app-modal'), btnShareModal: document.getElementById('btn-share-modal'),
+        appOpenModal: document.getElementById('app-open-modal'), btnAppDownload: document.getElementById('btn-app-download'),
+        loading: document.getElementById('loading'), error: document.getElementById('error'), errorMsg: document.getElementById('error-msg'),
+        photoView: document.getElementById('photo-view'), viewImg: document.getElementById('view-img'),
+        viewVideo: document.getElementById('view-video'), viewTitle: document.getElementById('view-title'),
+        viewDesc: document.getElementById('view-desc'), viewMeta: document.getElementById('view-meta'),
+        btnAppView: document.getElementById('btn-app-view'), btnShareView: document.getElementById('btn-share-view'),
+        gallerySection: document.getElementById('gallery-section'), galleryGrid: document.getElementById('gallery-grid'),
+        emptyState: document.getElementById('empty-state'), searchInput: document.getElementById('search-input'),
+        filterBtns: document.querySelectorAll('.filter-btn'), toast: document.getElementById('toast'),
+        mainHeader: document.getElementById('main-header'), mainContent: document.getElementById('main-content')
       };
 
-      // === UTILS ===
-      function showToast(msg, duration = 3000) {
-        if (!els.toast) return;
-        els.toast.textContent = msg;
-        els.toast.classList.add('show');
-        setTimeout(() => els.toast.classList.remove('show'), duration);
-      }
+      function showToast(msg, dur = 3000) { els.toast.textContent = msg; els.toast.classList.add('show'); setTimeout(() => els.toast.classList.remove('show'), dur); }
+      function isVideo(url) { if (!url) return false; const l = url.toLowerCase(); return l.includes('.mp4') || l.includes('.webm') || l.includes('video'); }
+      function protectMedia(el) { if (!el) return; ['contextmenu','dragstart','selectstart'].forEach(e => el.addEventListener(e, ev => { ev.preventDefault(); return false; }, { passive: false })); if (el.tagName === 'IMG') { el.style.pointerEvents = 'none'; el.style.userSelect = 'none'; } }
 
-      function isVideo(url) {
-        if (!url) return false;
-        const lower = url.toLowerCase();
-        return lower.includes('.mp4') || lower.includes('.webm') || lower.includes('video');
-      }
+      // === GISCUS FLOW (FIXED & STABLE) ===
+      window.openConfirmModal = function() { document.getElementById('confirm-modal').classList.remove('hidden'); document.body.classList.add('modal-open'); };
+      window.cancelDiscussion = function() { document.getElementById('confirm-modal').classList.add('hidden'); document.body.classList.remove('modal-open'); showToast('✅ Oke bre, balik ke gallery'); };
+      window.startDiscussion = function() {
+        document.getElementById('confirm-modal').classList.add('hidden');
+        const fs = document.getElementById('giscus-fullscreen');
+        fs.classList.add('active');
+        document.body.classList.add('comments-fullscreen');
+        const target = document.getElementById('giscus-target');
+        if (!target.querySelector('giscus')) {
+          const g = document.createElement('giscus');
+          g.setAttribute('data-repo', 'Jirankun/tkj1');
+          g.setAttribute('data-repo-id', 'R_kgDOQWmG8Q');
+          g.setAttribute('data-category', 'Show and tell');
+          g.setAttribute('data-category-id', 'DIC_kwDOQWmG8c4C63kb');
+          g.setAttribute('data-mapping', 'pathname');
+          g.setAttribute('data-strict', '0');
+          g.setAttribute('data-reactions-enabled', '1');
+          g.setAttribute('data-emit-metadata', '1');
+          g.setAttribute('data-input-position', 'top');
+          g.setAttribute('data-theme', 'dark_tritanopia');
+          g.setAttribute('data-lang', 'id');
+          g.setAttribute('crossorigin', 'anonymous');
+          target.appendChild(g);        }
+        showToast('💬 Login GitHub dulu di bawah bre!');
+      };
+      window.closeGiscusFullscreen = function() {
+        document.getElementById('giscus-fullscreen').classList.remove('active');
+        document.body.classList.remove('comments-fullscreen');
+      };
 
-      function protectMedia(el) {
-        if (!el) return;
-        ['contextmenu','dragstart','selectstart'].forEach(evt => 
-          el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false })        );
-        if (el.tagName === 'IMG') {
-          el.style.pointerEvents = 'none';
-          el.style.userSelect = 'none';
-        }
-      }
-
-      // 💬 GISCUS FUNCTIONS
-      function buildGiscusScript() {
-        const script = document.createElement('script');
-        script.src = 'https://giscus.app/client.js';
-        script.async = true;
-        script.crossOrigin = 'anonymous';
-        script.setAttribute('data-repo', CONFIG.GISCUS.repo);
-        script.setAttribute('data-repo-id', CONFIG.GISCUS.repoId);
-        script.setAttribute('data-category', CONFIG.GISCUS.category);
-        script.setAttribute('data-category-id', CONFIG.GISCUS.categoryId);
-        script.setAttribute('data-mapping', CONFIG.GISCUS.mapping);
-        script.setAttribute('data-strict', CONFIG.GISCUS.strict);
-        script.setAttribute('data-reactions-enabled', CONFIG.GISCUS.reactionsEnabled);
-        script.setAttribute('data-emit-metadata', CONFIG.GISCUS.emitMetadata);
-        script.setAttribute('data-input-position', CONFIG.GISCUS.inputPosition);
-        script.setAttribute('data-theme', CONFIG.GISCUS.theme);
-        script.setAttribute('data-lang', CONFIG.GISCUS.lang);
-        return script;
-      }
-
-      function initGiscusFullscreen() {
-        if (giscusInitialized || !els.giscusIframeTarget) return;
-        
-        els.giscusIframeTarget.innerHTML = '';
-        const giscusScript = buildGiscusScript();
-        els.giscusIframeTarget.appendChild(giscusScript);
-        
-        giscusInitialized = true;
-        console.log('💬 Giscus fullscreen initialized bre!');
-      }
-
-      function openCommentsFlow() {
-        if (!els.confirmModal) return;
-        els.confirmModal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-      }
-
-      function closeCommentsFlow() {
-        if (els.confirmModal) els.confirmModal.classList.add('hidden');
-        if (els.giscusFullscreen) els.giscusFullscreen.classList.remove('active');
-        document.body.classList.remove('modal-open', 'comments-fullscreen');
-      }
       // === VIDEO OBSERVER ===
       function initVideoObserver() {
         if (videoObserver) videoObserver.disconnect();
-        
         videoObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
-            const video = entry.target;
-            const isAnyModalOpen = !els.photoModal.classList.contains('hidden') || 
-                                  !els.photoView.classList.contains('hidden') || 
-                                  !els.appOpenModal.classList.contains('hidden') ||
-                                  els.giscusFullscreen.classList.contains('active');
-            
-            if (isAnyModalOpen) {
-              video.pause();
-              return;
-            }
-            
-            if (entry.isIntersecting) {
-              video.muted = true;
-              video.playsInline = true;
-              video.loop = true;
-              video.play().catch(() => { video.pause(); });
-            } else {
-              video.pause();
-              video.currentTime = 0;
-            }
+            const v = entry.target;
+            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || 
+                !els.appOpenModal.classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) { v.pause(); return; }
+            if (entry.isIntersecting) { v.muted = true; v.playsInline = true; v.loop = true; v.play().catch(() => {}); }
+            else { v.pause(); v.currentTime = 0; }
           });
         }, { threshold: 0.5 });
       }
+      function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
+      function pauseAllGalleryVideos() { document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => { if (!vid.paused) playingThumbnailVideo = vid; vid.pause(); }); }
+      function resumeThumbnailVideo() { if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { const r = playingThumbnailVideo.getBoundingClientRect(); if (r.top < window.innerHeight && r.bottom > 0) playingThumbnailVideo.play().catch(() => {}); playingThumbnailVideo = null; } }
 
-      function observeVideo(videoEl) {
-        if (videoObserver && videoEl) videoObserver.observe(videoEl);
-      }
-
-      function pauseAllGalleryVideos() {
-        document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => {
-          if (!vid.paused) playingThumbnailVideo = vid;
-          vid.pause();
-        });
-      }
-
-      function resumeThumbnailVideo() {
-        if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) {
-          const rect = playingThumbnailVideo.getBoundingClientRect();
-          const isInView = rect.top < window.innerHeight && rect.bottom > 0;
-          if (isInView) playingThumbnailVideo.play().catch(() => {});
-          playingThumbnailVideo = null;
-        }
-      }
-      // === SHOW PHOTO ===
-      function showPhoto(photo, usePopup = true) {
-        currentPhoto = photo;
-        const isVid = isVideo(photo.url);
-        
-        if (usePopup && els.photoModal) {
-          pauseAllGalleryVideos();
-          
-          els.modalTitle.textContent = photo.title || `#${photo.name}`;
-          els.modalImg.style.display = isVid ? 'none' : 'block';
-          els.modalVideo.style.display = isVid ? 'block' : 'none';
-          
-          if (isVid) {
-            els.modalVideo.src = photo.url;
-            els.modalVideo.load();
-            els.modalImg.src = '';
-          } else {
-            els.modalImg.src = photo.url;
-            els.modalVideo.src = '';
-            protectMedia(els.modalImg);
-          }
-          
+      // === PHOTO VIEW ===
+      function showPhoto(photo, popup = true) {
+        currentPhoto = photo; const v = isVideo(photo.url);
+        if (popup) {
+          pauseAllGalleryVideos(); els.modalTitle.textContent = photo.title || `#${photo.name}`;
+          els.modalImg.style.display = v ? 'none' : 'block'; els.modalVideo.style.display = v ? 'block' : 'none';
+          if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; }
+          else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
           els.modalDesc.textContent = photo.desc || photo.description || 'No description';
           els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-          
-          els.photoModal.classList.remove('hidden');
-          document.body.classList.add('modal-open');
-          
-          els.btnAppModal.onclick = () => openApp(photo.name);
-          els.btnShareModal.onclick = () => sharePhoto(photo);
-          els.modalClose.onclick = closeModal;
-          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) closeModal(); };
-          
-        } else {
-          showFullPhotoView(photo);
-        }
+          els.photoModal.classList.remove('hidden'); document.body.classList.add('modal-open');
+          els.btnAppModal.onclick = () => openApp(photo.name); els.btnShareModal.onclick = () => sharePhoto(photo);
+          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
+        } else { showFullPhotoView(photo); }
       }
+      window.closePhotoModal = function() { els.photoModal.classList.add('hidden'); document.body.classList.remove('modal-open'); els.modalVideo.pause(); els.modalVideo.src = ''; els.modalImg.src = ''; resumeThumbnailVideo(); };
 
       function showFullPhotoView(photo) {
-        if (els.mainHeader) els.mainHeader.classList.add('hidden');
-        if (els.mainContent) els.mainContent.classList.add('full-view');
-        
-        const isVid = isVideo(photo.url);
-        
-        els.viewTitle.textContent = photo.title || `#${photo.name}`;
-        els.viewImg.style.display = isVid ? 'none' : 'block';
-        els.viewVideo.style.display = isVid ? 'block' : 'none';
-        
-        if (isVid) {
-          els.viewVideo.src = photo.url;          els.viewVideo.load();
-          els.viewImg.src = '';
-        } else {
-          els.viewImg.src = photo.url;
-          els.viewVideo.src = '';
-          protectMedia(els.viewImg);
-        }
-        
+        els.mainHeader.classList.add('hidden'); els.mainContent.classList.add('full-view');
+        const v = isVideo(photo.url); els.viewTitle.textContent = photo.title || `#${photo.name}`;
+        els.viewImg.style.display = v ? 'none' : 'block'; els.viewVideo.style.display = v ? 'block' : 'none';
+        if (v) { els.viewVideo.src = photo.url; els.viewVideo.load(); els.viewImg.src = ''; }
+        else { els.viewImg.src = photo.url; els.viewVideo.src = ''; protectMedia(els.viewImg); }
         els.viewDesc.textContent = photo.desc || photo.description || 'No description';
-        els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-        
-        if (els.gallerySection) els.gallerySection.classList.add('hidden');
-        if (els.photoView) els.photoView.classList.remove('hidden');
-        document.body.classList.add('view-open');
-        
-        els.btnAppView.onclick = () => openApp(photo.name);
-        els.btnShareView.onclick = () => sharePhoto(photo);
-        
-        document.addEventListener('visibilitychange', handleViewVisibilityChange);
-        window.scrollTo(0, 0);
+        els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;        els.gallerySection.classList.add('hidden'); els.photoView.classList.remove('hidden'); document.body.classList.add('view-open');
+        els.btnAppView.onclick = () => openApp(photo.name); els.btnShareView.onclick = () => sharePhoto(photo);
+        document.addEventListener('visibilitychange', handleViewVis); window.scrollTo(0, 0);
       }
+      function closeFullView() { els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view'); document.body.classList.remove('view-open'); els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; document.removeEventListener('visibilitychange', handleViewVis); window.onbeforeunload = null; window.history.pushState({}, '', '/'); }
+      function handleViewVis() { if (document.hidden && !els.photoView.classList.contains('hidden')) {} }
 
-      function closeModal() {
-        if (!els.photoModal) return;
-        els.photoModal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-        els.modalVideo.pause();
-        els.modalVideo.src = '';
-        els.modalImg.src = '';
-        resumeThumbnailVideo();
-      }
-
-      function closeFullView() {
-        if (!els.photoView) return;
-        els.photoView.classList.add('hidden');
-        if (els.gallerySection) els.gallerySection.classList.remove('hidden');
-        if (els.mainHeader) els.mainHeader.classList.remove('hidden');
-        if (els.mainContent) els.mainContent.classList.remove('full-view');
-        document.body.classList.remove('view-open');
-        els.viewVideo.pause();
-        els.viewVideo.src = '';
-        els.viewImg.src = '';
-        document.removeEventListener('visibilitychange', handleViewVisibilityChange);
-        window.onbeforeunload = null;
-        window.history.pushState({}, '', '/');
-      }
-
-      function handleViewVisibilityChange() {
-        if (document.hidden && els.photoView && !els.photoView.classList.contains('hidden')) {
-          // Natural navigation        }
-      }
-
-      // === APP OPEN LOGIC ===
-      function openApp(photoId) {
-        const schemeUrl = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${photoId}`;
-        const intentUrl = `intent://${CONFIG.BASE_URL}/photo/${photoId}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`;
-        
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = schemeUrl;
-        document.body.appendChild(iframe);
-        
-        setTimeout(() => {
-          try { window.location.href = intentUrl; } catch(e) {}
-        }, 300);
-        
+      // === APP OPEN ===
+      function openApp(id) {
+        const i = document.createElement('iframe'); i.style.display = 'none'; i.src = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`; document.body.appendChild(i);
+        setTimeout(() => { try { window.location.href = `intent://${CONFIG.BASE_URL}/photo/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`; } catch(e) {} }, 300);
         appOpenTimeout = setTimeout(() => showAppOpenModal(), 1200);
-        
-        appOpenVisibilityHandler = () => {
-          if (document.hidden) {
-            if (appOpenTimeout) clearTimeout(appOpenTimeout);
-            hideAppOpenModal();
-            document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
-          }
-        };
+        appOpenVisibilityHandler = () => { if (document.hidden) { clearTimeout(appOpenTimeout); window.hideAppOpenModal(); document.removeEventListener('visibilitychange', appOpenVisibilityHandler); } };
         document.addEventListener('visibilitychange', appOpenVisibilityHandler);
-        
-        setTimeout(() => {
-          if (document.body.contains(iframe)) document.body.removeChild(iframe);
-        }, 2000);
+        setTimeout(() => { if (document.body.contains(i)) document.body.removeChild(i); }, 2000);
       }
-
-      function showAppOpenModal() {
-        if (!els.appOpenModal) return;
-        els.appOpenModal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-        
-        els.btnAppDownload.onclick = () => {
-          hideAppOpenModal();
-          window.location.href = CONFIG.FALLBACK_URL;
-        };
-        
-        els.btnAppCancel.onclick = () => {
-          hideAppOpenModal();
-          showToast('✅ Oke bre, tetap di web aja');
-        };
-        
-        els.appOpenModal.onclick = (e) => {
-          if (e.target === els.appOpenModal) hideAppOpenModal();        };
-      }
-
-      function hideAppOpenModal() {
-        if (!els.appOpenModal) return;
-        els.appOpenModal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-        if (appOpenTimeout) clearTimeout(appOpenTimeout);
-        if (appOpenVisibilityHandler) {
-          document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
-          appOpenVisibilityHandler = null;
-        }
-      }
+      function showAppOpenModal() { els.appOpenModal.classList.remove('hidden'); document.body.classList.add('modal-open'); els.btnAppDownload.onclick = () => { window.hideAppOpenModal(); window.location.href = CONFIG.FALLBACK_URL; }; }
+      window.hideAppOpenModal = function() { els.appOpenModal.classList.add('hidden'); document.body.classList.remove('modal-open'); clearTimeout(appOpenTimeout); if (appOpenVisibilityHandler) { document.removeEventListener('visibilitychange', appOpenVisibilityHandler); appOpenVisibilityHandler = null; } };
 
       // === SHARE ===
       function sharePhoto(photo) {
-        const shareText = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
-        
-        if (navigator.share) {
-          navigator.share({ title: 'TKJ1 Gallery', text: shareText })
-            .then(() => showToast('✅ Berhasil dibagikan!'))
-            .catch(() => {});
-        } else {
-          navigator.clipboard.writeText(shareText)
-            .then(() => showToast('🔗 Link copied!'))
-            .catch(() => showToast('Gagal copy link'));
-        }
+        const t = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
+        if (navigator.share) navigator.share({ title: 'TKJ1 Gallery', text: t }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
+        else navigator.clipboard.writeText(t).then(() => showToast('🔗 Link copied!')).catch(() => showToast('Gagal copy link'));
       }
 
       // === RENDER GALLERY ===
       function renderGallery(photos) {
-        if (!els.galleryGrid) return;
         els.galleryGrid.innerHTML = '';
-        
-        if (!photos || photos.length === 0) {
-          if (els.emptyState) els.emptyState.classList.remove('hidden');
-          return;
-        }
-        
-        if (els.emptyState) els.emptyState.classList.add('hidden');
-        
+        if (!photos || photos.length === 0) { els.emptyState.classList.remove('hidden'); return; }
+        els.emptyState.classList.add('hidden');
         photos.forEach(photo => {
-          const isVid = isVideo(photo.url);
-          const item = document.createElement('div');
-          item.className = 'gallery-item';
-          
-          if (isVid) {
-            item.innerHTML = `
-              <video class="gallery-thumb video-thumb" 
-                     src="${photo.url}"                      muted preload="none" playsinline loop></video>
-              <div class="gallery-info">
-                <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-                <div class="gallery-meta">
-                  <span class="badge badge-video">🎬 Video</span>
-                  ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
-                </div>
-              </div>
-            `;
-            const videoEl = item.querySelector('video');
-            observeVideo(videoEl);
-            protectMedia(videoEl);
+          const v = isVideo(photo.url); const item = document.createElement('div'); item.className = 'gallery-item';
+          if (v) {
+            item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
+            observeVideo(item.querySelector('video')); protectMedia(item.querySelector('video'));
           } else {
-            item.innerHTML = `
-              <img class="gallery-thumb" 
-                   src="${photo.url}" 
-                   alt="${photo.title||photo.name}" 
-                   loading="lazy">
-              <div class="gallery-info">
-                <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-                <div class="gallery-meta">
-                  <span class="badge badge-photo">📷 Foto</span>
-                  ${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}
-                </div>
-              </div>
-            `;
+            item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
             protectMedia(item.querySelector('img'));
           }
-          
-          item.addEventListener('click', () => showPhoto(photo, true));
-          els.galleryGrid.appendChild(item);
+          item.addEventListener('click', () => showPhoto(photo, true)); els.galleryGrid.appendChild(item);
         });
       }
 
-      // === FILTER & SEARCH ===
+      window.setFilter = function(btn, type) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); };
       function applyFilters() {
-        if (!els.searchInput) return;
-        const query = els.searchInput.value.toLowerCase().trim();
-        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        
+        const q = els.searchInput.value.toLowerCase().trim(); const af = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         filteredPhotos = allPhotos.filter(p => {
-          const matchSearch = !query || 
-            String(p.name).toLowerCase().includes(query) || 
-            (p.title && p.title.toLowerCase().includes(query));
-          
-          const matchType = activeFilter === 'all' || 
-            (activeFilter === 'video' && isVideo(p.url)) || 
-            (activeFilter === 'photo' && !isVideo(p.url));
-          
-          return matchSearch && matchType;        });
-        
-        renderGallery(filteredPhotos);
+          const ms = !q || String(p.name).toLowerCase().includes(q) || (p.title && p.title.toLowerCase().includes(q));
+          const mt = af === 'all' || (af === 'video' && isVideo(p.url)) || (af === 'photo' && !isVideo(p.url));          return ms && mt;
+        }); renderGallery(filteredPhotos);
       }
 
-      // === INIT GALLERY - FIXED VERSION ===
+      // === INIT GALLERY ===
       async function initGallery() {
-        console.log('🔄 initGallery called');
-        
-        if (window.galleryInitialized) {
-          console.log('⚠️ Gallery already initialized');
-          return;
-        }
-        
-        // ✅ PASTIKAN SEMUA ELEMEN ADA
-        if (!els.loading || !els.gallerySection || !els.galleryGrid) {
-          console.error('❌ Critical DOM elements missing!');
-          return;
-        }
-
-        const path = window.location.pathname;
-        const parts = path.split('/').filter(Boolean);
-        const directPhotoName = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-        
+        if (window.galleryInitialized) return; window.galleryInitialized = true;
+        const path = window.location.pathname; const parts = path.split('/').filter(Boolean);
+        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
         try {
-          console.log('📦 Fetching photos.json...');
-          els.loading.classList.remove('hidden');
-          if (els.error) els.error.classList.add('hidden');
-          
-          // ✅ TRY MULTIPLE PATHS FOR JSON
-          let res, data;
-          const possiblePaths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
-          
-          for (const jsonPath of possiblePaths) {
-            try {
-              res = await fetch(jsonPath + '?t=' + Date.now());
-              if (res.ok) {
-                console.log(`✅ Loaded from ${jsonPath}`);
-                break;
-              }
-            } catch (e) {
-              console.warn(`⚠️ Failed to load ${jsonPath}:`, e);
-            }
-          }
-          
-          if (!res || !res.ok) {
-            throw new Error('Gagal load photos.json (Status: ' + (res?.status || 'unknown') + ')');
-          }
-          
-          data = await res.json();          console.log('📊 Data loaded:', data);
-          
+          els.loading.classList.remove('hidden'); if (els.error) els.error.classList.add('hidden');
+          let res; const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
+          for (const p of paths) { try { res = await fetch(p + '?t=' + Date.now()); if (res.ok) break; } catch(e) {} }
+          if (!res || !res.ok) throw new Error('Gagal load photos.json');
+          const data = await res.json();
           allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
-          
-          if (!Array.isArray(allPhotos)) {
-            console.error('❌ Invalid data format:', data);
-            throw new Error('Format JSON salah! Harusnya array atau object dengan field photos/data');
-          }
-          
-          console.log(`📸 Found ${allPhotos.length} photos`);
-          
-          allPhotos.sort((a, b) => {
-            const na = parseInt(a.name), nb = parseInt(b.name);
-            if (!isNaN(na) && !isNaN(nb)) return na - nb;
-            return String(a.name).localeCompare(String(b.name));
-          });
-          
+          if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
+          allPhotos.sort((a, b) => { const na = parseInt(a.name), nb = parseInt(b.name); return (!isNaN(na) && !isNaN(nb)) ? na - nb : String(a.name).localeCompare(String(b.name)); });
           filteredPhotos = [...allPhotos];
-          
-          // ✅ SETUP EVENT LISTENERS
-          if (els.searchInput) {
-            els.searchInput.removeEventListener('input', applyFilters);
-            els.searchInput.addEventListener('input', applyFilters);
-          }
-          
-          if (els.filterBtns && els.filterBtns.length > 0) {
-            els.filterBtns.forEach(btn => {
-              btn.onclick = () => {
-                els.filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                applyFilters();
-              };
-            });
-          }
-          
-          // ✅ HIDE LOADING, SHOW GALLERY
+          els.searchInput.addEventListener('input', applyFilters);
           els.loading.classList.add('hidden');
-          
-          if (directPhotoName) {
-            console.log(`🔍 Looking for direct photo: ${directPhotoName}`);
-            const photo = allPhotos.find(p => String(p.name).toLowerCase() === String(directPhotoName).toLowerCase());
-            if (photo) {
-              console.log('✅ Found direct photo, showing full view');
-              showPhoto(photo, false);
-            } else {
-              console.warn(`⚠️ Photo "${directPhotoName}" not found`);
-              if (els.errorMsg) els.errorMsg.textContent = `Foto "${directPhotoName}" gak ditemukan bre!`;
-              if (els.error) els.error.classList.remove('hidden');
-            }
-          } else {            console.log('🎨 Rendering gallery grid');
-            initVideoObserver();
-            els.gallerySection.classList.remove('hidden');
-            renderGallery(filteredPhotos);
-          }
-          
-          window.galleryInitialized = true;
-          console.log('✅ Gallery initialization complete!');
-          
+          if (direct) {
+            const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase());
+            if (p) showPhoto(p, false);
+            else { els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; els.error.classList.remove('hidden'); }
+          } else { initVideoObserver(); els.gallerySection.classList.remove('hidden'); renderGallery(filteredPhotos); }
         } catch (err) {
-          console.error('❌ [Gallery Error]', err);
-          if (els.loading) els.loading.classList.add('hidden');
-          if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}. Cek console bre!`;
+          els.loading.classList.add('hidden');
+          if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`;
           if (els.error) els.error.classList.remove('hidden');
         }
       }
-
-      // ✅ EXPOSE GLOBALLY FOR TURNSTILE
       window.__initGallery = initGallery;
-      window.initGallery = initGallery; // Also expose directly as fallback
 
-      // === COMMENT EVENT SETUP ===
-      function setupCommentEvents() {
-        console.log('🔧 Setting up comment events...');
-        
-        if (els.btnOpenComments) {
-          els.btnOpenComments.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('💬 Open comments button clicked');
-            openCommentsFlow();
-          });
+      window.addEventListener('popstate', () => {
+        const p = window.location.pathname; if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
+        if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (!els.photoModal.classList.contains('hidden')) window.closePhotoModal();
+          if (!els.appOpenModal.classList.contains('hidden')) window.hideAppOpenModal();
+          if (!document.getElementById('confirm-modal').classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
         }
+      });
 
-        if (els.btnConfirmOk) {
-          els.btnConfirmOk.addEventListener('click', () => {
-            console.log('✅ Confirm OK clicked');
-            if (els.confirmModal) els.confirmModal.classList.add('hidden');
-            if (els.giscusFullscreen) els.giscusFullscreen.classList.add('active');
-            document.body.classList.add('comments-fullscreen');
-            initGiscusFullscreen();
-            showToast('💬 Login GitHub dulu di iframe bawah bre!');
-          });
-        }
-
-        if (els.btnConfirmCancel) {
-          els.btnConfirmCancel.addEventListener('click', () => {
-            console.log('❌ Confirm Cancel clicked');
-            closeCommentsFlow();
-            showToast('✅ Oke bre, balik ke gallery');
-          });        }
-
-        if (els.giscusClose) {
-          els.giscusClose.addEventListener('click', () => {
-            console.log('🔴 Giscus close clicked');
-            closeCommentsFlow();
-          });
-        }
-
-        if (els.giscusFullscreen) {
-          els.giscusFullscreen.addEventListener('click', (e) => {
-            if (e.target === els.giscusFullscreen) {
-              console.log('🔴 Giscus background clicked');
-              closeCommentsFlow();
-            }
-          });
-        }
-      }
-
-      // === GLOBAL KEYBOARD HANDLER ===
-      function setupKeyboardHandler() {
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') {
-            console.log('⌨️ Escape key pressed');
-            if (els.photoModal && !els.photoModal.classList.contains('hidden')) closeModal();
-            if (els.appOpenModal && !els.appOpenModal.classList.contains('hidden')) hideAppOpenModal();
-            if ((els.confirmModal && !els.confirmModal.classList.contains('hidden')) || 
-                (els.giscusFullscreen && els.giscusFullscreen.classList.contains('active'))) {
-              closeCommentsFlow();
-            }
-          }
-        });
-      }
-
-      // === POPSTATE HANDLER ===
-      function setupPopStateHandler() {
-        window.addEventListener('popstate', () => {
-          const path = window.location.pathname;
-          if (!path.includes('/photo/') && els.photoView && !els.photoView.classList.contains('hidden')) {
-            closeFullView();
-          }
-          if (els.giscusFullscreen && els.giscusFullscreen.classList.contains('active')) {
-            closeCommentsFlow();
-          }
-        });
-      }
-
-      // === TURNSTILE FALLBACK ===
-      function setupTurnstileFallback() {
-        if (els.turnstileFallback) {          els.turnstileFallback.addEventListener('click', () => {
-            console.log('⚠️ Manual Turnstile bypass triggered');
-            window.onVerifySuccess('manual-bypass');
-          });
-        }
-      }
-
-      // === INIT ALL ===
-      function initAll() {
-        console.log('🚀 Starting TKJ1 Gallery init...');
-        
-        setupCommentEvents();
-        setupKeyboardHandler();
-        setupPopStateHandler();
-        setupTurnstileFallback();
-        
-        // ✅ AUTO-INIT GALLERY IF TURNSTILE ALREADY PASSED OR FOR TESTING
-        if (window.isTurnstileVerified) {
-          console.log('🔄 Turnstile already verified, initializing gallery...');
-          initGallery();
-        } else {
-          console.log('⏳ Waiting for Turnstile verification...');
-          // Fallback: auto-init after 20s if Turnstile doesn't respond
-          setTimeout(() => {
-            if (!window.isTurnstileVerified && !window.galleryInitialized) {
-              console.log('⚠️ Turnstile timeout, auto-bypass for testing...');
-              window.onVerifySuccess('timeout-bypass');
-            }
-          }, 20000);
-        }
-      }
-
-      // ✅ RUN INIT WHEN DOM IS READY
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAll);
-        console.log('📄 DOM not ready yet, waiting for DOMContentLoaded...');
-      } else {
-        console.log('📄 DOM already ready, running init immediately...');
-        initAll();
-      }
-
+      function runInit() {
+        els.filterBtns.forEach(btn => btn.onclick = () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); });
+        if (window.isTurnstileVerified) initGallery();
+        else setTimeout(() => { if (!window.isTurnstileVerified && !window.galleryInitialized) window.onVerifySuccess('timeout-bypass'); }, 20000);      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit);
+      else runInit();
     })();
   </script>
 </body>
