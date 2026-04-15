@@ -50,10 +50,41 @@
       display: flex;      flex-direction: column;
       min-height: 100vh;
     }
-    body.modal-open, body.view-open, body.comments-fullscreen { overflow: hidden; }
+    body.modal-open, body.view-open, body.comments-fullscreen, body.pc-blocked { overflow: hidden; }
 
     .hidden { display: none !important; pointer-events: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
+
+    /* === PC BLOCKER (SIMPLE) === */
+    #pc-blocker {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 24px;
+      text-align: center;
+    }
+    #pc-blocker.active { display: flex; }
+    .pc-blocker-icon { font-size: 3rem; margin-bottom: 16px; }
+    .pc-blocker-title { font-size: 1.3rem; font-weight: 700; color: var(--error); margin-bottom: 12px; }
+    .pc-blocker-desc { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; max-width: 320px; }
+    .pc-blocker-btn {
+      padding: 12px 28px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pc-blocker-btn:hover { background: var(--accent-hover); }
+    .pc-blocker-btn:active { transform: scale(0.98); }
 
     /* === HEADER STICKY MOBILE OPTIMIZED === */
     .header {
@@ -65,8 +96,7 @@
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       padding: 12px 0;
-      transition: box-shadow 0.2s ease;
-      will-change: transform;
+      transition: box-shadow 0.2s ease;      will-change: transform;
     }
     .header::after {
       content: '';
@@ -96,7 +126,8 @@
     }
     
     .search-box { 
-      position: relative;       width: 100%;
+      position: relative; 
+      width: 100%;
     }
     .search-box input { 
       width: 100%; 
@@ -114,8 +145,7 @@
       box-shadow: 0 0 0 4px rgba(0, 212, 170, 0.15); 
       background: var(--card-hover);
     }
-    .search-box input::placeholder { color: var(--text-muted); }
-    .search-box::before {
+    .search-box input::placeholder { color: var(--text-muted); }    .search-box::before {
       content: '🔍';
       position: absolute;
       right: 14px;
@@ -145,7 +175,8 @@
       transition: all 0.2s ease; 
       font-family: inherit;
       min-height: 40px;
-      display: flex;      align-items: center;
+      display: flex;
+      align-items: center;
       justify-content: center;
     }
     .filter-btn:active { transform: scale(0.98); }
@@ -163,8 +194,7 @@
       border-radius: 10px; 
       color: var(--bg); 
       font-size: 0.85rem; 
-      font-weight: 700; 
-      cursor: pointer; 
+      font-weight: 700;       cursor: pointer; 
       transition: all 0.2s ease; 
       font-family: inherit; 
       display: flex; 
@@ -194,7 +224,8 @@
       gap: 12px; 
     }
     
-    .gallery-item {       background: var(--card); 
+    .gallery-item { 
+      background: var(--card); 
       border: 1px solid var(--border); 
       border-radius: 14px; 
       overflow: hidden; 
@@ -212,8 +243,7 @@
       user-select: none; 
       display: block; 
     }
-    .gallery-thumb.video-thumb { object-fit: contain; background: #000; }
-    
+    .gallery-thumb.video-thumb { object-fit: contain; background: #000; }    
     .gallery-info { padding: 12px; }
     .gallery-title { 
       font-weight: 600; 
@@ -243,7 +273,8 @@
 
     /* === GISCUS FULLSCREEN === */
     #giscus-fullscreen { 
-      position: fixed;       inset: 0; 
+      position: fixed; 
+      inset: 0; 
       background: var(--bg); 
       z-index: 10000; 
       display: none; 
@@ -261,8 +292,7 @@
       padding: 12px 16px; 
       background: rgba(10, 10, 15, 0.98); 
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border); 
-      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);       flex-shrink: 0;
     }
     .giscus-fullscreen-title { 
       font-size: 1rem; 
@@ -292,7 +322,8 @@
     
     .giscus-fullscreen-body { 
       flex: 1; 
-      overflow-y: auto;       overscroll-behavior: contain; 
+      overflow-y: auto; 
+      overscroll-behavior: contain; 
       position: relative; 
     }
     .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }
@@ -311,7 +342,6 @@
       border-bottom: 1px solid var(--border); 
       font-weight: 500;
     }
-
     /* === CONFIRM MODAL === */
     .confirm-modal { 
       position: fixed; 
@@ -341,7 +371,8 @@
     .confirm-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .confirm-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
     .confirm-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; text-align: left; }
-    .confirm-desc strong { color: var(--error); font-weight: 700; }    .confirm-actions { display: flex; gap: 10px; flex-direction: column; }
+    .confirm-desc strong { color: var(--error); font-weight: 700; }
+    .confirm-actions { display: flex; gap: 10px; flex-direction: column; }
     .confirm-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; border-radius: 12px; }
     .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
     .btn-cancel:active { background: var(--border); }
@@ -359,8 +390,7 @@
       z-index: 500; 
       overflow-y: auto; 
     }
-    .photo-view-container { 
-      width: 100%; 
+    .photo-view-container {       width: 100%; 
       max-width: 100%; 
       background: var(--card); 
       border-radius: 16px; 
@@ -390,7 +420,8 @@
       font-weight: 600; 
       font-size: 0.9rem; 
       border: none; 
-      cursor: pointer;       transition: all 0.2s; 
+      cursor: pointer; 
+      transition: all 0.2s; 
       font-family: inherit; 
       text-decoration: none; 
       white-space: nowrap;
@@ -408,8 +439,7 @@
       align-items: center; 
       justify-content: center; 
       z-index: 1000; 
-      padding: 16px; 
-      backdrop-filter: blur(8px); 
+      padding: 16px;       backdrop-filter: blur(8px); 
     }
     .modal-content { 
       background: var(--card); 
@@ -439,7 +469,8 @@
       transition: all 0.2s; 
       z-index: 10; 
     }
-    .modal-close:active { transform: scale(0.95); }    .modal-close:hover { background: var(--error); border-color: var(--error); }
+    .modal-close:active { transform: scale(0.95); }
+    .modal-close:hover { background: var(--error); border-color: var(--error); }
     
     .modal-media { 
       width: 100%; 
@@ -457,8 +488,7 @@
 
     .app-open-modal { 
       position: fixed; 
-      inset: 0; 
-      background: rgba(0, 0, 0, 0.9); 
+      inset: 0;       background: rgba(0, 0, 0, 0.9); 
       display: flex; 
       align-items: center; 
       justify-content: center; 
@@ -488,7 +518,8 @@
       background: rgba(0, 0, 0, 0.95); 
       display: flex; 
       align-items: center; 
-      justify-content: center;       z-index: 9999; 
+      justify-content: center; 
+      z-index: 9999; 
       padding: 20px; 
     }
     .turnstile-box { 
@@ -506,8 +537,7 @@
     .turnstile-widget { display: flex; justify-content: center; margin: 16px 0; min-height: 65px; }
     .turnstile-error { color: var(--error); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
     .turnstile-fallback-btn { 
-      margin-top: 12px; 
-      padding: 8px 16px; 
+      margin-top: 12px;       padding: 8px 16px; 
       background: transparent; 
       border: 1px dashed var(--border); 
       color: var(--text-muted); 
@@ -537,7 +567,8 @@
       position: fixed; 
       bottom: 20px; 
       left: 50%; 
-      transform: translateX(-50%) translateY(100px);       background: var(--card); 
+      transform: translateX(-50%) translateY(100px); 
+      background: var(--card); 
       color: var(--text); 
       padding: 12px 24px; 
       border-radius: 12px; 
@@ -555,8 +586,7 @@
     /* === FOOTER === */
     .footer {
       padding: 20px 16px 30px;
-      text-align: center;
-      background: var(--card);
+      text-align: center;      background: var(--card);
       border-top: 1px solid var(--border);
       margin-top: auto;
     }
@@ -586,18 +616,26 @@
     video::-webkit-media-controls-panel { background-color: rgba(21,21,32,0.9) !important; }
 
     /* === SCROLLBAR === */
-    ::-webkit-scrollbar { width: 6px; }    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
 </head>
 <body>
 
+  <!-- 🚫 PC BLOCKER -->
+  <div id="pc-blocker">
+    <div class="pc-blocker-icon">📱</div>
+    <div class="pc-blocker-title">⚠️ Mobile Only Bre!</div>
+    <p class="pc-blocker-desc">Website ini cuma buat HP Android/iOS. Buka pake phone aja yak!</p>
+    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.com/portofoliozhyllan'">🔗 Ke Portfolio</button>
+  </div>
+
   <!-- 💬 GISCUS FULLSCREEN -->
   <div id="giscus-fullscreen">
     <div class="giscus-fullscreen-header">
-      <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>
-      <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
+      <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>      <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
     </div>
     <div class="giscus-login-hint">🔐 Login GitHub dulu buat komen bre!</div>
     <div class="giscus-fullscreen-body">
@@ -635,7 +673,8 @@
       <div id="error" class="error hidden">
         <div class="error-icon">❌</div>
         <div id="error-msg"></div>
-      </div>      
+      </div>
+      
       <!-- Photo View Fullscreen -->
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
@@ -645,8 +684,7 @@
             <h1 class="photo-view-title" id="view-title"></h1>
             <p class="photo-view-desc" id="view-desc"></p>
             <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9rem;" id="view-meta"></p>
-            <div class="photo-view-actions">
-              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
+            <div class="photo-view-actions">              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
               <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
             </div>
           </div>
@@ -684,7 +722,8 @@
         <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;" id="modal-meta"></p>
         <div class="modal-actions">
           <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
-          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>        </div>
+          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+        </div>
       </div>
     </div>
   </div>
@@ -694,8 +733,7 @@
     <div class="app-open-box">
       <div class="app-open-icon">📱</div>
       <h3 class="app-open-title">Aplikasi Dibuka...</h3>
-      <p class="app-open-desc">Kalo aplikasi gak kebuka, download dulu bre.</p>
-      <div class="app-open-actions">
+      <p class="app-open-desc">Kalo aplikasi gak kebuka, download dulu bre.</p>      <div class="app-open-actions">
         <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
         <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
       </div>
@@ -733,9 +771,40 @@
 
   <!-- SCRIPTS -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
   <script>
     (function() {
       'use strict';
+
+      // === PC DETECTION & BLOCKER ===
+      function isMobileDevice() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        const isMobile = mobileRegex.test(ua);
+        const isSmallScreen = window.innerWidth <= 768;
+        return isMobile || isSmallScreen;      }
+
+      function initPCBlocker() {
+        const blocker = document.getElementById('pc-blocker');
+        if (!isMobileDevice()) {
+          blocker.classList.add('active');
+          document.body.classList.add('pc-blocked');
+          document.getElementById('main-header')?.classList.add('hidden');
+          document.getElementById('main-content')?.classList.add('hidden');
+          document.querySelector('.footer')?.classList.add('hidden');
+        }
+      }
+      initPCBlocker();
+      window.addEventListener('resize', () => {
+        const blocker = document.getElementById('pc-blocker');
+        if (isMobileDevice() && blocker.classList.contains('active')) {
+          blocker.classList.remove('active');
+          document.body.classList.remove('pc-blocked');
+          document.getElementById('main-header')?.classList.remove('hidden');
+          document.getElementById('main-content')?.classList.remove('hidden');
+          document.querySelector('.footer')?.classList.remove('hidden');
+        }
+      });
 
       const CONFIG = {
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'],
@@ -762,8 +831,7 @@
         btnAppDownload: document.getElementById('btn-app-download'),
         loading: document.getElementById('loading'), 
         error: document.getElementById('error'), 
-        errorMsg: document.getElementById('error-msg'),
-        photoView: document.getElementById('photo-view'), 
+        errorMsg: document.getElementById('error-msg'),        photoView: document.getElementById('photo-view'), 
         viewImg: document.getElementById('view-img'),
         viewVideo: document.getElementById('view-video'), 
         viewTitle: document.getElementById('view-title'),
@@ -781,8 +849,24 @@
         mainContent: document.getElementById('main-content')
       };
 
+      // === FORCE UNLOCK SCROLL (BULLETPROOF) ===
+      window.unlockBodyScroll = function() {
+        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+        // Clear any fixed positioning that might trap scroll
+        if (document.body.style.position === 'fixed') {
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          document.body.style.bottom = '';
+        }
+      };
+
       function showToast(msg, dur = 2500) { 
-        els.toast.textContent = msg;         els.toast.classList.add('show'); 
+        els.toast.textContent = msg; 
+        els.toast.classList.add('show'); 
         setTimeout(() => els.toast.classList.remove('show'), dur); 
       }
       
@@ -796,31 +880,18 @@
         if (!el) return; 
         ['contextmenu','dragstart','selectstart'].forEach(e => 
           el.addEventListener(e, ev => { ev.preventDefault(); return false; }, { passive: false })
-        ); 
-        if (el.tagName === 'IMG') { 
+        );         if (el.tagName === 'IMG') { 
           el.style.pointerEvents = 'none'; 
           el.style.userSelect = 'none'; 
         }
-        // === FIX: DISABLE VIDEO DOWNLOAD BUTTON ===
         if (el.tagName === 'VIDEO') {
           el.setAttribute('controlsList', 'nodownload');
-          el.addEventListener('rendered', () => {
-            const dlBtn = el.shadowRoot?.querySelector?.('[download]');
-            if (dlBtn) dlBtn.style.display = 'none';
-          }, { once: true });
         }
       }
 
       // === HEADER SCROLL SHADOW EFFECT ===
-      let lastScrollY = 0;
       window.addEventListener('scroll', () => {
-        const currentY = window.scrollY;
-        if (currentY > 10) {
-          els.mainHeader.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
-        } else {
-          els.mainHeader.style.boxShadow = 'none';
-        }
-        lastScrollY = currentY;
+        els.mainHeader.style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
       }, { passive: true });
 
       // === GISCUS & MODAL FLOWS ===
@@ -830,8 +901,9 @@
       };
       window.cancelDiscussion = function() { 
         document.getElementById('confirm-modal').classList.add('hidden'); 
-        document.body.classList.remove('modal-open'); 
-        showToast('✅ Oke bre, balik ke gallery');       };
+        window.unlockBodyScroll();
+        showToast('✅ Oke bre, balik ke gallery'); 
+      };
       window.startDiscussion = function() {
         document.getElementById('confirm-modal').classList.add('hidden');
         document.getElementById('giscus-fullscreen').classList.add('active');
@@ -839,12 +911,14 @@
         showToast('💬 Login GitHub dulu bre!');
       };
       
-      // === FIX: SCROLL UNLOCK AFTER CLOSING CHAT ===
+      // === FIX: BULLETPROOF SCROLL UNLOCK ===
       window.closeGiscusFullscreen = function() {
         document.getElementById('giscus-fullscreen').classList.remove('active');
-        document.body.classList.remove('comments-fullscreen');
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
+        window.unlockBodyScroll();
+        // Tiny delay to ensure browser reflows properly on mobile
+        setTimeout(() => {
+          window.scrollTo(0, window.scrollY); // Force repaint
+        }, 10);
       };
 
       // === VIDEO OBSERVER ===
@@ -855,35 +929,21 @@
             const v = entry.target;
             const anyOpen = !els.photoModal.classList.contains('hidden') || 
                            !els.photoView.classList.contains('hidden') || 
-                           !els.appOpenModal.classList.contains('hidden') || 
-                           document.getElementById('giscus-fullscreen').classList.contains('active');
+                           !els.appOpenModal.classList.contains('hidden') ||                            document.getElementById('giscus-fullscreen').classList.contains('active');
             if (anyOpen) { v.pause(); return; }
             if (entry.isIntersecting) { 
-              v.muted = true; 
-              v.playsInline = true; 
-              v.loop = true; 
-              v.play().catch(() => {}); 
-            } else { 
-              v.pause(); 
-              v.currentTime = 0; 
-            }
+              v.muted = true; v.playsInline = true; v.loop = true; v.play().catch(() => {}); 
+            } else { v.pause(); v.currentTime = 0; }
           });
         }, { threshold: 0.5 });
       }
       
       function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
-      
-      function pauseAllGalleryVideos() { 
-        document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => { 
-          if (!vid.paused) playingThumbnailVideo = vid; 
-          vid.pause(); 
-        }); 
-      }
-      
-      function resumeThumbnailVideo() {         if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { 
+      function pauseAllGalleryVideos() { document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => { if (!vid.paused) playingThumbnailVideo = vid; vid.pause(); }); }
+      function resumeThumbnailVideo() { 
+        if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { 
           const r = playingThumbnailVideo.getBoundingClientRect(); 
-          if (r.top < window.innerHeight && r.bottom > 0) 
-            playingThumbnailVideo.play().catch(() => {}); 
+          if (r.top < window.innerHeight && r.bottom > 0) playingThumbnailVideo.play().catch(() => {}); 
           playingThumbnailVideo = null; 
         } 
       }
@@ -897,94 +957,59 @@
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = v ? 'none' : 'block'; 
           els.modalVideo.style.display = v ? 'block' : 'none';
-          if (v) { 
-            els.modalVideo.src = photo.url; 
-            els.modalVideo.load(); 
-            els.modalImg.src = ''; 
-          } else { 
-            els.modalImg.src = photo.url; 
-            els.modalVideo.src = ''; 
-            protectMedia(els.modalImg); 
-          }
+          if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; }
+          else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
           els.modalDesc.textContent = photo.desc || photo.description || 'No description';
           els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
           els.photoModal.classList.remove('hidden'); 
           document.body.classList.add('modal-open');
           els.btnAppModal.onclick = () => openApp(photo.name); 
           els.btnShareModal.onclick = () => sharePhoto(photo);
-          els.photoModal.onclick = (e) => { 
-            if (e.target === els.photoModal) window.closePhotoModal(); 
-          };
-        } else { 
-          showFullPhotoView(photo); 
-        }
+          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
+        } else { showFullPhotoView(photo); }
       }
       
       window.closePhotoModal = function() { 
         els.photoModal.classList.add('hidden'); 
-        document.body.classList.remove('modal-open'); 
-        els.modalVideo.pause(); 
-        els.modalVideo.src = ''; 
-        els.modalImg.src = ''; 
+        els.modalVideo.pause(); els.modalVideo.src = ''; els.modalImg.src = ''; 
         resumeThumbnailVideo(); 
+        window.unlockBodyScroll();
       };
 
-      function showFullPhotoView(photo) {        els.mainHeader.classList.add('hidden'); 
-        els.mainContent.classList.add('full-view');
-        const v = isVideo(photo.url); 
-        els.viewTitle.textContent = photo.title || `#${photo.name}`;
-        els.viewImg.style.display = v ? 'none' : 'block'; 
-        els.viewVideo.style.display = v ? 'block' : 'none';
-        if (v) { 
-          els.viewVideo.src = photo.url; 
-          els.viewVideo.load(); 
-          els.viewImg.src = ''; 
-        } else { 
-          els.viewImg.src = photo.url; 
-          els.viewVideo.src = ''; 
-          protectMedia(els.viewImg); 
-        }
+      function showFullPhotoView(photo) {
+        els.mainHeader.classList.add('hidden'); els.mainContent.classList.add('full-view');
+        const v = isVideo(photo.url);         els.viewTitle.textContent = photo.title || `#${photo.name}`;
+        els.viewImg.style.display = v ? 'none' : 'block'; els.viewVideo.style.display = v ? 'block' : 'none';
+        if (v) { els.viewVideo.src = photo.url; els.viewVideo.load(); els.viewImg.src = ''; }
+        else { els.viewImg.src = photo.url; els.viewVideo.src = ''; protectMedia(els.viewImg); }
         els.viewDesc.textContent = photo.desc || photo.description || 'No description';
         els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-        els.gallerySection.classList.add('hidden'); 
-        els.photoView.classList.remove('hidden'); 
+        els.gallerySection.classList.add('hidden'); els.photoView.classList.remove('hidden'); 
         document.body.classList.add('view-open');
-        els.btnAppView.onclick = () => openApp(photo.name); 
-        els.btnShareView.onclick = () => sharePhoto(photo);
-        document.addEventListener('visibilitychange', handleViewVis); 
-        window.scrollTo(0, 0); 
+        els.btnAppView.onclick = () => openApp(photo.name); els.btnShareView.onclick = () => sharePhoto(photo);
+        document.addEventListener('visibilitychange', handleViewVis); window.scrollTo(0, 0); 
       }
       
       function closeFullView() { 
-        els.photoView.classList.add('hidden'); 
-        els.gallerySection.classList.remove('hidden'); 
-        els.mainHeader.classList.remove('hidden'); 
-        els.mainContent.classList.remove('full-view'); 
-        document.body.classList.remove('view-open'); 
-        els.viewVideo.pause(); 
-        els.viewVideo.src = ''; 
-        els.viewImg.src = ''; 
+        els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); 
+        els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view'); 
+        els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; 
         document.removeEventListener('visibilitychange', handleViewVis); 
-        window.onbeforeunload = null; 
-        window.history.pushState({}, '', '/'); 
+        window.onbeforeunload = null; window.history.pushState({}, '', '/');
+        window.unlockBodyScroll();
       }
       
       function handleViewVis() {}
 
-      // === FIX: IMPROVED APK OPEN FUNCTION ===
+      // === IMPROVED APK OPEN ===
       function openApp(id) {
-        const photoUrl = `${CONFIG.BASE_URL}/photo/${id}`;
         const appLink = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;
-        
-        // Try 1: Direct custom scheme
         try {
-          const iframe = document.createElement('iframe');          iframe.style.display = 'none';
-          iframe.src = appLink;
-          document.body.appendChild(iframe);
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none'; iframe.src = appLink; document.body.appendChild(iframe);
           setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1000);
         } catch(e) {}
         
-        // Try 2: Android Intent URL (proper format)
         setTimeout(() => {
           try {
             const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;
@@ -992,160 +1017,87 @@
           } catch(e) {}
         }, 100);
         
-        // Try 3: Fallback after delay
-        appOpenTimeout = setTimeout(() => {
-          // Check if page is still visible (app didn't open)
-          if (!document.hidden) {
-            showAppOpenModal();
-          }
-        }, 1500);
-        
-        // Handle visibility change (app opened = page hidden)
+        appOpenTimeout = setTimeout(() => { if (!document.hidden) showAppOpenModal(); }, 1500);
         appOpenVisibilityHandler = () => {
-          if (document.hidden) {
-            clearTimeout(appOpenTimeout);
-            window.hideAppOpenModal();
-            document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
-          }
+          if (document.hidden) { clearTimeout(appOpenTimeout); window.hideAppOpenModal(); document.removeEventListener('visibilitychange', appOpenVisibilityHandler); }
         };
         document.addEventListener('visibilitychange', appOpenVisibilityHandler);
       }
       
       function showAppOpenModal() { 
-        els.appOpenModal.classList.remove('hidden'); 
-        document.body.classList.add('modal-open'); 
-        els.btnAppDownload.onclick = () => { 
-          window.hideAppOpenModal(); 
-          window.location.href = CONFIG.FALLBACK_URL; 
-        }; 
-      }
-      
+        els.appOpenModal.classList.remove('hidden'); document.body.classList.add('modal-open'); 
+        els.btnAppDownload.onclick = () => { window.hideAppOpenModal(); window.location.href = CONFIG.FALLBACK_URL; }; 
+      }      
       window.hideAppOpenModal = function() { 
-        els.appOpenModal.classList.add('hidden'); 
-        document.body.classList.remove('modal-open'); 
-        clearTimeout(appOpenTimeout); 
-        if (appOpenVisibilityHandler) { 
-          document.removeEventListener('visibilitychange', appOpenVisibilityHandler); 
-          appOpenVisibilityHandler = null; 
-        }       };
+        els.appOpenModal.classList.add('hidden'); clearTimeout(appOpenTimeout); 
+        if (appOpenVisibilityHandler) { document.removeEventListener('visibilitychange', appOpenVisibilityHandler); appOpenVisibilityHandler = null; }
+        window.unlockBodyScroll();
+      };
 
       // === SHARE ===
       function sharePhoto(photo) {
         const t = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
-        if (navigator.share) {
-          navigator.share({ title: 'TKJ1 Gallery', text: t })
-            .then(() => showToast('✅ Berhasil dibagikan!'))
-            .catch(() => {});
-        } else {
-          navigator.clipboard.writeText(t)
-            .then(() => showToast('🔗 Link copied!'))
-            .catch(() => showToast('Gagal copy link'));
-        }
+        if (navigator.share) navigator.share({ title: 'TKJ1 Gallery', text: t }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
+        else navigator.clipboard.writeText(t).then(() => showToast('🔗 Link copied!')).catch(() => showToast('Gagal copy link'));
       }
 
       // === RENDER GALLERY ===
       function renderGallery(photos) {
         els.galleryGrid.innerHTML = '';
-        if (!photos || photos.length === 0) { 
-          els.emptyState.classList.remove('hidden');
-          return; 
-        }
+        if (!photos || photos.length === 0) { els.emptyState.classList.remove('hidden'); return; }
         els.emptyState.classList.add('hidden');
         
         photos.forEach(photo => {
-          const v = isVideo(photo.url); 
-          const item = document.createElement('div'); 
-          item.className = 'gallery-item';
-          
+          const v = isVideo(photo.url); const item = document.createElement('div'); item.className = 'gallery-item';
           if (v) {
             item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
-            const vid = item.querySelector('video');
-            observeVideo(vid); 
-            protectMedia(vid);
+            const vid = item.querySelector('video'); observeVideo(vid); protectMedia(vid);
           } else {
             item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
             protectMedia(item.querySelector('img'));
           }
-          item.addEventListener('click', () => showPhoto(photo, true)); 
-          els.galleryGrid.appendChild(item);
+          item.addEventListener('click', () => showPhoto(photo, true)); els.galleryGrid.appendChild(item);
         });
       }
 
-      window.setFilter = function(btn, type) { 
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); 
-        btn.classList.add('active'); 
-        applyFilters(); 
-      };
-            function applyFilters() {
-        const q = els.searchInput.value.toLowerCase().trim(); 
-        const af = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+      window.setFilter = function(btn, type) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); };
+      function applyFilters() {
+        const q = els.searchInput.value.toLowerCase().trim(); const af = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         filteredPhotos = allPhotos.filter(p => {
           const ms = !q || String(p.name).toLowerCase().includes(q) || (p.title && p.title.toLowerCase().includes(q));
           const mt = af === 'all' || (af === 'video' && isVideo(p.url)) || (af === 'photo' && !isVideo(p.url));
           return ms && mt;
-        }); 
-        renderGallery(filteredPhotos);
+        }); renderGallery(filteredPhotos);
       }
 
       // === INIT GALLERY ===
       async function initGallery() {
-        if (window.galleryInitialized) return; 
-        window.galleryInitialized = true;
+        if (window.galleryInitialized) return; window.galleryInitialized = true;
+        if (document.getElementById('pc-blocker').classList.contains('active')) return;
         
-        const path = window.location.pathname; 
-        const parts = path.split('/').filter(Boolean);
-        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-        
-        try {
-          els.loading.classList.remove('hidden'); 
-          if (els.error) els.error.classList.add('hidden');
-          
-          let res; 
-          const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
-          for (const p of paths) { 
-            try { 
-              res = await fetch(p + '?t=' + Date.now()); 
-              if (res.ok) break; 
-            } catch(e) {} 
-          }
+        const path = window.location.pathname; const parts = path.split('/').filter(Boolean);
+        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;        try {
+          els.loading.classList.remove('hidden'); if (els.error) els.error.classList.add('hidden');
+          let res; const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
+          for (const p of paths) { try { res = await fetch(p + '?t=' + Date.now()); if (res.ok) break; } catch(e) {} }
           if (!res || !res.ok) throw new Error('Gagal load photos.json');
-          
           const data = await res.json();
           allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
           if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
-          
-          allPhotos.sort((a, b) => { 
-            const na = parseInt(a.name), nb = parseInt(b.name); 
-            return (!isNaN(na) && !isNaN(nb)) ? na - nb : String(a.name).localeCompare(String(b.name)); 
-          });
-          
+          allPhotos.sort((a, b) => { const na = parseInt(a.name), nb = parseInt(b.name); return (!isNaN(na) && !isNaN(nb)) ? na - nb : String(a.name).localeCompare(String(b.name)); });
           filteredPhotos = [...allPhotos];
           els.searchInput.addEventListener('input', applyFilters);
           els.loading.classList.add('hidden');
-          
           if (direct) {
             const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase());
-            if (p) showPhoto(p, false);            else { 
-              els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; 
-              els.error.classList.remove('hidden'); 
-            }
-          } else { 
-            initVideoObserver(); 
-            els.gallerySection.classList.remove('hidden'); 
-            renderGallery(filteredPhotos); 
-          }
-        } catch (err) {
-          els.loading.classList.add('hidden'); 
-          if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`; 
-          if (els.error) els.error.classList.remove('hidden');
-        }
+            if (p) showPhoto(p, false); else { els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; els.error.classList.remove('hidden'); }
+          } else { initVideoObserver(); els.gallerySection.classList.remove('hidden'); renderGallery(filteredPhotos); }
+        } catch (err) { els.loading.classList.add('hidden'); if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`; if (els.error) els.error.classList.remove('hidden'); }
       }
-      
       window.__initGallery = initGallery;
 
       window.addEventListener('popstate', () => {
-        const p = window.location.pathname; 
-        if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
+        const p = window.location.pathname; if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
         if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
       });
       
@@ -1157,11 +1109,10 @@
         }
       });
 
-      // Turnstile callbacks
       window.onVerifySuccess = function(token) {
         window.isTurnstileVerified = true;
         document.getElementById('turnstile-modal').classList.add('hidden');
-        document.body.classList.remove('modal-open');
+        window.unlockBodyScroll();
         if (typeof window.__initGallery === 'function') window.__initGallery();
       };
       window.onVerifyError = function(errCode) {
@@ -1170,25 +1121,18 @@
         const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block';
       };
       
-      // Fallback timeout
       setTimeout(() => {
         if (!window.turnstile && !window.isTurnstileVerified) {
           const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block';
-          setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);        }
-      }, 10000);
+          setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);
+        }      }, 10000);
 
       function runInit() {
-        els.filterBtns.forEach(btn => btn.onclick = () => { 
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); 
-          btn.classList.add('active'); 
-          applyFilters(); 
-        });
+        els.filterBtns.forEach(btn => btn.onclick = () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); });
         if (window.isTurnstileVerified) initGallery();
         else setTimeout(() => { if (!window.isTurnstileVerified && !window.galleryInitialized) window.onVerifySuccess('timeout-bypass'); }, 20000);
       }
-      
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit);
-      else runInit();
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit); else runInit();
     })();
   </script>
 </body>
