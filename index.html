@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- 💬 GISCUS SCRIPT (DEFAULT EMBED - JANGAN DIUBAH/DIGANDAKAN) -->
+  <!-- 💬 GISCUS SCRIPT (DEFAULT - JANGAN DIUBAH) -->
   <script src="https://giscus.app/client.js"
         data-repo="Jirankun/tkj1"
         data-repo-id="R_kgDOQWmG8Q"
@@ -69,13 +69,26 @@
     .hidden { display: none !important; pointer-events: none !important; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
+    /* === HEADER STICKY + SCROLL EFFECT === */
     .header {
-      background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 0;
-      position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); transition: transform 0.3s;
+      position: sticky; top: 0; z-index: 100; background: rgba(21, 21, 32, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent; padding: 20px 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateZ(0);
     }
+    .header-scrolled {
+      padding: 12px 0;
+      background: rgba(15, 15, 26, 0.95);
+      border-bottom-color: var(--border);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    .header-scrolled .logo { font-size: 1.3rem; }
+    .header-scrolled .search-box input { padding: 10px 16px; }
+    .header-scrolled .filter-btn { padding: 8px 14px; font-size: 0.8rem; }
     .header.hidden { transform: translateY(-100%); }
     .header-content { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; }
+    .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #00a8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; transition: font-size 0.3s; }
     .search-box { flex: 1; min-width: 200px; max-width: 400px; position: relative; }
     .search-box input { width: 100%; padding: 12px 20px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 0.95rem; outline: none; transition: all 0.3s; }
     .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1); }
@@ -83,10 +96,10 @@
     .filter-group { display: flex; gap: 10px; flex-wrap: wrap; }
     .filter-btn { padding: 10px 18px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .filter-btn:hover, .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
     .comments-trigger { padding: 10px 18px; background: linear-gradient(135deg, var(--accent), #00a8ff); border: none; border-radius: 8px; color: var(--bg); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
     .comments-trigger:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3); }
 
+    /* === MAIN CONTENT === */
     .main { padding: 30px 0; min-height: calc(100vh - 180px); overflow-y: visible; touch-action: pan-y; }
     .main.full-view { padding: 20px 0; min-height: 100vh; }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -96,22 +109,30 @@
     .gallery-thumb.video-thumb { object-fit: contain; background: #000; }
     .gallery-info { padding: 16px; }
     .gallery-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gallery-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); }    .badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .gallery-meta { display: flex; gap: 12px; font-size: 0.8rem; color: var(--text-muted); }
+    .badge { padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
     .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
     .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
 
-    /* GISCUS FULLSCREEN CONTAINER */
-    #giscus-fullscreen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; flex-direction: column; }
-    .giscus-fullscreen-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    /* === GISCUS FULLSCREEN (100% FILL) === */
+    #giscus-fullscreen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none; flex-direction: column; }
+    #giscus-fullscreen.active { display: flex; }
+    .giscus-fullscreen-header {
+      position: sticky; top: 0; z-index: 10001; display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
     .giscus-fullscreen-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .giscus-fullscreen-title .badge { font-size: 0.7rem; padding: 2px 8px; }
     .giscus-close-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--error); border: none; color: #fff; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .giscus-close-btn:hover { background: #ff6b7a; transform: rotate(90deg); }
-    .giscus-fullscreen-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; overscroll-behavior: contain; }
-    .giscus-fullscreen-container { width: 100%; max-width: 900px; background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
-    .giscus-wrapper { width: 100%; min-height: 600px; background: var(--bg); }
-    .giscus-login-hint { padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; border-bottom: 1px solid var(--border); background: var(--card-hover); }
+    .giscus-fullscreen-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; position: relative; }
+    .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }
+    .giscus-wrapper .giscus { width: 100%; flex: 1; background: var(--bg); }
+    .giscus-wrapper .giscus iframe { width: 100% !important; height: 100% !important; min-height: 85vh !important; border: none !important; }
+    .giscus-login-hint { padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.85rem; background: var(--card-hover); border-bottom: 1px solid var(--border); }
 
+    /* === CONFIRM MODAL === */
     .confirm-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 9998; padding: 20px; backdrop-filter: blur(10px); }
     .confirm-box { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; max-width: 450px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.3s ease; }
     @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -124,7 +145,7 @@
     .confirm-actions .btn { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; }
     .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
     .btn-cancel:hover { background: var(--border); }
-
+    /* === PHOTO VIEW & MODALS === */
     .photo-view { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg); position: fixed; inset: 0; z-index: 500; overflow-y: auto; }
     .photo-view-container { width: 100%; max-width: 1000px; background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); margin-top: 20px; }
     .photo-view-media { width: 100%; max-height: 65vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
@@ -145,7 +166,8 @@
 
     .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(10px); }
     .modal-content { background: var(--card); border-radius: 20px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; }
-    .modal-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }    .modal-close:hover { background: var(--error); border-color: var(--error); transform: rotate(90deg); }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+    .modal-close:hover { background: var(--error); border-color: var(--error); transform: rotate(90deg); }
     .modal-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
     .modal-media[controls] { pointer-events: auto; user-select: auto; }
     .modal-body { padding: 24px; }
@@ -172,8 +194,7 @@
 
     .loading, .error { text-align: center; padding: 60px 20px; }
     .loading-icon { font-size: 3rem; margin-bottom: 16px; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .error { color: var(--error); } .error-icon { font-size: 3rem; margin-bottom: 16px; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }    .error { color: var(--error); } .error-icon { font-size: 3rem; margin-bottom: 16px; }
     .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); grid-column: 1 / -1; }
     .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.5; }
 
@@ -190,11 +211,12 @@
       .turnstile-box, .app-open-box, .confirm-box { padding: 30px 20px; }
       .giscus-fullscreen-header { padding: 12px 16px; }
       .giscus-fullscreen-title { font-size: 1rem; }
-      .giscus-fullscreen-body { padding: 10px; }
+      .giscus-wrapper .giscus iframe { min-height: 75vh !important; }
     }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
 </head>
 <body>
@@ -221,8 +243,7 @@
     })();
     window.onVerifySuccess = function(token) {
       window.isTurnstileVerified = true;
-      document.getElementById('turnstile-modal').classList.add('hidden');
-      document.body.classList.remove('modal-open');
+      document.getElementById('turnstile-modal').classList.add('hidden');      document.body.classList.remove('modal-open');
       if (typeof window.__initGallery === 'function') window.__initGallery();
     };
     window.onVerifyError = function(errCode) {
@@ -243,7 +264,8 @@
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
-      <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak. Tunggu sampe centang hijau muncul.</p>      <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
+      <p class="turnstile-desc">Biar aman dari bot bangsat, verifikasi dulu yak. Tunggu sampe centang hijau muncul.</p>
+      <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
       <div id="turnstile-error" class="turnstile-error"></div>
       <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik jika verifikasi stuck</button>
     </div>
@@ -270,8 +292,7 @@
       <div class="app-open-icon">📱</div><h3 class="app-open-title">Aplikasi Dibuka...</h3>
       <p class="app-open-desc">Jika aplikasi masih belum terbuka, silahkan download dan install aplikasi terlebih dahulu.</p>
       <div class="app-open-actions">
-        <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
-        <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
+        <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>        <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
       </div>
     </div>
   </div>
@@ -287,18 +308,16 @@
     </div>
   </div>
 
-  <!-- 💬 GISCUS FULLSCREEN CONTAINER -->
-  <div id="giscus-fullscreen" class="hidden">
+  <!-- 💬 GISCUS FULLSCREEN (100% STRETCH) -->
+  <div id="giscus-fullscreen">
     <div class="giscus-fullscreen-header">
       <div class="giscus-fullscreen-title">💬 Diskusi Fitur TKJ OnE <span class="badge badge-video">DEV ONLY</span></div>
       <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
-    </div>    <div class="giscus-login-hint">🔐 Login GitHub dulu di bawah kalo belum, baru bisa komen bre!</div>
+    </div>
+    <div class="giscus-login-hint">🔐 Login GitHub dulu di bawah kalo belum, baru bisa komen bre!</div>
     <div class="giscus-fullscreen-body">
-      <div class="giscus-fullscreen-container">
-        <div class="giscus-wrapper">
-          <!-- ✅ DEFAULT GISCUS CONTAINER (AUTO RENDER BY SCRIPT) -->
-          <div class="giscus"></div>
-        </div>
+      <div class="giscus-wrapper">
+        <div class="giscus"></div>
       </div>
     </div>
   </div>
@@ -322,8 +341,7 @@
     <div class="container">
       <div id="loading" class="loading"><div class="loading-icon">⏳</div><div>Loading bre, sabar dikit...</div></div>
       <div id="error" class="error hidden"><div class="error-icon">❌</div><div id="error-msg"></div></div>
-      <div id="photo-view" class="photo-view hidden">
-        <div class="photo-view-container">
+      <div id="photo-view" class="photo-view hidden">        <div class="photo-view-container">
           <img class="photo-view-media" id="view-img" src="" alt="Photo" />
           <video class="photo-view-media" id="view-video" src="" controls playsinline></video>
           <div class="photo-view-info">
@@ -342,6 +360,7 @@
       </div>
     </div>
   </main>
+
   <div id="toast" class="toast"></div>
 
   <script>
@@ -371,8 +390,7 @@
         photoView: document.getElementById('photo-view'), viewImg: document.getElementById('view-img'),
         viewVideo: document.getElementById('view-video'), viewTitle: document.getElementById('view-title'),
         viewDesc: document.getElementById('view-desc'), viewMeta: document.getElementById('view-meta'),
-        btnAppView: document.getElementById('btn-app-view'), btnShareView: document.getElementById('btn-share-view'),
-        gallerySection: document.getElementById('gallery-section'), galleryGrid: document.getElementById('gallery-grid'),
+        btnAppView: document.getElementById('btn-app-view'), btnShareView: document.getElementById('btn-share-view'),        gallerySection: document.getElementById('gallery-section'), galleryGrid: document.getElementById('gallery-grid'),
         emptyState: document.getElementById('empty-state'), searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'), toast: document.getElementById('toast'),
         mainHeader: document.getElementById('main-header'), mainContent: document.getElementById('main-content')
@@ -382,16 +400,26 @@
       function isVideo(url) { if (!url) return false; const l = url.toLowerCase(); return l.includes('.mp4') || l.includes('.webm') || l.includes('video'); }
       function protectMedia(el) { if (!el) return; ['contextmenu','dragstart','selectstart'].forEach(e => el.addEventListener(e, ev => { ev.preventDefault(); return false; }, { passive: false })); if (el.tagName === 'IMG') { el.style.pointerEvents = 'none'; el.style.userSelect = 'none'; } }
 
+      // === HEADER SCROLL EFFECT ===
+      let scrollTimeout;
+      window.addEventListener('scroll', () => {
+        if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
+        scrollTimeout = requestAnimationFrame(() => {
+          els.mainHeader.classList.toggle('header-scrolled', window.scrollY > 10);
+        });
+      }, { passive: true });
+
       // === GISCUS & MODAL FLOWS ===
       window.openConfirmModal = function() { document.getElementById('confirm-modal').classList.remove('hidden'); document.body.classList.add('modal-open'); };
       window.cancelDiscussion = function() { document.getElementById('confirm-modal').classList.add('hidden'); document.body.classList.remove('modal-open'); showToast('✅ Oke bre, balik ke gallery'); };
       window.startDiscussion = function() {
         document.getElementById('confirm-modal').classList.add('hidden');
-        document.getElementById('giscus-fullscreen').classList.remove('hidden');
+        document.getElementById('giscus-fullscreen').classList.add('active');
         document.body.classList.add('comments-fullscreen');
         showToast('💬 Login GitHub dulu di bawah bre!');
-      };      window.closeGiscusFullscreen = function() {
-        document.getElementById('giscus-fullscreen').classList.add('hidden');
+      };
+      window.closeGiscusFullscreen = function() {
+        document.getElementById('giscus-fullscreen').classList.remove('active');
         document.body.classList.remove('comments-fullscreen');
       };
 
@@ -401,7 +429,7 @@
         videoObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             const v = entry.target;
-            const anyOpen = !els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || !els.appOpenModal.classList.contains('hidden') || !document.getElementById('giscus-fullscreen').classList.contains('hidden');
+            const anyOpen = !els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || !els.appOpenModal.classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active');
             if (anyOpen) { v.pause(); return; }
             if (entry.isIntersecting) { v.muted = true; v.playsInline = true; v.loop = true; v.play().catch(() => {}); }
             else { v.pause(); v.currentTime = 0; }
@@ -411,7 +439,6 @@
       function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
       function pauseAllGalleryVideos() { document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => { if (!vid.paused) playingThumbnailVideo = vid; vid.pause(); }); }
       function resumeThumbnailVideo() { if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { const r = playingThumbnailVideo.getBoundingClientRect(); if (r.top < window.innerHeight && r.bottom > 0) playingThumbnailVideo.play().catch(() => {}); playingThumbnailVideo = null; } }
-
       // === PHOTO VIEW ===
       function showPhoto(photo, popup = true) {
         currentPhoto = photo; const v = isVideo(photo.url);
@@ -439,7 +466,8 @@
         els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
         els.gallerySection.classList.add('hidden'); els.photoView.classList.remove('hidden'); document.body.classList.add('view-open');
         els.btnAppView.onclick = () => openApp(photo.name); els.btnShareView.onclick = () => sharePhoto(photo);
-        document.addEventListener('visibilitychange', handleViewVis); window.scrollTo(0, 0);      }
+        document.addEventListener('visibilitychange', handleViewVis); window.scrollTo(0, 0);
+      }
       function closeFullView() { els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view'); document.body.classList.remove('view-open'); els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; document.removeEventListener('visibilitychange', handleViewVis); window.onbeforeunload = null; window.history.pushState({}, '', '/'); }
       function handleViewVis() {}
 
@@ -461,7 +489,6 @@
         if (navigator.share) navigator.share({ title: 'TKJ1 Gallery', text: t }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});
         else navigator.clipboard.writeText(t).then(() => showToast('🔗 Link copied!')).catch(() => showToast('Gagal copy link'));
       }
-
       // === RENDER GALLERY ===
       function renderGallery(photos) {
         els.galleryGrid.innerHTML = '';
@@ -489,6 +516,7 @@
           return ms && mt;
         }); renderGallery(filteredPhotos);
       }
+
       // === INIT GALLERY ===
       async function initGallery() {
         if (window.galleryInitialized) return; window.galleryInitialized = true;
@@ -509,8 +537,7 @@
           if (direct) {
             const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase());
             if (p) showPhoto(p, false);
-            else { els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; els.error.classList.remove('hidden'); }
-          } else { initVideoObserver(); els.gallerySection.classList.remove('hidden'); renderGallery(filteredPhotos); }
+            else { els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; els.error.classList.remove('hidden'); }          } else { initVideoObserver(); els.gallerySection.classList.remove('hidden'); renderGallery(filteredPhotos); }
         } catch (err) {
           els.loading.classList.add('hidden'); if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`; if (els.error) els.error.classList.remove('hidden');
         }
@@ -519,13 +546,13 @@
 
       window.addEventListener('popstate', () => {
         const p = window.location.pathname; if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
-        if (!document.getElementById('giscus-fullscreen').classList.contains('hidden')) window.closeGiscusFullscreen();
+        if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
       });
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           if (!els.photoModal.classList.contains('hidden')) window.closePhotoModal();
           if (!els.appOpenModal.classList.contains('hidden')) window.hideAppOpenModal();
-          if (!document.getElementById('confirm-modal').classList.contains('hidden') || !document.getElementById('giscus-fullscreen').classList.contains('hidden')) window.closeGiscusFullscreen();
+          if (!document.getElementById('confirm-modal').classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
         }
       });
 
@@ -537,5 +564,6 @@
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit);
       else runInit();
     })();
-  </script></body>
+  </script>
+</body>
 </html>
