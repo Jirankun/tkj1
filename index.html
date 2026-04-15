@@ -401,14 +401,45 @@
 
       const CONFIG = { APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'], APP_SCHEME: 'tkjone', DEEP_LINK_PATH: 'photo', FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases', BASE_URL: 'https://tkj1.pages.dev' };
       let allPhotos = [], filteredPhotos = [], currentPhoto = null, videoObserver = null, playingThumbnailVideo = null, appOpenTimeout = null, appOpenVisibilityHandler = null;
-      const els = { photoModal: document.getElementById('photo-modal'), modalImg: document.getElementById('modal-img'), modalVideo: document.getElementById('modal-video'), modalTitle: document.getElementById('modal-title'), modalDesc: document.getElementById('modal-desc'), modalMeta: document.getElementById('modal-meta'), btnAppModal: document.getElementById('btn-app-modal'), btnShareModal: document.getElementById('btn-share-modal'), appOpenModal: document.getElementById('app-open-modal'), btnAppDownload: document.getElementById('btn-app-download'), loading: document.getElementById('loading'), error: document.getElementById('error'), errorMsg: document.getElementById('error-msg'), photoView: document.getElementById('photo-view'), viewImg: document.getElementById('view-img'), viewVideo: document.getElementById('view-video'), viewTitle: document.getElementById('view-title'), viewDesc: document.getElementById('view-desc'), viewMeta: document.getElementById('view-meta'), btnAppView: document.getElementById('btn-app-view'), btnShareView: document.getElementById('btn-share-view'), gallerySection: document.getElementById('gallery-section'), galleryGrid: document.getElementById('gallery-grid'), emptyState: document.getElementById('empty-state'), searchInput: document.getElementById('search-input'), filterBtns: document.querySelectorAll('.filter-btn'), toast: document.getElementById('toast'), mainHeader: document.getElementById('main-header') };
+      
+      // === FIX: MAINCONTENT DIBALIKIN BIAR GAK ERROR ===
+      const els = { 
+        photoModal: document.getElementById('photo-modal'), 
+        modalImg: document.getElementById('modal-img'), 
+        modalVideo: document.getElementById('modal-video'), 
+        modalTitle: document.getElementById('modal-title'), 
+        modalDesc: document.getElementById('modal-desc'), 
+        modalMeta: document.getElementById('modal-meta'), 
+        btnAppModal: document.getElementById('btn-app-modal'), 
+        btnShareModal: document.getElementById('btn-share-modal'), 
+        appOpenModal: document.getElementById('app-open-modal'), 
+        btnAppDownload: document.getElementById('btn-app-download'), 
+        loading: document.getElementById('loading'), 
+        error: document.getElementById('error'), 
+        errorMsg: document.getElementById('error-msg'), 
+        photoView: document.getElementById('photo-view'), 
+        viewImg: document.getElementById('view-img'), 
+        viewVideo: document.getElementById('view-video'), 
+        viewTitle: document.getElementById('view-title'), 
+        viewDesc: document.getElementById('view-desc'), 
+        viewMeta: document.getElementById('view-meta'), 
+        btnAppView: document.getElementById('btn-app-view'), 
+        btnShareView: document.getElementById('btn-share-view'), 
+        gallerySection: document.getElementById('gallery-section'), 
+        galleryGrid: document.getElementById('gallery-grid'), 
+        emptyState: document.getElementById('empty-state'), 
+        searchInput: document.getElementById('search-input'), 
+        filterBtns: document.querySelectorAll('.filter-btn'), 
+        toast: document.getElementById('toast'), 
+        mainHeader: document.getElementById('main-header'),
+        mainContent: document.getElementById('main-content') // <-- FIXED
+      };
 
       window.unlockBodyScroll = function() {
         document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');
         document.body.style.overflow = ''; document.documentElement.style.overflow = '';
       };
-      function showToast(msg, dur = 2500) { els.toast.textContent = msg; els.toast.classList.add('show'); setTimeout(() => els.toast.classList.remove('show'), dur); }
-      function isVideo(url) { return url && (url.toLowerCase().includes('.mp4') || url.toLowerCase().includes('.webm') || url.toLowerCase().includes('video')); }
+      function showToast(msg, dur = 2500) { els.toast.textContent = msg; els.toast.classList.add('show'); setTimeout(() => els.toast.classList.remove('show'), dur); }      function isVideo(url) { return url && (url.toLowerCase().includes('.mp4') || url.toLowerCase().includes('.webm') || url.toLowerCase().includes('video')); }
       function protectMedia(el) { 
         if (!el) return; ['contextmenu','dragstart','selectstart'].forEach(e => el.addEventListener(e, ev => { ev.preventDefault(); return false; }, { passive: false })); 
         if (el.tagName === 'IMG') { el.style.pointerEvents = 'none'; el.style.userSelect = 'none'; }
@@ -439,7 +470,8 @@
         currentPhoto = photo; const v = isVideo(photo.url);
         if (popup) {
           pauseAllGalleryVideos(); els.modalTitle.textContent = photo.title || `#${photo.name}`;
-          els.modalImg.style.display = v ? 'none' : 'block'; els.modalVideo.style.display = v ? 'block' : 'none';          if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; } else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
+          els.modalImg.style.display = v ? 'none' : 'block'; els.modalVideo.style.display = v ? 'block' : 'none';
+          if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; } else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
           els.modalDesc.textContent = photo.desc || photo.description || 'No description'; els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
           els.photoModal.classList.remove('hidden'); document.body.classList.add('modal-open');
           els.btnAppModal.onclick = () => openApp(photo.name); els.btnShareModal.onclick = () => sharePhoto(photo);
@@ -449,17 +481,16 @@
       window.closePhotoModal = function() { els.photoModal.classList.add('hidden'); els.modalVideo.pause(); els.modalVideo.src = ''; els.modalImg.src = ''; resumeThumbnailVideo(); window.unlockBodyScroll(); };
 
       function showFullPhotoView(photo) {
-        els.mainHeader.classList.add('hidden'); els.mainContent.classList.add('full-view');
+        els.mainHeader.classList.add('hidden'); els.mainContent.classList.add('full-view'); // NOW SAFE
         const v = isVideo(photo.url); els.viewTitle.textContent = photo.title || `#${photo.name}`;
         els.viewImg.style.display = v ? 'none' : 'block'; els.viewVideo.style.display = v ? 'block' : 'none';
         if (v) { els.viewVideo.src = photo.url; els.viewVideo.load(); els.viewImg.src = ''; } else { els.viewImg.src = photo.url; els.viewVideo.src = ''; protectMedia(els.viewImg); }
         els.viewDesc.textContent = photo.desc || photo.description || 'No description'; els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
         els.gallerySection.classList.add('hidden'); els.photoView.classList.remove('hidden'); document.body.classList.add('view-open');
         els.btnAppView.onclick = () => openApp(photo.name); els.btnShareView.onclick = () => sharePhoto(photo);
-        window.scrollTo(0, 0); 
-      }
+        window.scrollTo(0, 0);       }
       function closeFullView() { 
-        els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view'); 
+        els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view'); // NOW SAFE
         els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; window.history.pushState({}, '', '/'); window.unlockBodyScroll();
       }
 
@@ -488,7 +519,8 @@
           if (v) {
             item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
             observeVideo(item.querySelector('video')); protectMedia(item.querySelector('video'));
-          } else {            item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
+          } else {
+            item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
             protectMedia(item.querySelector('img'));
           }
           item.addEventListener('click', () => showPhoto(photo, true)); els.galleryGrid.appendChild(item);
@@ -505,8 +537,7 @@
         }); renderGallery(filteredPhotos);
       }
 
-      async function initGallery() {
-        if (window.galleryInitialized || document.getElementById('pc-blocker').classList.contains('active')) return; window.galleryInitialized = true;
+      async function initGallery() {        if (window.galleryInitialized || document.getElementById('pc-blocker').classList.contains('active')) return; window.galleryInitialized = true;
         const path = window.location.pathname; const parts = path.split('/').filter(Boolean);
         const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
         try {
