@@ -47,7 +47,10 @@
       color: var(--text); 
       line-height: 1.6;
       overflow-x: hidden;
-    }    body.modal-open, body.view-open, body.comments-fullscreen { overflow: hidden; }
+      display: flex;      flex-direction: column;
+      min-height: 100vh;
+    }
+    body.modal-open, body.view-open, body.comments-fullscreen { overflow: hidden; }
 
     .hidden { display: none !important; pointer-events: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
@@ -93,10 +96,10 @@
     }
     
     .search-box { 
-      position: relative; 
-      width: 100%;
+      position: relative;       width: 100%;
     }
-    .search-box input {       width: 100%; 
+    .search-box input { 
+      width: 100%; 
       padding: 14px 44px 14px 16px; 
       background: var(--card); 
       border: 1px solid var(--border); 
@@ -142,10 +145,10 @@
       transition: all 0.2s ease; 
       font-family: inherit;
       min-height: 40px;
-      display: flex;
-      align-items: center;
+      display: flex;      align-items: center;
       justify-content: center;
-    }    .filter-btn:active { transform: scale(0.98); }
+    }
+    .filter-btn:active { transform: scale(0.98); }
     .filter-btn:hover, .filter-btn.active { 
       background: var(--accent); 
       color: var(--bg); 
@@ -180,21 +183,20 @@
     .main { 
       padding: 16px 0 80px; 
       min-height: 100vh; 
+      flex: 1;
     }
     .main.full-view { padding: 0; min-height: 100vh; }
     
+    /* === GALLERY SINGLE COLUMN ONLY (NO LAG) === */
     .gallery-grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+      grid-template-columns: 1fr; 
       gap: 12px; 
     }
-    @media (min-width: 480px) {
-      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-    }
     
-    .gallery-item { 
-      background: var(--card); 
-      border: 1px solid var(--border);       border-radius: 14px; 
+    .gallery-item {       background: var(--card); 
+      border: 1px solid var(--border); 
+      border-radius: 14px; 
       overflow: hidden; 
       cursor: pointer; 
       transition: transform 0.2s ease, border-color 0.2s ease; 
@@ -241,9 +243,9 @@
 
     /* === GISCUS FULLSCREEN === */
     #giscus-fullscreen { 
-      position: fixed; 
-      inset: 0; 
-      background: var(--bg);       z-index: 10000; 
+      position: fixed;       inset: 0; 
+      background: var(--bg); 
+      z-index: 10000; 
       display: none; 
       flex-direction: column; 
     }
@@ -290,9 +292,9 @@
     
     .giscus-fullscreen-body { 
       flex: 1; 
-      overflow-y: auto; 
-      overscroll-behavior: contain; 
-      position: relative;     }
+      overflow-y: auto;       overscroll-behavior: contain; 
+      position: relative; 
+    }
     .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }
     .giscus-wrapper .giscus { width: 100%; flex: 1; background: var(--bg); }
     .giscus-wrapper .giscus iframe { 
@@ -339,9 +341,9 @@
     .confirm-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .confirm-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
     .confirm-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; text-align: left; }
-    .confirm-desc strong { color: var(--error); font-weight: 700; }
-    .confirm-actions { display: flex; gap: 10px; flex-direction: column; }
-    .confirm-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; border-radius: 12px; }    .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+    .confirm-desc strong { color: var(--error); font-weight: 700; }    .confirm-actions { display: flex; gap: 10px; flex-direction: column; }
+    .confirm-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; border-radius: 12px; }
+    .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
     .btn-cancel:active { background: var(--border); }
 
     /* === PHOTO VIEW & MODALS === */
@@ -388,9 +390,9 @@
       font-weight: 600; 
       font-size: 0.9rem; 
       border: none; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      font-family: inherit;       text-decoration: none; 
+      cursor: pointer;       transition: all 0.2s; 
+      font-family: inherit; 
+      text-decoration: none; 
       white-space: nowrap;
     }
     .btn:active { transform: scale(0.98); }
@@ -437,9 +439,9 @@
       transition: all 0.2s; 
       z-index: 10; 
     }
-    .modal-close:active { transform: scale(0.95); }
-    .modal-close:hover { background: var(--error); border-color: var(--error); }
-        .modal-media { 
+    .modal-close:active { transform: scale(0.95); }    .modal-close:hover { background: var(--error); border-color: var(--error); }
+    
+    .modal-media { 
       width: 100%; 
       max-height: 55vh; 
       object-fit: contain; 
@@ -486,9 +488,9 @@
       background: rgba(0, 0, 0, 0.95); 
       display: flex; 
       align-items: center; 
-      justify-content: center; 
-      z-index: 9999; 
-      padding: 20px;     }
+      justify-content: center;       z-index: 9999; 
+      padding: 20px; 
+    }
     .turnstile-box { 
       background: var(--card); 
       padding: 28px 20px; 
@@ -535,9 +537,9 @@
       position: fixed; 
       bottom: 20px; 
       left: 50%; 
-      transform: translateX(-50%) translateY(100px); 
-      background: var(--card); 
-      color: var(--text);       padding: 12px 24px; 
+      transform: translateX(-50%) translateY(100px);       background: var(--card); 
+      color: var(--text); 
+      padding: 12px 24px; 
       border-radius: 12px; 
       border: 1px solid var(--border); 
       box-shadow: 0 8px 30px rgba(0,0,0,0.4); 
@@ -550,9 +552,41 @@
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
+    /* === FOOTER === */
+    .footer {
+      padding: 20px 16px 30px;
+      text-align: center;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .footer-brand {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .footer-brand span { color: var(--accent); }
+    .footer-dev {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .footer-dev a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-dev a:hover { color: var(--accent-hover); }
+    .footer-dev a:active { transform: scale(0.98); }
+
+    /* === VIDEO DOWNLOAD DISABLE HACK === */
+    video[controlsList~="nodownload"]::-webkit-media-controls-download-button { display: none !important; }
+    video::-webkit-media-controls-panel { background-color: rgba(21,21,32,0.9) !important; }
+
     /* === SCROLLBAR === */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar { width: 6px; }    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
@@ -586,7 +620,8 @@
           <button class="filter-btn" data-filter="photo" onclick="window.setFilter(this, 'photo')">Foto</button>
           <button class="filter-btn" data-filter="video" onclick="window.setFilter(this, 'video')">Video</button>
           <button class="comments-trigger" onclick="window.openConfirmModal()">💬 Diskusi</button>
-        </div>      </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -600,13 +635,12 @@
       <div id="error" class="error hidden">
         <div class="error-icon">❌</div>
         <div id="error-msg"></div>
-      </div>
-      
+      </div>      
       <!-- Photo View Fullscreen -->
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
           <img class="photo-view-media" id="view-img" src="" alt="Photo" />
-          <video class="photo-view-media" id="view-video" src="" controls playsinline></video>
+          <video class="photo-view-media" id="view-video" src="" controls controlsList="nodownload" playsinline></video>
           <div class="photo-view-info">
             <h1 class="photo-view-title" id="view-title"></h1>
             <p class="photo-view-desc" id="view-desc"></p>
@@ -630,21 +664,27 @@
     </div>
   </main>
 
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
+    <div class="footer-dev">see dev: <a href="https://jirankun.github.com/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
+  </footer>
+
   <!-- MODALS -->
   
   <!-- Photo Modal -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
-      <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>      <img class="modal-media" id="modal-img" src="" alt="Photo" />
-      <video class="modal-media" id="modal-video" src="" controls playsinline></video>
+      <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>
+      <img class="modal-media" id="modal-img" src="" alt="Photo" />
+      <video class="modal-media" id="modal-video" src="" controls controlsList="nodownload" playsinline></video>
       <div class="modal-body">
         <h2 class="modal-title" id="modal-title"></h2>
         <p class="modal-desc" id="modal-desc"></p>
         <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;" id="modal-meta"></p>
         <div class="modal-actions">
           <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
-          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
-        </div>
+          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>        </div>
       </div>
     </div>
   </div>
@@ -684,7 +724,8 @@
         <div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div>
       </div>
       <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik kalo stuck</button>    </div>
+      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik kalo stuck</button>
+    </div>
   </div>
 
   <!-- Toast -->
@@ -692,7 +733,6 @@
 
   <!-- SCRIPTS -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
   <script>
     (function() {
       'use strict';
@@ -733,7 +773,8 @@
         btnShareView: document.getElementById('btn-share-view'),
         gallerySection: document.getElementById('gallery-section'), 
         galleryGrid: document.getElementById('gallery-grid'),
-        emptyState: document.getElementById('empty-state'),         searchInput: document.getElementById('search-input'),
+        emptyState: document.getElementById('empty-state'), 
+        searchInput: document.getElementById('search-input'),
         filterBtns: document.querySelectorAll('.filter-btn'), 
         toast: document.getElementById('toast'),
         mainHeader: document.getElementById('main-header'), 
@@ -741,8 +782,7 @@
       };
 
       function showToast(msg, dur = 2500) { 
-        els.toast.textContent = msg; 
-        els.toast.classList.add('show'); 
+        els.toast.textContent = msg;         els.toast.classList.add('show'); 
         setTimeout(() => els.toast.classList.remove('show'), dur); 
       }
       
@@ -760,7 +800,15 @@
         if (el.tagName === 'IMG') { 
           el.style.pointerEvents = 'none'; 
           el.style.userSelect = 'none'; 
-        } 
+        }
+        // === FIX: DISABLE VIDEO DOWNLOAD BUTTON ===
+        if (el.tagName === 'VIDEO') {
+          el.setAttribute('controlsList', 'nodownload');
+          el.addEventListener('rendered', () => {
+            const dlBtn = el.shadowRoot?.querySelector?.('[download]');
+            if (dlBtn) dlBtn.style.display = 'none';
+          }, { once: true });
+        }
       }
 
       // === HEADER SCROLL SHADOW EFFECT ===
@@ -782,17 +830,21 @@
       };
       window.cancelDiscussion = function() { 
         document.getElementById('confirm-modal').classList.add('hidden'); 
-        document.body.classList.remove('modal-open');         showToast('✅ Oke bre, balik ke gallery'); 
-      };
+        document.body.classList.remove('modal-open'); 
+        showToast('✅ Oke bre, balik ke gallery');       };
       window.startDiscussion = function() {
         document.getElementById('confirm-modal').classList.add('hidden');
         document.getElementById('giscus-fullscreen').classList.add('active');
         document.body.classList.add('comments-fullscreen');
         showToast('💬 Login GitHub dulu bre!');
       };
+      
+      // === FIX: SCROLL UNLOCK AFTER CLOSING CHAT ===
       window.closeGiscusFullscreen = function() {
         document.getElementById('giscus-fullscreen').classList.remove('active');
         document.body.classList.remove('comments-fullscreen');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
       };
 
       // === VIDEO OBSERVER ===
@@ -828,10 +880,10 @@
         }); 
       }
       
-      function resumeThumbnailVideo() { 
-        if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { 
+      function resumeThumbnailVideo() {         if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { 
           const r = playingThumbnailVideo.getBoundingClientRect(); 
-          if (r.top < window.innerHeight && r.bottom > 0)             playingThumbnailVideo.play().catch(() => {}); 
+          if (r.top < window.innerHeight && r.bottom > 0) 
+            playingThumbnailVideo.play().catch(() => {}); 
           playingThumbnailVideo = null; 
         } 
       }
@@ -877,10 +929,10 @@
         resumeThumbnailVideo(); 
       };
 
-      function showFullPhotoView(photo) {
-        els.mainHeader.classList.add('hidden'); 
+      function showFullPhotoView(photo) {        els.mainHeader.classList.add('hidden'); 
         els.mainContent.classList.add('full-view');
-        const v = isVideo(photo.url);         els.viewTitle.textContent = photo.title || `#${photo.name}`;
+        const v = isVideo(photo.url); 
+        els.viewTitle.textContent = photo.title || `#${photo.name}`;
         els.viewImg.style.display = v ? 'none' : 'block'; 
         els.viewVideo.style.display = v ? 'block' : 'none';
         if (v) { 
@@ -919,26 +971,44 @@
       
       function handleViewVis() {}
 
-      // === APP OPEN ===
+      // === FIX: IMPROVED APK OPEN FUNCTION ===
       function openApp(id) {
-        const i = document.createElement('iframe'); 
-        i.style.display = 'none'; 
-        i.src = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`; 
-        document.body.appendChild(i);
-        setTimeout(() => { 
-          try { 
-            window.location.href = `intent://${CONFIG.BASE_URL}/photo/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};end`; 
-          } catch(e) {} 
-        }, 300);        appOpenTimeout = setTimeout(() => showAppOpenModal(), 1200);
-        appOpenVisibilityHandler = () => { 
-          if (document.hidden) { 
-            clearTimeout(appOpenTimeout); 
-            window.hideAppOpenModal(); 
-            document.removeEventListener('visibilitychange', appOpenVisibilityHandler); 
-          } 
+        const photoUrl = `${CONFIG.BASE_URL}/photo/${id}`;
+        const appLink = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;
+        
+        // Try 1: Direct custom scheme
+        try {
+          const iframe = document.createElement('iframe');          iframe.style.display = 'none';
+          iframe.src = appLink;
+          document.body.appendChild(iframe);
+          setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1000);
+        } catch(e) {}
+        
+        // Try 2: Android Intent URL (proper format)
+        setTimeout(() => {
+          try {
+            const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;
+            window.location.href = intentUrl;
+          } catch(e) {}
+        }, 100);
+        
+        // Try 3: Fallback after delay
+        appOpenTimeout = setTimeout(() => {
+          // Check if page is still visible (app didn't open)
+          if (!document.hidden) {
+            showAppOpenModal();
+          }
+        }, 1500);
+        
+        // Handle visibility change (app opened = page hidden)
+        appOpenVisibilityHandler = () => {
+          if (document.hidden) {
+            clearTimeout(appOpenTimeout);
+            window.hideAppOpenModal();
+            document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
+          }
         };
         document.addEventListener('visibilitychange', appOpenVisibilityHandler);
-        setTimeout(() => { if (document.body.contains(i)) document.body.removeChild(i); }, 2000);
       }
       
       function showAppOpenModal() { 
@@ -957,8 +1027,7 @@
         if (appOpenVisibilityHandler) { 
           document.removeEventListener('visibilitychange', appOpenVisibilityHandler); 
           appOpenVisibilityHandler = null; 
-        } 
-      };
+        }       };
 
       // === SHARE ===
       function sharePhoto(photo) {
@@ -978,7 +1047,8 @@
       function renderGallery(photos) {
         els.galleryGrid.innerHTML = '';
         if (!photos || photos.length === 0) { 
-          els.emptyState.classList.remove('hidden');           return; 
+          els.emptyState.classList.remove('hidden');
+          return; 
         }
         els.emptyState.classList.add('hidden');
         
@@ -988,9 +1058,10 @@
           item.className = 'gallery-item';
           
           if (v) {
-            item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
-            observeVideo(item.querySelector('video')); 
-            protectMedia(item.querySelector('video'));
+            item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
+            const vid = item.querySelector('video');
+            observeVideo(vid); 
+            protectMedia(vid);
           } else {
             item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
             protectMedia(item.querySelector('img'));
@@ -1005,8 +1076,7 @@
         btn.classList.add('active'); 
         applyFilters(); 
       };
-      
-      function applyFilters() {
+            function applyFilters() {
         const q = els.searchInput.value.toLowerCase().trim(); 
         const af = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
         filteredPhotos = allPhotos.filter(p => {
@@ -1027,7 +1097,8 @@
         const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
         
         try {
-          els.loading.classList.remove('hidden');           if (els.error) els.error.classList.add('hidden');
+          els.loading.classList.remove('hidden'); 
+          if (els.error) els.error.classList.add('hidden');
           
           let res; 
           const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
@@ -1054,8 +1125,7 @@
           
           if (direct) {
             const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase());
-            if (p) showPhoto(p, false);
-            else { 
+            if (p) showPhoto(p, false);            else { 
               els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; 
               els.error.classList.remove('hidden'); 
             }
@@ -1076,7 +1146,8 @@
       window.addEventListener('popstate', () => {
         const p = window.location.pathname; 
         if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
-        if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();      });
+        if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
+      });
       
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
@@ -1103,8 +1174,7 @@
       setTimeout(() => {
         if (!window.turnstile && !window.isTurnstileVerified) {
           const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block';
-          setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);
-        }
+          setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);        }
       }, 10000);
 
       function runInit() {
