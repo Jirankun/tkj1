@@ -4,269 +4,170 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta name="theme-color" content="#0f0f1a"/>
-  
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
+     crossorigin="anonymous"></script>
   <!-- SEO Meta Tags -->
   <meta name="description" content="TKJ1 Gallery - Koleksi foto dan video dokumentasi kegiatan TKJ OnE kelas 1. Lihat moment-moment seru belajar mengajar."/>
   <meta name="keywords" content="TKJ, TKJ OnE, gallery, foto, video, dokumentasi, sekolah, multimedia"/>
   <meta name="author" content="TKJ OnE - Jirankun"/>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
-  <meta name="googlebot" content="index, follow"/>
-  <meta name="bingbot" content="index, follow"/>
   
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://tkj1.pages.dev/"/>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
-     crossorigin="anonymous"></script>
   <meta property="og:title" content="TKJ1 Gallery - Dokumentasi Foto & Video"/>
   <meta property="og:description" content="Koleksi foto dan video kegiatan TKJ OnE kelas 1"/>
   <meta property="og:image" content="https://tkj1.pages.dev/og-image.jpg"/>
   <meta property="og:locale" content="id_ID"/>
-  <meta property="og:site_name" content="TKJ1 Gallery"/>
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:url" content="https://tkj1.pages.dev/"/>
   <meta name="twitter:title" content="TKJ1 Gallery"/>
   <meta name="twitter:description" content="Koleksi foto dan video dokumentasi TKJ OnE"/>
-  <meta name="twitter:image" content="https://tkj1.pages.dev/og-image.jpg"/>
   
-  <!-- Canonical URL -->
+  <!-- Canonical & Preconnect -->
   <link rel="canonical" href="https://tkj1.pages.dev/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://quge5.com" crossorigin>
+  <link rel="preconnect" href="https://giscus.app" crossorigin>
+  <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
+  
+  <!-- Fonts with display swap -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="TKJ1 Gallery">
-  
   <title>TKJ1 Gallery - Dokumentasi Foto & Video TKJ OnE</title>
   
-  <!-- ⚠️ IKLAN SCRIPT -->
-  <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
-  
-  <!-- 🎨 Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- 💬 GISCUS SCRIPT -->
-  <script src="https://giscus.app/client.js"
-        data-repo="Jirankun/tkj1"
-        data-repo-id="R_kgDOQWmG8Q"
-        data-category="Show and tell"
-        data-category-id="DIC_kwDOQWmG8c4C63kb"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="dark_tritanopia"
-        data-lang="id"
-        crossorigin="anonymous"
-        async></script>
-
+  <!-- Critical CSS Inline -->
   <style>
-    :root {
-      --bg: #0a0a0f; --card: #151520; --card-hover: #1a1a28; --text: #ffffff;
-      --text-muted: #888899; --accent: #00d4aa; --accent-hover: #00b894;
-      --border: #2a2a3a; --error: #ff4757; --success: #2ed573;
-      --header-height: 85px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html { scroll-behavior: smooth; overflow-x: hidden; }
-    body { 
-      font-family: 'Inter', sans-serif; 
-      background: var(--bg); 
-      color: var(--text); 
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    body.modal-open, body.view-open, body.comments-fullscreen, body.pc-blocked { overflow: hidden; }
-
-    .hidden { display: none !important; pointer-events: none !important; }
-    .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
-
-    /* === PC BLOCKER === */
-    #pc-blocker {
-      position: fixed; inset: 0; background: var(--bg); display: none;
-      flex-direction: column; align-items: center; justify-content: center;
-      z-index: 99999; padding: 24px; text-align: center;
-    }
-    #pc-blocker.active { display: flex; }
-    .pc-blocker-icon { font-size: 3rem; margin-bottom: 16px; }
-    .pc-blocker-title { font-size: 1.3rem; font-weight: 700; color: var(--error); margin-bottom: 12px; }    .pc-blocker-desc { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; max-width: 320px; }
-    .pc-blocker-btn {
-      padding: 12px 28px; background: var(--accent); color: var(--bg); border: none;
-      border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
-    }
-    .pc-blocker-btn:hover { background: var(--accent-hover); }
-    .pc-blocker-btn:active { transform: scale(0.98); }
-
-    /* === HEADER FIXED === */
-    .header {
-      position: fixed; top: 0; left: 0; right: 0; width: 100%;
-      height: var(--header-height); z-index: 1000;
-      background: rgba(15, 15, 26, 0.95);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border); padding: 0;
-      transition: box-shadow 0.2s ease, background 0.2s ease;
-    }
-    .header::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.3;
-    }
-    .header-content { 
-      display: flex; flex-direction: column; gap: 8px; align-items: stretch;
-      height: 100%; padding: 10px 0; overflow-y: auto;
-    }
-    .logo { 
-      font-size: 1.3rem; font-weight: 800; 
-      background: linear-gradient(135deg, var(--accent), #00a8ff); 
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-align: center; letter-spacing: -0.5px; flex-shrink: 0;
-    }
-    .search-box { position: relative; width: 100%; }
-    .search-box input { 
-      width: 100%; padding: 10px 38px 10px 14px; background: var(--card); 
-      border: 1px solid var(--border); border-radius: 10px; color: var(--text); 
-      font-size: 0.9rem; outline: none; transition: all 0.2s ease;
-    }
-    .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15); background: var(--card-hover); }
-    .search-box input::placeholder { color: var(--text-muted); }
-    .search-box::before { content: '🔍'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; pointer-events: none; }
-    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; padding-bottom: 2px; }
-    .filter-btn { 
-      padding: 8px 14px; background: var(--card); border: 1px solid var(--border); 
-      border-radius: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; 
-      cursor: pointer; transition: all 0.2s; font-family: inherit; min-height: 36px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .filter-btn:active { transform: scale(0.97); }
-    .filter-btn:hover, .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
-    .comments-trigger {       padding: 8px 16px; background: linear-gradient(135deg, var(--accent), #00a8ff); 
-      border: none; border-radius: 8px; color: var(--bg); font-size: 0.8rem; font-weight: 700; 
-      cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; 
-      align-items: center; gap: 5px; white-space: nowrap; min-height: 36px;
-      box-shadow: 0 3px 10px rgba(0, 212, 170, 0.25);
-    }
-    .comments-trigger:active { transform: scale(0.97); }
-
-    /* === MAIN CONTENT === */
-    .main { padding: calc(var(--header-height) + 10px) 0 80px; min-height: 100vh; flex: 1; }
-    .main.full-view { padding: 0; min-height: 100vh; }
-    .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .gallery-item { 
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px; 
-      overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative; 
-    }
-    .gallery-item:active { transform: scale(0.98); }
-    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--bg); pointer-events: none; user-select: none; display: block; }
-    .gallery-thumb.video-thumb { object-fit: contain; background: #000; }
-    .gallery-info { padding: 12px; }
-    .gallery-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gallery-meta { display: flex; gap: 8px; font-size: 0.75rem; color: var(--text-muted); align-items: center; flex-wrap: wrap; }
-    .badge { padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-    .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
-    .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
-
-    /* === GISCUS FULLSCREEN === */
-    #giscus-fullscreen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none; flex-direction: column; }
-    #giscus-fullscreen.active { display: flex; }
-    .giscus-fullscreen-header { position: sticky; top: 0; z-index: 10001; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(10, 10, 15, 0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .giscus-fullscreen-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .giscus-fullscreen-title .badge { font-size: 0.65rem; padding: 2px 6px; }
-    .giscus-close-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--error); border: none; color: #fff; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .giscus-close-btn:active { transform: scale(0.95); }
-    .giscus-close-btn:hover { background: #ff6b7a; }
-    .giscus-fullscreen-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; position: relative; }
-    .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }
-    .giscus-wrapper .giscus { width: 100%; flex: 1; background: var(--bg); }
-    .giscus-wrapper .giscus iframe { width: 100% !important; min-height: calc(100vh - 120px) !important; border: none !important; }
-    .giscus-login-hint { padding: 12px 16px; text-align: center; color: var(--text-muted); font-size: 0.8rem; background: var(--card-hover); border-bottom: 1px solid var(--border); font-weight: 500; }
-
-    /* === MODALS === */
-    .confirm-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); display: flex; align-items: center; justify-content: center; z-index: 9998; padding: 20px; backdrop-filter: blur(8px); }
-    .confirm-box { background: var(--card); padding: 24px 20px; border-radius: 18px; text-align: center; max-width: 380px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.25s ease; }
-    @keyframes modalSlideIn { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .confirm-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .confirm-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
-    .confirm-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; text-align: left; }
-    .confirm-desc strong { color: var(--error); font-weight: 700; }
-    .confirm-actions { display: flex; gap: 10px; flex-direction: column; }    .confirm-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; border-radius: 12px; }
-    .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
-    .btn-cancel:active { background: var(--border); }
-
-    .photo-view { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; background: var(--bg); position: fixed; inset: 0; z-index: 500; overflow-y: auto; }
-    .photo-view-container { width: 100%; max-width: 100%; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
-    .photo-view-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
-    .photo-view-media[controls] { pointer-events: auto; user-select: auto; }
-    .photo-view-info { padding: 20px; }
-    .photo-view-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-    .photo-view-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; font-size: 0.95rem; }
-    .photo-view-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; text-decoration: none; white-space: nowrap; }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary { background: var(--accent); color: var(--bg); }
-    .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
-
-    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(8px); }
-    .modal-content { background: var(--card); border-radius: 18px; max-width: 100%; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); position: relative; }
-    .modal-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
-    .modal-close:active { transform: scale(0.95); }
-    .modal-close:hover { background: var(--error); border-color: var(--error); }
-    .modal-media { width: 100%; max-height: 55vh; object-fit: contain; background: var(--bg); display: block; user-select: none; }
-    .modal-media[controls] { pointer-events: auto; user-select: auto; }
-    .modal-body { padding: 20px; }
-    .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
-    .modal-desc { color: var(--text-muted); margin-bottom: 16px; font-size: 0.95rem; }
-    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    .app-open-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(10px); }
-    .app-open-box { background: var(--card); padding: 24px 20px; border-radius: 18px; text-align: center; max-width: 360px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.25s ease; }
-    .app-open-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .app-open-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
-    .app-open-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
-    .app-open-actions { display: flex; gap: 10px; flex-direction: column; }
-    .app-open-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; }
-
-    .turnstile-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
-    .turnstile-box { background: var(--card); padding: 28px 20px; border-radius: 18px; text-align: center; max-width: 380px; width: 100%; border: 1px solid var(--border); animation: modalSlideIn 0.3s ease; }
-    .turnstile-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-    .turnstile-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
-    .turnstile-widget { display: flex; justify-content: center; margin: 16px 0; min-height: 65px; }
-    .turnstile-error { color: var(--error); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
-    .turnstile-fallback-btn { margin-top: 12px; padding: 8px 16px; background: transparent; border: 1px dashed var(--border); color: var(--text-muted); border-radius: 8px; font-size: 0.8rem; cursor: pointer; display: none; transition: all 0.2s; }
-    .turnstile-fallback-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    .loading, .error { text-align: center; padding: 40px 20px; }
-    .loading-icon { font-size: 2.5rem; margin-bottom: 12px; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }    .error { color: var(--error); } .error-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); grid-column: 1 / -1; }
-    .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.5; }
-
-    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 30px rgba(0,0,0,0.4); transition: transform 0.25s ease; z-index: 9999; font-weight: 500; max-width: 90vw; text-align: center; font-size: 0.9rem; }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* === FOOTER === */
-    .footer { padding: 20px 16px 30px; text-align: center; background: var(--card); border-top: 1px solid var(--border); margin-top: auto; }
-    .footer-brand { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: 0.5px; }
-    .footer-brand span { color: var(--accent); }
-    .footer-dev { font-size: 0.85rem; color: var(--text-muted); }
-    .footer-dev a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s; }
-    .footer-dev a:hover { color: var(--accent-hover); }
-
-    /* === VIDEO DOWNLOAD DISABLE === */
-    video[controlsList~="nodownload"]::-webkit-media-controls-download-button { display: none !important; }
-
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    :root{--bg:#0a0a0f;--card:#151520;--card-hover:#1a1a28;--text:#fff;--text-muted:#888899;--accent:#00d4aa;--accent-hover:#00b894;--border:#2a2a3a;--error:#ff4757;--header-height:85px}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth;overflow-x:hidden}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;display:flex;flex-direction:column;min-height:100vh}    .hidden{display:none!important;pointer-events:none!important}
+    .container{max-width:100%;margin:0 auto;padding:0 16px}
+    #pc-blocker{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:99999;padding:24px;text-align:center}
+    #pc-blocker.active{display:flex}
+    .pc-blocker-icon{font-size:3rem;margin-bottom:16px}
+    .pc-blocker-title{font-size:1.3rem;font-weight:700;color:var(--error);margin-bottom:12px}
+    .pc-blocker-desc{color:var(--text-muted);margin-bottom:24px;font-size:.95rem;max-width:320px}
+    .pc-blocker-btn{padding:12px 28px;background:var(--accent);color:var(--bg);border:none;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer}
+    .header{position:fixed;top:0;left:0;right:0;width:100%;height:var(--header-height);z-index:1000;background:rgba(15,15,26,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .header-content{display:flex;flex-direction:column;gap:8px;align-items:stretch;height:100%;padding:10px 0}
+    .logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#00a8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
+    .search-box{position:relative;width:100%}
+    .search-box input{width:100%;padding:10px 38px 10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.9rem;outline:none}
+    .search-box::before{content:'🔍';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none}
+    .filter-group{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+    .filter-btn{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:.8rem;font-weight:600;cursor:pointer;min-height:36px}
+    .filter-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
+    .comments-trigger{padding:8px 16px;background:linear-gradient(135deg,var(--accent),#00a8ff);border:none;border-radius:8px;color:var(--bg);font-size:.8rem;font-weight:700;cursor:pointer;min-height:36px}
+    .main{padding:calc(var(--header-height)+10px) 0 80px;min-height:100vh;flex:1}
+    .gallery-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .gallery-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer}
+    .gallery-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--bg);display:block}
+    .gallery-thumb.video-thumb{object-fit:contain;background:#000}
+    .gallery-info{padding:12px}
+    .gallery-title{font-weight:600;font-size:.95rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .gallery-meta{display:flex;gap:8px;font-size:.75rem;color:var(--text-muted)}
+    .badge{padding:2px 8px;border-radius:5px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+    .badge-photo{background:rgba(0,212,170,.15);color:var(--accent)}
+    .badge-video{background:rgba(0,168,255,.15);color:#00a8ff}
+    .loading,.error{text-align:center;padding:40px 20px}
+    .loading-icon,.error-icon{font-size:2.5rem;margin-bottom:12px}
+    .error{color:var(--error)}
+    .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);grid-column:1/-1}
+    .empty-icon{font-size:3rem;margin-bottom:12px;opacity:.5}
+    .footer{padding:20px 16px 30px;text-align:center;background:var(--card);border-top:1px solid var(--border);margin-top:auto}
+    .footer-brand{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:8px}
+    .footer-brand span{color:var(--accent)}
+    .footer-dev{font-size:.85rem;color:var(--text-muted)}
+    .footer-dev a{color:var(--accent);text-decoration:none;font-weight:600}
+    video[controlsList~="nodownload"]::-webkit-media-controls-download-button{display:none!important}
   </style>
+  
+  <!-- Non-critical CSS (loaded async) -->
+  <style id="non-critical-css" media="print" onload="this.media='all';this.onload=null">
+    body.modal-open,body.view-open,body.comments-fullscreen,body.pc-blocked{overflow:hidden}
+    .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3}
+    .search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,.15);background:var(--card-hover)}
+    .search-box input::placeholder{color:var(--text-muted)}
+    .filter-btn:active{transform:scale(.97)}
+    .filter-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}    .comments-trigger:active{transform:scale(.97)}
+    .comments-trigger:hover{box-shadow:0 3px 10px rgba(0,212,170,.4)}
+    .gallery-item:active{transform:scale(.98)}
+    .gallery-thumb{pointer-events:none;user-select:none}
+    .gallery-thumb.video-thumb{pointer-events:auto}
+    #giscus-fullscreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:none;flex-direction:column}
+    #giscus-fullscreen.active{display:flex}
+    .giscus-fullscreen-header{position:sticky;top:0;z-index:10001;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(10,10,15,.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .giscus-fullscreen-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+    .giscus-fullscreen-title .badge{font-size:.65rem;padding:2px 6px}
+    .giscus-close-btn{width:36px;height:36px;border-radius:50%;background:var(--error);border:none;color:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .giscus-fullscreen-body{flex:1;overflow-y:auto;overscroll-behavior:contain}
+    .giscus-wrapper{width:100%;min-height:100%;background:var(--bg);display:flex;flex-direction:column}
+    .giscus-wrapper .giscus{width:100%;flex:1;background:var(--bg)}
+    .giscus-wrapper .giscus iframe{width:100%!important;min-height:calc(100vh-120px)!important;border:none!important}
+    .giscus-login-hint{padding:12px 16px;text-align:center;color:var(--text-muted);font-size:.8rem;background:var(--card-hover);border-bottom:1px solid var(--border)}
+    .confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:9998;padding:20px;backdrop-filter:blur(8px)}
+    .confirm-box{background:var(--card);padding:24px 20px;border-radius:18px;text-align:center;max-width:380px;width:100%;border:1px solid var(--border);animation:modalSlideIn .25s ease}
+    @keyframes modalSlideIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .confirm-icon{font-size:2.5rem;margin-bottom:12px}
+    .confirm-title{font-size:1.2rem;font-weight:700;margin-bottom:10px;color:var(--accent)}
+    .confirm-desc{color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:.9rem;text-align:left}
+    .confirm-desc strong{color:var(--error);font-weight:700}
+    .confirm-actions{display:flex;gap:10px;flex-direction:column}
+    .confirm-actions .btn{width:100%;justify-content:center;padding:13px;font-size:.95rem;border-radius:12px}
+    .btn-cancel{background:var(--card-hover);color:var(--text);border:1px solid var(--border)}
+    .photo-view{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;background:var(--bg);position:fixed;inset:0;z-index:500;overflow-y:auto}
+    .photo-view-container{width:100%;max-width:100%;background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+    .photo-view-media{width:100%;max-height:60vh;object-fit:contain;background:var(--bg);display:block;user-select:none}
+    .photo-view-media[controls]{pointer-events:auto;user-select:auto}
+    .photo-view-info{padding:20px}
+    .photo-view-title{font-size:1.3rem;font-weight:700;margin-bottom:10px}
+    .photo-view-desc{color:var(--text-muted);margin-bottom:16px;line-height:1.6;font-size:.95rem}
+    .photo-view-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:12px 20px;border-radius:12px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;font-family:inherit;text-decoration:none;white-space:nowrap}
+    .btn:active{transform:scale(.98)}
+    .btn-primary{background:var(--accent);color:var(--bg)}
+    .btn-secondary{background:var(--card-hover);color:var(--text);border:1px solid var(--border)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;backdrop-filter:blur(8px)}
+    .modal-content{background:var(--card);border-radius:18px;max-width:100%;width:100%;max-height:85vh;overflow-y:auto;border:1px solid var(--border);position:relative}
+    .modal-close{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .modal-close:active{transform:scale(.95)}
+    .modal-media{width:100%;max-height:55vh;object-fit:contain;background:var(--bg);display:block;user-select:none}
+    .modal-media[controls]{pointer-events:auto;user-select:auto}
+    .modal-body{padding:20px}
+    .modal-title{font-size:1.2rem;font-weight:700;margin-bottom:10px}
+    .modal-desc{color:var(--text-muted);margin-bottom:16px;font-size:.95rem}
+    .modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .app-open-modal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;backdrop-filter:blur(10px)}
+    .app-open-box{background:var(--card);padding:24px 20px;border-radius:18px;text-align:center;max-width:360px;width:100%;border:1px solid var(--border);animation:modalSlideIn .25s ease}    .app-open-icon{font-size:2.5rem;margin-bottom:12px}
+    .app-open-title{font-size:1.2rem;font-weight:700;margin-bottom:10px;color:var(--accent)}
+    .app-open-desc{color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:.9rem}
+    .app-open-actions{display:flex;gap:10px;flex-direction:column}
+    .app-open-actions .btn{width:100%;justify-content:center;padding:13px;font-size:.95rem}
+    .turnstile-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .turnstile-box{background:var(--card);padding:28px 20px;border-radius:18px;text-align:center;max-width:380px;width:100%;border:1px solid var(--border);animation:modalSlideIn .3s ease}
+    .turnstile-title{font-size:1.3rem;font-weight:700;margin-bottom:10px}
+    .turnstile-desc{color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:.9rem}
+    .turnstile-widget{display:flex;justify-content:center;margin:16px 0;min-height:65px}
+    .turnstile-error{color:var(--error);font-size:.85rem;margin-top:8px;min-height:20px}
+    .turnstile-fallback-btn{margin-top:12px;padding:8px 16px;background:transparent;border:1px dashed var(--border);color:var(--text-muted);border-radius:8px;font-size:.8rem;cursor:pointer;display:none}
+    .turnstile-fallback-btn:hover{border-color:var(--accent);color:var(--accent)}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+    .loading-icon{animation:pulse 1.5s infinite}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);color:var(--text);padding:12px 24px;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.4);transition:transform .25s ease;z-index:9999;font-weight:500;max-width:90vw;text-align:center;font-size:.9rem}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  </style>
+  <noscript><style id="non-critical-css">/* Fallback for no-JS */</style></noscript>
 </head>
 <body>
 
@@ -278,47 +179,35 @@
     <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.com/portofoliozhyllan'">🔗 Ke Portfolio</button>
   </div>
 
-  <!-- 💬 GISCUS FULLSCREEN -->
-  <div id="giscus-fullscreen">
-    <div class="giscus-fullscreen-header">
-      <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>
-      <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
-    </div>
-    <div class="giscus-login-hint">🔐 Login GitHub dulu buat komen bre!</div>
-    <div class="giscus-fullscreen-body">
-      <div class="giscus-wrapper"><div class="giscus"></div></div>
-    </div>
-  </div>
-
   <!-- HEADER -->
   <header class="header" id="main-header">
     <div class="container">
       <div class="header-content">
-        <div class="logo">📸 TKJ1 Gallery</div>        <div class="search-box"><input type="text" id="search-input" placeholder="Cari foto..." autocomplete="off"></div>
+        <div class="logo">📸 TKJ1 Gallery</div>
+        <div class="search-box"><input type="text" id="search-input" placeholder="Cari foto..." autocomplete="off" inputmode="search"></div>
         <div class="filter-group">
-          <button class="filter-btn active" data-filter="all" onclick="window.setFilter(this, 'all')">Semua</button>
-          <button class="filter-btn" data-filter="photo" onclick="window.setFilter(this, 'photo')">Foto</button>
-          <button class="filter-btn" data-filter="video" onclick="window.setFilter(this, 'video')">Video</button>
+          <button class="filter-btn active" data-filter="all" onclick="window.setFilter(this,'all')">Semua</button>
+          <button class="filter-btn" data-filter="photo" onclick="window.setFilter(this,'photo')">Foto</button>
+          <button class="filter-btn" data-filter="video" onclick="window.setFilter(this,'video')">Video</button>
           <button class="comments-trigger" onclick="window.openConfirmModal()">💬 Diskusi</button>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="main" id="main-content">
+  <!-- MAIN CONTENT -->  <main class="main" id="main-content">
     <div class="container">
       <div id="loading" class="loading"><div class="loading-icon">⏳</div><div>Loading bre, sabar dikit...</div></div>
       <div id="error" class="error hidden"><div class="error-icon">❌</div><div id="error-msg"></div></div>
       
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
-          <img class="photo-view-media" id="view-img" src="" alt="Photo" />
-          <video class="photo-view-media" id="view-video" src="" controls controlsList="nodownload" playsinline></video>
+          <img class="photo-view-media" id="view-img" src="" alt="Photo" loading="eager" />
+          <video class="photo-view-media" id="view-video" src="" controls controlsList="nodownload" playsinline preload="none"></video>
           <div class="photo-view-info">
             <h1 class="photo-view-title" id="view-title"></h1>
             <p class="photo-view-desc" id="view-desc"></p>
-            <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9rem;" id="view-meta"></p>
+            <p style="color:var(--text-muted);margin-bottom:20px;font-size:.9rem;" id="view-meta"></p>
             <div class="photo-view-actions">
               <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
               <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
@@ -340,290 +229,164 @@
     <div class="footer-dev">see dev: <a href="https://jirankun.github.com/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
   </footer>
 
-  <!-- MODALS -->
-  <div id="photo-modal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>      <img class="modal-media" id="modal-img" src="" alt="Photo" />
-      <video class="modal-media" id="modal-video" src="" controls controlsList="nodownload" playsinline></video>
-      <div class="modal-body">
-        <h2 class="modal-title" id="modal-title"></h2><p class="modal-desc" id="modal-desc"></p>
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px;" id="modal-meta"></p>
-        <div class="modal-actions">
-          <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
-          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+  <!-- MODALS (Lazy loaded) -->
+  <template id="modal-templates">
+    <div id="photo-modal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>
+        <img class="modal-media" id="modal-img" src="" alt="Photo" loading="lazy" />
+        <video class="modal-media" id="modal-video" src="" controls controlsList="nodownload" playsinline preload="none"></video>
+        <div class="modal-body">
+          <h2 class="modal-title" id="modal-title"></h2><p class="modal-desc" id="modal-desc"></p>
+          <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;" id="modal-meta"></p>
+          <div class="modal-actions">
+            <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
+            <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+          </div>
+        </div>
+      </div>    </div>
+    <div id="app-open-modal" class="app-open-modal hidden">
+      <div class="app-open-box">
+        <div class="app-open-icon">📱</div><h3 class="app-open-title">Aplikasi Dibuka...</h3>
+        <p class="app-open-desc">Kalo aplikasi gak kebuka, download dulu bre.</p>
+        <div class="app-open-actions">
+          <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
+          <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
         </div>
       </div>
     </div>
-  </div>
-
-  <div id="app-open-modal" class="app-open-modal hidden">
-    <div class="app-open-box">
-      <div class="app-open-icon">📱</div><h3 class="app-open-title">Aplikasi Dibuka...</h3>
-      <p class="app-open-desc">Kalo aplikasi gak kebuka, download dulu bre.</p>
-      <div class="app-open-actions">
-        <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
-        <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
+    <div id="confirm-modal" class="confirm-modal hidden">
+      <div class="confirm-box">
+        <div class="confirm-icon">🔐</div><h3 class="confirm-title">⚠️ Login GitHub Dulu</h3>
+        <p class="confirm-desc"><strong>Wajib login GitHub</strong> buat pake fitur diskusi.<br/><br/>Cuma buat <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalo cuma iseng, mending balik ke gallery.</p>
+        <div class="confirm-actions">
+          <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
+          <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div id="confirm-modal" class="confirm-modal hidden">
-    <div class="confirm-box">
-      <div class="confirm-icon">🔐</div><h3 class="confirm-title">⚠️ Login GitHub Dulu</h3>
-      <p class="confirm-desc"><strong>Wajib login GitHub</strong> buat pake fitur diskusi.<br/><br/>Cuma buat <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalo cuma iseng, mending balik ke gallery.</p>
-      <div class="confirm-actions">
-        <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
-        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>
+    <div id="turnstile-modal" class="turnstile-modal">
+      <div class="turnstile-box">
+        <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
+        <p class="turnstile-desc">Biar aman dari bot, verifikasi dulu yak. Tunggu centang hijau.</p>
+        <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
+        <div id="turnstile-error" class="turnstile-error"></div>
+        <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik kalo stuck</button>
       </div>
     </div>
-  </div>
-
-  <div id="turnstile-modal" class="turnstile-modal">
-    <div class="turnstile-box">
-      <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
-      <p class="turnstile-desc">Biar aman dari bot, verifikasi dulu yak. Tunggu centang hijau.</p>
-      <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
-      <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik kalo stuck</button>
-    </div>
-  </div>
+  </template>
 
   <div id="toast" class="toast"></div>
 
+  <!-- Third-party scripts: DEFERRED & ASYNC -->
+  <script>
+    // Load ads only after user interaction or delay
+    function loadAdScript(){if(!window.adLoaded){var s=document.createElement('script');s.src='https://quge5.com/88/tag.min.js';s.dataset.zone='213278';s.async=true;s.dataset.cfasync='false';document.body.appendChild(s);window.adLoaded=true;}}
+    // Load on first user interaction
+    ['click','touchstart','scroll'].forEach(e=>document.addEventListener(e,()=>{loadAdScript();},{once:true,passive:true}));
+    // Fallback: load after 5s if no interaction
+    setTimeout(loadAdScript,5000);
+  </script>
+  
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="https://giscus.app/client.js"
+        data-repo="Jirankun/tkj1"
+        data-repo-id="R_kgDOQWmG8Q"
+        data-category="Show and tell"
+        data-category-id="DIC_kwDOQWmG8c4C63kb"        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark_tritanopia"
+        data-lang="id"
+        crossorigin="anonymous"
+        async
+        defer></script>
 
-  <script>    (function() {
-      'use strict';
+  <!-- Main App Script (deferred) -->
+  <script defer>
+    (function(){'use strict';
+      function isSearchEngineBot(){const bots=['googlebot','bingbot','yandex','baiduspider','duckduckbot','slurp'];return bots.some(b=>navigator.userAgent.toLowerCase().includes(b));}
+      function shouldSkipVerification(){return isSearchEngineBot()||location.pathname.includes('/photo/');}
+      function isMobileDevice(){const ua=navigator.userAgent||navigator.vendor||window.opera;return/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)||innerWidth<=768;}
       
-      // === DETEKSI SEARCH ENGINE BOT ===
-      function isSearchEngineBot() {
-        const botAgents = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];
-        const ua = navigator.userAgent.toLowerCase();
-        return botAgents.some(bot => ua.includes(bot));
-      }
+      function initPCBlocker(){const b=document.getElementById('pc-blocker');if(!isMobileDevice()){b.classList.add('active');document.body.classList.add('pc-blocked');['main-header','main-content'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));document.querySelector('.footer')?.classList.add('hidden');}}
+      initPCBlocker();addEventListener('resize',()=>{const b=document.getElementById('pc-blocker');if(isMobileDevice()&&b.classList.contains('active')){b.classList.remove('active');document.body.classList.remove('pc-blocked');['main-header','main-content'].forEach(id=>document.getElementById(id)?.classList.remove('hidden'));document.querySelector('.footer')?.classList.remove('hidden');}});
+
+      const CONFIG={APP_PACKAGES:['com.tkjone.app','com.tkjone.app.debug'],APP_SCHEME:'tkjone',DEEP_LINK_PATH:'photo',FALLBACK_URL:'https://github.com/Jirankun/TKJ-One/releases',BASE_URL:'https://tkj1.pages.dev'};
+      let allPhotos=[],filteredPhotos=[],currentPhoto=null,videoObserver=null,playingThumbnailVideo=null,appOpenTimeout=null,appOpenVisibilityHandler=null;
       
-      // === SKIP TURNSTILE UNTUK BOT ===
-      function shouldSkipVerification() {
-        return isSearchEngineBot() || window.location.pathname.includes('/photo/');
-      }
+      const els={photoModal:null,modalImg:null,modalVideo:null,modalTitle:null,modalDesc:null,modalMeta:null,btnAppModal:null,btnShareModal:null,appOpenModal:null,btnAppDownload:null,loading:document.getElementById('loading'),error:document.getElementById('error'),errorMsg:document.getElementById('error-msg'),photoView:document.getElementById('photo-view'),viewImg:document.getElementById('view-img'),viewVideo:document.getElementById('view-video'),viewTitle:document.getElementById('view-title'),viewDesc:document.getElementById('view-desc'),viewMeta:document.getElementById('view-meta'),btnAppView:document.getElementById('btn-app-view'),btnShareView:document.getElementById('btn-share-view'),gallerySection:document.getElementById('gallery-section'),galleryGrid:document.getElementById('gallery-grid'),emptyState:document.getElementById('empty-state'),searchInput:document.getElementById('search-input'),filterBtns:document.querySelectorAll('.filter-btn'),toast:document.getElementById('toast'),mainHeader:document.getElementById('main-header'),mainContent:document.getElementById('main-content')};
       
-      // === PC DETECTION ===
-      function isMobileDevice() {
-        const ua = navigator.userAgent || navigator.vendor || window.opera;
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || window.innerWidth <= 768;
-      }
-      
-      function initPCBlocker() {
-        const blocker = document.getElementById('pc-blocker');
-        if (!isMobileDevice()) {
-          blocker.classList.add('active'); document.body.classList.add('pc-blocked');
-          document.getElementById('main-header')?.classList.add('hidden');
-          document.getElementById('main-content')?.classList.add('hidden');
-          document.querySelector('.footer')?.classList.add('hidden');
-        }
-      }
-      initPCBlocker();
-      window.addEventListener('resize', () => {
-        const blocker = document.getElementById('pc-blocker');
-        if (isMobileDevice() && blocker.classList.contains('active')) {
-          blocker.classList.remove('active'); document.body.classList.remove('pc-blocked');
-          document.getElementById('main-header')?.classList.remove('hidden');
-          document.getElementById('main-content')?.classList.remove('hidden');
-          document.querySelector('.footer')?.classList.remove('hidden');
-        }
-      });
+      // Lazy init modals from template
+      function initModals(){const t=document.getElementById('modal-templates');if(t&&t.content){['photo-modal','app-open-modal','confirm-modal','turnstile-modal'].forEach(id=>{const el=t.content.querySelector('#'+id);if(el){document.body.appendChild(el.cloneNode(true));}});}
+      // Cache refs after cloning
+      Object.assign(els,{photoModal:document.getElementById('photo-modal'),modalImg:document.getElementById('modal-img'),modalVideo:document.getElementById('modal-video'),modalTitle:document.getElementById('modal-title'),modalDesc:document.getElementById('modal-desc'),modalMeta:document.getElementById('modal-meta'),btnAppModal:document.getElementById('btn-app-modal'),btnShareModal:document.getElementById('btn-share-modal'),appOpenModal:document.getElementById('app-open-modal'),btnAppDownload:document.getElementById('btn-app-download')});}
 
-      const CONFIG = { APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'], APP_SCHEME: 'tkjone', DEEP_LINK_PATH: 'photo', FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases', BASE_URL: 'https://tkj1.pages.dev' };
-      let allPhotos = [], filteredPhotos = [], currentPhoto = null, videoObserver = null, playingThumbnailVideo = null, appOpenTimeout = null, appOpenVisibilityHandler = null;
-      
-      const els = { 
-        photoModal: document.getElementById('photo-modal'), 
-        modalImg: document.getElementById('modal-img'), 
-        modalVideo: document.getElementById('modal-video'), 
-        modalTitle: document.getElementById('modal-title'), 
-        modalDesc: document.getElementById('modal-desc'),         modalMeta: document.getElementById('modal-meta'), 
-        btnAppModal: document.getElementById('btn-app-modal'), 
-        btnShareModal: document.getElementById('btn-share-modal'), 
-        appOpenModal: document.getElementById('app-open-modal'), 
-        btnAppDownload: document.getElementById('btn-app-download'), 
-        loading: document.getElementById('loading'), 
-        error: document.getElementById('error'), 
-        errorMsg: document.getElementById('error-msg'), 
-        photoView: document.getElementById('photo-view'), 
-        viewImg: document.getElementById('view-img'), 
-        viewVideo: document.getElementById('view-video'), 
-        viewTitle: document.getElementById('view-title'), 
-        viewDesc: document.getElementById('view-desc'), 
-        viewMeta: document.getElementById('view-meta'), 
-        btnAppView: document.getElementById('btn-app-view'), 
-        btnShareView: document.getElementById('btn-share-view'), 
-        gallerySection: document.getElementById('gallery-section'), 
-        galleryGrid: document.getElementById('gallery-grid'), 
-        emptyState: document.getElementById('empty-state'), 
-        searchInput: document.getElementById('search-input'), 
-        filterBtns: document.querySelectorAll('.filter-btn'), 
-        toast: document.getElementById('toast'), 
-        mainHeader: document.getElementById('main-header'),
-        mainContent: document.getElementById('main-content')
-      };
+      window.unlockBodyScroll=()=>{document.body.classList.remove('modal-open','view-open','comments-fullscreen');document.body.style.overflow='';document.documentElement.style.overflow='';};
+      function showToast(msg,dur=2500){els.toast.textContent=msg;els.toast.classList.add('show');setTimeout(()=>els.toast.classList.remove('show'),dur);}
+      function isVideo(url){return url&&(url.toLowerCase().includes('.mp4')||url.toLowerCase().includes('.webm')||url.toLowerCase().includes('video'));}
+      function protectMedia(el){if(!el)return;['contextmenu','dragstart','selectstart'].forEach(e=>el.addEventListener(e,ev=>{ev.preventDefault();return false;},{passive:false}));if(el.tagName==='IMG'){el.style.pointerEvents='none';el.style.userSelect='none';}if(el.tagName==='VIDEO')el.setAttribute('controlsList','nodownload');}
+      addEventListener('scroll',()=>{els.mainHeader.style.boxShadow=scrollY>10?'0 4px 20px rgba(0,0,0,.3)':'none';},{passive:true});
 
-      window.unlockBodyScroll = function() {
-        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');
-        document.body.style.overflow = ''; document.documentElement.style.overflow = '';
-      };
-      function showToast(msg, dur = 2500) { els.toast.textContent = msg; els.toast.classList.add('show'); setTimeout(() => els.toast.classList.remove('show'), dur); }
-      function isVideo(url) { return url && (url.toLowerCase().includes('.mp4') || url.toLowerCase().includes('.webm') || url.toLowerCase().includes('video')); }
-      function protectMedia(el) { 
-        if (!el) return; ['contextmenu','dragstart','selectstart'].forEach(e => el.addEventListener(e, ev => { ev.preventDefault(); return false; }, { passive: false })); 
-        if (el.tagName === 'IMG') { el.style.pointerEvents = 'none'; el.style.userSelect = 'none'; }
-        if (el.tagName === 'VIDEO') el.setAttribute('controlsList', 'nodownload');
-      }
-      window.addEventListener('scroll', () => { els.mainHeader.style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none'; }, { passive: true });
+      window.openConfirmModal=()=>{initModals();document.getElementById('confirm-modal').classList.remove('hidden');document.body.classList.add('modal-open');};
+      window.cancelDiscussion=()=>{document.getElementById('confirm-modal').classList.add('hidden');window.unlockBodyScroll();showToast('✅ Oke bre, balik ke gallery');};
+      window.startDiscussion=()=>{document.getElementById('confirm-modal').classList.add('hidden');document.getElementById('giscus-fullscreen').classList.add('active');document.body.classList.add('comments-fullscreen');showToast('💬 Login GitHub dulu bre!');};
+      window.closeGiscusFullscreen=()=>{document.getElementById('giscus-fullscreen').classList.remove('active');window.unlockBodyScroll();};
 
-      window.openConfirmModal = function() { document.getElementById('confirm-modal').classList.remove('hidden'); document.body.classList.add('modal-open'); };
-      window.cancelDiscussion = function() { document.getElementById('confirm-modal').classList.add('hidden'); window.unlockBodyScroll(); showToast('✅ Oke bre, balik ke gallery'); };
-      window.startDiscussion = function() { document.getElementById('confirm-modal').classList.add('hidden'); document.getElementById('giscus-fullscreen').classList.add('active'); document.body.classList.add('comments-fullscreen'); showToast('💬 Login GitHub dulu bre!'); };
-      window.closeGiscusFullscreen = function() { document.getElementById('giscus-fullscreen').classList.remove('active'); window.unlockBodyScroll(); };
+      function initVideoObserver(){if(videoObserver)videoObserver.disconnect();videoObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{const v=entry.target;if(!els.photoModal?.classList.contains('hidden')||!els.photoView.classList.contains('hidden')||!els.appOpenModal?.classList.contains('hidden')||document.getElementById('giscus-fullscreen')?.classList.contains('active')){v.pause();return;}if(entry.isIntersecting){v.muted=true;v.playsInline=true;v.loop=true;v.play().catch(()=>{});}else{v.pause();v.currentTime=0;}});},{threshold:.5});}
+      function observeVideo(el){if(videoObserver&&el)videoObserver.observe(el);}
+      function pauseAllGalleryVideos(){document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid=>{if(!vid.paused)playingThumbnailVideo=vid;vid.pause();});}
+      function resumeThumbnailVideo(){if(playingThumbnailVideo&&document.contains(playingThumbnailVideo)){const r=playingThumbnailVideo.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)playingThumbnailVideo.play().catch(()=>{});playingThumbnailVideo=null;}}
 
-      function initVideoObserver() {
-        if (videoObserver) videoObserver.disconnect();
-        videoObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            const v = entry.target;
-            if (!els.photoModal.classList.contains('hidden') || !els.photoView.classList.contains('hidden') || !els.appOpenModal.classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) { v.pause(); return; }            if (entry.isIntersecting) { v.muted = true; v.playsInline = true; v.loop = true; v.play().catch(() => {}); } else { v.pause(); v.currentTime = 0; }
-          });
-        }, { threshold: 0.5 });
-      }
-      function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
-      function pauseAllGalleryVideos() { document.querySelectorAll('.gallery-thumb.video-thumb').forEach(vid => { if (!vid.paused) playingThumbnailVideo = vid; vid.pause(); }); }
-      function resumeThumbnailVideo() { if (playingThumbnailVideo && document.contains(playingThumbnailVideo)) { const r = playingThumbnailVideo.getBoundingClientRect(); if (r.top < window.innerHeight && r.bottom > 0) playingThumbnailVideo.play().catch(() => {}); playingThumbnailVideo = null; } }
+      function showPhoto(photo,popup=true){currentPhoto=photo;const v=isVideo(photo.url);if(popup){initModals();pauseAllGalleryVideos();els.modalTitle.textContent=photo.title||`#${photo.name}`;els.modalImg.style.display=v?'none':'block';els.modalVideo.style.display=v?'block':'none';if(v){els.modalVideo.src=photo.url;els.modalVideo.load();els.modalImg.src='';}else{els.modalImg.src=photo.url;els.modalVideo.src='';protectMedia(els.modalImg);}els.modalDesc.textContent=photo.desc||photo.description||'No description';els.modalMeta.textContent=`👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;els.photoModal.classList.remove('hidden');document.body.classList.add('modal-open');els.btnAppModal.onclick=()=>openApp(photo.name);els.btnShareModal.onclick=()=>sharePhoto(photo);els.photoModal.onclick=e=>{if(e.target===els.photoModal)window.closePhotoModal();};}else showFullPhotoView(photo);}
+      window.closePhotoModal=()=>{els.photoModal?.classList.add('hidden');els.modalVideo?.pause();els.modalVideo&&(els.modalVideo.src='');els.modalImg&&(els.modalImg.src='');resumeThumbnailVideo();window.unlockBodyScroll();};
+      function showFullPhotoView(photo){els.mainHeader.classList.add('hidden');els.mainContent.classList.add('full-view');const v=isVideo(photo.url);els.viewTitle.textContent=photo.title||`#${photo.name}`;els.viewImg.style.display=v?'none':'block';els.viewVideo.style.display=v?'block':'none';if(v){els.viewVideo.src=photo.url;els.viewVideo.load();els.viewImg.src='';}else{els.viewImg.src=photo.url;els.viewVideo.src='';protectMedia(els.viewImg);}els.viewDesc.textContent=photo.desc||photo.description||'No description';els.viewMeta.textContent=`👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;els.gallerySection.classList.add('hidden');els.photoView.classList.remove('hidden');document.body.classList.add('view-open');els.btnAppView.onclick=()=>openApp(photo.name);els.btnShareView.onclick=()=>sharePhoto(photo);scrollTo(0,0);}
+      function closeFullView(){els.photoView.classList.add('hidden');els.gallerySection.classList.remove('hidden');els.mainHeader.classList.remove('hidden');els.mainContent.classList.remove('full-view');els.viewVideo?.pause();els.viewVideo&&(els.viewVideo.src='');els.viewImg&&(els.viewImg.src='');history.pushState({},"",'/');window.unlockBodyScroll();}
 
-      function showPhoto(photo, popup = true) {
-        currentPhoto = photo; const v = isVideo(photo.url);
-        if (popup) {
-          pauseAllGalleryVideos(); els.modalTitle.textContent = photo.title || `#${photo.name}`;
-          els.modalImg.style.display = v ? 'none' : 'block'; els.modalVideo.style.display = v ? 'block' : 'none';
-          if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; } else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
-          els.modalDesc.textContent = photo.desc || photo.description || 'No description'; els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-          els.photoModal.classList.remove('hidden'); document.body.classList.add('modal-open');
-          els.btnAppModal.onclick = () => openApp(photo.name); els.btnShareModal.onclick = () => sharePhoto(photo);
-          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
-        } else showFullPhotoView(photo);
-      }
-      window.closePhotoModal = function() { els.photoModal.classList.add('hidden'); els.modalVideo.pause(); els.modalVideo.src = ''; els.modalImg.src = ''; resumeThumbnailVideo(); window.unlockBodyScroll(); };
+      function openApp(id){try{const i=document.createElement('iframe');i.style.display='none';i.src=`${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;document.body.appendChild(i);setTimeout(()=>{if(document.body.contains(i))document.body.removeChild(i);},1e3);}catch(e){}setTimeout(()=>{try{location.href=`intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;}catch(e){}},100);appOpenTimeout=setTimeout(()=>{if(!document.hidden)showAppOpenModal();},1500);appOpenVisibilityHandler=()=>{if(document.hidden){clearTimeout(appOpenTimeout);window.hideAppOpenModal();removeEventListener('visibilitychange',appOpenVisibilityHandler);}};addEventListener('visibilitychange',appOpenVisibilityHandler);}
+      function showAppOpenModal(){initModals();els.appOpenModal.classList.remove('hidden');document.body.classList.add('modal-open');els.btnAppDownload.onclick=()=>{window.hideAppOpenModal();location.href=CONFIG.FALLBACK_URL;};}
+      window.hideAppOpenModal=()=>{els.appOpenModal?.classList.add('hidden');clearTimeout(appOpenTimeout);if(appOpenVisibilityHandler){removeEventListener('visibilitychange',appOpenVisibilityHandler);appOpenVisibilityHandler=null;}window.unlockBodyScroll();};
 
-      function showFullPhotoView(photo) {
-        els.mainHeader.classList.add('hidden'); els.mainContent.classList.add('full-view');
-        const v = isVideo(photo.url); els.viewTitle.textContent = photo.title || `#${photo.name}`;
-        els.viewImg.style.display = v ? 'none' : 'block'; els.viewVideo.style.display = v ? 'block' : 'none';
-        if (v) { els.viewVideo.src = photo.url; els.viewVideo.load(); els.viewImg.src = ''; } else { els.viewImg.src = photo.url; els.viewVideo.src = ''; protectMedia(els.viewImg); }
-        els.viewDesc.textContent = photo.desc || photo.description || 'No description'; els.viewMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
-        els.gallerySection.classList.add('hidden'); els.photoView.classList.remove('hidden'); document.body.classList.add('view-open');
-        els.btnAppView.onclick = () => openApp(photo.name); els.btnShareView.onclick = () => sharePhoto(photo);
-        window.scrollTo(0, 0); 
-      }
-      function closeFullView() { 
-        els.photoView.classList.add('hidden'); els.gallerySection.classList.remove('hidden'); els.mainHeader.classList.remove('hidden'); els.mainContent.classList.remove('full-view');
-        els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; window.history.pushState({}, '', '/'); window.unlockBodyScroll();
-      }
+      function sharePhoto(photo){const t=`Check this out!\n📷 ${photo.title||'#'+photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;if(navigator.share)navigator.share({title:'TKJ1 Gallery',text:t}).then(()=>showToast('✅ Berhasil dibagikan!')).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>showToast('🔗 Link copied!')).catch(()=>showToast('Gagal copy link'));}
 
-      function openApp(id) {
-        try { const i = document.createElement('iframe'); i.style.display = 'none'; i.src = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`; document.body.appendChild(i); setTimeout(() => { if (document.body.contains(i)) document.body.removeChild(i); }, 1000); } catch(e) {}
-        setTimeout(() => { try { window.location.href = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`; } catch(e) {} }, 100);
-        appOpenTimeout = setTimeout(() => { if (!document.hidden) showAppOpenModal(); }, 1500);
-        appOpenVisibilityHandler = () => { if (document.hidden) { clearTimeout(appOpenTimeout); window.hideAppOpenModal(); document.removeEventListener('visibilitychange', appOpenVisibilityHandler); } };
-        document.addEventListener('visibilitychange', appOpenVisibilityHandler);
-      }
-      function showAppOpenModal() { els.appOpenModal.classList.remove('hidden'); document.body.classList.add('modal-open'); els.btnAppDownload.onclick = () => { window.hideAppOpenModal(); window.location.href = CONFIG.FALLBACK_URL; }; }
-      window.hideAppOpenModal = function() { els.appOpenModal.classList.add('hidden'); clearTimeout(appOpenTimeout); if (appOpenVisibilityHandler) { document.removeEventListener('visibilitychange', appOpenVisibilityHandler); appOpenVisibilityHandler = null; } window.unlockBodyScroll(); };
+      function renderGallery(photos){els.galleryGrid.innerHTML='';if(!photos||photos.length===0){els.emptyState.classList.remove('hidden');return;}els.emptyState.classList.add('hidden');photos.forEach(photo=>{const v=isVideo(photo.url);const item=document.createElement('div');item.className='gallery-item';if(v){item.innerHTML=`<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload" loading="lazy"></video><div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender?`<span>👤 ${photo.gender}</span>`:''}</div></div>`;const vid=item.querySelector('video');observeVideo(vid);protectMedia(vid);}else{item.innerHTML=`<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender?`<span>👤 ${photo.gender}</span>`:''}</div></div>`;protectMedia(item.querySelector('img'));}item.addEventListener('click',()=>showPhoto(photo,true));els.galleryGrid.appendChild(item);});}
 
-      function sharePhoto(photo) {
-        const t = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
-        if (navigator.share) navigator.share({ title: 'TKJ1 Gallery', text: t }).then(() => showToast('✅ Berhasil dibagikan!')).catch(() => {});        else navigator.clipboard.writeText(t).then(() => showToast('🔗 Link copied!')).catch(() => showToast('Gagal copy link'));
-      }
+      window.setFilter=(btn,type)=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilters();};
+      function applyFilters(){const q=els.searchInput.value.toLowerCase().trim();const af=document.querySelector('.filter-btn.active')?.dataset.filter||'all';filteredPhotos=allPhotos.filter(p=>{const ms=!q||String(p.name).toLowerCase().includes(q)||(p.title&&p.title.toLowerCase().includes(q));const mt=af==='all'||(af==='video'&&isVideo(p.url))||(af==='photo'&&!isVideo(p.url));return ms&&mt;});renderGallery(filteredPhotos);}
 
-      function renderGallery(photos) {
-        els.galleryGrid.innerHTML = '';
-        if (!photos || photos.length === 0) { els.emptyState.classList.remove('hidden'); return; }
-        els.emptyState.classList.add('hidden');
-        photos.forEach(photo => {
-          const v = isVideo(photo.url); const item = document.createElement('div'); item.className = 'gallery-item';
-          if (v) {
-            item.innerHTML = `<video class="gallery-thumb video-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
-            observeVideo(item.querySelector('video')); protectMedia(item.querySelector('video'));
-          } else {
-            item.innerHTML = `<img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy"><div class="gallery-info"><div class="gallery-title">${photo.title || '#' + photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span>${photo.gender ? `<span>👤 ${photo.gender}</span>` : ''}</div></div>`;
-            protectMedia(item.querySelector('img'));
-          }
-          item.addEventListener('click', () => showPhoto(photo, true)); els.galleryGrid.appendChild(item);
-        });
-      }
+      async function initGallery(){if(window.galleryInitialized||document.getElementById('pc-blocker').classList.contains('active'))return;window.galleryInitialized=true;const path=location.pathname;const parts=path.split('/').filter(Boolean);const direct=parts[0]==='photo'&&parts[1]?decodeURIComponent(parts[1]):null;try{els.loading.classList.remove('hidden');if(els.error)els.error.classList.add('hidden');let res;const paths=['/DB/photos.json','/photos.json','DB/photos.json','photos.json'];for(const p of paths){try{res=await fetch(p+'?t='+Date.now());if(res.ok)break;}catch(e){}}if(!res||!res.ok)throw new Error('Gagal load photos.json');const data=await res.json();allPhotos=Array.isArray(data)?data:(data.photos||data.data||[]);if(!Array.isArray(allPhotos))throw new Error('Format JSON salah!');allPhotos.sort((a,b)=>{const na=parseInt(a.name),nb=parseInt(b.name);return(!isNaN(na)&&!isNaN(nb))?na-nb:String(a.name).localeCompare(String(b.name));});filteredPhotos=[...allPhotos];els.searchInput.addEventListener('input',applyFilters);els.loading.classList.add('hidden');if(direct){const p=allPhotos.find(x=>String(x.name).toLowerCase()===direct.toLowerCase());if(p)showPhoto(p,false);else{els.errorMsg.textContent=`Foto "${direct}" gak ditemukan bre!`;els.error.classList.remove('hidden');}}else{initVideoObserver();els.gallerySection.classList.remove('hidden');renderGallery(filteredPhotos);}}catch(err){els.loading.classList.add('hidden');if(els.errorMsg)els.errorMsg.textContent=`Error: ${err.message}`;if(els.error)els.error.classList.remove('hidden');}}
+      window.__initGallery=initGallery;
 
-      window.setFilter = function(btn, type) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); };
-      function applyFilters() {
-        const q = els.searchInput.value.toLowerCase().trim(); const af = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        filteredPhotos = allPhotos.filter(p => {
-          const ms = !q || String(p.name).toLowerCase().includes(q) || (p.title && p.title.toLowerCase().includes(q));
-          const mt = af === 'all' || (af === 'video' && isVideo(p.url)) || (af === 'photo' && !isVideo(p.url));
-          return ms && mt;
-        }); renderGallery(filteredPhotos);
-      }
+      addEventListener('popstate',()=>{const p=location.pathname;if(!p.includes('/photo/')&&!els.photoView.classList.contains('hidden'))closeFullView();if(document.getElementById('giscus-fullscreen')?.classList.contains('active'))window.closeGiscusFullscreen();});
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(els.photoModal?.classList.contains('hidden')===false)window.closePhotoModal();if(els.appOpenModal?.classList.contains('hidden')===false)window.hideAppOpenModal();if(document.getElementById('confirm-modal')?.classList.contains('hidden')===false||document.getElementById('giscus-fullscreen')?.classList.contains('active'))window.closeGiscusFullscreen();}});
 
-      async function initGallery() {
-        if (window.galleryInitialized || document.getElementById('pc-blocker').classList.contains('active')) return; window.galleryInitialized = true;
-        const path = window.location.pathname; const parts = path.split('/').filter(Boolean);
-        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
-        try {
-          els.loading.classList.remove('hidden'); if (els.error) els.error.classList.add('hidden');
-          let res; const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
-          for (const p of paths) { try { res = await fetch(p + '?t=' + Date.now()); if (res.ok) break; } catch(e) {} }
-          if (!res || !res.ok) throw new Error('Gagal load photos.json');
-          const data = await res.json(); allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
-          if (!Array.isArray(allPhotos)) throw new Error('Format JSON salah!');
-          allPhotos.sort((a, b) => { const na = parseInt(a.name), nb = parseInt(b.name); return (!isNaN(na) && !isNaN(nb)) ? na - nb : String(a.name).localeCompare(String(b.name)); });
-          filteredPhotos = [...allPhotos]; els.searchInput.addEventListener('input', applyFilters); els.loading.classList.add('hidden');
-          if (direct) { const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase()); if (p) showPhoto(p, false); else { els.errorMsg.textContent = `Foto "${direct}" gak ditemukan bre!`; els.error.classList.remove('hidden'); } }
-          else { initVideoObserver(); els.gallerySection.classList.remove('hidden'); renderGallery(filteredPhotos); }
-        } catch (err) { els.loading.classList.add('hidden'); if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`; if (els.error) els.error.classList.remove('hidden'); }
-      }
-      window.__initGallery = initGallery;
-      
-      // === TURNSTILE CALLBACKS ===      window.onVerifySuccess = function(token) { 
-        window.isTurnstileVerified = true; 
-        document.getElementById('turnstile-modal')?.classList.add('hidden'); 
-        window.unlockBodyScroll(); 
-        if (typeof window.__initGallery === 'function') window.__initGallery(); 
-      };
-      window.onVerifyError = function(errCode) { 
-        const el = document.getElementById('turnstile-error'); 
-        if (el) { el.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'})`; el.style.color = 'var(--error)'; } 
-        const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block'; 
-      };
-      
-      // === AUTO BYPASS UNTUK BOT ===
-      if (shouldSkipVerification()) {
-        window.isTurnstileVerified = true;
-        document.getElementById('turnstile-modal')?.classList.add('hidden');
-        initGallery();
-      } else {
-        // Fallback timeout untuk user biasa
-        setTimeout(() => { 
-          if (!window.turnstile && !window.isTurnstileVerified) { 
-            const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block'; 
-            setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000); 
-          } 
-        }, 10000);
-      }
-      
-      window.addEventListener('popstate', () => { const p = window.location.pathname; if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView(); if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen(); });
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!els.photoModal.classList.contains('hidden')) window.closePhotoModal(); if (!els.appOpenModal.classList.contains('hidden')) window.hideAppOpenModal(); if (!document.getElementById('confirm-modal').classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen(); } });
-      
-      function runInit() { 
-        els.filterBtns.forEach(btn => btn.onclick = () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }); 
-        if (window.isTurnstileVerified && !window.galleryInitialized) initGallery(); 
-      }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit); else runInit();
+      window.onVerifySuccess=token=>{window.isTurnstileVerified=true;document.getElementById('turnstile-modal')?.classList.add('hidden');window.unlockBodyScroll();if(typeof window.__initGallery==='function')window.__initGallery();};
+      window.onVerifyError=errCode=>{const el=document.getElementById('turnstile-error');if(el){el.textContent=`Verifikasi gagal (${errCode||'UNKNOWN'})`;el.style.color='var(--error)';}const fb=document.getElementById('turnstile-fallback');if(fb)fb.style.display='block';};
+
+      if(shouldSkipVerification()){window.isTurnstileVerified=true;document.getElementById('turnstile-modal')?.classList.add('hidden');initGallery();}else{setTimeout(()=>{if(!window.turnstile&&!window.isTurnstileVerified){const fb=document.getElementById('turnstile-fallback');if(fb)fb.style.display='block';setTimeout(()=>{if(!window.isTurnstileVerified)window.onVerifySuccess('auto-bypass');},15e3);}},1e4);}
+
+      function runInit(){els.filterBtns.forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilters();});if(window.isTurnstileVerified&&!window.galleryInitialized)initGallery();}
+      if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',runInit);else runInit();
     })();
+  </script>
+  
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "name": "TKJ1 Gallery",
+    "description": "Koleksi foto dan video dokumentasi kegiatan TKJ OnE kelas 1",
+    "url": "https://tkj1.pages.dev/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "TKJ OnE",
+      "url": "https://tkj1.pages.dev/"
+    },
+    "inLanguage": "id-ID"
+  }
   </script>
 </body>
 </html>
