@@ -43,7 +43,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>TKJ1 Gallery - Dokumentasi Foto & Video TKJ OnE</title>
   
-  <!-- ⚠️ IKLAN SCRIPT (Original) -->
+  <!-- ⚠️ IKLAN SCRIPT -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   
   <!-- 💬 GISCUS SCRIPT -->
@@ -61,7 +61,7 @@
         crossorigin="anonymous"
         async></script>
 
-  <!-- ✅ GOOGLE ADSENSE (User Request) -->
+  <!-- ✅ GOOGLE ADSENSE -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
 
   <style>
@@ -265,17 +265,10 @@
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* === ADSENSE PLACEHOLDER (Optional) === */
+    /* === ADSENSE PLACEHOLDER === */
     .ad-slot {
-      width: 100%;
-      margin: 16px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100px;
-      background: var(--card-hover);
-      border-radius: 12px;
-      border: 1px dashed var(--border);
+      width: 100%; margin: 16px 0; display: flex; justify-content: center; align-items: center;
+      min-height: 100px; background: var(--card-hover); border-radius: 12px; border: 1px dashed var(--border);
     }
     .ad-slot ins { display: block !important; }
   </style>
@@ -292,14 +285,14 @@
 
   <!-- 💬 GISCUS FULLSCREEN -->
   <div id="giscus-fullscreen">
-    <div class="giscus-fullscreen-header">      <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>
+    <div class="giscus-fullscreen-header">
+      <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>
       <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
     </div>
     <div class="giscus-login-hint">🔐 Login GitHub dulu buat komen bre!</div>
     <div class="giscus-fullscreen-body">
       <div class="giscus-wrapper"><div class="giscus"></div></div>
-    </div>
-  </div>
+    </div>  </div>
 
   <!-- HEADER -->
   <header class="header" id="main-header">
@@ -323,7 +316,6 @@
       <div id="loading" class="loading"><div class="loading-icon">⏳</div><div>Loading bre, sabar dikit...</div></div>
       <div id="error" class="error hidden"><div class="error-icon">❌</div><div id="error-msg"></div></div>
       
-      <!-- Photo View Fullscreen -->
       <div id="photo-view" class="photo-view hidden">
         <div class="photo-view-container">
           <img class="photo-view-media" id="view-img" src="" alt="Photo" loading="eager" />
@@ -340,13 +332,16 @@
         </div>
       </div>
       
-      <!-- Gallery Section -->
-      <div id="gallery-section" class="hidden">        <!-- Optional: Ad slot above gallery -->
-        <!-- <div class="ad-slot"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div> -->
-        
+      <div id="gallery-section" class="hidden">
+        <!-- Optional Ad Slot: Uncomment & replace data-ad-slot -->
+        <!--
+        <div class="ad-slot">
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        </div>
+        -->
         <div id="gallery-grid" class="gallery-grid"></div>
-        <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok, bre!</div></div>
-      </div>
+        <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok, bre!</div></div>      </div>
     </div>
   </main>
 
@@ -356,7 +351,7 @@
     <div class="footer-dev">see dev: <a href="https://jirankun.github.com/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
   </footer>
 
-  <!-- MODALS (Always in DOM - NO TEMPLATE) -->
+  <!-- MODALS (Always in DOM) -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" onclick="window.closePhotoModal()" aria-label="Tutup">×</button>
@@ -390,17 +385,17 @@
       <p class="confirm-desc"><strong>Wajib login GitHub</strong> buat pake fitur diskusi.<br/><br/>Cuma buat <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalo cuma iseng, mending balik ke gallery.</p>
       <div class="confirm-actions">
         <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
-        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>      </div>
+        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>
+      </div>
     </div>
   </div>
 
-  <div id="turnstile-modal" class="turnstile-modal">
-    <div class="turnstile-box">
+  <div id="turnstile-modal" class="turnstile-modal">    <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
       <p class="turnstile-desc">Biar aman dari bot, verifikasi dulu yak. Tunggu centang hijau.</p>
       <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
       <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.onVerifySuccess('manual-bypass')">⚠️ Klik kalo stuck</button>
+      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.Turnstile?.verify('manual-fallback')">⚠️ Klik kalo stuck</button>
     </div>
   </div>
 
@@ -414,16 +409,110 @@
     (function() {
       'use strict';
       
-      // === BOT DETECTION FOR SEO ===
-      function isSearchEngineBot() {
-        const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];
-        return bots.some(b => navigator.userAgent.toLowerCase().includes(b));
-      }
-      function shouldSkipVerification() {
-        return isSearchEngineBot() || location.pathname.includes('/photo/');
-      }
+      // === ROBUST TURNSTILE STATE MACHINE ===
+      window.Turnstile = {
+        state: 'pending', // pending | verified | bypassed | error
+        modal: null,
+        errorEl: null,
+        fallbackBtn: null,
+        galleryInitPending: false,
+        
+        init() {
+          // Cache DOM elements safely
+          this.modal = document.getElementById('turnstile-modal');
+          this.errorEl = document.getElementById('turnstile-error');
+          this.fallbackBtn = document.getElementById('turnstile-fallback');
+          
+          // Setup global callbacks BEFORE anything else
+          window.onVerifySuccess = (token) => this.onSuccess(token);
+          window.onVerifyError = (errCode) => this.onError(errCode);
+          
+          // Check bypass conditions FIRST
+          if (this.shouldBypass()) {
+            this.verify('bot-bypass');
+            return;
+          }
+          
+          // Start fallback timer (20s total)
+          setTimeout(() => this.fallback(), 20000);
+        },
+        
+        shouldBypass() {
+          // Bot detection for SEO
+          const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];          const ua = navigator.userAgent?.toLowerCase() || '';
+          const isBot = bots.some(b => ua.includes(b));
+          // Direct photo URLs bypass verification
+          const isDirectPhoto = location.pathname.includes('/photo/');
+          return isBot || isDirectPhoto;
+        },
+        
+        verify(source) {
+          // Prevent duplicate execution
+          if (this.state !== 'pending') return;
+          
+          // Update state FIRST to prevent race conditions
+          this.state = (source === 'bot-bypass') ? 'bypassed' : 'verified';
+          
+          // Set global flag for other scripts
+          window.isTurnstileVerified = true;
+          
+          // Hide modal (check if exists)
+          if (this.modal) {
+            this.modal.classList.add('hidden');
+          }
+          
+          // Unlock scroll (safe call)
+          if (typeof window.unlockBodyScroll === 'function') {
+            window.unlockBodyScroll();
+          }
+          
+          // Initialize gallery (with guard)
+          if (typeof window.__initGallery === 'function') {
+            if (!window.galleryInitialized) {
+              window.__initGallery();
+            }
+          }
+        },
+        
+        onSuccess(token) {
+          // Turnstile callback - verify and proceed
+          this.verify('turnstile-success');
+        },
+        
+        onError(errCode) {
+          // Mark error state
+          this.state = 'error';
+          
+          // Show error message safely
+          if (this.errorEl) {
+            this.errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'})`;
+            this.errorEl.style.color = 'var(--error)';
+          }
+                    // Show fallback button
+          if (this.fallbackBtn) {
+            this.fallbackBtn.style.display = 'block';
+          }
+        },
+        
+        fallback() {
+          // Only trigger if still pending
+          if (this.state !== 'pending') return;
+          
+          // Show fallback button if hidden
+          if (this.fallbackBtn && this.fallbackBtn.style.display !== 'block') {
+            this.fallbackBtn.style.display = 'block';
+          }
+          
+          // Auto-verify after additional 5s (total 25s)
+          setTimeout(() => {
+            if (this.state === 'pending') {
+              this.verify('auto-fallback');
+            }
+          }, 5000);
+        }
+      };
       
-      // === PC DETECTION ===
+      // === UTILS ===
       function isMobileDevice() {
         const ua = navigator.userAgent || navigator.vendor || window.opera;
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || innerWidth <= 768;
@@ -439,7 +528,8 @@
           document.querySelector('.footer')?.classList.add('hidden');
         }
       }
-      initPCBlocker();      window.addEventListener('resize', () => {
+      initPCBlocker();
+      window.addEventListener('resize', () => {
         const blocker = document.getElementById('pc-blocker');
         if (isMobileDevice() && blocker.classList.contains('active')) {
           blocker.classList.remove('active'); 
@@ -447,8 +537,7 @@
           document.getElementById('main-header')?.classList.remove('hidden');
           document.getElementById('main-content')?.classList.remove('hidden');
           document.querySelector('.footer')?.classList.remove('hidden');
-        }
-      });
+        }      });
 
       const CONFIG = { 
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'], 
@@ -462,7 +551,7 @@
       let videoObserver = null, playingThumbnailVideo = null;
       let appOpenTimeout = null, appOpenVisibilityHandler = null;
       
-      // === ELEMENT CACHE (Safe - all elements exist in DOM) ===
+      // === ELEMENT CACHE ===
       const els = {
         photoModal: document.getElementById('photo-modal'),
         modalImg: document.getElementById('modal-img'),
@@ -488,7 +577,8 @@
         gallerySection: document.getElementById('gallery-section'),
         galleryGrid: document.getElementById('gallery-grid'),
         emptyState: document.getElementById('empty-state'),
-        searchInput: document.getElementById('search-input'),        filterBtns: document.querySelectorAll('.filter-btn'),
+        searchInput: document.getElementById('search-input'),
+        filterBtns: document.querySelectorAll('.filter-btn'),
         toast: document.getElementById('toast'),
         mainHeader: document.getElementById('main-header'),
         mainContent: document.getElementById('main-content')
@@ -496,8 +586,7 @@
 
       // === UTILS ===
       window.unlockBodyScroll = function() {
-        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');
-        document.body.style.overflow = ''; 
+        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');        document.body.style.overflow = ''; 
         document.documentElement.style.overflow = '';
       };
       
@@ -537,7 +626,8 @@
         window.unlockBodyScroll(); 
         showToast('✅ Oke bre, balik ke gallery'); 
       };
-      window.startDiscussion = function() {        document.getElementById('confirm-modal').classList.add('hidden');
+      window.startDiscussion = function() {
+        document.getElementById('confirm-modal').classList.add('hidden');
         document.getElementById('giscus-fullscreen').classList.add('active');
         document.body.classList.add('comments-fullscreen');
         showToast('💬 Login GitHub dulu bre!');
@@ -546,7 +636,6 @@
         document.getElementById('giscus-fullscreen').classList.remove('active');
         window.unlockBodyScroll();
       };
-
       // === VIDEO OBSERVER ===
       function initVideoObserver() {
         if (videoObserver) videoObserver.disconnect();
@@ -586,7 +675,8 @@
         if (popup) {
           pauseAllGalleryVideos(); 
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
-          els.modalImg.style.display = v ? 'none' : 'block';           els.modalVideo.style.display = v ? 'block' : 'none';
+          els.modalImg.style.display = v ? 'none' : 'block'; 
+          els.modalVideo.style.display = v ? 'block' : 'none';
           if (v) { els.modalVideo.src = photo.url; els.modalVideo.load(); els.modalImg.src = ''; }
           else { els.modalImg.src = photo.url; els.modalVideo.src = ''; protectMedia(els.modalImg); }
           els.modalDesc.textContent = photo.desc || photo.description || 'No description';
@@ -594,8 +684,7 @@
           els.photoModal.classList.remove('hidden'); 
           document.body.classList.add('modal-open');
           els.btnAppModal.onclick = () => openApp(photo.name); 
-          els.btnShareModal.onclick = () => sharePhoto(photo);
-          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
+          els.btnShareModal.onclick = () => sharePhoto(photo);          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
         } else { showFullPhotoView(photo); }
       }
       
@@ -635,7 +724,8 @@
         window.unlockBodyScroll();
       }
 
-      // === APP OPEN (Fixed Intent URL) ===      function openApp(id) {
+      // === APP OPEN ===
+      function openApp(id) {
         try {
           const iframe = document.createElement('iframe');
           iframe.style.display = 'none';
@@ -643,8 +733,7 @@
           document.body.appendChild(iframe);
           setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1000);
         } catch(e) {}
-        
-        setTimeout(() => {
+                setTimeout(() => {
           try {
             const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;
             window.location.href = intentUrl;
@@ -684,16 +773,16 @@
         if (navigator.share) {
           navigator.share({ title: 'TKJ1 Gallery', text: t })
             .then(() => showToast('✅ Berhasil dibagikan!'))
-            .catch(() => {});        } else {
+            .catch(() => {});
+        } else {
           navigator.clipboard.writeText(t)
             .then(() => showToast('🔗 Link copied!'))
             .catch(() => showToast('Gagal copy link'));
         }
       }
 
-      // === RENDER GALLERY (With lazy loading) ===
-      function renderGallery(photos) {
-        els.galleryGrid.innerHTML = '';
+      // === RENDER GALLERY ===
+      function renderGallery(photos) {        els.galleryGrid.innerHTML = '';
         if (!photos || photos.length === 0) { 
           els.emptyState.classList.remove('hidden'); 
           return; 
@@ -733,16 +822,16 @@
           const mt = af === 'all' || (af === 'video' && isVideo(p.url)) || (af === 'photo' && !isVideo(p.url));
           return ms && mt;
         }); 
-        renderGallery(filteredPhotos);      }
+        renderGallery(filteredPhotos);
+      }
 
       // === INIT GALLERY ===
       async function initGallery() {
-        if (window.galleryInitialized || document.getElementById('pc-blocker').classList.contains('active')) return; 
+        if (window.galleryInitialized || document.getElementById('pc-blocker')?.classList.contains('active')) return; 
         window.galleryInitialized = true;
         
         const path = window.location.pathname; 
-        const parts = path.split('/').filter(Boolean);
-        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
+        const parts = path.split('/').filter(Boolean);        const direct = (parts[0] === 'photo' && parts[1]) ? decodeURIComponent(parts[1]) : null;
         
         try {
           els.loading.classList.remove('hidden'); 
@@ -782,7 +871,8 @@
             initVideoObserver(); 
             els.gallerySection.classList.remove('hidden'); 
             renderGallery(filteredPhotos); 
-          }        } catch (err) {
+          }
+        } catch (err) {
           els.loading.classList.add('hidden'); 
           if (els.errorMsg) els.errorMsg.textContent = `Error: ${err.message}`; 
           if (els.error) els.error.classList.remove('hidden');
@@ -790,58 +880,45 @@
       }
       window.__initGallery = initGallery;
 
-      // === EVENT LISTENERS ===
-      window.addEventListener('popstate', () => {
+      // === EVENT LISTENERS ===      window.addEventListener('popstate', () => {
         const p = window.location.pathname; 
         if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
-        if (document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
+        if (document.getElementById('giscus-fullscreen')?.classList.contains('active')) window.closeGiscusFullscreen();
       });
       
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-          if (!els.photoModal.classList.contains('hidden')) window.closePhotoModal();
-          if (!els.appOpenModal.classList.contains('hidden')) window.hideAppOpenModal();
-          if (!document.getElementById('confirm-modal').classList.contains('hidden') || document.getElementById('giscus-fullscreen').classList.contains('active')) window.closeGiscusFullscreen();
+          if (els.photoModal && !els.photoModal.classList.contains('hidden')) window.closePhotoModal();
+          if (els.appOpenModal && !els.appOpenModal.classList.contains('hidden')) window.hideAppOpenModal();
+          const confirmModal = document.getElementById('confirm-modal');
+          const giscusFs = document.getElementById('giscus-fullscreen');
+          if ((confirmModal && !confirmModal.classList.contains('hidden')) || (giscusFs && giscusFs.classList.contains('active'))) {
+            window.closeGiscusFullscreen();
+          }
         }
       });
 
-      // === TURNSTILE CALLBACKS ===
-      window.onVerifySuccess = function(token) {
-        window.isTurnstileVerified = true;
-        document.getElementById('turnstile-modal')?.classList.add('hidden');
-        window.unlockBodyScroll();
-        if (typeof window.__initGallery === 'function') window.__initGallery();
-      };
-      window.onVerifyError = function(errCode) {
-        const el = document.getElementById('turnstile-error');
-        if (el) { el.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'})`; el.style.color = 'var(--error)'; }
-        const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block';
-      };
-      
-      // === AUTO BYPASS FOR BOTS ===
-      if (shouldSkipVerification()) {
-        window.isTurnstileVerified = true;
-        document.getElementById('turnstile-modal')?.classList.add('hidden');
-        initGallery();
-      } else {
-        setTimeout(() => {
-          if (!window.turnstile && !window.isTurnstileVerified) {
-            const fb = document.getElementById('turnstile-fallback'); if (fb) fb.style.display = 'block';
-            setTimeout(() => { if (!window.isTurnstileVerified) window.onVerifySuccess('auto-bypass'); }, 15000);
-          }
-        }, 10000);
-      }
-      // === INIT ===
+      // === INIT TURNSTILE + APP ===
       function runInit() {
+        // Setup filter buttons
         els.filterBtns.forEach(btn => btn.onclick = () => { 
           document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); 
           btn.classList.add('active'); 
           applyFilters(); 
         });
-        if (window.isTurnstileVerified && !window.galleryInitialized) initGallery();
+        
+        // Initialize Turnstile state machine
+        if (window.Turnstile && typeof window.Turnstile.init === 'function') {
+          window.Turnstile.init();
+        }
       }
       
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runInit); else runInit();
+      // Run when DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runInit);
+      } else {
+        runInit();
+      }
     })();
   </script>
   
@@ -852,8 +929,7 @@
     "@type": "ImageGallery",
     "name": "TKJ1 Gallery",
     "description": "Koleksi foto dan video dokumentasi kegiatan TKJ OnE kelas 1",
-    "url": "https://tkj1.pages.dev/",
-    "publisher": { "@type": "Organization", "name": "TKJ OnE" },
+    "url": "https://tkj1.pages.dev/",    "publisher": { "@type": "Organization", "name": "TKJ OnE" },
     "inLanguage": "id-ID"
   }
   </script>
