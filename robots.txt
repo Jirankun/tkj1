@@ -3,18 +3,11 @@ Allow: /
 Allow: /photo/
 Allow: /*.json$
 Allow: /DB/
-
-# Block admin areas if any
 Disallow: /admin/
 Disallow: /private/
-
-# Crawl-delay untuk bot yang terlalu agresif
 Crawl-delay: 1
-
-# Sitemap location
 Sitemap: https://tkj1.pages.dev/sitemap.xml
 
-# Specific bot settings
 User-agent: Googlebot
 Allow: /
 Allow: /*.json$
@@ -22,7 +15,6 @@ Allow: /*.json$
 User-agent: Googlebot-Image
 Allow: /
 Allow: /*.jpg$
-Allow: /*.mp4$
 Allow: /*.jpeg$
 Allow: /*.png$
 Allow: /*.gif$
