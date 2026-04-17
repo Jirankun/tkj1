@@ -47,8 +47,7 @@
   <meta http-equiv="x-ua-compatible" content="IE=edge"/>
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
 
-  <!-- 🚀 Performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <!-- 🚀 Performance -->  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- 🧠 Title -->
@@ -97,11 +96,11 @@
     }
     body.modal-open, body.view-open, body.comments-fullscreen, body.pc-blocked, body.turnstile-active { overflow: hidden; }
 
-    .hidden { display: none !important; pointer-events: none !important; }
-    .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
+    .hidden { display: none !important; pointer-events: none !important; }    .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
 
     /* === PC BLOCKER === */
-    #pc-blocker {      position: fixed; inset: 0; background: var(--bg); display: none;
+    #pc-blocker {
+      position: fixed; inset: 0; background: var(--bg); display: none;
       flex-direction: column; align-items: center; justify-content: center;
       z-index: 99999; padding: 24px; text-align: center;
     }
@@ -146,11 +145,11 @@
       font-size: 0.9rem; outline: none; transition: all 0.2s ease;
     }
     .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.15); background: var(--card-hover); }
-    .search-box input::placeholder { color: var(--text-muted); }
-    .search-box::before { content: '🔍'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; pointer-events: none; }
+    .search-box input::placeholder { color: var(--text-muted); }    .search-box::before { content: '🔍'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; pointer-events: none; }
     .filter-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; padding-bottom: 2px; }
     .filter-btn { 
-      padding: 8px 14px; background: var(--card); border: 1px solid var(--border);       border-radius: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; 
+      padding: 8px 14px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; 
       cursor: pointer; transition: all 0.2s; font-family: inherit; min-height: 36px;
       display: flex; align-items: center; justify-content: center;
     }
@@ -195,11 +194,11 @@
     .giscus-fullscreen-header { position: sticky; top: 0; z-index: 10001; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(10, 10, 15, 0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .giscus-fullscreen-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .giscus-fullscreen-title .badge { font-size: 0.65rem; padding: 2px 6px; }
-    .giscus-close-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--error); border: none; color: #fff; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .giscus-close-btn:active { transform: scale(0.95); }
+    .giscus-close-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--error); border: none; color: #fff; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }    .giscus-close-btn:active { transform: scale(0.95); }
     .giscus-close-btn:hover { background: #ff6b7a; }
     .giscus-fullscreen-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; position: relative; }
-    .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }    .giscus-wrapper .giscus { width: 100%; flex: 1; background: var(--bg); }
+    .giscus-wrapper { width: 100%; min-height: 100%; background: var(--bg); display: flex; flex-direction: column; }
+    .giscus-wrapper .giscus { width: 100%; flex: 1; background: var(--bg); }
     .giscus-wrapper .giscus iframe { width: 100% !important; min-height: calc(100vh - 120px) !important; border: none !important; }
     .giscus-login-hint { padding: 12px 16px; text-align: center; color: var(--text-muted); font-size: 0.8rem; background: var(--card-hover); border-bottom: 1px solid var(--border); font-weight: 500; }
 
@@ -242,13 +241,13 @@
     .modal-desc { color: var(--text-muted); margin-bottom: 16px; font-size: 0.95rem; }
     .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* === ✅ APP OPEN MODAL - FIXED WITH ANIMATION & CLICK OUTSIDE === */
+    /* === ✅ APP OPEN MODAL - FIXED === */
     .app-open-modal { 
-      position: fixed; inset: 0; 
-      background: rgba(0, 0, 0, 0.85); 
+      position: fixed; inset: 0;       background: rgba(0, 0, 0, 0.85); 
       display: flex; 
       align-items: center; 
-      justify-content: center;       z-index: 9999; 
+      justify-content: center; 
+      z-index: 9999; 
       padding: 20px; 
       backdrop-filter: blur(10px);
       opacity: 0;
@@ -293,11 +292,11 @@
       text-align: center; max-width: 380px; width: 100%; 
       border: 1px solid var(--border); animation: modalSlideIn 0.3s ease; 
     }
-    .turnstile-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-    .turnstile-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
+    .turnstile-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }    .turnstile-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
     .turnstile-widget { display: flex; justify-content: center; margin: 16px 0; min-height: 65px; }
     .turnstile-error { color: var(--error); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
-    .turnstile-fallback-btn {       margin-top: 12px; padding: 8px 16px; background: transparent; 
+    .turnstile-fallback-btn { 
+      margin-top: 12px; padding: 8px 16px; background: transparent; 
       border: 1px dashed var(--border); color: var(--text-muted); 
       border-radius: 8px; font-size: 0.8rem; cursor: pointer; 
       display: none; transition: all 0.2s; 
@@ -342,11 +341,11 @@
 <body>
 
   <!-- 🚫 PC BLOCKER -->
-  <div id="pc-blocker">
-    <div class="pc-blocker-icon">📱</div>
+  <div id="pc-blocker">    <div class="pc-blocker-icon">📱</div>
     <div class="pc-blocker-title">⚠️ Mobile Only Bre!</div>
     <p class="pc-blocker-desc">Website ini cuma buat HP Android/iOS. Buka pake phone aja yak!</p>
-    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.com/portofoliozhyllan'">🔗 Ke Portfolio</button>  </div>
+    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.com/portofoliozhyllan'">🔗 Ke Portfolio</button>
+  </div>
 
   <!-- 💬 GISCUS FULLSCREEN -->
   <div id="giscus-fullscreen">
@@ -391,11 +390,11 @@
             <p class="photo-view-desc" id="view-desc"></p>
             <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9rem;" id="view-meta"></p>
             <div class="photo-view-actions">
-              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
-              <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
+              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>              <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
             </div>
           </div>
-        </div>      </div>
+        </div>
+      </div>
       
       <div id="gallery-section" class="hidden">
         <div id="gallery-grid" class="gallery-grid"></div>
@@ -427,7 +426,7 @@
     </div>
   </div>
 
-  <!-- ✅ APP OPEN MODAL - FIXED -->
+  <!-- ✅ APP OPEN MODAL -->
   <div id="app-open-modal" class="app-open-modal">
     <div class="app-open-box" id="app-open-box">
       <div class="app-open-icon">📱</div>
@@ -440,11 +439,11 @@
     </div>
   </div>
 
-  <div id="confirm-modal" class="confirm-modal hidden">
-    <div class="confirm-box">
+  <div id="confirm-modal" class="confirm-modal hidden">    <div class="confirm-box">
       <div class="confirm-icon">🔐</div><h3 class="confirm-title">⚠️ Login GitHub Dulu</h3>
       <p class="confirm-desc"><strong>Wajib login GitHub</strong> buat pake fitur diskusi.<br/><br/>Cuma buat <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalo cuma iseng, mending balik ke gallery.</p>
-      <div class="confirm-actions">        <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
+      <div class="confirm-actions">
+        <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
         <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>
       </div>
     </div>
@@ -489,11 +488,11 @@
           if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
           document.body.classList.add('turnstile-active');
           setTimeout(fallback, 20000);
-        }
-        
+        }        
         function shouldBypass() {
           const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];
-          const ua = navigator.userAgent?.toLowerCase() || '';          return bots.some(b => ua.includes(b)) || location.pathname.includes('/photo/');
+          const ua = navigator.userAgent?.toLowerCase() || '';
+          return bots.some(b => ua.includes(b)) || location.pathname.includes('/photo/');
         }
         
         function verify(source) {
@@ -538,11 +537,11 @@
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || innerWidth <= 768;
       }
       
-      function initPCBlocker() {
-        const blocker = document.getElementById('pc-blocker');
+      function initPCBlocker() {        const blocker = document.getElementById('pc-blocker');
         if (!isMobileDevice()) {
           blocker.classList.add('active'); 
-          document.body.classList.add('pc-blocked');          document.getElementById('main-header')?.classList.add('hidden');
+          document.body.classList.add('pc-blocked');
+          document.getElementById('main-header')?.classList.add('hidden');
           document.getElementById('main-content')?.classList.add('hidden');
           document.querySelector('.footer')?.classList.add('hidden');
         }
@@ -587,11 +586,11 @@
         loading: document.getElementById('loading'),
         error: document.getElementById('error'),
         errorMsg: document.getElementById('error-msg'),
-        photoView: document.getElementById('photo-view'),
-        viewImg: document.getElementById('view-img'),
+        photoView: document.getElementById('photo-view'),        viewImg: document.getElementById('view-img'),
         viewVideo: document.getElementById('view-video'),
         viewTitle: document.getElementById('view-title'),
-        viewDesc: document.getElementById('view-desc'),        viewMeta: document.getElementById('view-meta'),
+        viewDesc: document.getElementById('view-desc'),
+        viewMeta: document.getElementById('view-meta'),
         btnAppView: document.getElementById('btn-app-view'),
         btnShareView: document.getElementById('btn-share-view'),
         gallerySection: document.getElementById('gallery-section'),
@@ -636,11 +635,11 @@
 
       // === MODAL FLOWS ===
       window.openConfirmModal = function() { 
-        document.getElementById('confirm-modal').classList.remove('hidden'); 
-        document.body.classList.add('modal-open'); 
+        document.getElementById('confirm-modal').classList.remove('hidden');         document.body.classList.add('modal-open'); 
       };
       window.cancelDiscussion = function() { 
-        document.getElementById('confirm-modal').classList.add('hidden');         window.unlockBodyScroll(); 
+        document.getElementById('confirm-modal').classList.add('hidden'); 
+        window.unlockBodyScroll(); 
         showToast('Kembali ke Galeri'); 
       };
       window.startDiscussion = function() {
@@ -685,11 +684,11 @@
           playingThumbnailVideo = null; 
         } 
       }
-
       // === PHOTO VIEW ===
       function showPhoto(photo, popup = true) {
         currentPhoto = photo; 
-        const v = isVideo(photo.url);        if (popup) {
+        const v = isVideo(photo.url);
+        if (popup) {
           pauseAllGalleryVideos(); 
           els.modalTitle.textContent = photo.title || `#${photo.name}`;
           els.modalImg.style.display = v ? 'none' : 'block'; 
@@ -734,46 +733,66 @@
       
       function closeFullView() { 
         els.photoView.classList.add('hidden'); 
-        els.gallerySection.classList.remove('hidden'); 
-        els.mainHeader.classList.remove('hidden'); 
+        els.gallerySection.classList.remove('hidden');         els.mainHeader.classList.remove('hidden'); 
         els.mainContent.classList.remove('full-view'); 
         els.viewVideo.pause(); els.viewVideo.src = ''; els.viewImg.src = ''; 
-        window.history.pushState({}, '', '/');         window.unlockBodyScroll();
+        window.history.pushState({}, '', '/'); 
+        window.unlockBodyScroll();
       }
 
-      // === ✅ APP OPEN - FIXED WITH CUSTOM POPUP & CLICK OUTSIDE ===
+      // === ✅ APP OPEN - FIXED LOGIC (NO PREMATURE REDIRECT) ===
       function openApp(id) {
-        // Try iframe deep link
-        try {
-          const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';
-          iframe.src = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;
-          document.body.appendChild(iframe);
-          setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1000);
-        } catch(e) {}
+        let appOpened = false;
+        let cleanupDone = false;
         
-        // Try Android intent URL
-        setTimeout(() => {
-          try {
-            const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;
-            window.location.href = intentUrl;
-          } catch(e) {}
-        }, 100);
+        // Cleanup function to remove listeners
+        function cleanup() {
+          if (cleanupDone) return;
+          cleanupDone = true;
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+          document.removeEventListener('pagehide', onVisibilityChange);
+        }
         
-        // Show custom popup after 1.5s if app didn't open
-        appOpenTimeout = setTimeout(() => { 
-          if (!document.hidden) showAppOpenModal(); 
-        }, 1500);
-        
-        // Hide popup if app actually opened (page becomes hidden)
-        appOpenVisibilityHandler = () => {
-          if (document.hidden) {
+        // Handler: called when app opens (page becomes hidden)
+        function onVisibilityChange() {
+          if (appOpened) return;
+          if (document.hidden || document.visibilityState === 'hidden') {
+            appOpened = true;
             clearTimeout(appOpenTimeout);
             hideAppOpenModal();
-            document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
+            cleanup();
           }
-        };
-        document.addEventListener('visibilitychange', appOpenVisibilityHandler);
+        }
+        
+        // Add listeners
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        document.addEventListener('pagehide', onVisibilityChange);
+        
+        // Method 1: Custom scheme (works for iOS & Android)
+        try {
+          window.location.href = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;
+        } catch(e) { console.warn('Scheme open failed:', e); }
+        
+        // Method 2: Android Intent (without fallback_url - we handle fallback manually)
+        if (/Android/i.test(navigator.userAgent)) {
+          setTimeout(() => {
+            if (!appOpened) {
+              try {
+                // ✅ Intent WITHOUT S.browser_fallback_url
+                // Fallback handled by our timeout + popup
+                const packages = CONFIG.APP_PACKAGES.map(p => `package=${p}`).join(';');
+                const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};${packages};end`;
+                window.location.href = intentUrl;              } catch(e) { console.warn('Intent open failed:', e); }
+            }
+          }, 50);
+        }
+        
+        // Show popup after 1.5s IF app didn't open
+        appOpenTimeout = setTimeout(() => {
+          if (!appOpened && !document.hidden) {
+            showAppOpenModal();
+          }
+        }, 1500);
       }
       
       // ✅ Show app open modal with animation
@@ -781,20 +800,22 @@
         els.appOpenModal.classList.add('active');
         document.body.classList.add('modal-open');
         
-        // ✅ Download button → GitHub Releases
+        // ✅ Download button → GitHub Releases (only when explicitly clicked)
         els.btnAppDownload.onclick = function(e) {
           e.stopPropagation();
           hideAppOpenModal();
-          window.location.href = CONFIG.FALLBACK_URL;
+          // Use replace to avoid breaking back button
+          window.location.replace(CONFIG.FALLBACK_URL);
         };
-                // ✅ Click outside box → close with animation
+        
+        // ✅ Click outside box → close with animation
         els.appOpenModal.onclick = function(e) {
           if (e.target === els.appOpenModal) {
             hideAppOpenModal();
           }
         };
         
-        // Prevent box click from closing
+        // Prevent box click from closing modal
         if (els.appOpenBox) {
           els.appOpenBox.onclick = function(e) { e.stopPropagation(); };
         }
@@ -810,8 +831,7 @@
         } 
         // Wait for animation before unlocking scroll
         setTimeout(() => {
-          if (!els.appOpenModal.classList.contains('active')) {
-            window.unlockBodyScroll();
+          if (!els.appOpenModal.classList.contains('active')) {            window.unlockBodyScroll();
           }
         }, 250);
       };
@@ -836,7 +856,8 @@
         if (!photos || photos.length === 0) { 
           els.emptyState.classList.remove('hidden'); 
           return; 
-        }        els.emptyState.classList.add('hidden');
+        }
+        els.emptyState.classList.add('hidden');
         
         photos.forEach(photo => {
           const v = isVideo(photo.url); 
@@ -859,8 +880,7 @@
 
       window.setFilter = function(btn, type) { 
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); 
-        btn.classList.add('active'); 
-        applyFilters(); 
+        btn.classList.add('active');         applyFilters(); 
       };
       
       function applyFilters() {
@@ -885,7 +905,8 @@
         
         try {
           els.loading.classList.remove('hidden'); 
-          if (els.error) els.error.classList.add('hidden');          
+          if (els.error) els.error.classList.add('hidden');
+          
           let res; 
           const paths = ['/DB/photos.json', '/photos.json', 'DB/photos.json', 'photos.json'];
           for (const p of paths) { 
@@ -908,8 +929,7 @@
           filteredPhotos = [...allPhotos];
           els.searchInput.addEventListener('input', applyFilters);
           els.loading.classList.add('hidden');
-          
-          if (direct) {
+                    if (direct) {
             const p = allPhotos.find(x => String(x.name).toLowerCase() === direct.toLowerCase());
             if (p) showPhoto(p, false);
             else { 
@@ -934,7 +954,8 @@
         const p = window.location.pathname; 
         if (!p.includes('/photo/') && !els.photoView.classList.contains('hidden')) closeFullView();
         if (document.getElementById('giscus-fullscreen')?.classList.contains('active')) window.closeGiscusFullscreen();
-      });      
+      });
+      
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           if (els.photoModal && !els.photoModal.classList.contains('hidden')) window.closePhotoModal();
@@ -957,8 +978,7 @@
         
         if (window.Turnstile && typeof window.Turnstile.init === 'function') {
           window.Turnstile.init();
-        }
-      }
+        }      }
       
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', runInit);
