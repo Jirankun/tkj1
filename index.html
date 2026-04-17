@@ -145,7 +145,7 @@
     .filter-btn:active { transform: scale(0.97); }
     .filter-btn:hover, .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; }
     .comments-trigger { 
-      padding: 8px 16px; background: linear-gradient(135deg, var(--accent), #00a8ff);       border: none; border-radius: 8px; color: var(--bg); font-size: 0.8rem; font-weight: 700; 
+      padding: 8px 16px; background: linear-gradient(135deg, var(--accent), #00a8ff);      border: none; border-radius: 8px; color: var(--bg); font-size: 0.8rem; font-weight: 700; 
       cursor: pointer; transition: all 0.2s; font-family: inherit; display: flex; 
       align-items: center; gap: 5px; white-space: nowrap; min-height: 36px;
       box-shadow: 0 3px 10px rgba(0, 212, 170, 0.25);
@@ -243,7 +243,8 @@
     .loading, .error { text-align: center; padding: 40px 20px; }
     .loading-icon { font-size: 2.5rem; margin-bottom: 12px; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .error { color: var(--error); } .error-icon { font-size: 2.5rem; margin-bottom: 12px; }    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); grid-column: 1 / -1; }
+    .error { color: var(--error); }    .error-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); grid-column: 1 / -1; }
     .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.5; }
 
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card); color: var(--text); padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 30px rgba(0,0,0,0.4); transition: transform 0.25s ease; z-index: 9999; font-weight: 500; max-width: 90vw; text-align: center; font-size: 0.9rem; }
@@ -291,8 +292,8 @@
     </div>
     <div class="giscus-login-hint">🔐 Login GitHub dulu buat komen bre!</div>
     <div class="giscus-fullscreen-body">
-      <div class="giscus-wrapper"><div class="giscus"></div></div>
-    </div>  </div>
+      <div class="giscus-wrapper"><div class="giscus"></div></div>    </div>
+  </div>
 
   <!-- HEADER -->
   <header class="header" id="main-header">
@@ -333,21 +334,14 @@
       </div>
       
       <div id="gallery-section" class="hidden">
-        <!-- Optional Ad Slot: Uncomment & replace data-ad-slot -->
-        <!--
-        <div class="ad-slot">
-          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6754329161781195" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-        </div>
-        -->
         <div id="gallery-grid" class="gallery-grid"></div>
-        <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok, bre!</div></div>      </div>
+        <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok, bre!</div></div>
+      </div>
     </div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
+  <footer class="footer">    <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
     <div class="footer-dev">see dev: <a href="https://jirankun.github.com/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
   </footer>
 
@@ -390,12 +384,13 @@
     </div>
   </div>
 
-  <div id="turnstile-modal" class="turnstile-modal">    <div class="turnstile-box">
+  <!-- ✅ FIX: Tambah class "hidden" di sini bre! -->
+  <div id="turnstile-modal" class="turnstile-modal hidden">
+    <div class="turnstile-box">
       <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
       <p class="turnstile-desc">Biar aman dari bot, verifikasi dulu yak. Tunggu centang hijau.</p>
       <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
-      <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.Turnstile?.verify('manual-fallback')">⚠️ Klik kalo stuck</button>
+      <div id="turnstile-error" class="turnstile-error"></div>      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.TurnstileManualFallback()">⚠️ Klik kalo stuck</button>
     </div>
   </div>
 
@@ -409,106 +404,112 @@
     (function() {
       'use strict';
       
-      // === ROBUST TURNSTILE STATE MACHINE ===
-      window.Turnstile = {
-        state: 'pending', // pending | verified | bypassed | error
-        modal: null,
-        errorEl: null,
-        fallbackBtn: null,
-        galleryInitPending: false,
+      // === 🛡️ ROBUST TURNSTILE STATE MACHINE (FIXED) ===
+      window.Turnstile = (function() {
+        let state = 'pending';
+        let modal, errorEl, fallbackBtn;
+        let galleryInitQueued = false;
         
-        init() {
-          // Cache DOM elements safely
-          this.modal = document.getElementById('turnstile-modal');
-          this.errorEl = document.getElementById('turnstile-error');
-          this.fallbackBtn = document.getElementById('turnstile-fallback');
+        function init() {
+          modal = document.getElementById('turnstile-modal');
+          errorEl = document.getElementById('turnstile-error');
+          fallbackBtn = document.getElementById('turnstile-fallback');
           
-          // Setup global callbacks BEFORE anything else
-          window.onVerifySuccess = (token) => this.onSuccess(token);
-          window.onVerifyError = (errCode) => this.onError(errCode);
+          // ✅ Bind global callbacks BEFORE turnstile loads
+          window.onVerifySuccess = function(token) { onSuccess(token); };
+          window.onVerifyError = function(errCode) { onError(errCode); };
           
-          // Check bypass conditions FIRST
-          if (this.shouldBypass()) {
-            this.verify('bot-bypass');
+          // ✅ Check bypass FIRST (bot / direct photo)
+          if (shouldBypass()) {
+            console.log('[Turnstile] Bypass triggered');
+            verify('bot-bypass');
             return;
           }
           
-          // Start fallback timer (20s total)
-          setTimeout(() => this.fallback(), 20000);
-        },
+          // ✅ Show modal & start fallback timer
+          if (modal) modal.classList.remove('hidden');
+          setTimeout(fallback, 20000); // 20s fallback
+        }
         
-        shouldBypass() {
-          // Bot detection for SEO
-          const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];          const ua = navigator.userAgent?.toLowerCase() || '';
+        function shouldBypass() {
+          const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];
+          const ua = navigator.userAgent?.toLowerCase() || '';
           const isBot = bots.some(b => ua.includes(b));
-          // Direct photo URLs bypass verification
           const isDirectPhoto = location.pathname.includes('/photo/');
           return isBot || isDirectPhoto;
-        },
+        }
         
-        verify(source) {
-          // Prevent duplicate execution
-          if (this.state !== 'pending') return;
+        function verify(source) {          if (state !== 'pending') return;
           
-          // Update state FIRST to prevent race conditions
-          this.state = (source === 'bot-bypass') ? 'bypassed' : 'verified';
-          
-          // Set global flag for other scripts
+          state = (source === 'bot-bypass') ? 'bypassed' : 'verified';
           window.isTurnstileVerified = true;
           
-          // Hide modal (check if exists)
-          if (this.modal) {
-            this.modal.classList.add('hidden');
-          }
+          // ✅ Hide modal safely
+          if (modal) modal.classList.add('hidden');
           
-          // Unlock scroll (safe call)
+          // ✅ Unlock scroll
           if (typeof window.unlockBodyScroll === 'function') {
             window.unlockBodyScroll();
           }
           
-          // Initialize gallery (with guard)
-          if (typeof window.__initGallery === 'function') {
-            if (!window.galleryInitialized) {
-              window.__initGallery();
-            }
+          // ✅ Init gallery (handle race condition)
+          if (!window.galleryInitialized && typeof window.__initGallery === 'function') {
+            window.__initGallery();
+          } else {
+            galleryInitQueued = true;
           }
-        },
+        }
         
-        onSuccess(token) {
-          // Turnstile callback - verify and proceed
-          this.verify('turnstile-success');
-        },
+        function onSuccess(token) {
+          console.log('[Turnstile] Success:', token?.substring(0, 20) + '...');
+          verify('turnstile-success');
+        }
         
-        onError(errCode) {
-          // Mark error state
-          this.state = 'error';
+        function onError(errCode) {
+          console.error('[Turnstile] Error:', errCode);
+          state = 'error';
           
-          // Show error message safely
-          if (this.errorEl) {
-            this.errorEl.textContent = `Verifikasi gagal (${errCode || 'UNKNOWN'})`;
-            this.errorEl.style.color = 'var(--error)';
-          }
-                    // Show fallback button
-          if (this.fallbackBtn) {
-            this.fallbackBtn.style.display = 'block';
-          }
-        },
-        
-        fallback() {
-          // Only trigger if still pending
-          if (this.state !== 'pending') return;
-          
-          // Show fallback button if hidden
-          if (this.fallbackBtn && this.fallbackBtn.style.display !== 'block') {
-            this.fallbackBtn.style.display = 'block';
+          if (errorEl) {
+            errorEl.textContent = `Verifikasi error (${errCode || 'UNKNOWN'}). Coba refresh atau klik tombol bawah.`;
+            errorEl.style.color = 'var(--error)';
           }
           
-          // Auto-verify after additional 5s (total 25s)
+          if (fallbackBtn) {
+            fallbackBtn.style.display = 'block';
+          }
+        }
+        
+        function fallback() {
+          if (state !== 'pending') return;
+          
+          if (fallbackBtn && fallbackBtn.style.display !== 'block') {
+            fallbackBtn.style.display = 'block';
+          }
+          
+          // ✅ Auto-verify after 5 more seconds (total 25s)
           setTimeout(() => {
-            if (this.state === 'pending') {
-              this.verify('auto-fallback');
+            if (state === 'pending') {              console.log('[Turnstile] Auto-fallback triggered');
+              verify('auto-fallback');
             }
           }, 5000);
+        }
+        
+        return {
+          init: init,
+          verify: verify,
+          manualFallback: function() {
+            if (state === 'pending') {
+              console.log('[Turnstile] Manual fallback triggered');
+              verify('manual-fallback');
+            }
+          }
+        };
+      })();
+      
+      // ✅ Global function for fallback button
+      window.TurnstileManualFallback = function() {
+        if (window.Turnstile && typeof window.Turnstile.manualFallback === 'function') {
+          window.Turnstile.manualFallback();
         }
       };
       
@@ -536,8 +537,8 @@
           document.body.classList.remove('pc-blocked');
           document.getElementById('main-header')?.classList.remove('hidden');
           document.getElementById('main-content')?.classList.remove('hidden');
-          document.querySelector('.footer')?.classList.remove('hidden');
-        }      });
+          document.querySelector('.footer')?.classList.remove('hidden');        }
+      });
 
       const CONFIG = { 
         APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'], 
@@ -585,8 +586,8 @@
       };
 
       // === UTILS ===
-      window.unlockBodyScroll = function() {
-        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');        document.body.style.overflow = ''; 
+      window.unlockBodyScroll = function() {        document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen');
+        document.body.style.overflow = ''; 
         document.documentElement.style.overflow = '';
       };
       
@@ -634,8 +635,8 @@
       };
       window.closeGiscusFullscreen = function() {
         document.getElementById('giscus-fullscreen').classList.remove('active');
-        window.unlockBodyScroll();
-      };
+        window.unlockBodyScroll();      };
+      
       // === VIDEO OBSERVER ===
       function initVideoObserver() {
         if (videoObserver) videoObserver.disconnect();
@@ -683,8 +684,8 @@
           els.modalMeta.textContent = `👤 ${photo.gender || '-'} | 📅 ${photo.date || '-'}`;
           els.photoModal.classList.remove('hidden'); 
           document.body.classList.add('modal-open');
-          els.btnAppModal.onclick = () => openApp(photo.name); 
-          els.btnShareModal.onclick = () => sharePhoto(photo);          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
+          els.btnAppModal.onclick = () => openApp(photo.name);           els.btnShareModal.onclick = () => sharePhoto(photo);
+          els.photoModal.onclick = (e) => { if (e.target === els.photoModal) window.closePhotoModal(); };
         } else { showFullPhotoView(photo); }
       }
       
@@ -732,8 +733,7 @@
           iframe.src = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`;
           document.body.appendChild(iframe);
           setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 1000);
-        } catch(e) {}
-                setTimeout(() => {
+        } catch(e) {}        setTimeout(() => {
           try {
             const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};package=${CONFIG.APP_PACKAGES[0]};S.browser_fallback_url=${encodeURIComponent(CONFIG.FALLBACK_URL)};end`;
             window.location.href = intentUrl;
@@ -907,7 +907,7 @@
           applyFilters(); 
         });
         
-        // Initialize Turnstile state machine
+        // ✅ Initialize Turnstile state machine (FIXED)
         if (window.Turnstile && typeof window.Turnstile.init === 'function') {
           window.Turnstile.init();
         }
