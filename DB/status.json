@@ -172,8 +172,8 @@
     },
     { 
       "name": "Zhyllan Fyllah", 
-      "status": true,
-      "suspend_reason": ""
+      "status": false,
+      "suspend_reason": "cuma prank doang"
     },
     { 
       "name": "@", 
