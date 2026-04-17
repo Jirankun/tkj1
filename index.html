@@ -3,46 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="theme-color" content="#0f0f1a"/>
-  
-  <!-- SEO Meta Tags -->
-  <meta name="description" content="TKJ1 Gallery - Koleksi foto dan video dokumentasi kegiatan TKJ OnE kelas 1. Lihat moment-moment seru belajar mengajar."/>
-  <meta name="keywords" content="TKJ, TKJ OnE, gallery, foto, video, dokumentasi, sekolah, multimedia"/>
+
+  <!-- 🎨 Theme Color (Dongker) -->
+  <meta name="theme-color" content="#0b0f1a"/>
+  <meta name="msapplication-navbutton-color" content="#0b0f1a"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+  <!-- 📱 PWA Feel -->
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="TKJ OnE Gallery"/>
+
+  <!-- 🔍 SEO -->
+  <meta name="description" content="TKJ OnE Gallery adalah ruang arsip visual perjalanan siswa TKJ OnE dari awal hingga akhir masa sekolah, menampilkan kumpulan foto dan video momen kegiatan dalam bentuk galeri digital yang rapi, terstruktur, dan berkesan."/>
+  <meta name="keywords" content="TKJ OnE, gallery TKJ, arsip foto TKJ, arsip video TKJ, foto kegiatan TKJ, video praktik TKJ, arsip kelas TKJ, perjalanan sekolah TKJ OnE"/>
   <meta name="author" content="TKJ OnE - Jirankun"/>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
-  
-  <!-- Open Graph -->
+
+  <!-- 🔗 Canonical -->
+  <link rel="canonical" href="https://tkj1.pages.dev/"/>
+
+  <!-- 📲 Open Graph -->
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://tkj1.pages.dev/"/>
-  <meta property="og:title" content="TKJ1 Gallery - Dokumentasi Foto & Video"/>
-  <meta property="og:description" content="Koleksi foto dan video kegiatan TKJ OnE kelas 1"/>
+  <meta property="og:title" content="TKJ OnE Gallery - Arsip Foto & Video"/>
+  <meta property="og:description" content="Ruang arsip visual perjalanan siswa TKJ OnE dari awal hingga akhir masa sekolah dalam bentuk galeri foto dan video"/>
   <meta property="og:image" content="https://tkj1.pages.dev/og-image.jpg"/>
   <meta property="og:locale" content="id_ID"/>
-  
-  <!-- Twitter Card -->
+
+  <!-- 🐦 Twitter Card -->
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="TKJ1 Gallery"/>
-  <meta name="twitter:description" content="Koleksi foto dan video dokumentasi TKJ OnE"/>
-  
-  <!-- Canonical & Preconnect -->
-  <link rel="canonical" href="https://tkj1.pages.dev/"/>
+  <meta name="twitter:title" content="TKJ OnE Gallery - Arsip Foto & Video"/>
+  <meta name="twitter:description" content="Ruang arsip visual perjalanan TKJ OnE dalam bentuk galeri foto dan video"/>
+  <meta name="twitter:image" content="https://tkj1.pages.dev/og-image.jpg"/>
+
+  <!-- ⚡ Browser Behavior -->
+  <meta name="format-detection" content="telephone=no"/>
+  <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+
+  <!-- 🚀 Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://quge5.com" crossorigin>
-  <link rel="preconnect" href="https://giscus.app" crossorigin>
-  <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
-  
-  <!-- Fonts with display swap -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Favicon -->
+
+  <!-- 🧠 Title -->
+  <title>TKJ OnE Gallery - Arsip Foto & Video</title>
+
+  <!-- 🔗 Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>TKJ1 Gallery - Dokumentasi Foto & Video TKJ OnE</title>
-  
   <!-- ⚠️ IKLAN SCRIPT -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
   
@@ -578,7 +586,7 @@
       });
 
       const CONFIG = { 
-        APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug'], 
+        APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug', 'com.tkjone.app.beta'], 
         APP_SCHEME: 'tkjone', 
         DEEP_LINK_PATH: 'photo', 
         FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases', 
@@ -661,7 +669,7 @@
       window.cancelDiscussion = function() { 
         document.getElementById('confirm-modal').classList.add('hidden'); 
         window.unlockBodyScroll(); 
-        showToast('✅ Oke bre, balik ke gallery'); 
+        showToast('Kembali ke Galeri'); 
       };
       window.startDiscussion = function() {
         document.getElementById('confirm-modal').classList.add('hidden');
@@ -808,11 +816,11 @@
         const t = `Check this out!\n📷 ${photo.title || '#' + photo.name}\n\nOpen in app:\n${CONFIG.APP_SCHEME}://photo/${photo.name}\n\nOr visit:\n${CONFIG.BASE_URL}/photo/${photo.name}`;
         if (navigator.share) {
           navigator.share({ title: 'TKJ1 Gallery', text: t })
-            .then(() => showToast('✅ Berhasil dibagikan!'))
+            .then(() => showToast('Berhasil dibagikan!'))
             .catch(() => {});
         } else {
           navigator.clipboard.writeText(t)
-            .then(() => showToast('🔗 Link copied!'))
+            .then(() => showToast('Link copied!'))
             .catch(() => showToast('Gagal copy link'));
         }
       }
