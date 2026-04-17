@@ -343,8 +343,8 @@
   <!-- 🚫 PC BLOCKER -->
   <div id="pc-blocker">    <div class="pc-blocker-icon">📱</div>
     <div class="pc-blocker-title">⚠️ Mobile Only Bre!</div>
-    <p class="pc-blocker-desc">Website ini cuma buat HP Android/iOS. Buka pake phone aja yak!</p>
-    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.com/portofoliozhyllan'">🔗 Ke Portfolio</button>
+    <p class="pc-blocker-desc">Website ini cuma buat HP Android/iOS. Wajib akses menggunakan perangkat mobile.</p>
+    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.io/portofoliozhyllan'">🔗 Ke Portfolio</button>
   </div>
 
   <!-- 💬 GISCUS FULLSCREEN -->
@@ -353,7 +353,7 @@
       <div class="giscus-fullscreen-title">💬 Diskusi <span class="badge badge-video">DEV</span></div>
       <button class="giscus-close-btn" onclick="window.closeGiscusFullscreen()" aria-label="Tutup">×</button>
     </div>
-    <div class="giscus-login-hint">🔐 Login GitHub dulu buat komen bre!</div>
+    <div class="giscus-login-hint">Login GitHub untuk fitur ini</div>
     <div class="giscus-fullscreen-body">
       <div class="giscus-wrapper"><div class="giscus"></div></div>
     </div>
@@ -406,7 +406,7 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
-    <div class="footer-dev">see dev: <a href="https://jirankun.github.com/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
+    <div class="footer-dev">see dev: <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank" rel="noopener noreferrer">jirankun.github.com/portofoliozhyllan</a></div>
   </footer>
 
   <!-- MODALS -->
@@ -433,18 +433,18 @@
       <h3 class="app-open-title">Aplikasi Dibuka...</h3>
       <p class="app-open-desc">Jika aplikasi tidak terbuka, silahkan download dan install</p>
       <div class="app-open-actions">
-        <button id="btn-app-download" class="btn btn-primary">⬇️ Download</button>
-        <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">❌ Batal</button>
+        <button id="btn-app-download" class="btn btn-primary">Download</button>
+        <button class="btn btn-secondary" onclick="window.hideAppOpenModal()">Tutup</button>
       </div>
     </div>
   </div>
 
   <div id="confirm-modal" class="confirm-modal hidden">    <div class="confirm-box">
-      <div class="confirm-icon">🔐</div><h3 class="confirm-title">⚠️ Login GitHub Dulu</h3>
-      <p class="confirm-desc"><strong>Wajib login GitHub</strong> buat pake fitur diskusi.<br/><br/>Cuma buat <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalo cuma iseng, mending balik ke gallery.</p>
+      <div class="confirm-icon">🔐</div><h3 class="confirm-title">Login menggunakan akun GitHub</h3>
+      <p class="confirm-desc"><strong>Wajib login GitHub</strong> Untuk menggunakan fitur diskusi,<br/><br/>Fitur ini hanya untuk <strong>diskusi fitur TKJ OnE</strong> aja bre.<br/><br/>Kalau hanya iseng, mending balik ke galeri utama.</p>
       <div class="confirm-actions">
-        <button class="btn btn-primary" onclick="window.startDiscussion()">✅ Oke, Buka Chat</button>
-        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">❌ Batal</button>
+        <button class="btn btn-primary" onclick="window.startDiscussion()">Masuk chat</button>
+        <button class="btn btn-cancel" onclick="window.cancelDiscussion()">Batal</button>
       </div>
     </div>
   </div>
@@ -452,11 +452,11 @@
   <!-- TURNSTILE MODAL -->
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
-      <div class="turnstile-title">🔐 Verifikasi Dulu Bre</div>
-      <p class="turnstile-desc">Biar aman dari bot, verifikasi dulu yak. Tunggu centang hijau.</p>
+      <div class="turnstile-title">Verifikasi</div>
+      <p class="turnstile-desc">Sistem akan otomatis melakukan verifikasi,mohon tunggu beberapa detik...</p>
       <div class="turnstile-widget"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onVerifySuccess" data-error-callback="onVerifyError" data-theme="dark" data-size="normal"></div></div>
       <div id="turnstile-error" class="turnstile-error"></div>
-      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.TurnstileManualFallback()">⚠️ Klik kalo stuck</button>
+      <button id="turnstile-fallback" class="turnstile-fallback-btn" onclick="window.TurnstileManualFallback()">Stuck/Lag?</button>
     </div>
   </div>
 
@@ -487,7 +487,7 @@
           
           if (modal) { modal.classList.remove('hidden'); modal.style.display = 'flex'; }
           document.body.classList.add('turnstile-active');
-          setTimeout(fallback, 20000);
+          setTimeout(fallback, 5000);
         }        
         function shouldBypass() {
           const bots = ['googlebot', 'bingbot', 'yandex', 'baiduspider', 'duckduckbot', 'slurp'];
@@ -646,7 +646,7 @@
         document.getElementById('confirm-modal').classList.add('hidden');
         document.getElementById('giscus-fullscreen').classList.add('active');
         document.body.classList.add('comments-fullscreen');
-        showToast('💬 Login GitHub dulu bre!');
+        showToast('Fitur ini mewajibkan kamu login menggunakan akun GitHub');
       };
       window.closeGiscusFullscreen = function() {
         document.getElementById('giscus-fullscreen').classList.remove('active');
@@ -845,8 +845,8 @@
             .catch(() => {});
         } else {
           navigator.clipboard.writeText(t)
-            .then(() => showToast('Link copied!'))
-            .catch(() => showToast('Gagal copy link'));
+            .then(() => showToast('Link disalin'))
+            .catch(() => showToast('Link Gagal disalin'));
         }
       }
 
