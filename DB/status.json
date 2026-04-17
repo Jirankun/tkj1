@@ -172,8 +172,8 @@
     },
     { 
       "name": "Zhyllan Fyllah", 
-      "status": false,
-      "suspend_reason": "silahkan lapor ke admin untuk membuka suspend"
+      "status": true,
+      "suspend_reason": ""
     },
     { 
       "name": "@", 
