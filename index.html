@@ -4,14 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <meta name="theme-color" content="#00aaff" />
+  <meta name="msapplication-navbutton-color" content="#00aaff" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="TKJ OnE Gallery"/>
   <meta name="description" content="TKJ OnE Gallery - Arsip visual perjalanan siswa TKJ OnE"/>
+  <meta name="keywords" content="TKJ OnE, gallery TKJ, arsip foto TKJ"/>
   <meta name="author" content="TKJ OnE - Jirankun"/>
   <meta name="robots" content="index, follow"/>
   <link rel="canonical" href="https://tkj1.pages.dev/"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://tkj1.pages.dev/"/>
   <meta property="og:title" content="TKJ OnE Gallery"/>
+  <meta property="og:description" content="Arsip Foto & Video TKJ OnE"/>
   <meta property="og:image" content="https://tkj1.pages.dev/og-image.jpg"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="format-detection" content="telephone=no"/>
@@ -45,9 +51,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
-    body.modal-open, body.view-open, body.comments-fullscreen, body.turnstile-active { overflow: hidden; }
+    body.modal-open, body.view-open, body.comments-fullscreen, body.turnstile-active, body.pc-blocked { overflow: hidden; }
     .hidden { display: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
+
+    /* === 🚫 PC BLOCKER === */
+    #pc-blocker { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; padding: 24px; text-align: center; }
+    #pc-blocker.active { display: flex; }
+    .pc-blocker-icon { font-size: 3rem; margin-bottom: 16px; }
+    .pc-blocker-title { font-size: 1.3rem; font-weight: 700; color: var(--error); margin-bottom: 12px; }
+    .pc-blocker-desc { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; max-width: 320px; }
+    .pc-blocker-btn { padding: 12px 28px; background: var(--accent); color: var(--bg); border: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+    .pc-blocker-btn:hover { background: var(--accent-hover); }
+    .pc-blocker-btn:active { transform: scale(0.98); }
 
     /* === HEADER === */
     .header { position: fixed; top: 0; left: 0; right: 0; width: 100%; height: var(--header-height); z-index: 1000; background: rgba(15,15,26,0.98); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); transition: box-shadow 0.2s ease; }
@@ -64,6 +80,7 @@
 
     /* === MAIN === */
     .main { padding-top: calc(var(--header-height) + 16px); padding-bottom: 80px; min-height: 100vh; flex: 1; }
+    .main.full-view { padding: 0; min-height: 100vh; }
     .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .gallery-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
     .gallery-item:active { transform: scale(0.98); }
@@ -85,8 +102,18 @@
     .ad-banner-label { background: var(--accent); color: var(--bg); text-align: center; padding: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
     .ad-container { grid-column: 1 / -1; }
 
+    /* === PHOTO FULL VIEW === */
+    .photo-view { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; background: var(--bg); position: fixed; inset: 0; z-index: 500; overflow-y: auto; }
+    .photo-view-container { width: 100%; max-width: 100%; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .photo-view-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; }
+    .photo-view-info { padding: 20px; }
+    .photo-view-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+    .photo-view-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    .photo-view-meta { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
+    .photo-view-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
     /* === MODALS === */
-    .modal, .confirm-modal, .turnstile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(8px); }
+    .modal, .confirm-modal, .turnstile-modal, .app-open-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(8px); }
     .modal-content, .confirm-box, .turnstile-box { background: var(--card); border-radius: 18px; max-width: 100%; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); position: relative; padding: 20px; }
     .modal-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; cursor: pointer; }
     .modal-media { width: 100%; max-height: 55vh; object-fit: contain; display: block; }
@@ -95,9 +122,27 @@
     .modal-desc { color: var(--text-muted); margin-bottom: 16px; }
     .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 20px; border-radius: 12px; font-weight: 600; border: none; cursor: pointer; }
+    .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--accent); color: var(--bg); }
     .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
     .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+
+    /* === ✅ APP OPEN MODAL === */
+    .app-open-modal { 
+      opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 9999;
+    }
+    .app-open-modal.active { opacity: 1; pointer-events: auto; }
+    .app-open-box { 
+      background: var(--card); padding: 24px 20px; border-radius: 18px; text-align: center; 
+      max-width: 360px; width: 100%; border: 1px solid var(--border);
+      transform: translateY(20px) scale(0.98); opacity: 0; transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .app-open-modal.active .app-open-box { transform: translateY(0) scale(1); opacity: 1; }
+    .app-open-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .app-open-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
+    .app-open-desc { color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
+    .app-open-actions { display: flex; gap: 10px; flex-direction: column; }
+    .app-open-actions .btn { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; }
 
     /* === GISCUS FULLSCREEN === */
     #giscus-fullscreen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none; flex-direction: column; }
@@ -132,6 +177,14 @@
 </head>
 <body>
 
+  <!-- 🚫 PC BLOCKER -->
+  <div id="pc-blocker">
+    <div class="pc-blocker-icon">📱</div>
+    <div class="pc-blocker-title">⚠️ Mobile Only Bre!</div>
+    <p class="pc-blocker-desc">Website ini cuma buat HP Android/iOS. Wajib akses menggunakan perangkat mobile.</p>
+    <button class="pc-blocker-btn" onclick="window.location.href='https://jirankun.github.io/portofoliozhyllan'">🔗 Ke Portfolio</button>
+  </div>
+
   <!-- 🔐 TURNSTILE -->
   <div id="turnstile-modal" class="turnstile-modal">
     <div class="turnstile-box">
@@ -143,15 +196,28 @@
     </div>
   </div>
 
-  <!-- 💬 GISCUS -->
+  <!-- 💬 GISCUS FULLSCREEN -->
   <div id="giscus-fullscreen">
     <div class="giscus-header"><div class="giscus-title">💬 Diskusi Dev</div><button class="giscus-close" onclick="closeGiscus()">×</button></div>
     <div class="giscus-login-hint">Login GitHub untuk komentar</div>
     <div class="giscus-body"><div class="giscus"></div></div>
   </div>
 
+  <!-- ✅ APP OPEN MODAL -->
+  <div id="app-open-modal" class="app-open-modal">
+    <div class="app-open-box" id="app-open-box">
+      <div class="app-open-icon">📱</div>
+      <h3 class="app-open-title">Aplikasi Dibuka...</h3>
+      <p class="app-open-desc">Jika aplikasi tidak terbuka, silahkan download dan install</p>
+      <div class="app-open-actions">
+        <button id="btn-app-download" class="btn btn-primary">Download</button>
+        <button class="btn btn-secondary" onclick="hideAppOpenModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- HEADER -->
-  <header class="header">
+  <header class="header" id="main-header">
     <div class="container">
       <div class="header-content">
         <div class="logo">📸 TKJ1 Gallery</div>
@@ -167,10 +233,28 @@
   </header>
 
   <!-- MAIN -->
-  <main class="main">
+  <main class="main" id="main-content">
     <div class="container">
       <div id="loading" class="loading"><div class="loading-icon">⏳</div><div>Loading bre...</div></div>
       <div id="error" class="error hidden"></div>
+      
+      <!-- PHOTO FULL VIEW -->
+      <div id="photo-view" class="photo-view hidden">
+        <div class="photo-view-container">
+          <img class="photo-view-media" id="view-img" src="" alt="Photo" loading="eager">
+          <video class="photo-view-media" id="view-video" src="" controls controlsList="nodownload" playsinline preload="none"></video>
+          <div class="photo-view-info">
+            <h1 class="photo-view-title" id="view-title"></h1>
+            <p class="photo-view-desc" id="view-desc"></p>
+            <p class="photo-view-meta" id="view-meta"></p>
+            <div class="photo-view-actions">
+              <button id="btn-app-view" class="btn btn-primary">📱 Buka di App</button>
+              <button id="btn-share-view" class="btn btn-secondary">🔗 Bagikan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div id="gallery-section" class="hidden">
         <div id="gallery-grid" class="gallery-grid"></div>
         <div id="empty-state" class="empty-state hidden"><div class="empty-icon">🔍</div><div>Gak ada foto yang cocok!</div></div>
@@ -178,15 +262,20 @@
     </div>
   </main>
 
-  <!-- MODAL -->
+  <!-- PHOTO MODAL -->
   <div id="photo-modal" class="modal hidden">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo">
+      <video class="modal-media" id="modal-video" src="" controls controlsList="nodownload" playsinline preload="none"></video>
       <div class="modal-body">
         <h2 class="modal-title" id="modal-title"></h2>
         <p class="modal-desc" id="modal-desc"></p>
-        <div class="modal-actions"><button class="btn btn-primary" onclick="sharePhoto()">🔗 Bagikan</button></div>
+        <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:16px" id="modal-meta"></p>
+        <div class="modal-actions">
+          <button id="btn-app-modal" class="btn btn-primary">📱 Buka di App</button>
+          <button id="btn-share-modal" class="btn btn-secondary">🔗 Bagikan</button>
+        </div>
       </div>
     </div>
   </div>
@@ -214,14 +303,26 @@
   <script>
     'use strict';
     
-    // === 🔧 CONFIG ===
+    // === 🔧 CONFIG - ALL FEATURES ===
     const CONFIG = {
+      // 📦 Photos JSON
       JSON_PATHS: ['/photos.json', '/DB/photos.json', 'photos.json', 'DB/photos.json'],
+      
+      // 🎯 Banner Ads
       BANNER_JSON: '/DB/banner.json',
-      BASE_URL: 'https://tkj1.pages.dev',
       AD_INSERT_EVERY: 5,
+      
+      // 📱 APP DEEP LINK - RESTORED!
+      APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug', 'com.tkjone.app.beta'],
+      APP_SCHEME: 'tkjone',
+      DEEP_LINK_PATH: 'photo',
+      FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
+      
+      // 🔐 Turnstile
       TURNSTILE_SITEKEY: '0x4AAAAAACsh1EKuTtF6HdMQ',
-      // 🎯 Mapping banner id/name → link tujuan (kalau gak ada, pakai default)
+      
+      // 🔗 Base & Banner Links
+      BASE_URL: 'https://tkj1.pages.dev',
       BANNER_LINK_MAP: {
         'aranmarubanner.jpg': 'http://harinezumikobo.jp/newtop.html',
         'banner.jpg': 'http://harinezumikobo.jp/newtop.html',
@@ -241,45 +342,56 @@
 
     let allPhotos = [], filteredPhotos = [], currentPhoto = null;
     let activeBanners = [], turnstileVerified = false;
+    let videoObserver = null, playingThumbVideo = null;
+    let appOpenTimeout = null, appOpenVisibilityHandler = null;
 
-    // === 🎯 FETCH BANNERS FROM JSON ===
+    // === 📱 PC BLOCKER ===
+    function isMobileDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || window.innerWidth <= 768;
+    }
+    function initPCBlocker() {
+      const blocker = document.getElementById('pc-blocker');
+      if (!isMobileDevice()) {
+        blocker.classList.add('active');
+        document.body.classList.add('pc-blocked');
+        document.getElementById('main-header')?.classList.add('hidden');
+        document.getElementById('main-content')?.classList.add('hidden');
+        document.querySelector('.footer')?.classList.add('hidden');
+      }
+    }
+    window.addEventListener('resize', () => {
+      const blocker = document.getElementById('pc-blocker');
+      if (isMobileDevice() && blocker.classList.contains('active')) {
+        blocker.classList.remove('active');
+        document.body.classList.remove('pc-blocked');
+        document.getElementById('main-header')?.classList.remove('hidden');
+        document.getElementById('main-content')?.classList.remove('hidden');
+        document.querySelector('.footer')?.classList.remove('hidden');
+      }
+    });
+
+    // === 🎯 FETCH BANNERS ===
     async function fetchBanners() {
       try {
         const res = await fetch(CONFIG.BANNER_JSON + '?t=' + Date.now());
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         const banners = data.banner || data.banners || [];
-        
         activeBanners = banners.map((b, idx) => {
-          // Convert ./banner/xxx → https://tkj1.pages.dev/banner/xxx
           let imgPath = b.name || '';
-          if (imgPath.startsWith('./')) {
-            imgPath = CONFIG.BASE_URL + imgPath.slice(1); // remove '.', keep /banner/xxx
-          } else if (!imgPath.startsWith('http')) {
-            imgPath = CONFIG.BASE_URL + '/' + imgPath;
-          }
-          
-          // Get link from map or default
+          if (imgPath.startsWith('./')) imgPath = CONFIG.BASE_URL + imgPath.slice(1);
+          else if (!imgPath.startsWith('http')) imgPath = CONFIG.BASE_URL + '/' + imgPath;
           const fileName = (b.name || '').split('/').pop();
-          const link = CONFIG.BANNER_LINK_MAP[fileName] || CONFIG.DEFAULT_BANNER_LINK;
-          
           return {
-            id: b.id || idx,
-            image: imgPath,
-            link: link,
-            alt: fileName || `Banner ${idx+1}`,
-            fallbackText: 'Harinezumi Kobo Banner'
+            id: b.id || idx, image: imgPath,
+            link: CONFIG.BANNER_LINK_MAP[fileName] || CONFIG.DEFAULT_BANNER_LINK,
+            alt: fileName || `Banner ${idx+1}`, fallbackText: 'Harinezumi Kobo Banner'
           };
         });
-        
-        console.log(`✅ Loaded ${activeBanners.length} banners from ${CONFIG.BANNER_JSON}`);
+        console.log(`✅ Loaded ${activeBanners.length} banners`);
         return true;
-      } catch (err) {
-        console.warn('⚠️ Failed to fetch banners:', err.message);
-        // Fallback: empty array, no ads shown
-        activeBanners = [];
-        return false;
-      }
+      } catch (err) { console.warn('⚠️ Banner fetch failed:', err.message); activeBanners = []; return false; }
     }
 
     // === 🎨 CREATE BANNER AD ===
@@ -289,64 +401,40 @@
       container.innerHTML = `
         <a href="${banner.link}" target="_blank" rel="noopener noreferrer" class="ad-banner" data-banner-idx="${index}">
           <div class="ad-banner-label">📢 Sponsored</div>
-          <img src="${banner.image}" alt="${banner.alt}" loading="lazy"
-               onerror="this.classList.add('error');this.nextElementSibling.style.display='flex'">
-          <div class="fallback" style="display:none">${banner.fallbackText}</div>
-        </a>
-      `;
-      // Fix: fallback initially hidden, shown only on error via CSS
-      const fallback = container.querySelector('.fallback');
-      fallback.style.display = 'none';
+          <img src="${banner.image}" alt="${banner.alt}" loading="lazy" onerror="this.classList.add('error');this.nextElementSibling.style.display='flex'">
+          <div class="fallback">${banner.fallbackText}</div>
+        </a>`;
       return container;
     }
 
-    // === 🖼️ RENDER GALLERY + INSERT BANNERS ===
+    // === 🖼️ RENDER GALLERY ===
     function renderGallery(photos) {
       const grid = document.getElementById('gallery-grid');
       grid.innerHTML = '';
-      
-      if (!photos?.length) {
-        document.getElementById('empty-state').classList.remove('hidden');
-        return;
-      }
+      if (!photos?.length) { document.getElementById('empty-state').classList.remove('hidden'); return; }
       document.getElementById('empty-state').classList.add('hidden');
-      
       let bannerIdx = 0;
-      
       photos.forEach((photo, idx) => {
-        // Render photo card
         const isVideo = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
         const item = document.createElement('div');
         item.className = 'gallery-item';
-        
         item.innerHTML = isVideo ? `
           <video class="gallery-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video>
-          <div class="gallery-info">
-            <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-            <div class="gallery-meta"><span class="badge badge-video">🎬 Video</span></div>
-          </div>` : `
+          <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span></div></div>` : `
           <img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">
-          <div class="gallery-info">
-            <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-            <div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span></div>
-          </div>`;
-        
+          <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span></div></div>`;
         item.addEventListener('click', () => openModal(photo));
         grid.appendChild(item);
-        
-        // Insert banner every CONFIG.AD_INSERT_EVERY items
         if ((idx + 1) % CONFIG.AD_INSERT_EVERY === 0 && activeBanners.length > 0) {
-          const banner = activeBanners[bannerIdx % activeBanners.length];
-          grid.appendChild(createBannerAd(banner, bannerIdx++));
+          grid.appendChild(createBannerAd(activeBanners[bannerIdx % activeBanners.length], bannerIdx++));
         }
       });
     }
 
-    // === 🔍 FILTER & SEARCH ===
+    // === 🔍 FILTER ===
     function applyFilters() {
       const q = document.getElementById('search-input').value.toLowerCase().trim();
       const f = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-      
       filteredPhotos = allPhotos.filter(p => {
         const matchQ = !q || (p.name?.toLowerCase().includes(q)) || (p.title?.toLowerCase().includes(q));
         const isV = p.url && /\.(mp4|webm|mov)$/i.test(p.url);
@@ -356,57 +444,198 @@
       renderGallery(filteredPhotos);
     }
 
+    // === 📱 APP DEEP LINK - RESTORED! ===
+    function openApp(id) {
+      let appOpened = false, cleanupDone = false;
+      function cleanup() {
+        if (cleanupDone) return;
+        cleanupDone = true;
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        document.removeEventListener('pagehide', onVisibilityChange);
+      }
+      function onVisibilityChange() {
+        if (appOpened) return;
+        if (document.hidden || document.visibilityState === 'hidden') {
+          appOpened = true;
+          clearTimeout(appOpenTimeout);
+          hideAppOpenModal();
+          cleanup();
+        }
+      }
+      document.addEventListener('visibilitychange', onVisibilityChange);
+      document.addEventListener('pagehide', onVisibilityChange);
+      
+      // Method 1: Custom scheme
+      try { window.location.href = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`; } catch(e) { console.warn('Scheme failed:', e); }
+      
+      // Method 2: Android Intent
+      if (/Android/i.test(navigator.userAgent)) {
+        setTimeout(() => {
+          if (!appOpened) {
+            try {
+              const packages = CONFIG.APP_PACKAGES.map(p => `package=${p}`).join(';');
+              const intentUrl = `intent://${CONFIG.DEEP_LINK_PATH}/${id}#Intent;scheme=${CONFIG.APP_SCHEME};${packages};end`;
+              window.location.href = intentUrl;
+            } catch(e) { console.warn('Intent failed:', e); }
+          }
+        }, 50);
+      }
+      
+      // Show popup if app didn't open
+      appOpenTimeout = setTimeout(() => {
+        if (!appOpened && !document.hidden) showAppOpenModal();
+      }, 1500);
+    }
+
+    function showAppOpenModal() {
+      document.getElementById('app-open-modal').classList.add('active');
+      document.body.classList.add('modal-open');
+      document.getElementById('btn-app-download').onclick = function(e) {
+        e.stopPropagation();
+        hideAppOpenModal();
+        window.location.replace(CONFIG.FALLBACK_URL);
+      };
+      document.getElementById('app-open-modal').onclick = function(e) {
+        if (e.target.id === 'app-open-modal') hideAppOpenModal();
+      };
+      document.getElementById('app-open-box').onclick = function(e) { e.stopPropagation(); };
+    }
+
+    window.hideAppOpenModal = function() {
+      document.getElementById('app-open-modal').classList.remove('active');
+      clearTimeout(appOpenTimeout);
+      if (appOpenVisibilityHandler) {
+        document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
+        appOpenVisibilityHandler = null;
+      }
+      setTimeout(() => {
+        if (!document.getElementById('app-open-modal').classList.contains('active')) unlockBody();
+      }, 250);
+    };
+
+    // === 💬 SHARE WITH APP LINK - RESTORED! ===
+    function sharePhoto(photo) {
+      const name = photo.name;
+      const appLink = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${name}`;
+      const webLink = `${CONFIG.BASE_URL}/photo/${name}`;
+      const text = `Check this out!\n📷 ${photo.title || '#' + name}\n\n📱 Buka di App:\n${appLink}\n\n🌐 Atau visit:\n${webLink}`;
+      
+      if (navigator.share) {
+        navigator.share({ title: 'TKJ1 Gallery', text }).then(() => toast('Berhasil dibagikan!')).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => toast('Link disalin ke clipboard!')).catch(() => toast('Gagal copy link'));
+      }
+    }
+
     // === 💬 MODAL ===
     function openModal(photo) {
       currentPhoto = photo;
-      document.getElementById('modal-img').src = photo.url || '';
+      pauseAllThumbVideos();
+      const isV = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
+      document.getElementById('modal-img').style.display = isV ? 'none' : 'block';
+      document.getElementById('modal-img').src = isV ? '' : (photo.url || '');
+      document.getElementById('modal-video').style.display = isV ? 'block' : 'none';
+      document.getElementById('modal-video').src = isV ? (photo.url || '') : '';
+      if (isV) document.getElementById('modal-video').load();
       document.getElementById('modal-title').textContent = photo.title || '#' + photo.name;
       document.getElementById('modal-desc').textContent = photo.desc || photo.description || 'No description';
+      document.getElementById('modal-meta').textContent = `👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;
       document.getElementById('photo-modal').classList.remove('hidden');
       document.body.classList.add('modal-open');
+      
+      // ✅ App button in modal
+      document.getElementById('btn-app-modal').onclick = () => openApp(photo.name);
+      document.getElementById('btn-share-modal').onclick = () => sharePhoto(photo);
     }
     function closeModal() {
       document.getElementById('photo-modal').classList.add('hidden');
-      document.body.classList.remove('modal-open');
       document.getElementById('modal-img').src = '';
+      document.getElementById('modal-video').pause(); document.getElementById('modal-video').src = '';
+      resumeThumbVideo();
+      unlockBody();
       currentPhoto = null;
     }
-    function sharePhoto() {
-      if (!currentPhoto) return;
-      const t = `Check: ${currentPhoto.title||'#'+currentPhoto.name}\n${CONFIG.BASE_URL}`;
-      if (navigator.share) navigator.share({title:'TKJ1 Gallery',text:t}).catch(()=>{});
-      else navigator.clipboard.writeText(t).then(()=>toast('Link copied!'));
+
+    // === 🖼️ FULL VIEW - RESTORED! ===
+    function showFullView(photo) {
+      currentPhoto = photo;
+      pauseAllThumbVideos();
+      document.getElementById('main-header').classList.add('hidden');
+      document.getElementById('main-content').classList.add('full-view');
+      const isV = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
+      document.getElementById('view-img').style.display = isV ? 'none' : 'block';
+      document.getElementById('view-img').src = isV ? '' : (photo.url || '');
+      document.getElementById('view-video').style.display = isV ? 'block' : 'none';
+      document.getElementById('view-video').src = isV ? (photo.url || '') : '';
+      if (isV) document.getElementById('view-video').load();
+      document.getElementById('view-title').textContent = photo.title || '#' + photo.name;
+      document.getElementById('view-desc').textContent = photo.desc || photo.description || 'No description';
+      document.getElementById('view-meta').textContent = `👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;
+      document.getElementById('gallery-section').classList.add('hidden');
+      document.getElementById('photo-view').classList.remove('hidden');
+      document.body.classList.add('view-open');
+      
+      // ✅ App & Share buttons in full view
+      document.getElementById('btn-app-view').onclick = () => openApp(photo.name);
+      document.getElementById('btn-share-view').onclick = () => sharePhoto(photo);
+      
+      window.scrollTo(0,0);
+      // ✅ Generate /photo/NAME URL
+      window.history.pushState({fullView:true, name:photo.name}, '', `/photo/${photo.name}`);
+    }
+    function closeFullView() {
+      document.getElementById('photo-view').classList.add('hidden');
+      document.getElementById('gallery-section').classList.remove('hidden');
+      document.getElementById('main-header').classList.remove('hidden');
+      document.getElementById('main-content').classList.remove('full-view');
+      document.getElementById('view-img').src = '';
+      document.getElementById('view-video').pause(); document.getElementById('view-video').src = '';
+      resumeThumbVideo();
+      unlockBody();
+      // ✅ Reset URL
+      window.history.pushState({}, '', location.pathname.split('/photo/')[0] || '/');
+      currentPhoto = null;
+    }
+
+    // === 🎬 VIDEO THUMBNAIL ===
+    function initVideoObserver() {
+      if (videoObserver) videoObserver.disconnect();
+      videoObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const v = entry.target;
+          const anyOpen = !document.getElementById('photo-modal').classList.contains('hidden') ||
+                         !document.getElementById('photo-view').classList.contains('hidden') ||
+                         document.getElementById('giscus-fullscreen').classList.contains('active') ||
+                         !document.getElementById('app-open-modal').classList.contains('hidden');
+          if (anyOpen) { v.pause(); return; }
+          if (entry.isIntersecting) { v.muted=true; v.playsInline=true; v.loop=true; v.play().catch(()=>{}); }
+          else { v.pause(); v.currentTime=0; }
+        });
+      }, {threshold: 0.5});
+    }
+    function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
+    function pauseAllThumbVideos() {
+      document.querySelectorAll('.gallery-thumb').forEach(vid => {
+        if (vid.tagName === 'VIDEO' && !vid.paused) { playingThumbVideo = vid; vid.pause(); }
+      });
+    }
+    function resumeThumbVideo() {
+      if (playingThumbVideo && document.contains(playingThumbVideo)) {
+        const r = playingThumbVideo.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) playingThumbVideo.play().catch(()=>{});
+        playingThumbVideo = null;
+      }
     }
 
     // === 🔐 TURNSTILE ===
-    window.onTurnstileSuccess = function(token) {
-      turnstileVerified = true;
-      hideTurnstile();
-      unlockBody();
-      if (!window.galleryLoaded && typeof loadGallery === 'function') loadGallery();
-    };
-    window.onTurnstileError = function(code) {
-      document.getElementById('turnstile-error').textContent = `Error: ${code}`;
-      document.getElementById('turnstile-fallback').style.display = 'block';
-    };
-    window.turnstileManualFallback = function() {
-      setTimeout(() => {
-        if (!turnstileVerified) {
-          console.warn('⚠️ Turnstile fallback');
-          turnstileVerified = true;
-          hideTurnstile();
-          unlockBody();
-          if (!window.galleryLoaded && typeof loadGallery === 'function') loadGallery();
-        }
-      }, 3000);
-    };
+    window.onTurnstileSuccess = function(token) { turnstileVerified = true; hideTurnstile(); unlockBody(); if (!window.galleryLoaded && typeof loadGallery==='function') loadGallery(); };
+    window.onTurnstileError = function(code) { document.getElementById('turnstile-error').textContent = `Error: ${code}`; document.getElementById('turnstile-fallback').style.display = 'block'; };
+    window.turnstileManualFallback = function() { setTimeout(()=>{ if (!turnstileVerified) { console.warn('⚠️ Turnstile fallback'); turnstileVerified=true; hideTurnstile(); unlockBody(); if (!window.galleryLoaded && typeof loadGallery==='function') loadGallery(); } }, 3000); };
     function hideTurnstile() { document.getElementById('turnstile-modal').classList.add('hidden'); document.body.classList.remove('turnstile-active'); }
     function showTurnstile() {
       const ua = navigator.userAgent.toLowerCase();
       const bots = ['googlebot','bingbot','yandex','baiduspider'];
-      if (bots.some(b=>ua.includes(b)) || location.pathname.includes('/photo/')) {
-        turnstileVerified = true; hideTurnstile(); if (typeof loadGallery==='function') loadGallery(); return;
-      }
+      if (bots.some(b=>ua.includes(b)) || location.pathname.includes('/photo/')) { turnstileVerified=true; hideTurnstile(); if (typeof loadGallery==='function') loadGallery(); return; }
       document.getElementById('turnstile-modal').classList.remove('hidden');
       document.body.classList.add('turnstile-active');
     }
@@ -452,7 +681,22 @@
         filteredPhotos = [...allPhotos];
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery-section').classList.remove('hidden');
+        initVideoObserver();
         renderGallery(filteredPhotos);
+        
+        // ✅ Handle direct photo URL: /photo/NAME
+        const path = window.location.pathname;
+        const parts = path.split('/').filter(Boolean);
+        if (parts[0] === 'photo' && parts[1]) {
+          const photoName = decodeURIComponent(parts[1]);
+          const photo = allPhotos.find(p => String(p.name).toLowerCase() === photoName.toLowerCase());
+          if (photo) {
+            setTimeout(() => showFullView(photo), 100);
+          } else {
+            document.getElementById('error').textContent = `Foto "${photoName}" gak ditemukan bre!`;
+            document.getElementById('error').classList.remove('hidden');
+          }
+        }
       } catch(err) {
         console.error('❌', err);
         document.getElementById('loading').classList.add('hidden');
@@ -463,7 +707,7 @@
 
     // === 🚀 MAIN INIT ===
     async function init() {
-      // Fetch banners first
+      initPCBlocker();
       await fetchBanners();
       
       // Event listeners
@@ -476,9 +720,25 @@
         });
       });
       document.getElementById('photo-modal').addEventListener('click', (e) => { if(e.target.id==='photo-modal') closeModal(); });
-      document.addEventListener('keydown', (e) => { if(e.key==='Escape') { closeModal(); closeGiscus(); }});
+      document.getElementById('photo-view').addEventListener('click', (e) => { if(e.target.id==='photo-view') closeFullView(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!document.getElementById('photo-modal').classList.contains('hidden')) closeModal();
+          if (!document.getElementById('photo-view').classList.contains('hidden')) closeFullView();
+          if (document.getElementById('giscus-fullscreen').classList.contains('active')) closeGiscus();
+          if (!document.getElementById('app-open-modal').classList.contains('hidden')) hideAppOpenModal();
+        }
+      });
+      window.addEventListener('popstate', (e) => {
+        // ✅ Handle back button for /photo/NAME URLs
+        if (!location.pathname.includes('/photo/') && !document.getElementById('photo-view').classList.contains('hidden')) {
+          closeFullView();
+        }
+      });
+      window.addEventListener('scroll', () => {
+        document.getElementById('main-header').style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
+      }, {passive:true});
       
-      // Start with Turnstile
       showTurnstile();
     }
 
