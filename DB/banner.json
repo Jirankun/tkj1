@@ -2,51 +2,51 @@
     "banner": [
         {
             "id": "1",
-            "name": "aranmarubanner.jpg"
+            "name": "./banner/aranmarubanner.jpg"
         },
                 {
             "id": "2",
-            "name": "banner.jpg"
+            "name": "./banner/banner.jpg"
         },
                 {
             "id": "3",
-            "name": "banner200.jpg"
+            "name": "./banner/banner200.jpg"
         },
                 {
             "id": "4",
-            "name": "banner600.jpg"
+            "name": "./banner/banner600.jpg"
         },
                 {
             "id": "5",
-            "name": "bashobanner.jpg"
+            "name": "./banner/bashobanner.jpg"
         },
                 {
             "id": "6",
-            "name": "ECCENTRICCIRCUS.jpg"
+            "name": "./banner/ECCENTRICCIRCUS.jpg"
         },
                 {
             "id": "7",
-            "name": "hifumibanner.jpg"
+            "name": "./banner/hifumibanner.jpg"
         },
                 {
             "id": "8",
-            "name": "hiiragibanner.jpg"
+            "name": "./banner/hiiragibanner.jpg"
         },
                 {
             "id": "9",
-            "name": "itatimaki.jpg"
+            "name": "./banner/itatimaki.jpg"
         },
                 {
             "id": "10",
-            "name": "kurasukebanner.gif"
+            "name": "./banner/kurasukebanner.gif"
         },
                 {
             "id": "11",
-            "name": "migchipbanner.jpg"
+            "name": "./banner/migchipbanner.jpg"
         },
                 {
             "id": "12",
-            "name": "sekiyubanner.jpg"
+            "name": "./banner/sekiyubanner.jpg"
         }
     ]
 }
