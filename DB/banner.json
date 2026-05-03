@@ -1,0 +1,52 @@
+{
+    "banner": [
+        {
+            "id": "1",
+            "name": "aranmarubanner.jpg"
+        },
+                {
+            "id": "2",
+            "name": "banner.jpg"
+        },
+                {
+            "id": "3",
+            "name": "banner200.jpg"
+        },
+                {
+            "id": "4",
+            "name": "banner600.jpg"
+        },
+                {
+            "id": "5",
+            "name": "bashobanner.jpg"
+        },
+                {
+            "id": "6",
+            "name": "ECCENTRICCIRCUS.jpg"
+        },
+                {
+            "id": "7",
+            "name": "hifumibanner.jpg"
+        },
+                {
+            "id": "8",
+            "name": "hiiragibanner.jpg"
+        },
+                {
+            "id": "9",
+            "name": "itatimaki.jpg"
+        },
+                {
+            "id": "10",
+            "name": "kurasukebanner.gif"
+        },
+                {
+            "id": "11",
+            "name": "migchipbanner.jpg"
+        },
+                {
+            "id": "12",
+            "name": "sekiyubanner.jpg"
+        }
+    ]
+}
