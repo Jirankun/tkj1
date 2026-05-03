@@ -48,16 +48,23 @@
       --text-muted: #888899; --accent: #00d4aa; --accent-hover: #00b894;
       --border: #2a2a3a; --error: #ff4757; --success: #2ed573; --header-height: 85px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
-    body.modal-open, body.view-open, body.comments-fullscreen, body.turnstile-active, body.pc-blocked { overflow: hidden; }
-    .hidden { display: none !important; }
+    body { 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+      background: var(--bg); color: var(--text); line-height: 1.6; 
+      display: flex; flex-direction: column; min-height: 100vh;
+      overflow-y: auto; overflow-x: hidden;
+    }
+    body.modal-open, body.view-open, body.comments-fullscreen, body.turnstile-active, body.pc-blocked { 
+      overflow: hidden !important; position: fixed !important; width: 100%; height: 100%;
+    }
+    .hidden { display: none !important; visibility: hidden !important; pointer-events: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
 
     /* === 🚫 PC BLOCKER === */
     #pc-blocker { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; padding: 24px; text-align: center; }
-    #pc-blocker.active { display: flex; }
+    #pc-blocker.active { display: flex !important; }
     .pc-blocker-icon { font-size: 3rem; margin-bottom: 16px; }
     .pc-blocker-title { font-size: 1.3rem; font-weight: 700; color: var(--error); margin-bottom: 12px; }
     .pc-blocker-desc { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; max-width: 320px; }
@@ -84,7 +91,8 @@
     .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .gallery-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
     .gallery-item:active { transform: scale(0.98); }
-    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: var(--bg); }
+    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: var(--bg); pointer-events: none; }
+    .gallery-thumb[controls] { pointer-events: auto; }
     .gallery-info { padding: 12px; }
     .gallery-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .gallery-meta { display: flex; gap: 8px; font-size: 0.75rem; color: var(--text-muted); }
@@ -95,7 +103,7 @@
     /* === 🎯 BANNER ADS === */
     .ad-banner { width: 100%; margin: 16px 0; border-radius: 12px; overflow: hidden; border: 2px solid var(--accent); background: var(--card); box-shadow: 0 4px 15px rgba(0,212,170,0.2); transition: transform 0.2s, box-shadow 0.2s; display: block; position: relative; cursor: pointer; }
     .ad-banner:active { transform: scale(0.98); }
-    .ad-banner img { width: 100%; height: auto; display: block; object-fit: cover; min-height: 90px; background: var(--card-hover); }
+    .ad-banner img { width: 100%; height: auto; display: block; object-fit: cover; min-height: 90px; background: var(--card-hover); pointer-events: none; }
     .ad-banner img.error { display: none; }
     .ad-banner .fallback { display: none; width: 100%; min-height: 90px; background: linear-gradient(135deg, var(--card), var(--card-hover)); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.85rem; text-align: center; padding: 12px; }
     .ad-banner img.error + .fallback { display: flex; }
@@ -105,7 +113,8 @@
     /* === PHOTO FULL VIEW === */
     .photo-view { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; background: var(--bg); position: fixed; inset: 0; z-index: 500; overflow-y: auto; }
     .photo-view-container { width: 100%; max-width: 100%; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
-    .photo-view-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; }
+    .photo-view-media { width: 100%; max-height: 60vh; object-fit: contain; background: var(--bg); display: block; pointer-events: none; }
+    .photo-view-media[controls] { pointer-events: auto; }
     .photo-view-info { padding: 20px; }
     .photo-view-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
     .photo-view-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
@@ -115,8 +124,9 @@
     /* === MODALS === */
     .modal, .confirm-modal, .turnstile-modal, .app-open-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(8px); }
     .modal-content, .confirm-box, .turnstile-box { background: var(--card); border-radius: 18px; max-width: 100%; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); position: relative; padding: 20px; }
-    .modal-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; cursor: pointer; }
-    .modal-media { width: 100%; max-height: 55vh; object-fit: contain; display: block; }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; cursor: pointer; z-index: 10; }
+    .modal-media { width: 100%; max-height: 55vh; object-fit: contain; display: block; pointer-events: none; }
+    .modal-media[controls] { pointer-events: auto; }
     .modal-body { padding: 10px 0 0; }
     .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
     .modal-desc { color: var(--text-muted); margin-bottom: 16px; }
@@ -128,15 +138,9 @@
     .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
 
     /* === ✅ APP OPEN MODAL === */
-    .app-open-modal { 
-      opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 9999;
-    }
+    .app-open-modal { opacity: 0; pointer-events: none; transition: opacity 0.25s ease; z-index: 9999; }
     .app-open-modal.active { opacity: 1; pointer-events: auto; }
-    .app-open-box { 
-      background: var(--card); padding: 24px 20px; border-radius: 18px; text-align: center; 
-      max-width: 360px; width: 100%; border: 1px solid var(--border);
-      transform: translateY(20px) scale(0.98); opacity: 0; transition: transform 0.25s ease, opacity 0.25s ease;
-    }
+    .app-open-box { background: var(--card); padding: 24px 20px; border-radius: 18px; text-align: center; max-width: 360px; width: 100%; border: 1px solid var(--border); transform: translateY(20px) scale(0.98); opacity: 0; transition: transform 0.25s ease, opacity 0.25s ease; }
     .app-open-modal.active .app-open-box { transform: translateY(0) scale(1); opacity: 1; }
     .app-open-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .app-open-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
@@ -146,7 +150,7 @@
 
     /* === GISCUS FULLSCREEN === */
     #giscus-fullscreen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: none; flex-direction: column; }
-    #giscus-fullscreen.active { display: flex; }
+    #giscus-fullscreen.active { display: flex !important; }
     .giscus-header { position: sticky; top: 0; z-index: 10001; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(10,10,15,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
     .giscus-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .giscus-close { width: 36px; height: 36px; border-radius: 50%; background: var(--error); border: none; color: #fff; font-size: 1.3rem; cursor: pointer; }
@@ -303,25 +307,16 @@
   <script>
     'use strict';
     
-    // === 🔧 CONFIG - ALL FEATURES ===
+    // === 🔧 CONFIG ===
     const CONFIG = {
-      // 📦 Photos JSON
       JSON_PATHS: ['/photos.json', '/DB/photos.json', 'photos.json', 'DB/photos.json'],
-      
-      // 🎯 Banner Ads
       BANNER_JSON: '/DB/banner.json',
       AD_INSERT_EVERY: 5,
-      
-      // 📱 APP DEEP LINK - RESTORED!
       APP_PACKAGES: ['com.tkjone.app', 'com.tkjone.app.debug', 'com.tkjone.app.beta'],
       APP_SCHEME: 'tkjone',
       DEEP_LINK_PATH: 'photo',
       FALLBACK_URL: 'https://github.com/Jirankun/TKJ-One/releases',
-      
-      // 🔐 Turnstile
       TURNSTILE_SITEKEY: '0x4AAAAAACsh1EKuTtF6HdMQ',
-      
-      // 🔗 Base & Banner Links
       BASE_URL: 'https://tkj1.pages.dev',
       BANNER_LINK_MAP: {
         'aranmarubanner.jpg': 'http://harinezumikobo.jp/newtop.html',
@@ -343,7 +338,25 @@
     let allPhotos = [], filteredPhotos = [], currentPhoto = null;
     let activeBanners = [], turnstileVerified = false;
     let videoObserver = null, playingThumbVideo = null;
-    let appOpenTimeout = null, appOpenVisibilityHandler = null;
+    let appOpenTimeout = null;
+
+    // === 🔒 PROTECT MEDIA - NO DRAG/DOWNLOAD ===
+    function protectMedia(el) {
+      if (!el) return;
+      ['contextmenu', 'dragstart', 'selectstart', 'copy'].forEach(evt => {
+        el.addEventListener(evt, e => { e.preventDefault(); return false; }, { passive: false });
+      });
+      if (el.tagName === 'IMG') {
+        el.style.pointerEvents = 'none';
+        el.style.userSelect = 'none';
+        el.style.webkitUserSelect = 'none';
+        el.setAttribute('draggable', 'false');
+      }
+      if (el.tagName === 'VIDEO') {
+        el.setAttribute('controlsList', 'nodownload');
+        el.setAttribute('disablepictureinpicture', 'true');
+      }
+    }
 
     // === 📱 PC BLOCKER ===
     function isMobileDevice() {
@@ -415,16 +428,27 @@
       document.getElementById('empty-state').classList.add('hidden');
       let bannerIdx = 0;
       photos.forEach((photo, idx) => {
-        const isVideo = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
+        // ✅ FIX: Video detection regex
+        const isVideo = photo.url && /\.(mp4|webm|mov|mkv)$/i.test(photo.url);
         const item = document.createElement('div');
         item.className = 'gallery-item';
-        item.innerHTML = isVideo ? `
-          <video class="gallery-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video>
-          <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span></div></div>` : `
-          <img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">
-          <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span></div></div>`;
+        
+        if (isVideo) {
+          item.innerHTML = `
+            <video class="gallery-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video>
+            <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-video">🎬 Video</span></div></div>`;
+          const vid = item.querySelector('video');
+          observeVideo(vid);
+          protectMedia(vid);
+        } else {
+          item.innerHTML = `
+            <img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">
+            <div class="gallery-info"><div class="gallery-title">${photo.title||'#'+photo.name}</div><div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span></div></div>`;
+          protectMedia(item.querySelector('img'));
+        }
         item.addEventListener('click', () => openModal(photo));
         grid.appendChild(item);
+        
         if ((idx + 1) % CONFIG.AD_INSERT_EVERY === 0 && activeBanners.length > 0) {
           grid.appendChild(createBannerAd(activeBanners[bannerIdx % activeBanners.length], bannerIdx++));
         }
@@ -437,14 +461,14 @@
       const f = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
       filteredPhotos = allPhotos.filter(p => {
         const matchQ = !q || (p.name?.toLowerCase().includes(q)) || (p.title?.toLowerCase().includes(q));
-        const isV = p.url && /\.(mp4|webm|mov)$/i.test(p.url);
+        const isV = p.url && /\.(mp4|webm|mov|mkv)$/i.test(p.url);
         const matchF = f === 'all' || (f === 'video' && isV) || (f === 'photo' && !isV);
         return matchQ && matchF;
       });
       renderGallery(filteredPhotos);
     }
 
-    // === 📱 APP DEEP LINK - RESTORED! ===
+    // === 📱 APP DEEP LINK - SINGLE BUTTON ===
     function openApp(id) {
       let appOpened = false, cleanupDone = false;
       function cleanup() {
@@ -465,10 +489,8 @@
       document.addEventListener('visibilitychange', onVisibilityChange);
       document.addEventListener('pagehide', onVisibilityChange);
       
-      // Method 1: Custom scheme
       try { window.location.href = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${id}`; } catch(e) { console.warn('Scheme failed:', e); }
       
-      // Method 2: Android Intent
       if (/Android/i.test(navigator.userAgent)) {
         setTimeout(() => {
           if (!appOpened) {
@@ -481,7 +503,6 @@
         }, 50);
       }
       
-      // Show popup if app didn't open
       appOpenTimeout = setTimeout(() => {
         if (!appOpened && !document.hidden) showAppOpenModal();
       }, 1500);
@@ -504,70 +525,92 @@
     window.hideAppOpenModal = function() {
       document.getElementById('app-open-modal').classList.remove('active');
       clearTimeout(appOpenTimeout);
-      if (appOpenVisibilityHandler) {
-        document.removeEventListener('visibilitychange', appOpenVisibilityHandler);
-        appOpenVisibilityHandler = null;
-      }
       setTimeout(() => {
         if (!document.getElementById('app-open-modal').classList.contains('active')) unlockBody();
       }, 250);
     };
 
-    // === 💬 SHARE WITH APP LINK - RESTORED! ===
+    // === 🔗 SHARE - WEB LINK ONLY ===
     function sharePhoto(photo) {
+      // ✅ FIX: Only web link, no app scheme
       const name = photo.name;
-      const appLink = `${CONFIG.APP_SCHEME}://${CONFIG.DEEP_LINK_PATH}/${name}`;
       const webLink = `${CONFIG.BASE_URL}/photo/${name}`;
-      const text = `Check this out!\n📷 ${photo.title || '#' + name}\n\n📱 Buka di App:\n${appLink}\n\n🌐 Atau visit:\n${webLink}`;
+      const text = `Check this out!\n📷 ${photo.title || '#' + name}\n\n🔗 ${webLink}`;
       
       if (navigator.share) {
         navigator.share({ title: 'TKJ1 Gallery', text }).then(() => toast('Berhasil dibagikan!')).catch(() => {});
       } else {
-        navigator.clipboard.writeText(text).then(() => toast('Link disalin ke clipboard!')).catch(() => toast('Gagal copy link'));
+        navigator.clipboard.writeText(text).then(() => toast('Link disalin!')).catch(() => toast('Gagal copy'));
       }
     }
 
-    // === 💬 MODAL ===
+    // === 💬 MODAL - SINGLE APP BUTTON ===
     function openModal(photo) {
       currentPhoto = photo;
       pauseAllThumbVideos();
-      const isV = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
-      document.getElementById('modal-img').style.display = isV ? 'none' : 'block';
-      document.getElementById('modal-img').src = isV ? '' : (photo.url || '');
-      document.getElementById('modal-video').style.display = isV ? 'block' : 'none';
-      document.getElementById('modal-video').src = isV ? (photo.url || '') : '';
-      if (isV) document.getElementById('modal-video').load();
+      const isV = photo.url && /\.(mp4|webm|mov|mkv)$/i.test(photo.url);
+      
+      // ✅ FIX: Show correct media, hide the other
+      const modalImg = document.getElementById('modal-img');
+      const modalVid = document.getElementById('modal-video');
+      modalImg.style.display = isV ? 'none' : 'block';
+      modalVid.style.display = isV ? 'block' : 'none';
+      
+      if (isV) {
+        modalVid.src = photo.url || '';
+        modalVid.load();
+        protectMedia(modalVid);
+        modalImg.src = '';
+      } else {
+        modalImg.src = photo.url || '';
+        protectMedia(modalImg);
+        modalVid.src = '';
+      }
+      
       document.getElementById('modal-title').textContent = photo.title || '#' + photo.name;
       document.getElementById('modal-desc').textContent = photo.desc || photo.description || 'No description';
       document.getElementById('modal-meta').textContent = `👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;
       document.getElementById('photo-modal').classList.remove('hidden');
       document.body.classList.add('modal-open');
       
-      // ✅ App button in modal
+      // ✅ FIX: Single app button in modal
       document.getElementById('btn-app-modal').onclick = () => openApp(photo.name);
       document.getElementById('btn-share-modal').onclick = () => sharePhoto(photo);
     }
     function closeModal() {
       document.getElementById('photo-modal').classList.add('hidden');
       document.getElementById('modal-img').src = '';
-      document.getElementById('modal-video').pause(); document.getElementById('modal-video').src = '';
+      const modalVid = document.getElementById('modal-video');
+      modalVid.pause(); modalVid.src = '';
       resumeThumbVideo();
       unlockBody();
       currentPhoto = null;
     }
 
-    // === 🖼️ FULL VIEW - RESTORED! ===
+    // === 🖼️ FULL VIEW - SINGLE APP BUTTON ===
     function showFullView(photo) {
       currentPhoto = photo;
       pauseAllThumbVideos();
       document.getElementById('main-header').classList.add('hidden');
       document.getElementById('main-content').classList.add('full-view');
-      const isV = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
-      document.getElementById('view-img').style.display = isV ? 'none' : 'block';
-      document.getElementById('view-img').src = isV ? '' : (photo.url || '');
-      document.getElementById('view-video').style.display = isV ? 'block' : 'none';
-      document.getElementById('view-video').src = isV ? (photo.url || '') : '';
-      if (isV) document.getElementById('view-video').load();
+      const isV = photo.url && /\.(mp4|webm|mov|mkv)$/i.test(photo.url);
+      
+      const viewImg = document.getElementById('view-img');
+      const viewVid = document.getElementById('view-video');
+      viewImg.style.display = isV ? 'none' : 'block';
+      viewVid.style.display = isV ? 'block' : 'none';
+      
+      if (isV) {
+        viewVid.src = photo.url || '';
+        viewVid.load();
+        protectMedia(viewVid);
+        viewImg.src = '';
+      } else {
+        viewImg.src = photo.url || '';
+        protectMedia(viewImg);
+        viewVid.src = '';
+      }
+      
       document.getElementById('view-title').textContent = photo.title || '#' + photo.name;
       document.getElementById('view-desc').textContent = photo.desc || photo.description || 'No description';
       document.getElementById('view-meta').textContent = `👤 ${photo.gender||'-'} | 📅 ${photo.date||'-'}`;
@@ -575,12 +618,11 @@
       document.getElementById('photo-view').classList.remove('hidden');
       document.body.classList.add('view-open');
       
-      // ✅ App & Share buttons in full view
+      // ✅ FIX: Single app button in full view
       document.getElementById('btn-app-view').onclick = () => openApp(photo.name);
       document.getElementById('btn-share-view').onclick = () => sharePhoto(photo);
       
       window.scrollTo(0,0);
-      // ✅ Generate /photo/NAME URL
       window.history.pushState({fullView:true, name:photo.name}, '', `/photo/${photo.name}`);
     }
     function closeFullView() {
@@ -589,10 +631,10 @@
       document.getElementById('main-header').classList.remove('hidden');
       document.getElementById('main-content').classList.remove('full-view');
       document.getElementById('view-img').src = '';
-      document.getElementById('view-video').pause(); document.getElementById('view-video').src = '';
+      const viewVid = document.getElementById('view-video');
+      viewVid.pause(); viewVid.src = '';
       resumeThumbVideo();
       unlockBody();
-      // ✅ Reset URL
       window.history.pushState({}, '', location.pathname.split('/photo/')[0] || '/');
       currentPhoto = null;
     }
@@ -603,15 +645,22 @@
       videoObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const v = entry.target;
-          const anyOpen = !document.getElementById('photo-modal').classList.contains('hidden') ||
-                         !document.getElementById('photo-view').classList.contains('hidden') ||
-                         document.getElementById('giscus-fullscreen').classList.contains('active') ||
-                         !document.getElementById('app-open-modal').classList.contains('hidden');
-          if (anyOpen) { v.pause(); return; }
-          if (entry.isIntersecting) { v.muted=true; v.playsInline=true; v.loop=true; v.play().catch(()=>{}); }
-          else { v.pause(); v.currentTime=0; }
+          const anyModalOpen = 
+            !document.getElementById('photo-modal').classList.contains('hidden') ||
+            !document.getElementById('photo-view').classList.contains('hidden') ||
+            document.getElementById('giscus-fullscreen').classList.contains('active') ||
+            !document.getElementById('app-open-modal').classList.contains('hidden') ||
+            !document.getElementById('confirm-modal').classList.contains('hidden') ||
+            !document.getElementById('turnstile-modal').classList.contains('hidden');
+          if (anyModalOpen) { v.pause(); return; }
+          if (entry.isIntersecting) { 
+            v.muted = true; v.playsInline = true; v.loop = true; 
+            v.play().catch(() => {}); 
+          } else { 
+            v.pause(); v.currentTime = 0; 
+          }
         });
-      }, {threshold: 0.5});
+      }, { threshold: 0.5 });
     }
     function observeVideo(el) { if (videoObserver && el) videoObserver.observe(el); }
     function pauseAllThumbVideos() {
@@ -646,8 +695,24 @@
     window.startDiscussion = function() { document.getElementById('confirm-modal').classList.add('hidden'); document.getElementById('giscus-fullscreen').classList.add('active'); document.body.classList.add('comments-fullscreen'); toast('Login GitHub untuk komentar'); };
     window.closeGiscus = function() { document.getElementById('giscus-fullscreen').classList.remove('active'); unlockBody(); };
 
-    // === UTILS ===
-    function unlockBody() { document.body.classList.remove('modal-open','view-open','comments-fullscreen','turnstile-active'); }
+    // === 🔒 UNLOCK BODY - FIX SCROLL LEAK ===
+    function unlockBody() {
+      document.body.classList.remove('modal-open', 'view-open', 'comments-fullscreen', 'turnstile-active');
+      // Only unlock if NO modal is open
+      const anyOpen = 
+        !document.getElementById('photo-modal').classList.contains('hidden') ||
+        !document.getElementById('photo-view').classList.contains('hidden') ||
+        document.getElementById('giscus-fullscreen').classList.contains('active') ||
+        !document.getElementById('app-open-modal').classList.contains('hidden') ||
+        !document.getElementById('confirm-modal').classList.contains('hidden') ||
+        !document.getElementById('turnstile-modal').classList.contains('hidden');
+      if (!anyOpen) {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+      }
+    }
     function toast(msg, dur=2500) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),dur); }
 
     // === ✅ SAFE JSON FETCH ===
@@ -684,15 +749,14 @@
         initVideoObserver();
         renderGallery(filteredPhotos);
         
-        // ✅ Handle direct photo URL: /photo/NAME
+        // Handle direct photo URL
         const path = window.location.pathname;
         const parts = path.split('/').filter(Boolean);
         if (parts[0] === 'photo' && parts[1]) {
           const photoName = decodeURIComponent(parts[1]);
           const photo = allPhotos.find(p => String(p.name).toLowerCase() === photoName.toLowerCase());
-          if (photo) {
-            setTimeout(() => showFullView(photo), 100);
-          } else {
+          if (photo) setTimeout(() => showFullView(photo), 100);
+          else {
             document.getElementById('error').textContent = `Foto "${photoName}" gak ditemukan bre!`;
             document.getElementById('error').classList.remove('hidden');
           }
@@ -710,7 +774,6 @@
       initPCBlocker();
       await fetchBanners();
       
-      // Event listeners
       document.getElementById('search-input').addEventListener('input', applyFilters);
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -730,10 +793,7 @@
         }
       });
       window.addEventListener('popstate', (e) => {
-        // ✅ Handle back button for /photo/NAME URLs
-        if (!location.pathname.includes('/photo/') && !document.getElementById('photo-view').classList.contains('hidden')) {
-          closeFullView();
-        }
+        if (!location.pathname.includes('/photo/') && !document.getElementById('photo-view').classList.contains('hidden')) closeFullView();
       });
       window.addEventListener('scroll', () => {
         document.getElementById('main-header').style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
