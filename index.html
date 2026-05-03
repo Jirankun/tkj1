@@ -41,7 +41,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
     body { background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
-    body.locked { overflow: hidden !important; position: fixed !important; width: 100%; top: var(--scroll-y, 0); }
+    body.locked { overflow: hidden !important; position: fixed !important; width: 100%; top: var(--scroll-y, 0); left: 0; }
     .hidden { display: none !important; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
@@ -110,6 +110,13 @@
     .turnstile-box { text-align: center; padding: 28px 20px; }
     .confirm-box { padding: 28px 20px; text-align: center; }
 
+    /* 💬 GISCUS FULLSCREEN - FIXED */
+    #giscus-full { position: fixed; inset: 0; background: var(--bg); z-index: 400; display: none; flex-direction: column; }
+    #giscus-full.active { display: flex !important; }
+    .giscus-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(9,9,11,0.95); }
+    .giscus-header h3 { font-weight: 600; font-size: 1rem; margin: 0; }
+    .giscus-body { flex: 1; overflow-y: auto; padding: 12px; }
+
     /* 🛠️ UTILS */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
     .btn:active { transform: scale(0.98); }
@@ -146,12 +153,13 @@
     </div>
   </div>
 
-  <div id="giscus-full" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:400;display:flex;flex-direction:column">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)">
-      <span style="font-weight:600">💬 Diskusi Dev</span>
+  <!-- 💬 GISCUS - FIXED STRUCTURE -->
+  <div id="giscus-full" class="hidden">
+    <div class="giscus-header">
+      <h3>💬 Diskusi Dev</h3>
       <button class="btn btn-ghost" onclick="closeGiscus()">Tutup</button>
     </div>
-    <div style="flex:1;overflow-y:auto"><div class="giscus" style="padding:12px"></div></div>
+    <div class="giscus-body"><div class="giscus"></div></div>
   </div>
 
   <div id="app-modal" class="modal-overlay">
@@ -259,17 +267,18 @@
     let data = [], filtered = [], cur = null, banners = [], tsOk = false;
     let vObs = null, playV = null, appT = null;
     
-    // 🔁 SCROLL POSITION PRESERVATION
+    // 🔁 SCROLL PRESERVATION
     let savedScrollY = 0;
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { 
-      // Use CSS variable method for smooth restore without jump
       document.documentElement.style.setProperty('--scroll-y', `${savedScrollY}px`);
-      // Fallback: direct scroll if CSS method doesn't work
-      setTimeout(() => window.scrollTo(0, savedScrollY), 10);
+      setTimeout(() => {
+        window.scrollTo(0, savedScrollY);
+        document.documentElement.style.removeProperty('--scroll-y');
+      }, 10);
     };
 
-    // 🔍 CATBOX.MOE VIDEO DETECTION
+    // 🔍 VIDEO DETECTION
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
       const url = typeof item === 'string' ? item : (item.url || item.src || '');
@@ -279,10 +288,9 @@
       const hasExt = /\.(mp4|webm|mov|mkv|m4v|ogv|avi)$/i.test(clean);
       return isCatbox && hasExt;
     };
-
     const cleanUrl = (url) => url ? String(url).trim() : '';
 
-    // 🔒 PROTECT MEDIA
+    // 🔒 PROTECT
     const protect = el => {
       if (!el) return;
       ['contextmenu','dragstart','selectstart','copy'].forEach(e => el.addEventListener(e, ev => ev.preventDefault(), {passive:false}));
@@ -313,43 +321,33 @@
         });
       } catch { banners = []; }
     };
-
     const mkAd = (b, i) => {
       const d = document.createElement('div'); d.className = 'ad-slot';
       d.innerHTML = `<a href="${b.link}" target="_blank" class="ad-link"><span class="ad-label">Ad</span><img src="${b.img}" loading="lazy" class="ad-img" onerror="this.classList.add('error')"><div class="ad-fallback">${b.txt}</div></a>`;
       return d;
     };
 
-    // 🖼️ RENDER GALLERY
+    // 🖼️ RENDER
     const render = list => {
       const g = document.getElementById('grid'); g.innerHTML = '';
       const emp = document.getElementById('empty');
       if (!list.length) { emp.classList.remove('hidden'); return; }
       emp.classList.add('hidden');
       let bi = 0;
-      
       list.forEach((p, i) => {
         const v = isVideo(p);
         const c = document.createElement('div'); c.className = 'card';
-        
         if (v) {
           c.innerHTML = `<video class="card-media" src="${cleanUrl(p.url)}" muted playsinline loop preload="metadata" crossorigin="anonymous"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>`;
-          const vid = c.querySelector('video');
-          protect(vid);
-          obsV(vid);
+          const vid = c.querySelector('video'); protect(vid); obsV(vid);
           vid.addEventListener('loadedmetadata', () => { if(vid.offsetParent) vid.play().catch(()=>{}); }, {once:true});
         } else {
-          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="lazy">
-            <div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
+          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="lazy"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
           protect(c.querySelector('img'));
         }
-        
         c.onclick = () => openMd(p);
         g.appendChild(c);
-
-        if ((i + 1) % 5 === 0 && banners.length) { 
-          g.appendChild(mkAd(banners[bi % banners.length], bi++)); 
-        }
+        if ((i + 1) % 5 === 0 && banners.length) g.appendChild(mkAd(banners[bi % banners.length], bi++));
       });
     };
 
@@ -366,28 +364,14 @@
       render(filtered);
     };
 
-    // 💬 MODAL - With scroll preservation
+    // 💬 MODAL
     const openMd = p => {
-      saveScroll(); // ✅ Save position before modal
-      cur = p; pauseThumb();
+      saveScroll(); cur = p; pauseThumb();
       const v = isVideo(p);
       const img = document.getElementById('md-img'), vid = document.getElementById('md-vid');
-      
-      img.style.display = v ? 'none' : 'block'; 
-      vid.style.display = v ? 'block' : 'none';
-      
-      if (v) { 
-        vid.src = cleanUrl(p.url); 
-        vid.load(); 
-        protect(vid); 
-        img.src = ''; 
-        vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true});
-      } else { 
-        img.src = cleanUrl(p.url); 
-        protect(img); 
-        vid.src = ''; 
-      }
-      
+      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
+      if (v) { vid.src = cleanUrl(p.url); vid.load(); protect(vid); img.src = ''; vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true}); }
+      else { img.src = cleanUrl(p.url); protect(img); vid.src = ''; }
       document.getElementById('md-title').textContent = p.title || '#' + p.name;
       document.getElementById('md-desc').textContent = p.desc || 'Tidak ada deskripsi';
       document.getElementById('md-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
@@ -395,74 +379,44 @@
       document.getElementById('md-app').onclick = () => openApp(p.name);
       document.getElementById('md-share').onclick = () => share(p);
     };
-    
     const closeModal = () => {
       document.getElementById('modal').classList.remove('active');
-      document.getElementById('md-img').src = ''; 
-      const v = document.getElementById('md-vid'); v.pause(); v.src = '';
-      resumeThumb(); unlockBody(); 
-      restoreScroll(); // ✅ Restore position after modal
-      cur = null;
+      document.getElementById('md-img').src = ''; const v = document.getElementById('md-vid'); v.pause(); v.src = '';
+      resumeThumb(); unlockBody(); restoreScroll(); cur = null;
     };
 
-    // 🖼️ FULL VIEW - No back button, scroll preservation
+    // 🖼️ FULL VIEW
     const openFull = p => {
-      saveScroll(); // ✅ Save position before full view
-      cur = p; pauseThumb();
+      saveScroll(); cur = p; pauseThumb();
       document.querySelector('.header')?.classList.add('hidden');
       document.getElementById('gallery')?.classList.add('hidden');
       const fv = document.getElementById('full-view'); fv.classList.add('active');
       const img = document.getElementById('fv-img'), vid = document.getElementById('fv-vid');
       const v = isVideo(p);
-      
-      img.style.display = v ? 'none' : 'block'; 
-      vid.style.display = v ? 'block' : 'none';
-      
-      if (v) { 
-        vid.src = cleanUrl(p.url); 
-        vid.load(); 
-        protect(vid); 
-        img.src = '';
-        vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true});
-      } else { 
-        img.src = cleanUrl(p.url); 
-        protect(img); 
-        vid.src = ''; 
-      }
-      
+      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
+      if (v) { vid.src = cleanUrl(p.url); vid.load(); protect(vid); img.src = ''; vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true}); }
+      else { img.src = cleanUrl(p.url); protect(img); vid.src = ''; }
       document.getElementById('fv-title').textContent = p.title || '#' + p.name;
       document.getElementById('fv-desc').textContent = p.desc || 'Tidak ada deskripsi';
       document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
       document.getElementById('fv-app').onclick = () => openApp(p.name);
       document.getElementById('fv-share').onclick = () => share(p);
-      // ✅ Use replaceState to avoid scroll reset on history change
       history.replaceState({v: p.name}, '', `/photo/${p.name}`);
       lockBody();
     };
-    
     const closeFull = () => {
       document.getElementById('full-view').classList.remove('active');
       document.getElementById('gallery')?.classList.remove('hidden');
       document.querySelector('.header')?.classList.remove('hidden');
-      document.getElementById('fv-img').src = ''; 
-      const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
-      resumeThumb(); unlockBody(); 
-      restoreScroll(); // ✅ Restore position after full view
+      document.getElementById('fv-img').src = ''; const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
+      resumeThumb(); unlockBody(); restoreScroll();
       history.replaceState({}, '', location.pathname.split('/photo/')[0] || '/');
       cur = null;
     };
 
-    // 📱 APP MODAL - Scroll preservation
-    const showAppModal = () => {
-      saveScroll();
-      document.getElementById('app-modal').classList.add('active');
-      lockBody();
-    };
-    const closeAppModal = () => {
-      document.getElementById('app-modal').classList.remove('active');
-      unlockBody();
-      restoreScroll();
-    };
+    // 📱 APP MODAL
+    const showAppModal = () => { saveScroll(); document.getElementById('app-modal').classList.add('active'); lockBody(); };
+    const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); unlockBody(); restoreScroll(); };
     document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
 
     // 🔗 SHARE
@@ -476,75 +430,57 @@
     const obsV = el => { if(vObs) vObs.observe(el); };
     const initObs = () => {
       vObs = new IntersectionObserver(e => e.forEach(x => {
-        if (document.querySelector('.modal-overlay.active, #full-view.active, #giscus-full:not(.hidden)')) { x.target.pause(); return; }
-        if (x.isIntersecting) x.target.play().catch(()=>{});
-        else x.target.pause();
+        if (document.querySelector('.modal-overlay.active, #full-view.active, #giscus-full.active')) { x.target.pause(); return; }
+        if (x.isIntersecting) x.target.play().catch(()=>{}); else x.target.pause();
       }), {threshold:0.5});
     };
-    const pauseThumb = () => { 
-      document.querySelectorAll('.card-media').forEach(v => { 
-        if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}
-      }); 
-    };
-    const resumeThumb = () => { 
-      if(playV&&document.contains(playV)){
-        const r=playV.getBoundingClientRect();
-        if(r.top<innerHeight)playV.play().catch(()=>{});
-        playV=null;
-      }
-    };
+    const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
+    const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
 
-    // 🔐 TURNSTILE & CHAT - Scroll preservation
+    // 🔐 TURNSTILE
     window.onTS = () => { tsOk=true; hideTS(); unlockBody(); restoreScroll(); loadG(); };
     window.onTSErr = c => { document.getElementById('ts-err').textContent=c; document.getElementById('ts-fb').style.display='inline-flex'; };
     window.tsFallback = () => { setTimeout(()=>{if(!tsOk){tsOk=true;hideTS();unlockBody();restoreScroll();loadG();}},2000); };
-    const hideTS = () => { 
-      document.getElementById('turnstile-modal').classList.remove('active'); 
-      unlockBody(); 
-      restoreScroll(); 
-    };
+    const hideTS = () => { document.getElementById('turnstile-modal').classList.remove('active'); unlockBody(); restoreScroll(); };
     const showTS = () => {
       const b = /bot|crawl/i.test(navigator.userAgent);
       if (b || location.pathname.includes('/photo/')) { tsOk=true; hideTS(); loadG(); return; }
-      saveScroll(); // ✅ Save before turnstile
-      document.getElementById('turnstile-modal').classList.add('active'); 
-      lockBody();
+      saveScroll(); document.getElementById('turnstile-modal').classList.add('active'); lockBody();
     };
-    
-    window.openConfirm = () => { 
-      saveScroll(); 
-      document.getElementById('confirm').classList.add('active'); 
-      lockBody(); 
-    };
-    window.closeConfirm = () => { 
-      document.getElementById('confirm').classList.remove('active'); 
-      unlockBody(); 
-      restoreScroll(); 
-    };
+
+    // 💬 GISCUS - FIXED FLOW
+    window.openConfirm = () => { saveScroll(); document.getElementById('confirm').classList.add('active'); lockBody(); };
+    window.closeConfirm = () => { document.getElementById('confirm').classList.remove('active'); unlockBody(); restoreScroll(); };
     window.startChat = () => { 
-      document.getElementById('confirm').classList.remove('active'); 
-      document.getElementById('giscus-full').classList.remove('hidden'); 
-      document.getElementById('giscus-full').style.display='flex'; 
+      document.getElementById('confirm').classList.remove('hidden'); 
+      document.getElementById('confirm').classList.remove('active');
+      document.getElementById('giscus-full').classList.remove('hidden');
+      document.getElementById('giscus-full').classList.add('active');
+      // ✅ Explicitly hide gallery visually but keep DOM
+      document.getElementById('gallery').style.visibility = 'hidden';
+      document.getElementById('gallery').style.pointerEvents = 'none';
       lockBody(); 
     };
     window.closeGiscus = () => { 
-      document.getElementById('giscus-full').style.display='none'; 
+      document.getElementById('giscus-full').classList.remove('active');
+      document.getElementById('giscus-full').classList.add('hidden');
+      // ✅ Explicitly restore gallery visibility
+      document.getElementById('gallery').style.visibility = '';
+      document.getElementById('gallery').style.pointerEvents = '';
+      document.getElementById('gallery').classList.remove('hidden');
       unlockBody(); 
       restoreScroll(); 
     };
 
-    // 🔒 BODY LOCK - CSS variable method (NO SCROLL JUMP)
+    // 🔒 BODY LOCK - ROBUST
     const lockBody = () => {
-      // Save current scroll position in CSS variable
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
       document.body.classList.add('locked');
     };
     const unlockBody = () => {
-      const open = document.querySelector('.modal-overlay.active, #full-view.active, #giscus-full:not(.hidden)');
-      if (!open) {
-        document.body.classList.remove('locked');
-        document.documentElement.style.removeProperty('--scroll-y');
-      }
+      // Always clear CSS var and class when unlocking
+      document.documentElement.style.removeProperty('--scroll-y');
+      document.body.classList.remove('locked');
     };
     
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
@@ -575,7 +511,6 @@
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
-        
         const path = location.pathname; const parts = path.split('/').filter(Boolean);
         if (parts[0]==='photo' && parts[1]) {
           const n = decodeURIComponent(parts[1]);
@@ -596,8 +531,6 @@
     document.onkeydown = e => { if(e.key==='Escape'){closeModal();closeGiscus();closeAppModal();} };
     window.onpopstate = () => { if(!location.pathname.includes('/photo/')&&!document.getElementById('full-view').classList.contains('hidden')) closeFull(); };
     window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
-
-    // ✅ APP OPEN - Use preserved scroll
     const openApp = id => {
       let ok = false;
       const cb = () => { if (!ok) { ok = true; clearTimeout(appT); closeAppModal(); document.removeEventListener('visibilitychange', cb); }};
