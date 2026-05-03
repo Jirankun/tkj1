@@ -3,30 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+  <!-- 🎨 Theme Color -->
   <meta name="theme-color" content="#00aaff" />
+  <meta name="msapplication-navbutton-color" content="#00aaff" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  
+  <!-- 📱 PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  
+  <meta name="application-name" content="TKJ OnE Gallery"/>
+
+  <!-- 🔍 SEO -->
   <meta name="description" content="TKJ OnE Gallery - Arsip visual perjalanan siswa TKJ OnE"/>
+  <meta name="keywords" content="TKJ OnE, gallery TKJ, arsip foto TKJ"/>
   <meta name="author" content="TKJ OnE - Jirankun"/>
   <meta name="robots" content="index, follow"/>
-  
+
+  <!-- 🔗 Canonical & OG -->
   <link rel="canonical" href="https://tkj1.pages.dev/"/>
   <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://tkj1.pages.dev/"/>
   <meta property="og:title" content="TKJ OnE Gallery"/>
+  <meta property="og:description" content="Arsip Foto & Video TKJ OnE"/>
   <meta property="og:image" content="https://tkj1.pages.dev/og-image.jpg"/>
-  
+  <meta name="twitter:card" content="summary_large_image"/>
+
+  <meta name="format-detection" content="telephone=no"/>
+  <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <title>TKJ OnE Gallery - Arsip Foto & Video</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   
   <!-- ✅ GOOGLE ADSENSE -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
+  
+  <!-- 💬 GISCUS -->
+  <script src="https://giscus.app/client.js"
+    data-repo="Jirankun/tkj1"
+    data-repo-id="R_kgDOQWmG8Q"
+    data-category="Show and tell"
+    data-category-id="DIC_kwDOQWmG8c4C63kb"    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="dark_tritanopia"
+    data-lang="id"
+    crossorigin="anonymous"
+    async></script>
+
+  <!-- 🔐 TURNSTILE -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
     :root {
       --bg: #0a0a0f; --card: #151520; --card-hover: #1a1a28; --text: #ffffff;
       --text-muted: #888899; --accent: #00d4aa; --accent-hover: #00b894;
-      --border: #2a2a3a; --error: #ff4757;
+      --border: #2a2a3a; --error: #ff4757; --success: #2ed573;
       --header-height: 85px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -36,7 +74,7 @@
       background: var(--bg); color: var(--text); line-height: 1.6;
       display: flex; flex-direction: column; min-height: 100vh;
     }
-    body.modal-open { overflow: hidden; }
+    body.modal-open, body.view-open, body.comments-fullscreen, body.turnstile-active { overflow: hidden; }
     .hidden { display: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
 
@@ -47,7 +85,8 @@
       background: rgba(15, 15, 26, 0.98);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.2s ease;    }
+      transition: box-shadow 0.2s ease;
+    }
     .header-content { 
       display: flex; flex-direction: column; gap: 8px;
       height: 100%; padding: 10px 0;
@@ -57,8 +96,7 @@
       background: linear-gradient(135deg, var(--accent), #00a8ff); 
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       text-align: center;
-    }
-    .search-box { position: relative; width: 100%; }
+    }    .search-box { position: relative; width: 100%; }
     .search-box input { 
       width: 100%; padding: 10px 38px 10px 14px; background: var(--card); 
       border: 1px solid var(--border); border-radius: 10px; color: var(--text); 
@@ -76,6 +114,11 @@
     .filter-btn.active, .filter-btn:hover { 
       background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; 
     }
+    .comments-trigger {
+      padding: 8px 16px; background: linear-gradient(135deg, var(--accent), #00a8ff);
+      border: none; border-radius: 8px; color: var(--bg); font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 5px;
+    }
 
     /* === MAIN === */
     .main { padding-top: calc(var(--header-height) + 16px); padding-bottom: 80px; min-height: 100vh; flex: 1; }
@@ -86,7 +129,7 @@
       overflow: hidden; cursor: pointer; transition: transform 0.2s;
     }
     .gallery-item:active { transform: scale(0.98); }
-    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+    .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: var(--bg); }
     .gallery-info { padding: 12px; }
     .gallery-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .gallery-meta { display: flex; gap: 8px; font-size: 0.75rem; color: var(--text-muted); }
@@ -94,33 +137,42 @@
     .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
     .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
 
-    /* === 🎯 BANNER ADS === */
+    /* === 🎯 BANNER ADS - FIX HTTPS + ERROR HANDLING === */
     .ad-banner {
-      width: 100%; margin: 16px 0; border-radius: 12px; overflow: hidden;      border: 2px solid var(--accent); background: var(--card);
+      width: 100%; margin: 16px 0; border-radius: 12px; overflow: hidden;
+      border: 2px solid var(--accent); background: var(--card);
       box-shadow: 0 4px 15px rgba(0, 212, 170, 0.2);
       transition: transform 0.2s, box-shadow 0.2s;
-      display: block;
+      display: block; position: relative;
     }
-    .ad-banner:active { transform: scale(0.98); }
-    .ad-banner img {
+    .ad-banner:active { transform: scale(0.98); }    .ad-banner img {
       width: 100%; height: auto; display: block; object-fit: cover;
+      min-height: 90px; background: var(--card-hover);
     }
+    .ad-banner img.error { display: none; }
+    .ad-banner .fallback {
+      display: none; width: 100%; min-height: 90px;
+      background: linear-gradient(135deg, var(--card), var(--card-hover));
+      color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; text-align: center; padding: 12px;
+    }
+    .ad-banner img.error + .fallback { display: flex; }
     .ad-banner-label {
       background: var(--accent); color: var(--bg); text-align: center;
       padding: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
     }
     .ad-container { grid-column: 1 / -1; }
 
-    /* === MODAL === */
-    .modal { 
+    /* === MODALS === */
+    .modal, .confirm-modal, .turnstile-modal { 
       position: fixed; inset: 0; background: rgba(0,0,0,0.92); 
       display: flex; align-items: center; justify-content: center; 
-      z-index: 1000; padding: 16px;
+      z-index: 1000; padding: 16px; backdrop-filter: blur(8px);
     }
-    .modal-content { 
+    .modal-content, .confirm-box, .turnstile-box { 
       background: var(--card); border-radius: 18px; max-width: 100%; 
       width: 100%; max-height: 85vh; overflow-y: auto; 
-      border: 1px solid var(--border); position: relative; 
+      border: 1px solid var(--border); position: relative; padding: 20px;
     }
     .modal-close { 
       position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; 
@@ -128,7 +180,7 @@
       color: var(--text); font-size: 1.3rem; cursor: pointer; 
     }
     .modal-media { width: 100%; max-height: 55vh; object-fit: contain; display: block; }
-    .modal-body { padding: 20px; }
+    .modal-body { padding: 10px 0 0; }
     .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
     .modal-desc { color: var(--text-muted); margin-bottom: 16px; }
     .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -139,17 +191,59 @@
     }
     .btn-primary { background: var(--accent); color: var(--bg); }
     .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
+    .btn-cancel { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
 
+    /* === GISCUS FULLSCREEN === */
+    #giscus-fullscreen {       position: fixed; inset: 0; background: var(--bg); z-index: 10000; 
+      display: none; flex-direction: column; 
+    }
+    #giscus-fullscreen.active { display: flex; }
+    .giscus-header { 
+      position: sticky; top: 0; z-index: 10001; display: flex; 
+      align-items: center; justify-content: space-between; 
+      padding: 12px 16px; background: rgba(10,10,15,0.98); 
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); 
+    }
+    .giscus-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .giscus-close { 
+      width: 36px; height: 36px; border-radius: 50%; background: var(--error); 
+      border: none; color: #fff; font-size: 1.3rem; cursor: pointer; 
+    }
+    .giscus-body { flex: 1; overflow-y: auto; }
+    .giscus-login-hint { 
+      padding: 12px 16px; text-align: center; color: var(--text-muted); 
+      font-size: 0.8rem; background: var(--card-hover); border-bottom: 1px solid var(--border); 
+    }
+
+    /* === TURNSTILE === */
+    .turnstile-widget { display: flex; justify-content: center; margin: 16px 0; min-height: 65px; }
+    .turnstile-error { color: var(--error); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
+    .turnstile-fallback { 
+      margin-top: 12px; padding: 8px 16px; background: transparent; 
+      border: 1px dashed var(--border); color: var(--text-muted); 
+      border-radius: 8px; font-size: 0.8rem; cursor: pointer; 
+    }
+    .turnstile-fallback:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* === UTILS === */
     .loading, .error { text-align: center; padding: 40px 20px; }
     .loading-icon { font-size: 2.5rem; margin-bottom: 12px; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .error { color: var(--error); }
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    
+    .toast { 
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); 
+      background: var(--card); color: var(--text); padding: 12px 24px; 
+      border-radius: 12px; border: 1px solid var(--border); 
+      transition: transform 0.25s; z-index: 99999; font-weight: 500; 
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
     .footer { 
       padding: 20px 16px; text-align: center; background: var(--card); 
-      border-top: 1px solid var(--border); margin-top: auto; 
-    }
+      border-top: 1px solid var(--border); margin-top: auto;     }
     .footer-brand { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
     .footer-brand span { color: var(--accent); }
     .footer-dev { font-size: 0.85rem; color: var(--text-muted); }
@@ -158,6 +252,39 @@
 </head>
 <body>
 
+  <!-- ✅ TURNSTILE MODAL -->
+  <div id="turnstile-modal" class="turnstile-modal">
+    <div class="turnstile-box">
+      <h3 style="margin-bottom:8px">🔐 Verifikasi</h3>
+      <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9rem">
+        Mohon tunggu, sistem melakukan verifikasi otomatis...
+      </p>
+      <div class="turnstile-widget">
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" 
+             data-callback="onTurnstileSuccess" 
+             data-error-callback="onTurnstileError"
+             data-theme="dark"></div>
+      </div>
+      <div id="turnstile-error" class="turnstile-error"></div>
+      <button id="turnstile-fallback" class="turnstile-fallback" onclick="turnstileManualFallback()" style="display:none">
+        Stuck? Klik disini
+      </button>
+    </div>
+  </div>
+
+  <!-- 💬 GISCUS FULLSCREEN -->
+  <div id="giscus-fullscreen">
+    <div class="giscus-header">
+      <div class="giscus-title">💬 Diskusi Dev</div>
+      <button class="giscus-close" onclick="closeGiscus()">×</button>
+    </div>
+    <div class="giscus-login-hint">Login GitHub untuk komentar</div>
+    <div class="giscus-body">
+      <div class="giscus"></div>
+    </div>
+  </div>
+
   <!-- HEADER -->
   <header class="header">
     <div class="container">
@@ -165,11 +292,11 @@
         <div class="logo">📸 TKJ1 Gallery</div>
         <div class="search-box">
           <input type="text" id="search-input" placeholder="Cari foto..." autocomplete="off">
-        </div>
-        <div class="filter-group">
+        </div>        <div class="filter-group">
           <button class="filter-btn active" data-filter="all">Semua</button>
           <button class="filter-btn" data-filter="photo">Foto</button>
           <button class="filter-btn" data-filter="video">Video</button>
+          <button class="comments-trigger" onclick="openConfirmModal()">💬 Chat Dev</button>
         </div>
       </div>
     </div>
@@ -193,8 +320,9 @@
     </div>
   </main>
 
-  <!-- MODAL -->
-  <div id="photo-modal" class="modal hidden">    <div class="modal-content">
+  <!-- PHOTO MODAL -->
+  <div id="photo-modal" class="modal hidden">
+    <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo">
       <div class="modal-body">
@@ -207,109 +335,97 @@
     </div>
   </div>
 
+  <!-- CONFIRM MODAL (Giscus) -->
+  <div id="confirm-modal" class="confirm-modal hidden">
+    <div class="confirm-box">
+      <div style="font-size:2.5rem;margin-bottom:12px">🔐</div>
+      <h3 style="margin-bottom:10px">Login GitHub</h3>
+      <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.5">
+        <strong>Wajib login GitHub</strong> untuk fitur diskusi.<br><br>        Fitur ini hanya untuk diskusi development TKJ OnE.
+      </p>
+      <div style="display:flex;gap:10px;flex-direction:column">
+        <button class="btn btn-primary" onclick="startDiscussion()">Masuk Chat</button>
+        <button class="btn btn-cancel" onclick="cancelDiscussion()">Batal</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="footer">
     <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
     <div class="footer-dev">Dev: <a href="https://jirankun.github.io/portofoliozhyllan">jirankun</a></div>
   </footer>
 
+  <div id="toast" class="toast"></div>
+
   <script>
     'use strict';
     
-    // === 🔧 CONFIG - GANTI SESUAI KEBUTUHAN ===
+    // === 🔧 CONFIG ===
     const CONFIG = {
-      // 📦 Photos JSON paths (coba urutan ini)
       JSON_PATHS: ['/photos.json', '/DB/photos.json', 'photos.json', 'DB/photos.json'],
       
-      // 🎯 HARI NEZUMI ADS - CONFIG MANUAL (karena CORS block fetch direct)
-      // Ambil manual dari harinezumikobo.jp/newtop.html, copy image URL + link tujuan
+      // 🎯 ADS - PAKAI HTTPS! + ERROR FALLBACK
       HARINEZUMI_ADS: [
         {
-          image: 'http://harinezumikobo.jp/seifukunana/banner600.jpg', // ⚠️ GANTI DENGAN URL GAMBAR SEBENARNYA
+          // ⚠️ GANTI DENGAN URL HTTPS YANG VALID
+          image: 'https://harinezumikobo.jp/seifukunana/banner600.jpg',
           link: 'http://harinezumikobo.jp/seifukunana.html',
-          alt: 'Harinezumi Kobo Banner 1'
+          alt: 'Harinezumi Banner 1',
+          fallbackText: 'Harinezumi Kobo - Seifuku Nana'
         },
         {
-          image: 'http://harinezumikobo.jp/danti/banner600.jpg', // ⚠️ GANTI JUGA INI
+          image: 'https://harinezumikobo.jp/danti/banner600.jpg',
           link: 'http://harinezumikobo.jp/danti.html',
-          alt: 'Harinezumi Kobo Banner 2'
+          alt: 'Harinezumi Banner 2',
+          fallbackText: 'Harinezumi Kobo - Danti'
         }
       ],
       
-      // 🔄 Fallback ads kalau yang atas gagal/blank
-      FALLBACK_ADS: [
-        {
-          image: 'https://via.placeholder.com/728x90/00d4aa/ffffff?text=Harinezumi+Kobo+Ad',
-          link: 'http://harinezumikobo.jp/newtop.html',
-          alt: 'Ad Placeholder'
-        }
-      ],      
-      AD_INSERT_EVERY: 5,      // Insert ad tiap N foto
-      BASE_URL: 'https://tkj1.pages.dev'
+      FALLBACK_ADS: [{
+        image: 'https://via.placeholder.com/728x90/00d4aa/ffffff?text=Ad+Placeholder',
+        link: 'http://harinezumikobo.jp/',
+        alt: 'Ad',
+        fallbackText: 'Advertisement'
+      }],
+      
+      AD_INSERT_EVERY: 5,
+      BASE_URL: 'https://tkj1.pages.dev',      TURNSTILE_SITEKEY: '0x4AAAAAACsh1EKuTtF6HdMQ'
     };
 
     let allPhotos = [], filteredPhotos = [], currentPhoto = null;
-    let activeAds = [];
+    let activeAds = [], turnstileVerified = false;
 
-    // === ✅ SAFE JSON FETCH - FIX ERROR "<!DOCTYPE" ===
-    async function safeFetchJSON(paths) {
-      for (const path of paths) {
-        try {
-          const res = await fetch(path + '?t=' + Date.now(), { 
-            headers: { 'Accept': 'application/json' } 
-          });
-          
-          // Cek content-type dulu
-          const contentType = res.headers.get('content-type') || '';
-          if (!contentType.includes('application/json')) {
-            console.warn(`⚠️ ${path} bukan JSON (content-type: ${contentType})`);
-            continue;
-          }
-          
-          if (!res.ok) {
-            console.warn(`⚠️ ${path} returned ${res.status}`);
-            continue;
-          }
-          
-          const text = await res.text();
-          // Cek karakter pertama - JSON harus mulai dengan { atau [
-          const firstChar = text.trim().charAt(0);
-          if (firstChar !== '{' && firstChar !== '[') {
-            console.warn(`⚠️ ${path} bukan valid JSON (starts with: ${firstChar})`);
-            continue;
-          }
-          
-          return JSON.parse(text);
-        } catch (e) {
-          console.warn(`⚠️ Failed to fetch/parse ${path}:`, e.message);
-          continue;
-        }
-      }
-      throw new Error('Gagal load photos.json dari semua path');
-    }
-
-    // === 🎯 INIT ADS - PAKAI CONFIG MANUAL ===
+    // === 🎯 INIT ADS ===
     function initAds() {
-      // Prioritaskan CONFIG.HARINEZUMI_ADS, fallback ke FALLBACK_ADS
-      const validAds = CONFIG.HARINEZUMI_ADS.filter(ad => ad.image && ad.link);
-      activeAds = validAds.length > 0 ? validAds : CONFIG.FALLBACK_ADS;      console.log(`✅ Loaded ${activeAds.length} ads`);
+      const valid = CONFIG.HARINEZUMI_ADS.filter(ad => ad.image && ad.link);
+      activeAds = valid.length > 0 ? valid : CONFIG.FALLBACK_ADS;
+      console.log(`✅ Loaded ${activeAds.length} ads`);
     }
 
-    // === 🎨 CREATE AD BANNER ===
+    // === 🎨 CREATE AD WITH ERROR HANDLING ===
     function createAdBanner(ad, index) {
       const container = document.createElement('div');
       container.className = 'ad-container';
+      
+      // Fix: Convert http to https if possible, or use fallback
+      let imgUrl = ad.image;
+      if (imgUrl.startsWith('http://') && !imgUrl.includes('harinezumikobo')) {
+        imgUrl = imgUrl.replace('http://', 'https://');
+      }
+      
       container.innerHTML = `
-        <a href="${ad.link}" target="_blank" rel="noopener noreferrer" 
-           class="ad-banner" data-ad-index="${index}">
+        <a href="${ad.link}" target="_blank" rel="noopener noreferrer" class="ad-banner" data-ad-idx="${index}">
           <div class="ad-banner-label">📢 Sponsored</div>
-          <img src="${ad.image}" alt="${ad.alt || 'Advertisement'}" loading="lazy">
+          <img src="${imgUrl}" alt="${ad.alt}" loading="lazy" 
+               onerror="this.classList.add('error');this.nextElementSibling.style.display='flex'">
+          <div class="fallback">${ad.fallbackText || 'Advertisement'}</div>
         </a>
       `;
       return container;
     }
 
-    // === 🖼️ RENDER GALLERY + ADS ===
+    // === 🖼️ RENDER GALLERY ===
     function renderGallery(photos) {
       const grid = document.getElementById('gallery-grid');
       grid.innerHTML = '';
@@ -320,166 +436,219 @@
       }
       document.getElementById('empty-state').classList.add('hidden');
       
-      let adCounter = 0;
+      let adIdx = 0;
       
       photos.forEach((photo, idx) => {
-        // Render photo card
-        const isVideo = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
-        const item = document.createElement('div');
+        const isVideo = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);        const item = document.createElement('div');
         item.className = 'gallery-item';
-        item.dataset.name = photo.name || '';
-        item.dataset.type = isVideo ? 'video' : 'photo';
         
-        if (isVideo) {
-          item.innerHTML = `
-            <video class="gallery-thumb" src="${photo.url}" muted preload="none" 
-                   playsinline loop controlsList="nodownload"></video>
-            <div class="gallery-info">
-              <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-              <div class="gallery-meta">
-                <span class="badge badge-video">🎬 Video</span>
-              </div>
-            </div>
-          `;
-        } else {          item.innerHTML = `
-            <img class="gallery-thumb" src="${photo.url}" 
-                 alt="${photo.title || photo.name}" loading="lazy">
-            <div class="gallery-info">
-              <div class="gallery-title">${photo.title || '#' + photo.name}</div>
-              <div class="gallery-meta">
-                <span class="badge badge-photo">📷 Foto</span>
-              </div>
-            </div>
-          `;
-        }
+        item.innerHTML = isVideo ? `
+          <video class="gallery-thumb" src="${photo.url}" muted preload="none" playsinline loop controlsList="nodownload"></video>
+          <div class="gallery-info">
+            <div class="gallery-title">${photo.title || '#' + photo.name}</div>
+            <div class="gallery-meta"><span class="badge badge-video">🎬 Video</span></div>
+          </div>` : `
+          <img class="gallery-thumb" src="${photo.url}" alt="${photo.title||photo.name}" loading="lazy">
+          <div class="gallery-info">
+            <div class="gallery-title">${photo.title || '#' + photo.name}</div>
+            <div class="gallery-meta"><span class="badge badge-photo">📷 Foto</span></div>
+          </div>`;
         
         item.addEventListener('click', () => openModal(photo));
         grid.appendChild(item);
         
-        // Insert ad setiap CONFIG.AD_INSERT_EVERY items
+        // Insert ad
         if ((idx + 1) % CONFIG.AD_INSERT_EVERY === 0 && activeAds.length > 0) {
-          const ad = activeAds[adCounter % activeAds.length];
-          grid.appendChild(createAdBanner(ad, adCounter));
-          adCounter++;
+          grid.appendChild(createAdBanner(activeAds[adIdx % activeAds.length], adIdx++));
         }
       });
     }
 
-    // === 🔍 FILTER & SEARCH ===
+    // === 🔍 FILTER ===
     function applyFilters() {
-      const query = document.getElementById('search-input').value.toLowerCase().trim();
-      const filter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+      const f = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
       
       filteredPhotos = allPhotos.filter(p => {
-        const matchSearch = !query || 
-          (p.name && p.name.toLowerCase().includes(query)) || 
-          (p.title && p.title.toLowerCase().includes(query));
-        
-        const isVideo = p.url && /\.(mp4|webm|mov)$/i.test(p.url);
-        const matchFilter = filter === 'all' || 
-          (filter === 'video' && isVideo) || 
-          (filter === 'photo' && !isVideo);
-        
-        return matchSearch && matchFilter;
+        const matchQ = !q || (p.name?.toLowerCase().includes(q)) || (p.title?.toLowerCase().includes(q));
+        const isV = p.url && /\.(mp4|webm|mov)$/i.test(p.url);
+        const matchF = f === 'all' || (f === 'video' && isV) || (f === 'photo' && !isV);
+        return matchQ && matchF;
       });
-      
       renderGallery(filteredPhotos);
     }
 
     // === 💬 MODAL ===
     function openModal(photo) {
       currentPhoto = photo;
-      const modal = document.getElementById('photo-modal');
-      const img = document.getElementById('modal-img');      
-      img.src = photo.url || '';
+      document.getElementById('modal-img').src = photo.url || '';
       document.getElementById('modal-title').textContent = photo.title || '#' + photo.name;
       document.getElementById('modal-desc').textContent = photo.desc || photo.description || 'No description';
-      
-      modal.classList.remove('hidden');
+      document.getElementById('photo-modal').classList.remove('hidden');
       document.body.classList.add('modal-open');
     }
-
     function closeModal() {
-      document.getElementById('photo-modal').classList.add('hidden');
-      document.body.classList.remove('modal-open');
+      document.getElementById('photo-modal').classList.add('hidden');      document.body.classList.remove('modal-open');
       document.getElementById('modal-img').src = '';
       currentPhoto = null;
     }
-
     function sharePhoto() {
       if (!currentPhoto) return;
-      const text = `Check: ${currentPhoto.title || '#' + currentPhoto.name}\n${CONFIG.BASE_URL}`;
-      
-      if (navigator.share) {
-        navigator.share({ title: 'TKJ1 Gallery', text }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('Link copied to clipboard!');
-        });
-      }
+      const t = `Check: ${currentPhoto.title||'#'+currentPhoto.name}\n${CONFIG.BASE_URL}`;
+      if (navigator.share) navigator.share({title:'TKJ1 Gallery',text:t}).catch(()=>{});
+      else navigator.clipboard.writeText(t).then(()=>toast('Link copied!'));
     }
 
-    // === 🚀 MAIN INIT ===
-    async function init() {
-      initAds(); // Init ads dulu
+    // === 🔐 TURNSTILE ===
+    window.onTurnstileSuccess = function(token) {
+      turnstileVerified = true;
+      hideTurnstile();
+      unlockBody();
+      if (!window.galleryLoaded && typeof loadGallery === 'function') loadGallery();
+    };
+    window.onTurnstileError = function(code) {
+      document.getElementById('turnstile-error').textContent = `Error: ${code}`;
+      document.getElementById('turnstile-fallback').style.display = 'block';
+    };
+    window.turnstileManualFallback = function() {
+      // Fallback: auto-verify after 3s if stuck
+      setTimeout(() => {
+        if (!turnstileVerified) {
+          console.warn('⚠️ Turnstile fallback triggered');
+          turnstileVerified = true;
+          hideTurnstile();
+          unlockBody();
+          if (!window.galleryLoaded && typeof loadGallery === 'function') loadGallery();
+        }
+      }, 3000);
+    };
+    function hideTurnstile() {
+      document.getElementById('turnstile-modal').classList.add('hidden');
+      document.body.classList.remove('turnstile-active');
+    }
+    function showTurnstile() {
+      // Skip for bots / direct photo links
+      const ua = navigator.userAgent.toLowerCase();
+      const bots = ['googlebot','bingbot','yandex','baiduspider'];
+      if (bots.some(b=>ua.includes(b)) || location.pathname.includes('/photo/')) {
+        turnstileVerified = true;
+        hideTurnstile();
+        if (typeof loadGallery === 'function') loadGallery();
+        return;
+      }
+      document.getElementById('turnstile-modal').classList.remove('hidden');
+      document.body.classList.add('turnstile-active');    }
+
+    // === 💬 GISCUS ===
+    window.openConfirmModal = function() {
+      document.getElementById('confirm-modal').classList.remove('hidden');
+      document.body.classList.add('modal-open');
+    };
+    window.cancelDiscussion = function() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      unlockBody();
+      toast('Kembali ke galeri');
+    };
+    window.startDiscussion = function() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      document.getElementById('giscus-fullscreen').classList.add('active');
+      document.body.classList.add('comments-fullscreen');
+      toast('Login GitHub untuk komentar');
+    };
+    window.closeGiscus = function() {
+      document.getElementById('giscus-fullscreen').classList.remove('active');
+      unlockBody();
+    };
+
+    // === UTILS ===
+    function unlockBody() {
+      document.body.classList.remove('modal-open','view-open','comments-fullscreen','turnstile-active');
+    }
+    function toast(msg, dur=2500) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), dur);
+    }
+
+    // === ✅ SAFE JSON FETCH ===
+    async function safeFetchJSON(paths) {
+      for (const path of paths) {
+        try {
+          const res = await fetch(path + '?t=' + Date.now(), { headers: {'Accept':'application/json'} });
+          const ct = res.headers.get('content-type') || '';
+          if (!ct.includes('application/json')) { console.warn(`⚠️ ${path} not JSON`); continue; }
+          if (!res.ok) { console.warn(`⚠️ ${path} ${res.status}`); continue; }
+          const text = await res.text();
+          const first = text.trim().charAt(0);
+          if (first !== '{' && first !== '[') { console.warn(`⚠️ ${path} invalid JSON start`); continue; }
+          return JSON.parse(text);
+        } catch(e) { console.warn(`⚠️ ${path} error:`, e.message); continue; }
+      }
+      throw new Error('Gagal load photos.json');
+    }
+    // === 🚀 LOAD GALLERY ===
+    async function loadGallery() {
+      if (window.galleryLoaded) return;
+      window.galleryLoaded = true;
       
       try {
         document.getElementById('loading').classList.remove('hidden');
         document.getElementById('error').classList.add('hidden');
         
-        // ✅ Safe fetch JSON dengan multiple fallback paths
         const data = await safeFetchJSON(CONFIG.JSON_PATHS);
-        
         allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
-        if (!Array.isArray(allPhotos)) {
-          throw new Error('Format data tidak valid - harus array');
-        }
+        if (!Array.isArray(allPhotos)) throw new Error('Invalid data format');
         
-        // Sort by name/number
-        allPhotos.sort((a, b) => {
-          const na = parseInt(a.name), nb = parseInt(b.name);
-          if (!isNaN(na) && !isNaN(nb)) return na - nb;
-          return String(a.name).localeCompare(String(b.name));        });
+        allPhotos.sort((a,b) => {
+          const na=parseInt(a.name), nb=parseInt(b.name);
+          return (!isNaN(na)&&!isNaN(nb)) ? na-nb : String(a.name).localeCompare(String(b.name));
+        });
         
         filteredPhotos = [...allPhotos];
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery-section').classList.remove('hidden');
-        
         renderGallery(filteredPhotos);
         
-      } catch (err) {
-        console.error('❌ Init error:', err);
+      } catch(err) {
+        console.error('❌', err);
         document.getElementById('loading').classList.add('hidden');
-        document.getElementById('error').textContent = `Error: ${err.message}. Cek console untuk detail.`;
+        document.getElementById('error').textContent = `Error: ${err.message}`;
         document.getElementById('error').classList.remove('hidden');
       }
     }
 
-    // === EVENT LISTENERS ===
-    document.getElementById('search-input').addEventListener('input', applyFilters);
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        applyFilters();
+    // === INIT ===
+    function init() {
+      initAds();
+      
+      // Event listeners
+      document.getElementById('search-input').addEventListener('input', applyFilters);
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          applyFilters();
+        });
       });
-    });
-    
-    document.getElementById('photo-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'photo-modal') closeModal();
-    });
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+      document.getElementById('photo-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'photo-modal') closeModal();
+      });
+      document.addEventListener('keydown', (e) => { if(e.key==='Escape') { closeModal(); closeGiscus(); }});
+            // Start: Turnstile first, then gallery
+      showTurnstile();
+    }
 
-    // === START ===
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
       init();
     }
+  </script>
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ImageGallery","name":"TKJ1 Gallery","url":"https://tkj1.pages.dev/"}
   </script>
 </body>
 </html>
