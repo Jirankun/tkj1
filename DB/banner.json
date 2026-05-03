@@ -47,6 +47,11 @@
                 {
             "id": "12",
             "name": "./banner/sekiyubanner.jpg"
+        },
+                {
+            "id": "13",
+            "name": "./banner/dmm001.jpg"
         }
+        
     ]
 }
