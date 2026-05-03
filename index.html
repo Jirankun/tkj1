@@ -3,81 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-
-  <!-- 🎨 Theme Color -->
   <meta name="theme-color" content="#00aaff" />
-  <meta name="msapplication-navbutton-color" content="#00aaff" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  
-  <!-- 📱 PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="application-name" content="TKJ OnE Gallery"/>
-
-  <!-- 🔍 SEO -->
+  
   <meta name="description" content="TKJ OnE Gallery - Arsip visual perjalanan siswa TKJ OnE"/>
-  <meta name="keywords" content="TKJ OnE, gallery TKJ, arsip foto TKJ"/>
   <meta name="author" content="TKJ OnE - Jirankun"/>
   <meta name="robots" content="index, follow"/>
-
-  <!-- 🔗 Canonical -->
+  
   <link rel="canonical" href="https://tkj1.pages.dev/"/>
-
-  <!-- 📲 Open Graph -->
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://tkj1.pages.dev/"/>
   <meta property="og:title" content="TKJ OnE Gallery"/>
-  <meta property="og:description" content="Arsip Foto & Video TKJ OnE"/>
   <meta property="og:image" content="https://tkj1.pages.dev/og-image.jpg"/>
-
-  <!-- 🐦 Twitter -->
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="TKJ OnE Gallery"/>
-  <meta name="twitter:description" content="Arsip Foto & Video TKJ OnE"/>
-
-  <meta name="format-detection" content="telephone=no"/>
-  <meta http-equiv="x-ua-compatible" content="IE=edge"/>
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+  
   <title>TKJ OnE Gallery - Arsip Foto & Video</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   
   <!-- ✅ GOOGLE ADSENSE -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
+
   <style>
     :root {
       --bg: #0a0a0f; --card: #151520; --card-hover: #1a1a28; --text: #ffffff;
       --text-muted: #888899; --accent: #00d4aa; --accent-hover: #00b894;
-      --border: #2a2a3a; --error: #ff4757; --success: #2ed573;
+      --border: #2a2a3a; --error: #ff4757;
       --header-height: 85px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
     body { 
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-      background: var(--bg); 
-      color: var(--text); 
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+      background: var(--bg); color: var(--text); line-height: 1.6;
+      display: flex; flex-direction: column; min-height: 100vh;
     }
-    body.modal-open, body.view-open { overflow: hidden; }
+    body.modal-open { overflow: hidden; }
     .hidden { display: none !important; }
     .container { max-width: 100%; margin: 0 auto; padding: 0 16px; }
 
-    /* === HEADER FIXED - CLEANED === */
+    /* === HEADER === */
     .header {
       position: fixed; top: 0; left: 0; right: 0; width: 100%;
       height: var(--header-height); z-index: 1000;
       background: rgba(15, 15, 26, 0.98);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.2s ease;
-    }
+      transition: box-shadow 0.2s ease;    }
     .header-content { 
       display: flex; flex-direction: column; gap: 8px;
       height: 100%; padding: 10px 0;
@@ -86,17 +56,18 @@
       font-size: 1.3rem; font-weight: 800; 
       background: linear-gradient(135deg, var(--accent), #00a8ff); 
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-align: center; letter-spacing: -0.5px;
+      text-align: center;
     }
     .search-box { position: relative; width: 100%; }
     .search-box input { 
       width: 100%; padding: 10px 38px 10px 14px; background: var(--card); 
       border: 1px solid var(--border); border-radius: 10px; color: var(--text); 
-      font-size: 0.9rem; outline: none; transition: all 0.2s;
+      font-size: 0.9rem; outline: none;
     }
     .search-box input:focus { border-color: var(--accent); }
-    .search-box::before { content: '🔍'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
-        .filter-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+    .search-box::before { content: '🔍'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
     .filter-btn { 
       padding: 8px 14px; background: var(--card); border: 1px solid var(--border);
       border-radius: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 600; 
@@ -106,13 +77,13 @@
       background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 700; 
     }
 
-    /* === MAIN CONTENT === */
+    /* === MAIN === */
     .main { padding-top: calc(var(--header-height) + 16px); padding-bottom: 80px; min-height: 100vh; flex: 1; }
     .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     
     .gallery-item { 
       background: var(--card); border: 1px solid var(--border); border-radius: 14px; 
-      overflow: hidden; cursor: pointer; transition: transform 0.2s; position: relative; 
+      overflow: hidden; cursor: pointer; transition: transform 0.2s;
     }
     .gallery-item:active { transform: scale(0.98); }
     .gallery-thumb { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
@@ -123,57 +94,49 @@
     .badge-photo { background: rgba(0, 212, 170, 0.15); color: var(--accent); }
     .badge-video { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
 
-    /* === 🎯 BANNER ADS - AUTO INSERT === */
+    /* === 🎯 BANNER ADS === */
     .ad-banner {
-      width: 100%;
-      margin: 16px 0;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 2px solid var(--accent);
-      background: var(--card);
+      width: 100%; margin: 16px 0; border-radius: 12px; overflow: hidden;      border: 2px solid var(--accent); background: var(--card);
       box-shadow: 0 4px 15px rgba(0, 212, 170, 0.2);
       transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
+      display: block;
     }
     .ad-banner:active { transform: scale(0.98); }
-    .ad-banner:hover { box-shadow: 0 6px 20px rgba(0, 212, 170, 0.35); }
     .ad-banner img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
+      width: 100%; height: auto; display: block; object-fit: cover;
     }
     .ad-banner-label {
-      background: var(--accent);
-      color: var(--bg);      text-align: center;
-      padding: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      background: var(--accent); color: var(--bg); text-align: center;
+      padding: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
     }
-    .ad-banner-container {
-      grid-column: 1 / -1;
-    }
+    .ad-container { grid-column: 1 / -1; }
 
-    /* === ADSENSE SLOT === */
-    .ad-slot {
-      width: 100%; margin: 16px 0; display: flex; justify-content: center;
-      min-height: 100px; background: var(--card-hover); border-radius: 12px;
-      border: 1px dashed var(--border);
+    /* === MODAL === */
+    .modal { 
+      position: fixed; inset: 0; background: rgba(0,0,0,0.92); 
+      display: flex; align-items: center; justify-content: center; 
+      z-index: 1000; padding: 16px;
     }
-
-    /* === MODALS & OTHER === */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-    .modal-content { background: var(--card); border-radius: 18px; max-width: 100%; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); position: relative; }
-    .modal-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 1.3rem; cursor: pointer; }
+    .modal-content { 
+      background: var(--card); border-radius: 18px; max-width: 100%; 
+      width: 100%; max-height: 85vh; overflow-y: auto; 
+      border: 1px solid var(--border); position: relative; 
+    }
+    .modal-close { 
+      position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; 
+      border-radius: 50%; background: var(--bg); border: 1px solid var(--border); 
+      color: var(--text); font-size: 1.3rem; cursor: pointer; 
+    }
     .modal-media { width: 100%; max-height: 55vh; object-fit: contain; display: block; }
     .modal-body { padding: 20px; }
     .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
     .modal-desc { color: var(--text-muted); margin-bottom: 16px; }
     .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 20px; border-radius: 12px; font-weight: 600; border: none; cursor: pointer; }
+    .btn { 
+      display: inline-flex; align-items: center; gap: 6px; padding: 12px 20px; 
+      border-radius: 12px; font-weight: 600; border: none; cursor: pointer; 
+    }
     .btn-primary { background: var(--accent); color: var(--bg); }
     .btn-secondary { background: var(--card-hover); color: var(--text); border: 1px solid var(--border); }
 
@@ -183,8 +146,10 @@
     .error { color: var(--error); }
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-
-    .footer { padding: 20px 16px; text-align: center; background: var(--card); border-top: 1px solid var(--border); margin-top: auto; }
+    .footer { 
+      padding: 20px 16px; text-align: center; background: var(--card); 
+      border-top: 1px solid var(--border); margin-top: auto; 
+    }
     .footer-brand { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
     .footer-brand span { color: var(--accent); }
     .footer-dev { font-size: 0.85rem; color: var(--text-muted); }
@@ -193,8 +158,9 @@
 </head>
 <body>
 
-  <!-- HEADER - CLEANED -->
-  <header class="header">    <div class="container">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
       <div class="header-content">
         <div class="logo">📸 TKJ1 Gallery</div>
         <div class="search-box">
@@ -209,7 +175,7 @@
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main class="main">
     <div class="container">
       <div id="loading" class="loading">
@@ -228,8 +194,7 @@
   </main>
 
   <!-- MODAL -->
-  <div id="photo-modal" class="modal hidden">
-    <div class="modal-content">
+  <div id="photo-modal" class="modal hidden">    <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">×</button>
       <img class="modal-media" id="modal-img" src="" alt="Photo">
       <div class="modal-body">
@@ -243,124 +208,132 @@
   </div>
 
   <!-- FOOTER -->
-  <footer class="footer">    <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
+  <footer class="footer">
+    <div class="footer-brand">TKJ OnE - <span>Aokaze™</span></div>
     <div class="footer-dev">Dev: <a href="https://jirankun.github.io/portofoliozhyllan">jirankun</a></div>
   </footer>
 
   <script>
-    // === CONFIGURATION ===
+    'use strict';
+    
+    // === 🔧 CONFIG - GANTI SESUAI KEBUTUHAN ===
     const CONFIG = {
-      // 🎯 HARI NEZUMI KOBO SETTINGS
-      HARINEZUMI_BASE_URL: 'http://harinezumikobo.jp',
-      HARINEZUMI_PAGE: '/newtop.html',
-      // Fallback images jika site down (ganti dengan URL banner yang valid)
-      FALLBACK_ADS: [
+      // 📦 Photos JSON paths (coba urutan ini)
+      JSON_PATHS: ['/photos.json', '/DB/photos.json', 'photos.json', 'DB/photos.json'],
+      
+      // 🎯 HARI NEZUMI ADS - CONFIG MANUAL (karena CORS block fetch direct)
+      // Ambil manual dari harinezumikobo.jp/newtop.html, copy image URL + link tujuan
+      HARINEZUMI_ADS: [
         {
-          image: 'https://via.placeholder.com/728x90/00d4aa/ffffff?text=Harinezumi+Kobo+Ad+1',
-          link: 'http://harinezumikobo.jp/newtop.html'
+          image: 'https://harinezumikobo.jp/images/banner1.jpg', // ⚠️ GANTI DENGAN URL GAMBAR SEBENARNYA
+          link: 'http://harinezumikobo.jp/newtop.html',
+          alt: 'Harinezumi Kobo Banner 1'
         },
         {
-          image: 'https://via.placeholder.com/728x90/00a8ff/ffffff?text=Harinezumi+Kobo+Ad+2',
-          link: 'http://harinezumikobo.jp/'
+          image: 'https://harinezumikobo.jp/images/banner2.jpg', // ⚠️ GANTI JUGA INI
+          link: 'http://harinezumikobo.jp/gallery/',
+          alt: 'Harinezumi Kobo Banner 2'
         }
       ],
-      AD_INSERT_INTERVAL: 5, // Insert ad setiap 5 item
+      
+      // 🔄 Fallback ads kalau yang atas gagal/blank
+      FALLBACK_ADS: [
+        {
+          image: 'https://via.placeholder.com/728x90/00d4aa/ffffff?text=Harinezumi+Kobo+Ad',
+          link: 'http://harinezumikobo.jp/newtop.html',
+          alt: 'Ad Placeholder'
+        }
+      ],      
+      AD_INSERT_EVERY: 5,      // Insert ad tiap N foto
       BASE_URL: 'https://tkj1.pages.dev'
     };
 
     let allPhotos = [], filteredPhotos = [], currentPhoto = null;
-    let harinezumiAds = [];
+    let activeAds = [];
 
-    // === FETCH HARI NEZUMI ADS ===
-    async function fetchHarinezumiAds() {
-      try {
-        // Coba fetch dari harinezumikobo.jp
-        const response = await fetch(CONFIG.HARINEZUMI_PAGE, { 
-          mode: 'cors',
-          headers: { 'Accept': 'text/html' }
-        });
-        
-        if (response.ok) {
-          const html = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          
-          // Extract semua gambar dan link
-          const images = doc.querySelectorAll('img');
-          const links = doc.querySelectorAll('a');
-          
-          // Process images jadi banner ads
-          images.forEach((img, index) => {
-            const src = img.src || img.getAttribute('data-src');
-            if (src && (src.includes('.jpg') || src.includes('.jpeg') || src.includes('.png') || src.includes('.gif'))) {              // Cari link terdekat
-              let link = CONFIG.HARINEZUMI_BASE_URL + CONFIG.HARINEZUMI_PAGE;
-              const parentLink = img.closest('a');
-              if (parentLink && parentLink.href) {
-                link = parentLink.href;
-              }
-              
-              harinezumiAds.push({
-                image: src,
-                link: link,
-                title: img.alt || `Harinezumi Ad ${index + 1}`
-              });
-            }
+    // === ✅ SAFE JSON FETCH - FIX ERROR "<!DOCTYPE" ===
+    async function safeFetchJSON(paths) {
+      for (const path of paths) {
+        try {
+          const res = await fetch(path + '?t=' + Date.now(), { 
+            headers: { 'Accept': 'application/json' } 
           });
           
-          console.log(`✅ Loaded ${harinezumiAds.length} ads from Harinezumi Kobo`);
+          // Cek content-type dulu
+          const contentType = res.headers.get('content-type') || '';
+          if (!contentType.includes('application/json')) {
+            console.warn(`⚠️ ${path} bukan JSON (content-type: ${contentType})`);
+            continue;
+          }
+          
+          if (!res.ok) {
+            console.warn(`⚠️ ${path} returned ${res.status}`);
+            continue;
+          }
+          
+          const text = await res.text();
+          // Cek karakter pertama - JSON harus mulai dengan { atau [
+          const firstChar = text.trim().charAt(0);
+          if (firstChar !== '{' && firstChar !== '[') {
+            console.warn(`⚠️ ${path} bukan valid JSON (starts with: ${firstChar})`);
+            continue;
+          }
+          
+          return JSON.parse(text);
+        } catch (e) {
+          console.warn(`⚠️ Failed to fetch/parse ${path}:`, e.message);
+          continue;
         }
-      } catch (error) {
-        console.warn('⚠️ Failed to fetch Harinezumi ads, using fallback:', error);
-        // Gunakan fallback ads
-        harinezumiAds = [...CONFIG.FALLBACK_ADS];
       }
-      
-      // Jika tetap kosong, pakai fallback
-      if (harinezumiAds.length === 0) {
-        harinezumiAds = [...CONFIG.FALLBACK_ADS];
-      }
+      throw new Error('Gagal load photos.json dari semua path');
     }
 
-    // === CREATE AD BANNER ELEMENT ===
+    // === 🎯 INIT ADS - PAKAI CONFIG MANUAL ===
+    function initAds() {
+      // Prioritaskan CONFIG.HARINEZUMI_ADS, fallback ke FALLBACK_ADS
+      const validAds = CONFIG.HARINEZUMI_ADS.filter(ad => ad.image && ad.link);
+      activeAds = validAds.length > 0 ? validAds : CONFIG.FALLBACK_ADS;      console.log(`✅ Loaded ${activeAds.length} ads`);
+    }
+
+    // === 🎨 CREATE AD BANNER ===
     function createAdBanner(ad, index) {
-      const adEl = document.createElement('div');
-      adEl.className = 'ad-banner-container';
-      adEl.innerHTML = `
-        <a href="${ad.link}" target="_blank" rel="noopener noreferrer" class="ad-banner" onclick="trackAdClick(${index})">
+      const container = document.createElement('div');
+      container.className = 'ad-container';
+      container.innerHTML = `
+        <a href="${ad.link}" target="_blank" rel="noopener noreferrer" 
+           class="ad-banner" data-ad-index="${index}">
           <div class="ad-banner-label">📢 Sponsored</div>
-          <img src="${ad.image}" alt="Advertisement" loading="lazy">
+          <img src="${ad.image}" alt="${ad.alt || 'Advertisement'}" loading="lazy">
         </a>
       `;
-      return adEl;
+      return container;
     }
 
-    // === TRACK AD CLICK ===
-    function trackAdClick(index) {
-      console.log(`Ad clicked: ${index}`);
-      // Tambah analytics di sini jika perlu
-    }
-
-    // === RENDER GALLERY WITH ADS ===
-    function renderGallery(photos) {      const grid = document.getElementById('gallery-grid');
+    // === 🖼️ RENDER GALLERY + ADS ===
+    function renderGallery(photos) {
+      const grid = document.getElementById('gallery-grid');
       grid.innerHTML = '';
       
-      if (!photos || photos.length === 0) {
+      if (!photos?.length) {
         document.getElementById('empty-state').classList.remove('hidden');
         return;
       }
       document.getElementById('empty-state').classList.add('hidden');
       
-      let adIndex = 0;
+      let adCounter = 0;
       
-      photos.forEach((photo, index) => {
-        // Render photo item
-        const isVideo = photo.url && (photo.url.includes('.mp4') || photo.url.includes('.webm'));
+      photos.forEach((photo, idx) => {
+        // Render photo card
+        const isVideo = photo.url && /\.(mp4|webm|mov)$/i.test(photo.url);
         const item = document.createElement('div');
         item.className = 'gallery-item';
+        item.dataset.name = photo.name || '';
+        item.dataset.type = isVideo ? 'video' : 'photo';
         
         if (isVideo) {
           item.innerHTML = `
-            <video class="gallery-thumb" src="${photo.url}" muted preload="none" playsinline loop></video>
+            <video class="gallery-thumb" src="${photo.url}" muted preload="none" 
+                   playsinline loop controlsList="nodownload"></video>
             <div class="gallery-info">
               <div class="gallery-title">${photo.title || '#' + photo.name}</div>
               <div class="gallery-meta">
@@ -368,9 +341,9 @@
               </div>
             </div>
           `;
-        } else {
-          item.innerHTML = `
-            <img class="gallery-thumb" src="${photo.url}" alt="${photo.title || photo.name}" loading="lazy">
+        } else {          item.innerHTML = `
+            <img class="gallery-thumb" src="${photo.url}" 
+                 alt="${photo.title || photo.name}" loading="lazy">
             <div class="gallery-info">
               <div class="gallery-title">${photo.title || '#' + photo.name}</div>
               <div class="gallery-meta">
@@ -383,54 +356,54 @@
         item.addEventListener('click', () => openModal(photo));
         grid.appendChild(item);
         
-        // Insert ad setiap AD_INSERT_INTERVAL items
-        if ((index + 1) % CONFIG.AD_INSERT_INTERVAL === 0 && harinezumiAds.length > 0) {
-          const ad = harinezumiAds[adIndex % harinezumiAds.length];
-          const adEl = createAdBanner(ad, adIndex);
-          grid.appendChild(adEl);
-          adIndex++;
+        // Insert ad setiap CONFIG.AD_INSERT_EVERY items
+        if ((idx + 1) % CONFIG.AD_INSERT_EVERY === 0 && activeAds.length > 0) {
+          const ad = activeAds[adCounter % activeAds.length];
+          grid.appendChild(createAdBanner(ad, adCounter));
+          adCounter++;
         }
-      });      
-      // Insert Google AdSense di akhir jika perlu
-      if (photos.length > 10) {
-        const adSenseEl = document.createElement('div');
-        adSenseEl.className = 'ad-banner-container';
-        adSenseEl.innerHTML = `
-          <div class="ad-slot">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-6754329161781195"
-                 data-ad-slot="1234567890"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            <\/script>
-          </div>
-        `;
-        grid.appendChild(adSenseEl);
-      }
+      });
     }
 
-    // === MODAL FUNCTIONS ===
+    // === 🔍 FILTER & SEARCH ===
+    function applyFilters() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const filter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+      
+      filteredPhotos = allPhotos.filter(p => {
+        const matchSearch = !query || 
+          (p.name && p.name.toLowerCase().includes(query)) || 
+          (p.title && p.title.toLowerCase().includes(query));
+        
+        const isVideo = p.url && /\.(mp4|webm|mov)$/i.test(p.url);
+        const matchFilter = filter === 'all' || 
+          (filter === 'video' && isVideo) || 
+          (filter === 'photo' && !isVideo);
+        
+        return matchSearch && matchFilter;
+      });
+      
+      renderGallery(filteredPhotos);
+    }
+
+    // === 💬 MODAL ===
     function openModal(photo) {
       currentPhoto = photo;
       const modal = document.getElementById('photo-modal');
-      const img = document.getElementById('modal-img');
-      
-      img.src = photo.url;
+      const img = document.getElementById('modal-img');      
+      img.src = photo.url || '';
       document.getElementById('modal-title').textContent = photo.title || '#' + photo.name;
-      document.getElementById('modal-desc').textContent = photo.desc || 'No description';
+      document.getElementById('modal-desc').textContent = photo.desc || photo.description || 'No description';
       
       modal.classList.remove('hidden');
       document.body.classList.add('modal-open');
     }
 
     function closeModal() {
-      const modal = document.getElementById('photo-modal');
-      modal.classList.add('hidden');
+      document.getElementById('photo-modal').classList.add('hidden');
       document.body.classList.remove('modal-open');
       document.getElementById('modal-img').src = '';
+      currentPhoto = null;
     }
 
     function sharePhoto() {
@@ -438,70 +411,75 @@
       const text = `Check: ${currentPhoto.title || '#' + currentPhoto.name}\n${CONFIG.BASE_URL}`;
       
       if (navigator.share) {
-        navigator.share({ title: 'TKJ1 Gallery', text: text });
-      } else {        navigator.clipboard.writeText(text);
-        alert('Link copied!');
+        navigator.share({ title: 'TKJ1 Gallery', text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Link copied to clipboard!');
+        });
       }
     }
 
-    // === FILTER & SEARCH ===
-    function applyFilters() {
-      const query = document.getElementById('search-input').value.toLowerCase();
-      const activeFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-      
-      filteredPhotos = allPhotos.filter(p => {
-        const matchSearch = !query || (p.name && p.name.toLowerCase().includes(query)) || (p.title && p.title.toLowerCase().includes(query));
-        const isVideo = p.url && (p.url.includes('.mp4') || p.url.includes('.webm'));
-        const matchFilter = activeFilter === 'all' || 
-                           (activeFilter === 'video' && isVideo) || 
-                           (activeFilter === 'photo' && !isVideo);
-        return matchSearch && matchFilter;
-      });
-      
-      renderGallery(filteredPhotos);
-    }
-
-    // === INIT ===
+    // === 🚀 MAIN INIT ===
     async function init() {
-      // Fetch ads first
-      await fetchHarinezumiAds();
+      initAds(); // Init ads dulu
       
-      // Load photos
       try {
-        const res = await fetch('/photos.json');
-        if (!res.ok) throw new Error('Failed to load photos');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('error').classList.add('hidden');
         
-        const data = await res.json();
-        allPhotos = Array.isArray(data) ? data : (data.photos || []);
+        // ✅ Safe fetch JSON dengan multiple fallback paths
+        const data = await safeFetchJSON(CONFIG.JSON_PATHS);
+        
+        allPhotos = Array.isArray(data) ? data : (data.photos || data.data || []);
+        if (!Array.isArray(allPhotos)) {
+          throw new Error('Format data tidak valid - harus array');
+        }
+        
+        // Sort by name/number
+        allPhotos.sort((a, b) => {
+          const na = parseInt(a.name), nb = parseInt(b.name);
+          if (!isNaN(na) && !isNaN(nb)) return na - nb;
+          return String(a.name).localeCompare(String(b.name));        });
+        
         filteredPhotos = [...allPhotos];
-        
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery-section').classList.remove('hidden');
         
         renderGallery(filteredPhotos);
+        
       } catch (err) {
+        console.error('❌ Init error:', err);
         document.getElementById('loading').classList.add('hidden');
-        document.getElementById('error').textContent = 'Error: ' + err.message;
+        document.getElementById('error').textContent = `Error: ${err.message}. Cek console untuk detail.`;
         document.getElementById('error').classList.remove('hidden');
       }
     }
 
-    // Event listeners
+    // === EVENT LISTENERS ===
     document.getElementById('search-input').addEventListener('input', applyFilters);
-    document.querySelectorAll('.filter-btn').forEach(btn => {      btn.addEventListener('click', (e) => {
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
+        e.currentTarget.classList.add('active');
         applyFilters();
       });
     });
-
-    // Close modal on outside click
+    
     document.getElementById('photo-modal').addEventListener('click', (e) => {
       if (e.target.id === 'photo-modal') closeModal();
     });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
 
-    // Init
-    init();
+    // === START ===
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   </script>
 </body>
 </html>
