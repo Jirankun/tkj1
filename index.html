@@ -51,7 +51,7 @@
     .pc-title { font-size: 1.4rem; font-weight: 700; margin: 12px 0; }
     .pc-desc { color: var(--text-muted); margin-bottom: 24px; max-width: 280px; font-size: 0.9rem; }
 
-    /* 📐 HEADER FIX (NO CLIP) */
+    /* 📐 HEADER */
     .header { position: fixed; top: 0; left: 0; right: 0; min-height: 88px; z-index: 100; background: rgba(9,9,11,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: box-shadow 0.2s; }
     .header-inner { display: flex; flex-direction: column; gap: 10px; padding: var(--header-pad) 0 8px; }
     .logo { font-weight: 800; font-size: 1.1rem; text-align: center; letter-spacing: -0.5px; }
@@ -87,7 +87,7 @@
     .ad-img.error + .ad-fallback { display: flex; }
     .ad-label { position: absolute; top: 8px; left: 8px; padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.65rem; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
 
-    /* 🖼️ FULL VIEW (NO BACK BTN) */
+    /* 🖼️ FULL VIEW */
     .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
     .full-view.active { display: flex; }
     .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
@@ -190,7 +190,7 @@
       <div id="full-view" class="full-view">
         <div class="full-container">
           <img id="fv-img" class="full-media" src="" alt="">
-          <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata"></video>
+          <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
           <div class="full-info">
             <h1 id="fv-title" class="full-title"></h1>
             <p id="fv-desc" class="full-desc"></p>
@@ -215,7 +215,7 @@
       <button class="modal-close" onclick="closeModal()">×</button>
       <div class="modal-body">
         <img id="md-img" class="modal-media" src="" alt="">
-        <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata"></video>
+        <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
         <h2 id="md-title" style="margin-bottom:6px"></h2>
         <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px"></p>
         <p id="md-meta" style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px"></p>
@@ -259,21 +259,29 @@
     let data = [], filtered = [], cur = null, banners = [], tsOk = false;
     let vObs = null, playV = null, appT = null;
 
-    // 🔍 BULLETPROOF VIDEO DETECTION
+    // 🔍 CATBOX.MOE VIDEO DETECTION - BULLETPROOF
     const isVideo = (item) => {
+      // 1. PRIMARY: Check gender field (reliable from your JSON)
+      if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
+      
+      // 2. FALLBACK: URL-based detection
       const url = typeof item === 'string' ? item : (item.url || item.src || '');
       if (!url) return false;
-      // 1. Cek field type jika JSON nyediain
-      if (item.type && item.type.toLowerCase() === 'video') return true;
-      // 2. Bersihkan query & hash, ambil ekstensi
-      const clean = String(url).split('?')[0].split('#')[0].toLowerCase();
-      const ext = /\.(mp4|webm|mov|mkv|m4v|ogv|avi)$/i.test(clean);
-      // 3. Fallback: cek keyword di path
-      const pathKeyword = /\/video\/|video\./i.test(clean);
-      return ext || pathKeyword;
+      
+      // Clean URL: trim whitespace, remove query/hash
+      const clean = String(url).trim().split('?')[0].split('#')[0].toLowerCase();
+      
+      // Check catbox.moe domain + video extension
+      const isCatbox = clean.includes('catbox.moe');
+      const hasExt = /\.(mp4|webm|mov|mkv|m4v|ogv|avi)$/i.test(clean);
+      
+      return isCatbox && hasExt;
     };
 
-    // 🔒 PROTECT
+    // 🔗 CLEAN URL - Remove trailing spaces from catbox
+    const cleanUrl = (url) => url ? String(url).trim() : '';
+
+    // 🔒 PROTECT MEDIA
     const protect = el => {
       if (!el) return;
       ['contextmenu','dragstart','selectstart','copy'].forEach(e => el.addEventListener(e, ev => ev.preventDefault(), {passive:false}));
@@ -311,27 +319,44 @@
       return d;
     };
 
-    // 🖼️ RENDER
+    // 🖼️ RENDER GALLERY
     const render = list => {
       const g = document.getElementById('grid'); g.innerHTML = '';
       const emp = document.getElementById('empty');
       if (!list.length) { emp.classList.remove('hidden'); return; }
       emp.classList.add('hidden');
       let bi = 0;
+      
       list.forEach((p, i) => {
         const v = isVideo(p);
         const c = document.createElement('div'); c.className = 'card';
-        c.innerHTML = v ? `<video class="card-media" src="${p.url}" muted playsinline loop preload="metadata"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>` : `<img class="card-media" src="${p.url}" alt="${p.title||p.name}" loading="lazy"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
+        
+        if (v) {
+          // ✅ VIDEO CARD - catbox.moe support
+          c.innerHTML = `<video class="card-media" src="${cleanUrl(p.url)}" muted playsinline loop preload="metadata" crossorigin="anonymous"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>`;
+          const vid = c.querySelector('video');
+          protect(vid);
+          obsV(vid);
+          // Auto-play on load for catbox
+          vid.addEventListener('loadedmetadata', () => { if(vid.offsetParent) vid.play().catch(()=>{}); }, {once:true});
+        } else {
+          // ✅ PHOTO CARD
+          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="lazy">
+            <div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
+          protect(c.querySelector('img'));
+        }
+        
         c.onclick = () => openMd(p);
         g.appendChild(c);
-        if (v) { const vid = c.querySelector('video'); protect(vid); obsV(vid); }
-        else protect(c.querySelector('img'));
 
-        if ((i + 1) % 5 === 0 && banners.length) { g.appendChild(mkAd(banners[bi % banners.length], bi++)); }
+        // Insert banner every 5 items
+        if ((i + 1) % 5 === 0 && banners.length) { 
+          g.appendChild(mkAd(banners[bi % banners.length], bi++)); 
+        }
       });
     };
 
-    // 🔍 FILTER
+    // 🔍 FILTER - Use same isVideo() logic
     const apply = () => {
       const q = document.getElementById('search').value.toLowerCase().trim();
       const f = document.querySelector('.filter-btn.active')?.dataset.f || 'all';
@@ -344,14 +369,27 @@
       render(filtered);
     };
 
-    // 💬 MODAL
+    // 💬 MODAL - Video support
     const openMd = p => {
       cur = p; pauseThumb();
-      const v = isVideo(p.url);
+      const v = isVideo(p);
       const img = document.getElementById('md-img'), vid = document.getElementById('md-vid');
-      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
-      if (v) { vid.src = p.url; vid.load(); protect(vid); img.src = ''; }
-      else { img.src = p.url; protect(img); vid.src = ''; }
+      
+      img.style.display = v ? 'none' : 'block'; 
+      vid.style.display = v ? 'block' : 'none';
+      
+      if (v) { 
+        vid.src = cleanUrl(p.url); 
+        vid.load(); 
+        protect(vid); 
+        img.src = ''; 
+        vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true});
+      } else { 
+        img.src = cleanUrl(p.url); 
+        protect(img); 
+        vid.src = ''; 
+      }
+      
       document.getElementById('md-title').textContent = p.title || '#' + p.name;
       document.getElementById('md-desc').textContent = p.desc || 'Tidak ada deskripsi';
       document.getElementById('md-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
@@ -359,23 +397,38 @@
       document.getElementById('md-app').onclick = () => openApp(p.name);
       document.getElementById('md-share').onclick = () => share(p);
     };
+    
     const closeModal = () => {
       document.getElementById('modal').classList.remove('active');
-      document.getElementById('md-img').src = ''; const v = document.getElementById('md-vid'); v.pause(); v.src = '';
+      document.getElementById('md-img').src = ''; 
+      const v = document.getElementById('md-vid'); v.pause(); v.src = '';
       resumeThumb(); unlockBody(); cur = null;
     };
 
-    // 🖼️ FULL VIEW (NO BACK BTN)
+    // 🖼️ FULL VIEW - No back button, catbox video support
     const openFull = p => {
       cur = p; pauseThumb();
       document.querySelector('.header')?.classList.add('hidden');
       document.getElementById('gallery')?.classList.add('hidden');
       const fv = document.getElementById('full-view'); fv.classList.add('active');
       const img = document.getElementById('fv-img'), vid = document.getElementById('fv-vid');
-      const v = isVideo(p.url);
-      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
-      if (v) { vid.src = p.url; vid.load(); protect(vid); img.src = ''; }
-      else { img.src = p.url; protect(img); vid.src = ''; }
+      const v = isVideo(p);
+      
+      img.style.display = v ? 'none' : 'block'; 
+      vid.style.display = v ? 'block' : 'none';
+      
+      if (v) { 
+        vid.src = cleanUrl(p.url); 
+        vid.load(); 
+        protect(vid); 
+        img.src = '';
+        vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true});
+      } else { 
+        img.src = cleanUrl(p.url); 
+        protect(img); 
+        vid.src = ''; 
+      }
+      
       document.getElementById('fv-title').textContent = p.title || '#' + p.name;
       document.getElementById('fv-desc').textContent = p.desc || 'Tidak ada deskripsi';
       document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
@@ -384,12 +437,15 @@
       history.pushState({v: p.name}, '', `/photo/${p.name}`);
       lockBody();
     };
+    
     const closeFull = () => {
       document.getElementById('full-view').classList.remove('active');
       document.getElementById('gallery')?.classList.remove('hidden');
       document.querySelector('.header')?.classList.remove('hidden');
-      document.getElementById('fv-img').src = ''; const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
-      resumeThumb(); unlockBody(); history.pushState({}, '', location.pathname.split('/photo/')[0] || '/');
+      document.getElementById('fv-img').src = ''; 
+      const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
+      resumeThumb(); unlockBody(); 
+      history.pushState({}, '', location.pathname.split('/photo/')[0] || '/');
       cur = null;
     };
 
@@ -405,23 +461,34 @@
     const closeAppModal = () => document.getElementById('app-modal').classList.remove('active');
     document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
 
-    // 🔗 SHARE
+    // 🔗 SHARE - Web link only
     const share = p => {
       const t = `📷 ${p.title||'#'+p.name}\n🔗 ${CFG.BASE}/photo/${p.name}`;
       if (navigator.share) navigator.share({title:'TKJ Gallery',text:t}).catch(()=>{});
       else navigator.clipboard.writeText(t).then(()=>toast('Link disalin'));
     };
 
-    // 🎬 VIDEO OBSERVER
+    // 🎬 VIDEO OBSERVER - Thumbnail autoplay
     const obsV = el => { if(vObs) vObs.observe(el); };
     const initObs = () => {
       vObs = new IntersectionObserver(e => e.forEach(x => {
         if (document.querySelector('.modal-overlay.active, #full-view.active, #giscus-full:not(.hidden)')) { x.target.pause(); return; }
-        x.target[x.isIntersecting ? 'play' : 'pause']().catch(()=>{});
+        if (x.isIntersecting) x.target.play().catch(()=>{});
+        else x.target.pause();
       }), {threshold:0.5});
     };
-    const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
-    const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
+    const pauseThumb = () => { 
+      document.querySelectorAll('.card-media').forEach(v => { 
+        if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}
+      }); 
+    };
+    const resumeThumb = () => { 
+      if(playV&&document.contains(playV)){
+        const r=playV.getBoundingClientRect();
+        if(r.top<innerHeight)playV.play().catch(()=>{});
+        playV=null;
+      }
+    };
 
     // 🔐 TURNSTILE & CHAT
     window.onTS = () => { tsOk=true; hideTS(); unlockBody(); loadG(); };
@@ -446,7 +513,7 @@
     };
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
 
-    // ✅ SAFE FETCH
+    // ✅ SAFE JSON FETCH
     const safeJSON = async paths => {
       for (const p of paths) {
         try {
@@ -466,13 +533,15 @@
         document.getElementById('error').classList.add('hidden');
         const d = await safeJSON(CFG.JSON);
         data = Array.isArray(d) ? d : (d.photos||[]);
+        // Clean all URLs on load (remove trailing spaces)
+        data.forEach(p => { if(p.url) p.url = cleanUrl(p.url); });
         data.sort((a,b)=>(parseInt(a.name)||0)-(parseInt(b.name)||0));
         filtered = [...data];
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
-        // Direct /photo/ route handling
+        // Direct /photo/ route
         const path = location.pathname; const parts = path.split('/').filter(Boolean);
         if (parts[0]==='photo' && parts[1]) {
           const n = decodeURIComponent(parts[1]);
@@ -489,12 +558,8 @@
       document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); apply();
     });
     document.getElementById('modal').onclick = e => { if(e.target.id==='modal') closeModal(); };
-    // Full view close via background click only if not accessed via direct link
-    document.getElementById('full-view').onclick = e => { 
-      if(e.target.id==='full-view' && location.pathname.includes('/photo/')) { /* Do nothing on direct link */ }
-      else if(e.target.id==='full-view') closeFull(); 
-    };
-    document.onkeydown = e => { if(e.key==='Escape'){closeModal();closeGiscus();closeAppModal(); /* No closeFull on ESC for direct links */} };
+    document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view' && !location.pathname.includes('/photo/')) closeFull(); };
+    document.onkeydown = e => { if(e.key==='Escape'){closeModal();closeGiscus();closeAppModal();} };
     window.onpopstate = () => { if(!location.pathname.includes('/photo/')&&!document.getElementById('full-view').classList.contains('hidden')) closeFull(); };
     window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
 
