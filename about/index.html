@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Peraturan & Ketentuan Aplikasi TKJ-OnE - Eksklusif untuk Pelajar SMK TKJ" />
+  <title>📜 About TKJ-OnE</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 20px 90px;
+    }
+
+    /* ===== HEADER (STATIC & ALWAYS VISIBLE) ===== */
+    header {
+      text-align: center;
+      padding: 40px 0 28px;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00d17a, transparent);
+      opacity: 0.7;
+    }
+    h1 {      font-size: 1.9rem;
+      font-weight: 800;
+      color: #00d17a;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 20px rgba(0, 209, 122, 0.3);
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #aaa;
+      opacity: 0.95;
+      max-width: 90%;
+      margin: 0 auto;
+    }
+
+    /* ===== SECTION & SCROLL ANIMATION ===== */
+    section {
+      margin: 32px 0;
+      padding: 22px 20px;
+      background: #111;
+      border-radius: 16px;
+      border: 1px solid #1a1a1a;
+      box-shadow: 0 6px 24px rgba(0, 209, 122, 0.1);
+      /* Default: hidden & shifted */
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
+                  transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* Visible state: triggered by JS on scroll down */
+    section.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    section h2 {
+      font-size: 1.35rem;
+      color: #00d17a;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+    section h2::before {
+      content: '⚡';
+      font-size: 1.2rem;
+      display: inline-flex;
+      align-items: center;      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #00d17a22;
+      border-radius: 50%;
+    }
+
+    /* ===== CONTENT ===== */
+    p { margin: 12px 0; color: #e5e5e5; }
+    ul, ol { margin: 14px 0 14px 26px; color: #d5d5d5; }
+    li { margin: 8px 0; }
+    strong { color: #00d17a; font-weight: 600; }
+    em { color: #aaa; font-style: italic; }
+    code {
+      background: #1a1a2e;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.9em;
+      color: #00d17a;
+    }
+
+    /* ===== HIGHLIGHT BOX ===== */
+    .highlight {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-left: 3px solid #00d17a;
+      padding: 16px 18px;
+      border-radius: 0 10px 10px 0;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+    .warning {
+      background: linear-gradient(135deg, #2a1a1a 0%, #1e1616 100%);
+      border-left: 3px solid #ff6b6b;
+    }
+    .info {
+      background: linear-gradient(135deg, #1a2a2e 0%, #161e21 100%);
+      border-left: 3px solid #4da6ff;
+    }
+
+    /* ===== RULES LIST ===== */
+    .rule-item {
+      display: flex;
+      gap: 14px;
+      margin: 12px 0;
+      padding: 12px 0;
+      border-bottom: 1px dashed #1a1a1a;
+      align-items: flex-start;
+    }
+    .rule-item:last-child { border-bottom: none; }    .rule-num {
+      min-width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #00d17a, #00a86b);
+      color: #0a0a0a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0, 209, 122, 0.3);
+    }
+    .rule-text { flex: 1; }
+    .rule-text strong { display: block; margin-bottom: 4px; }
+
+    /* ===== ANTI-SCREENSHOT EXPLANATION ===== */
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .screenshot-card {
+      background: #151515;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .screenshot-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 209, 122, 0.15);
+    }
+    .screenshot-card h4 {
+      color: #00d17a;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ===== DEV BIO CARD ===== */
+    .dev-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid #00d17a33;
+      border-radius: 16px;      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .dev-card::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(0,209,122,0.1) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    .dev-avatar {
+      width: 70px; height: 70px;
+      background: linear-gradient(135deg, #00d17a, #00a86b);
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0a0a0a;
+      box-shadow: 0 4px 20px rgba(0, 209, 122, 0.4);
+    }
+    .dev-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #00d17a;
+      margin-bottom: 4px;
+    }
+    .dev-role {
+      font-size: 0.95rem;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+    .dev-details {
+      font-size: 0.9rem;
+      color: #c5c5c5;
+      line-height: 1.5;
+    }
+    .dev-details strong { color: #00d17a; }
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 28px 20px 50px;
+      margin-top: 24px;
+      border-top: 1px solid #1a1a1a;
+    }
+    .dev-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #00d17a;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 12px 24px;
+      background: #111;
+      border-radius: 32px;
+      border: 1px solid #00d17a33;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .dev-link::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,209,122,0.2), transparent);
+      transition: left 0.4s ease;
+    }
+    .dev-link:hover::before { left: 100%; }
+    .dev-link:hover {
+      background: #00d17a15;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 209, 122, 0.25);
+    }
+    .dev-link:active { transform: translateY(-1px); }
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    /* ===== SCROLL PROGRESS ===== */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;      background: linear-gradient(90deg, #00d17a, #00a86b, #00d17a);
+      background-size: 200% 100%;
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease;
+      animation: gradientShift 2s linear infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 768px) {
+      .container { padding: 36px 28px 100px; }
+      h1 { font-size: 2.2rem; }
+      section { padding: 26px 24px; }
+      .screenshot-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ===== PC BLOCKER ===== */
+    .pc-blocker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .pc-blocker.active { display: flex; }
+    .pc-blocker h2 { 
+      color: #ff6b6b; 
+      margin-bottom: 14px; 
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .pc-blocker p { 
+      color: #aaa; 
+      max-width: 420px; 
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <!-- PC Blocker -->
+  <div class="pc-blocker" id="pcBlocker">
+    <div>
+      <h2>🚫 Desktop Terdeteksi</h2>
+      <p>Halaman <strong>Tentang TKJ-OnE</strong> dioptimalkan untuk perangkat mobile. 
+      Buka via HP untuk pengalaman terbaik dan akses penuh ke semua fitur aplikasi.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header (ALWAYS VISIBLE) -->
+    <header>
+      <h1>📜 Tentang TKJ-OnE</h1>
+      <p class="subtitle">Peraturan, Etika & Ketentuan Penggunaan • Khusus Anggota Kelas TKJ</p>
+    </header>
+
+    <!-- Section: Pengantar -->
+    <section class="animate-scroll">
+      <h2>Pengantar</h2>
+      <p>
+        Aplikasi <strong>TKJ-OnE</strong> adalah platform dokumentasi digital eksklusif yang dirancang khusus untuk 
+        <strong>Kelas Teknik Komputer dan Jaringan (TKJ)</strong>. Dibangun dengan prinsip keamanan, privasi, 
+        dan kemudahan akses, aplikasi ini memudahkan penyimpanan, pencarian, dan berbagi momen kegiatan kelas 
+        secara terorganisir dan bertanggung jawab.
+      </p>
+      <div class="highlight info">
+        <p><strong>🎯 Misi TKJ-OnE:</strong> Menjadi arsip digital kelas yang aman, etis, dan bermanfaat untuk 
+        kenang-kenangan, portofolio, serta pembelajaran bersama — tanpa mengorbankan privasi individu.</p>
+      </div>
+    </section>
+
+    <!-- Section: Developer Bio -->
+    <section class="animate-scroll">
+      <h2>👨‍💻 Dikembangkan Oleh</h2>
+      <div class="dev-card">
+        <div class="dev-avatar">ZF</div>
+        <div class="dev-name">ZHYLLAN FYLLAH</div>
+        <div class="dev-role">Solo Developer • Siswa TKJ</div>
+        <div class="dev-details">
+          <p><strong>Jurusan:</strong> Teknik Komputer dan Jaringan (TKJ)</p>
+          <p><strong>Nomor Absen:</strong> 35</p>
+          <p class="mt-20"><em>"Dibuat secara mandiri untuk kemajuan dokumentasi kelas. 
+          Setiap baris kode adalah bentuk dedikasi buat arsip digital yang rapi & aman."</em></p>
+        </div>
+      </div>
+      <p style="text-align:center;color:#aaa;font-size:0.95rem;">
+        🛠️ Dikembangkan sepenuhnya secara mandiri (solo development) menggunakan teknologi web modern, 
+        dioptimalkan untuk perangkat mobile, dan terintegrasi dengan aplikasi via deep link.
+      </p>    </section>
+
+    <!-- Section: Peraturan Utama -->
+    <section class="animate-scroll">
+      <h2>📋 Peraturan Penggunaan Lengkap</h2>
+      
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div class="rule-text">
+          <strong>Akses Terbatas & Autentikasi</strong>
+          Hanya anggota kelas TKJ yang memiliki kredensial valid yang diperbolehkan masuk. 
+          Dilarang keras membagikan kode akses ke pihak luar.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div class="rule-text">
+          <strong>Konten Positif & Edukatif</strong>
+          Dilarang mengupload atau menyebarkan konten yang mengandung SARA, pornografi, 
+          kekerasan, atau melanggar norma kesusilaan. Semua konten harus mendukung semangat kebersamaan kelas.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div class="rule-text">
+          <strong>Hak Cipta & Kepemilikan Konten</strong>
+          Setiap foto/video tetap milik kontributor. Penggunaan untuk keperluan di luar kelas 
+          wajib mendapatkan izin dari pemilik konten.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div class="rule-text">
+          <strong>Privasi & Persetujuan</strong>
+          Dilarang mengedit atau memanipulasi foto/video orang lain tanpa izin. 
+          Hormati privasi: jika ada yang minta kontennya dihapus, segera laporkan ke developer.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">5</div>
+        <div class="rule-text">
+          <strong>Larangan Modifikasi Aplikasi</strong>
+          Dilarang melakukan reverse engineering, modifikasi file aplikasi, atau mencoba membobol 
+          sistem proteksi yang sudah diterapkan.
+        </div>
+      </div>      
+      <div class="rule-item">
+        <div class="rule-num">6</div>
+        <div class="rule-text">
+          <strong>Penggunaan Wajar & Etis</strong>
+          Aplikasi hanya untuk dokumentasi kegiatan kelas & momen positif. 
+          Dilarang menggunakan untuk bullying, spam, atau hal yang merugikan nama baik kelas.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">7</div>
+        <div class="rule-text">
+          <strong>Pelaporan Bug & Masalah</strong>
+          Jika menemukan error atau konten tidak pantas, segera lapor ke developer. 
+          Jangan disebarkan atau dieksploitasi.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">8</div>
+        <div class="rule-text">
+          <strong>Sanksi Pelanggaran</strong>
+          Pelanggaran dapat berakibat: peringatan, suspensi akses, ban permanen, 
+          atau laporan ke wali kelas jika berdampak serius.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">9</div>
+        <div class="rule-text">
+          <strong>Tanggung Jawab Akun</strong>
+          Pengguna bertanggung jawab penuh atas aktivitas di akunnya. 
+          Jika perangkat hilang atau kredensial bocor, segera lapor & ubah akses.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">10</div>
+        <div class="rule-text">
+          <strong>Kebijakan Data & Privasi</strong>
+          Data login & preferensi disimpan lokal di perangkat. Developer tidak mengakses atau mengirimkan 
+          data pribadi ke server manapun.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">11</div>
+        <div class="rule-text">
+          <strong>Pembatasan Fitur Share</strong>          Fitur share hanya berfungsi internal. Dilarang mengekstrak link media langsung 
+          atau membagikan ke platform luar tanpa izin.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">12</div>
+        <div class="rule-text">
+          <strong>Kepatuhan Aturan Kelas</strong>
+          Penggunaan aplikasi harus selaras dengan kesepakatan internal kelas. 
+          Jika ada konflik, musyawarah kelas yang akan menyelesaikan.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">13</div>
+        <div class="rule-text">
+          <strong>Pembaruan & Kompatibilitas</strong>
+          Developer berhak memperbarui fitur atau memperbaiki bug kapan saja. 
+          Gunakan versi terbaru agar tidak ada masalah teknis.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">14</div>
+        <div class="rule-text">
+          <strong>Dukungan & Feedback</strong>
+          Saran & laporan bug sangat dihargai. Developer akan merespons sesuai prioritas teknis.
+        </div>
+      </div>
+      
+      <div class="rule-item">
+        <div class="rule-num">15</div>
+        <div class="rule-text">
+          <strong>Penerimaan Ketentuan</strong>
+          Dengan mengakses aplikasi TKJ-OnE, Anda dianggap telah membaca & menyetujui seluruh aturan ini. 
+          Tidak ada pengecualian.
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Anti-Screenshot -->
+    <section class="animate-scroll">
+      <h2>🔒 Kenapa Gak Boleh Screenshot / Reklay Layar?</h2>
+      <p>
+        Aplikasi TKJ-OnE memblokir fitur screenshot, rekaman layar, copy teks, dan long-press media. 
+        Ini bukan buat nyusahin, tapi ada alasan praktisnya bre:
+      </p>
+      
+      <div class="screenshot-grid">        <div class="screenshot-card">
+          <h4>🛡️ Lindungi Privasi Kelas</h4>
+          <p>Momen di aplikasi ini bersifat internal. Mencegah screenshot agar konten tidak bocor ke luar 
+          dan disalahgunakan untuk hal-hal yang tidak perlu.</p>
+        </div>
+        
+        <div class="screenshot-card">
+          <h4>⚖️ Jaga Kesepakatan Kelas</h4>
+          <p>Banyak kegiatan yang punya aturan dokumentasi internal. Pembatasan screenshot membantu kita 
+          tetap patuh pada kesepakatan bersama dan menghindari drama.</p>
+        </div>
+        
+        <div class="screenshot-card">
+          <h4>🔐 Cegah Penyalahgunaan Konten</h4>
+          <p>Mencegah foto/video diedit, dipotong, atau dijadikan bahan ejekan/hoax. 
+          Proteksi ini bentuk tanggung jawab digital kita bareng-bareng.</p>
+        </div>
+        
+        <div class="screenshot-card">
+          <h4>📁 Fokus Dokumentasi Rapi</h4>
+          <p>Dengan proteksi ini, kita belajar menghargai arsip digital kelas. 
+          Konten tetap orisinal, utuh, dan siap jadi kenangan tanpa campur tangan pihak luar.</p>
+        </div>
+        
+        <div class="screenshot-card">
+          <h4>🤝 Bangun Kepercayaan</h4>
+          <p>Kalau semua tahu konten aman dari screenshot, semua bakal lebih nyaman buat kontribusi. 
+          Ini memperkuat solidaritas & rasa saling percaya di kelas.</p>
+        </div>
+      </div>
+      
+      <div class="highlight warning">
+        <p><strong>❗ Peringatan:</strong> Mencoba bypass proteksi (via tools pihak ketiga atau modifikasi) 
+        adalah pelanggaran berat. Bakal ditindak sesuai aturan kelas. 
+        <em>Kita bangun ini bareng, jangan dirusak.</em></p>
+      </div>
+    </section>
+
+    <!-- Section: Teknis -->
+    <section class="animate-scroll">
+      <h2>⚙️ Catatan Teknis & Cara Kerja</h2>
+      <ul>
+        <li><strong>Autentikasi:</strong> Sistem login diverifikasi langsung di perangkat (client-side). 
+        namun,dev dapat memantau pergerakan dan aktivitas user di server,jadi jika ada yang melanggar,dev dapat melakukan flag dan ban dari server utama.</li>
+        <li><strong>Penyimpanan Lokal:</strong> Data unduhan, riwayat, & preferensi disimpan di 
+        <code>localStorage</code> atau cache perangkat. Aman & pribadi.</li>
+        <li><strong>Deep Link:</strong> Mendukung <code>tkjone://photo/ID</code> untuk buka konten langsung 
+        dari galeri web ke aplikasi.</li>
+        <li><strong>Proteksi Media:</strong> Semua media yang ada di website utama, dikunci dari klik kanan, drag, select teks, 
+        dan long-press via JavaScript + CSS.</li>        <li><strong>Offline Support:</strong> Konten yang sudah dimuat dalam aplkasi bisa diakses tanpa internet. 
+        Update terbaru butuh koneksi sesekali.</li>
+        <li><strong>Minim Tracking:</strong> Gak ada analytics atau pelacakan perilaku.
+        namun, pelacakan nama perangkat dan browser yang di gunakan,tetap ada.
+        Privasi pengguna tetap dijaga penuh.</li>
+      </ul>
+    </section>
+
+    <!-- Section: Kontak Developer -->
+    <section class="animate-scroll">
+      <h2>📬 Hubungi Developer</h2>
+      <p>
+        Ada saran fitur, laporan bug, atau mau diskusi teknis? 
+        Developer terbuka buat feedback yang membangun!
+      </p>
+      <ul>
+        <li><strong>GitHub Repository:</strong> 
+        <a href="https://github.com/Jirankun/tkj1" target="_blank" rel="noopener" style="color:#00d17a">github.com/Jirankun/tkj1</a></li>
+        <li><strong>Portofolio:</strong> 
+        <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank" rel="noopener" style="color:#00d17a">jirankun.github.io/portofoliozhyllan</a></li>
+        <li><strong>WhatsApp:</strong> 
+        <code>+62 851-6572-1384</code> <em>(khusus urgent bug / teknis)</em></li>
+      </ul>
+      <div class="highlight info">
+        <p><strong>🙏 Makasih</strong> udah baca sampai sini. 
+        Dengan patuh pada aturan ini, kita jaga ekosistem dokumentasi kelas yang aman, rapi, & berintegritas. 
+        <em>Maju terus TKJ!</em> 💚</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank" rel="noopener" class="dev-link">
+      <span>👨‍💻</span> dev: Jirankun
+    </a>
+    <p class="footer-note">
+      © 2026 TKJ-OnE • ☕ oleh ZHYLLAN FYLLAH<br/>
+    </p>
+  </footer>
+
+  <script>
+    // ===== SCROLL PROGRESS BAR =====
+    const scrollProgress = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      scrollProgress.style.width = scrolled + '%';
+    }, { passive: true });
+    // ===== SIMPLE SCROLL-TRIGGERED ANIMATION (DOWN ONLY) =====
+    const sections = document.querySelectorAll('section.animate-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          // Once animated, we stop observing it to prevent reset logic
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    sections.forEach(sec => observer.observe(sec));
+
+    // ===== PC BLOCKER =====
+    (function() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isMobile && !isTouch && window.innerWidth > 1024) {
+        document.getElementById('pcBlocker').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    })();
+
+    // ===== BASIC PROTECTION =====
+    document.addEventListener('contextmenu', e => e.preventDefault(), { passive: false });
+    document.addEventListener('selectstart', e => e.preventDefault(), { passive: false });
+    document.addEventListener('dragstart', e => e.preventDefault(), { passive: false });
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && ['c', 'a', 's', 'u'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+  </script>
+</body>
+</html>
