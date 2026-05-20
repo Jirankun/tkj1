@@ -16,15 +16,6 @@
   <title>TKJ OnE Gallery</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   
-  <!-- ✅ GOOGLE ADSENSE -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195" crossorigin="anonymous"></script>
-
-<script src="https://quge5.com/88/tag.min.js" data-zone="212549" async data-cfasync="false"></script>
-
-<script src="https://quge5.com/88/tag.min.js" data-zone="213278" async data-cfasync="false"></script>
-
-<script>(function(s){s.dataset.zone='10639099',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-  
   <!-- 💬 GISCUS -->
   <script src="https://giscus.app/client.js"
     data-repo="Jirankun/tkj1" data-repo-id="R_kgDOQWmG8Q"
@@ -56,7 +47,6 @@
     #pc-blocker.active { display: flex; }
     .pc-title { font-size: 1.4rem; font-weight: 700; margin: 12px 0; }
     .pc-desc { color: var(--text-muted); margin-bottom: 24px; max-width: 280px; font-size: 0.9rem; }
-
     /* 📐 HEADER */
     .header { position: fixed; top: 0; left: 0; right: 0; min-height: 88px; z-index: 100; background: rgba(9,9,11,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: box-shadow 0.2s; }
     .header-inner { display: flex; flex-direction: column; gap: 10px; padding: var(--header-pad) 0 8px; }
@@ -84,15 +74,6 @@
     .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
     .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
-    /* 🎯 BANNER */
-    .ad-slot { grid-column: 1 / -1; border-radius: var(--radius); overflow: hidden; border: 1px dashed var(--border); background: var(--surface); position: relative; }
-    .ad-link { display: block; text-decoration: none; }
-    .ad-img { width: 100%; height: auto; display: block; pointer-events: none; }
-    .ad-img.error { display: none; }
-    .ad-fallback { display: none; min-height: 80px; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; }
-    .ad-img.error + .ad-fallback { display: flex; }
-    .ad-label { position: absolute; top: 8px; left: 8px; padding: 2px 6px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.65rem; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-
     /* 🖼️ FULL VIEW */
     .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
     .full-view.active { display: flex; }
@@ -115,8 +96,7 @@
     .app-modal-box { text-align: center; padding: 28px 20px; }
     .turnstile-box { text-align: center; padding: 28px 20px; }
     .confirm-box { padding: 28px 20px; text-align: center; }
-
-    /* 💬 GISCUS FULLSCREEN - FIXED */
+    /* 💬 GISCUS FULLSCREEN */
     #giscus-full { position: fixed; inset: 0; background: var(--bg); z-index: 400; display: none; flex-direction: column; }
     #giscus-full.active { display: flex !important; }
     .giscus-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(9,9,11,0.95); }
@@ -153,21 +133,19 @@
       <div style="font-size:2rem;margin-bottom:8px">🔐</div>
       <h3 style="margin-bottom:6px">Verifikasi Keamanan</h3>
       <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.85rem">Mohon tunggu sebentar...</p>
-      <h6 style="color: red;">JIKA GAK MAU KENA IKLAN, HARAP GUNAKAN DNS AD GUARD</h6>
       <div style="display:flex;justify-content:center;min-height:65px"><div class="cf-turnstile" data-sitekey="0x4AAAAAACsh1EKuTtF6HdMQ" data-callback="onTS" data-error-callback="onTSErr" data-theme="dark"></div></div>
       <div id="ts-err" style="color:var(--error);font-size:0.8rem;margin-top:6px"></div>
       <button id="ts-fb" class="btn btn-ghost" onclick="tsFallback()" style="display:none;margin-top:8px">Skip Verifikasi</button>
     </div>
   </div>
 
-  <!-- 💬 GISCUS - FIXED STRUCTURE -->
+  <!-- 💬 GISCUS -->
   <div id="giscus-full" class="hidden">
     <div class="giscus-header">
       <h3>💬 Diskusi Dev</h3>
       <button class="btn btn-ghost" onclick="closeGiscus()">Tutup</button>
     </div>
-    <div class="giscus-body"><div class="giscus"></div></div>
-  </div>
+    <div class="giscus-body"><div class="giscus"></div></div>  </div>
 
   <div id="app-modal" class="modal-overlay">
     <div class="app-modal-box">
@@ -217,7 +195,6 @@
           </div>
         </div>
       </div>
-
       <div id="gallery" class="hidden">
         <div id="grid" class="grid"></div>
         <div id="empty" class="empty hidden">Tidak ada hasil ditemukan.</div>
@@ -264,14 +241,11 @@
     'use strict';
     const CFG = {
       JSON: ['/photos.json', '/DB/photos.json'],
-      BANNER: '/DB/banner.json',
       BASE: 'https://tkj1.pages.dev',
       APP: { scheme: 'tkjone', path: 'photo', pkgs: ['com.tkjone.app'], fallback: 'https://github.com/Jirankun/TKJ-One/releases' },
-      TS: '0x4AAAAAACsh1EKuTtF6HdMQ',
-      LINKS: { 'aranmarubanner.jpg':'http://harinezumikobo.jp/newtop.html', 'banner.jpg':'http://harinezumikobo.jp/newtop.html', 'banner200.jpg':'http://harinezumikobo.jp/newtop.html', 'banner600.jpg':'http://harinezumikobo.jp/newtop.html', 'bashobanner.jpg':'http://harinezumikobo.jp/newtop.html', 'ECCENTRICCIRCUS.jpg':'http://harinezumikobo.jp/newtop.html', 'hifumibanner.jpg':'http://harinezumikobo.jp/newtop.html', 'hiiragibanner.jpg':'http://harinezumikobo.jp/newtop.html', 'itatimaki.jpg':'http://harinezumikobo.jp/newtop.html', 'kurasukebanner.gif':'http://harinezumikobo.jp/newtop.html', 'migchipbanner.jpg':'http://harinezumikobo.jp/newtop.html', 'sekiyubanner.jpg':'http://harinezumikobo.jp/newtop.html', 'dmm001.jpg':'http://www.dmm.co.jp/dc/doujin/-/list/=/article=maker/id=22072/harinezumi-001', 'janbanner200.jpg':'http://jangarikobo.com/jangaritop.html', 'bn_pc_234_60_doujin_01.jpg':'http://www.dmm.co.jp/dc/doujin/-/list/=/article=maker/id=22072/harinezumi-001' }
-    };
+      TS: '0x4AAAAAACsh1EKuTtF6HdMQ'    };
 
-    let data = [], filtered = [], cur = null, banners = [], tsOk = false;
+    let data = [], filtered = [], cur = null, tsOk = false;
     let vObs = null, playV = null, appT = null;
     
     // 🔁 SCROLL PRESERVATION
@@ -314,34 +288,12 @@
     };
     window.addEventListener('resize', checkPC); checkPC();
 
-    // 🎯 BANNER
-    const loadBanners = async () => {
-      try {
-        const r = await fetch(CFG.BANNER + '?t=' + Date.now());
-        if (!r.ok) throw 1;
-        const d = await r.json();
-        banners = (d.banner || d.banners || []).map(b => {
-          let p = b.name || '';
-          if (p.startsWith('./')) p = CFG.BASE + p.slice(1);
-          else if (!p.startsWith('http')) p = CFG.BASE + '/' + p;
-          return { img: p, link: CFG.LINKS[p.split('/').pop()] || CFG.BASE, txt: p.split('/').pop() || 'Ad' };
-        });
-      } catch { banners = []; }
-    };
-    const mkAd = (b, i) => {
-      const d = document.createElement('div'); d.className = 'ad-slot';
-      d.innerHTML = `<a href="${b.link}" target="_blank" class="ad-link"><span class="ad-label">Ad</span><img src="${b.img}" loading="lazy" class="ad-img" onerror="this.classList.add('error')"><div class="ad-fallback">${b.txt}</div></a>`;
-      return d;
-    };
-
     // 🖼️ RENDER
     const render = list => {
       const g = document.getElementById('grid'); g.innerHTML = '';
       const emp = document.getElementById('empty');
-      if (!list.length) { emp.classList.remove('hidden'); return; }
-      emp.classList.add('hidden');
-      let bi = 0;
-      list.forEach((p, i) => {
+      if (!list.length) { emp.classList.remove('hidden'); return; }      emp.classList.add('hidden');
+      list.forEach((p) => {
         const v = isVideo(p);
         const c = document.createElement('div'); c.className = 'card';
         if (v) {
@@ -354,7 +306,6 @@
         }
         c.onclick = () => openMd(p);
         g.appendChild(c);
-        if ((i + 1) % 5 === 0 && banners.length) g.appendChild(mkAd(banners[bi % banners.length], bi++));
       });
     };
 
@@ -391,7 +342,6 @@
       document.getElementById('md-img').src = ''; const v = document.getElementById('md-vid'); v.pause(); v.src = '';
       resumeThumb(); unlockBody(); restoreScroll(); cur = null;
     };
-
     // 🖼️ FULL VIEW
     const openFull = p => {
       saveScroll(); cur = p; pauseThumb();
@@ -440,8 +390,7 @@
         if (document.querySelector('.modal-overlay.active, #full-view.active, #giscus-full.active')) { x.target.pause(); return; }
         if (x.isIntersecting) x.target.play().catch(()=>{}); else x.target.pause();
       }), {threshold:0.5});
-    };
-    const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
+    };    const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
     const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
 
     // 🔐 TURNSTILE
@@ -455,7 +404,7 @@
       saveScroll(); document.getElementById('turnstile-modal').classList.add('active'); lockBody();
     };
 
-    // 💬 GISCUS - FIXED FLOW
+    // 💬 GISCUS FLOW
     window.openConfirm = () => { saveScroll(); document.getElementById('confirm').classList.add('active'); lockBody(); };
     window.closeConfirm = () => { document.getElementById('confirm').classList.remove('active'); unlockBody(); restoreScroll(); };
     window.startChat = () => { 
@@ -463,7 +412,6 @@
       document.getElementById('confirm').classList.remove('active');
       document.getElementById('giscus-full').classList.remove('hidden');
       document.getElementById('giscus-full').classList.add('active');
-      // ✅ Explicitly hide gallery visually but keep DOM
       document.getElementById('gallery').style.visibility = 'hidden';
       document.getElementById('gallery').style.pointerEvents = 'none';
       lockBody(); 
@@ -471,7 +419,6 @@
     window.closeGiscus = () => { 
       document.getElementById('giscus-full').classList.remove('active');
       document.getElementById('giscus-full').classList.add('hidden');
-      // ✅ Explicitly restore gallery visibility
       document.getElementById('gallery').style.visibility = '';
       document.getElementById('gallery').style.pointerEvents = '';
       document.getElementById('gallery').classList.remove('hidden');
@@ -479,13 +426,12 @@
       restoreScroll(); 
     };
 
-    // 🔒 BODY LOCK - ROBUST
+    // 🔒 BODY LOCK
     const lockBody = () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
       document.body.classList.add('locked');
     };
     const unlockBody = () => {
-      // Always clear CSS var and class when unlocking
       document.documentElement.style.removeProperty('--scroll-y');
       document.body.classList.remove('locked');
     };
@@ -493,8 +439,7 @@
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
 
     // ✅ SAFE JSON FETCH
-    const safeJSON = async paths => {
-      for (const p of paths) {
+    const safeJSON = async paths => {      for (const p of paths) {
         try {
           const r = await fetch(p+'?t='+Date.now()); if(!r.ok) continue;
           const ct = r.headers.get('content-type'); if(!ct?.includes('json')) continue;
@@ -543,11 +488,10 @@
       const cb = () => { if (!ok) { ok = true; clearTimeout(appT); closeAppModal(); document.removeEventListener('visibilitychange', cb); }};
       document.addEventListener('visibilitychange', cb);
       try { location.href = `${CFG.APP.scheme}://${CFG.APP.path}/${id}`; } catch {}
-      if (/Android/i.test(navigator.userAgent)) setTimeout(() => { if(!ok) try { location.href = `intent://${CFG.APP.path}/${id}#Intent;scheme=${CFG.APP.scheme};package=${CFG.APP.pkgs[0]};end`; } catch {} }, 50);
-      appT = setTimeout(() => { if (!ok && !document.hidden) showAppModal(); }, 1500);
+      if (/Android/i.test(navigator.userAgent)) setTimeout(() => { if(!ok) try { location.href = `intent://${CFG.APP.path}/${id}#Intent;scheme=${CFG.APP.scheme};package=${CFG.APP.pkgs[0]};end`; } catch {} }, 50);      appT = setTimeout(() => { if (!ok && !document.hidden) showAppModal(); }, 1500);
     };
 
-    (async ()=>{ await loadBanners(); showTS(); })();
+    (async ()=>{ showTS(); })();
   </script>
 </body>
 </html>
