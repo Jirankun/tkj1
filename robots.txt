@@ -5,7 +5,6 @@ Allow: /*.json$
 Allow: /DB/
 Disallow: /admin/
 Disallow: /private/
-Crawl-delay: 1
 Sitemap: https://tkj1.pages.dev/sitemap.xml
 
 User-agent: Googlebot
