@@ -1,24 +1,24 @@
 User-agent: *
 Allow: /
-Allow: /photo/
-Allow: /*.json$
-Allow: /DB/
+Disallow: /photo/
+Disallow: /*.json$
+Disallow: /DB/
 Disallow: /admin/
 Disallow: /private/
 Sitemap: https://tkj1.pages.dev/sitemap.xml
 
 User-agent: Googlebot
 Allow: /
-Allow: /*.json$
+Disallow: /*.json$
 
 User-agent: Googlebot-Image
 Allow: /
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.png$
-Allow: /*.gif$
-Allow: /*.webp$
+Disallow: /*.jpg$
+Disallow: /*.jpeg$
+Disallow: /*.png$
+Disallow: /*.gif$
+Disallow: /*.webp$
 
 User-agent: Bingbot
 Allow: /
-Allow: /*.json$
+Disallow: /*.json$
