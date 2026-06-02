@@ -172,11 +172,11 @@
     },
     { 
       "name": "Zhyllan Fyllah", 
-      "status": false,
-      "suspend_reason": "coli depan bandar"
+      "status": true,
+      "suspend_reason": ""
     },
     { 
-      "name": "@", 
+      "name": "Admin", 
       "status": true,
       "suspend_reason": ""
     }
