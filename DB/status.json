@@ -177,8 +177,8 @@
     },
     { 
       "name": "Admin", 
-      "status": true,
-      "suspend_reason": ""
+      "status": false,
+      "suspend_reason": "ini akun admin,gunakan akun sendiri"
     }
   ]
 }
