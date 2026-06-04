@@ -3,8 +3,13 @@
         {
             "id": "1",
             "name": "./banner/Zbanner.png",
-            "link": "https://jirankun.github.io/portofoliozhyllan"
-        }
+            "link": "https://jirankun.github.io/portofoliozhyllan/karya"
+        },
+        {
+            "id": "2",
+            "name": "./banner/Ybanner.png",
+            "link": "https://youtube.com/@yudaofficialpresetam?si=KBSTkbYHa6mOvULt"
+         }
         
     ]
 }
