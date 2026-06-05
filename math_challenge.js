@@ -124,7 +124,8 @@ else{S.att++
 if(S.att>=S.max){S.att=0;return {success:false,message:'3× salah! Coba soal baru.',maxed:true,reset:true}}
 return {success:false,message:`✗ Salah! Jawaban: ${S.cur.ck}. Sisa ${S.max-S.att}.`,remaining:S.max-S.att,correctAnswer:S.cur.ck}}}
 
-function rst(){S.cur=null;S.att=0;S.ok=false}
+function rst(){S.cur=null;S.att=0;S.ok=false
+try{sessionStorage.removeItem('tkj_verified');sessionStorage.removeItem('tkj_verify_time');localStorage.removeItem('tj_math_done')}catch(e){}}
 function cek(){
 if(sessionStorage.getItem('tkj_verified')==='true'){let t=sessionStorage.getItem('tkj_verify_time');if(t&&Date.now()-parseInt(t)<30*60*1000)return true}
 try{let s=localStorage.getItem('tj_math_done');if(s){let d=JSON.parse(s);if(d.verified&&Date.now()-d.time<24*60*60*1000)return true}}catch(e){}

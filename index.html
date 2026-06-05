@@ -343,13 +343,14 @@
     
     let robotAnswered = false;
     
-    const showRobotPopup = async () => {
+    const showRobotPopup = async (force = false) => {
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
       const optContainer = document.getElementById('robot-options');
       
       if (!popup || !equation) return;
-      if (popup.classList.contains('active')) return;
+      // Skip 'already active' check kalau dipaksa (misal dari setTimeout setelah salah)
+      if (!force && popup.classList.contains('active')) return;
       
       if (!window.mathChallenge || typeof window.mathChallenge.generate !== 'function') {
         equation.innerHTML = '❌ Sistem tidak terload. <button onclick="location.reload()" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;margin-top:8px">Refresh</button>';
@@ -393,7 +394,7 @@
                 });
               }
               challengeAttempts = 0;
-              setTimeout(() => { robotAnswered = false; showRobotPopup(); }, 1200);
+              setTimeout(() => { robotAnswered = false; showRobotPopup(true); }, 1200);
             } else {
               challengeAttempts++;
               btn.classList.add('wrong');
@@ -402,7 +403,7 @@
                   if (b.dataset.key === result.correctAnswer) b.classList.add('correct');
                 });
               }
-              setTimeout(() => { robotAnswered = false; showRobotPopup(); }, 1200);
+              setTimeout(() => { robotAnswered = false; showRobotPopup(true); }, 1200);
             }
           });
           optContainer.appendChild(btn);
@@ -820,23 +821,63 @@
       }
     };
     
+    // 🚨 Bersihin storage biar pas refresh dapet soal baru
+    const clearVerification = () => {
+      if (window.mathChallenge && typeof window.mathChallenge.reset === 'function') {
+        window.mathChallenge.reset();
+      }
+      try {
+        sessionStorage.removeItem('tkj_verified');
+        sessionStorage.removeItem('tkj_verify_time');
+        localStorage.removeItem('tj_math_done');
+        localStorage.removeItem('tkj_math_done');
+      } catch(e) {}
+    };
+    
+    // Hapus verifikasi pas browser mau reload/tutup — biar refresh dapet soal baru
+    window.addEventListener('beforeunload', () => {
+      clearVerification();
+    });
+    
+    // 🔍 Deteksi pindah tab — pas balik, reset & kasih soal baru
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        // Tab kembali aktif — cek maintenance dulu
+        checkMaintenance().then(isMaintenanceActive => {
+          if (isMaintenanceActive) return;
+          
+          // Selalu reset verifikasi pas balik ke tab
+          clearVerification();
+          
+          // Kalau popup gak lagi aktif, kasih soal baru
+          const popup = document.getElementById('robot-popup');
+          if (popup && !popup.classList.contains('active')) {
+            robotAnswered = false;
+            showRobotPopup();
+          }
+        });
+      }
+    });
+    
     // Run initialization immediately
     console.log('Script loaded, running initPage...');
     initPage();
     
     // Force robot check on page refresh/navigation (bfcache handling)
     window.addEventListener('pageshow', async function(event) {
+      // Clear verification first — soal baru tiap refresh
+      clearVerification();
+      
       // If page loaded from bfcache (back/forward), re-check
-      if (event.persisted) {
-        const isMaintenanceActive = await checkMaintenance();
-        if (!isMaintenanceActive && !isRobotVerified()) {
-          showRobotPopup();
-        }
+      const isMaintenanceActive = await checkMaintenance();
+      if (!isMaintenanceActive && !isRobotVerified()) {
+        showRobotPopup();
       }
     });
     
     // Also check on every page load to ensure popup appears
     document.addEventListener('DOMContentLoaded', async function() {
+      clearVerification();
       const isMaintenanceActive = await checkMaintenance();
       if (!isMaintenanceActive && !isRobotVerified()) {
         showRobotPopup();
@@ -845,6 +886,7 @@
     
     // Final fallback: check on window load
     window.addEventListener('load', async function() {
+      clearVerification();
       const isMaintenanceActive = await checkMaintenance();
       if (!isMaintenanceActive && !isRobotVerified()) {
         showRobotPopup();
