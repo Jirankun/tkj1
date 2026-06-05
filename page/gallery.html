@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#09090b" />
+  <meta name="description" content="TKJ OnE Gallery - Galeri Foto dan Video"/>
+  <title>Gallery - TKJ OnE</title>
+  
+  <style>
+    :root {
+      --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
+      --border: #27272a; --text: #fafafa; --text-muted: #a1a1aa;
+      --accent: #3b82f6; --accent-hover: #2563eb; --error: #ef4444;
+      --radius: 14px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+    .hidden { display: none !important; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+    .header { 
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; 
+      background: rgba(9,9,11,0.78); 
+      backdrop-filter: blur(24px) saturate(200%); 
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      border-bottom: 1px solid var(--border); 
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .header.scrolled {
+      background: rgba(9,9,11,0.92);
+      border-bottom-color: rgba(59,130,246,0.2);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(59,130,246,0.1);
+    }
+    .header-inner { 
+      display: flex; flex-direction: column; gap: 8px; 
+      padding: 14px 16px 12px; max-width: 1100px; margin: 0 auto;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .header.scrolled .header-inner { 
+      padding: 4px 16px 6px; gap: 4px; 
+    }
+    .logo { 
+      font-weight: 800; font-size: 1.15rem; text-align: center; letter-spacing: -0.5px;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .header.scrolled .logo { 
+      font-size: 0.85rem; opacity: 0.8;
+    }
+    .search-box { position: relative; }
+    .search-input { 
+      width: 100%; padding: 11px 38px 11px 15px; background: var(--surface); 
+      border: 1px solid var(--border); border-radius: 12px; color: var(--text); 
+      font-size: 0.92rem; outline: none; 
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+    .header.scrolled .search-input { 
+      padding: 6px 30px 6px 11px; font-size: 0.82rem; border-radius: 8px; 
+    }
+    .search-icon { 
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%); 
+      color: var(--text-muted); pointer-events: none; font-size: 1rem; 
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .header.scrolled .search-icon { right: 10px; font-size: 0.8rem; }
+    .filter-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { 
+      padding: 7px 15px; background: var(--surface); border: 1px solid var(--border); 
+      border-radius: 9999px; color: var(--text-muted); font-size: 0.82rem; font-weight: 600; 
+      white-space: nowrap; cursor: pointer; transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .filter-btn:hover { background: var(--surface-hover); color: var(--text); }
+    .filter-btn.active, .filter-btn:hover.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(59,130,246,0.3); }
+    .header.scrolled .filter-btn { 
+      padding: 3px 9px; font-size: 0.7rem; border-radius: 6px;
+    }
+    .chat-btn { 
+      padding: 7px 15px; background: var(--surface-hover); border: 1px solid var(--border); 
+      border-radius: 9999px; color: var(--text); font-size: 0.82rem; font-weight: 600; 
+      cursor: pointer; margin-left: auto; transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .chat-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .header.scrolled .chat-btn { 
+      padding: 3px 9px; font-size: 0.7rem; border-radius: 6px;
+    }
+
+    .main { padding-top: 138px; padding-bottom: 80px; min-height: 100vh; }
+    /* Pastikan halaman tetap bisa discroll meski data kosong */
+    .grid:empty + .empty { min-height: 120vh; display: flex !important; align-items: center; justify-content: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .card-media { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #000; display: block; }
+    .card-info { padding: 12px 14px; }
+    .card-title { font-weight: 600; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .badge { padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+    .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
+    .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+    /* 🖼️ FULL VIEW - FIXED POPUP CSS */
+    .full-view { position: fixed; inset: 0; background: rgba(9,9,11,0.98); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 40px; backdrop-filter: blur(8px); }
+    .full-view.active { display: flex !important; }
+    .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .full-media { width: 100%; max-height: 70vh; object-fit: contain; background: #000; display: block; }
+    .full-info { padding: 20px; }
+    .full-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .full-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; font-size: 0.95rem; }
+    .full-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; }
+    .full-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(6px); }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; animation: modalIn 0.25s ease; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: var(--surface-hover); border: none; border-radius: 10px; color: var(--text); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-body { padding: 20px; }
+    .modal-media { width: 100%; max-height: 50vh; object-fit: contain; background: #000; border-radius: 12px; margin-bottom: 14px; display: block; }
+    .app-modal-box, .confirm-box { text-align: center; padding: 28px 20px; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost { background: transparent; color: var(--text-muted); }
+    .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--surface-hover); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface); color: var(--text); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border); transition: 0.25s; z-index: 9999; font-size: 0.85rem; opacity: 0; pointer-events: none; }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .footer { padding: 32px 16px; text-align: center; border-top: 1px solid var(--border); margin-top: auto; }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* ⚡ COUNTER ANIMATION */
+    .counter { text-align: center; color: var(--text-muted); font-size: 0.82rem; padding: 10px 0; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">TKJ OnE Gallery</div>
+      <div class="search-box">
+        <input type="text" id="search" class="search-input" placeholder="Cari foto atau video...">
+        <span class="search-icon">🔍</span>
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-f="all">Semua</button>
+        <button class="filter-btn" data-f="photo">Foto</button>
+        <button class="filter-btn" data-f="video">Video</button>
+        <button class="chat-btn" onclick="openConfirm()">💬 Chat Dev</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <div id="loading" class="loading"><div class="spinner"></div><div>Memuat galeri...</div></div>
+      <div id="error" class="empty hidden" style="color:var(--error)"></div>
+      
+      <div id="full-view" class="full-view">
+        <div class="full-container">
+          <img id="fv-img" class="full-media" src="" alt="" decoding="async" fetchpriority="high">
+          <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
+          <div class="full-info">
+            <h1 id="fv-title" class="full-title"></h1>
+            <p id="fv-desc" class="full-desc"></p>
+            <p id="fv-meta" class="full-meta"></p>
+            <div class="full-actions">
+              <button id="fv-share" class="btn btn-secondary">🔗 Bagikan</button>
+              <button id="fv-app" class="btn btn-primary">📱 Buka di App</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="gallery" class="hidden">
+        <div id="grid" class="grid"></div>
+        <div id="empty" class="empty hidden">Tidak ada hasil ditemukan.</div>
+      </div>
+    </div>
+  </main>
+
+  <div id="modal" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-body">
+        <img id="md-img" class="modal-media" src="" alt="" decoding="async">
+        <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
+        <h2 id="md-title" style="margin-bottom:6px"></h2>
+        <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px"></p>
+        <p id="md-meta" style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px"></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button id="md-share" class="btn btn-secondary">🔗 Bagikan</button>
+          <button id="md-app" class="btn btn-primary">📱 Buka di App</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm" class="modal-overlay">
+    <div class="confirm-box">
+      <div style="font-size:2rem;margin-bottom:8px">🔐</div>
+      <h3 style="margin-bottom:8px">Akses Diskusi Developer</h3>
+      <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:0.9rem">Login GitHub diperlukan untuk fitur komentar. Hanya untuk diskusi teknis.</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-primary" onclick="startChat()">Lanjutkan</button>
+        <button class="btn btn-secondary" onclick="closeConfirm()">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-modal" class="modal-overlay">
+    <div class="app-modal-box">
+      <div style="font-size:2.5rem;margin-bottom:12px">📱</div>
+      <h3 style="margin-bottom:8px">Membuka Aplikasi...</h3>
+      <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.85rem">Jika tidak otomatis terbuka, instal aplikasi resmi.</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button id="btn-dl" class="btn btn-primary">Download</button>
+        <button class="btn btn-secondary" onclick="closeAppModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div style="font-weight:600;margin-bottom:4px">TKJ OnE Gallery</div>
+    <div style="font-size:0.8rem;color:var(--text-muted)">Dev: <a href="https://jirankun.github.io/portofoliozhyllan" target="_blank">jirankun</a></div>
+  </footer>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    'use strict';
+    const CFG = {
+      JSON: ['/DB/photos.json', '/photos.json'],
+      BASE: window.location.origin || 'https://tkj1.pages.dev',
+      APP: { scheme: 'tkjone', path: 'photo', pkgs: ['com.tkjone.app'], fallback: 'https://github.com/Jirankun/TKJ-One/releases' }
+    };
+
+    let data = [], filtered = [], cur = null;
+    let vObs = null, playV = null, appT = null;
+    
+    let savedScrollY = 0;
+    const saveScroll = () => { savedScrollY = window.scrollY; };
+    const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
+
+    const isVideo = (item) => {
+      if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
+      const url = typeof item === 'string' ? item : (item.url || item.src || '');
+      if (!url) return false;
+      const clean = String(url).trim().split('?')[0].split('#')[0].toLowerCase();
+      const isCatbox = clean.includes('catbox.moe');
+      const hasExt = /\.(mp4|webm|mov|mkv|m4v|ogv|avi)$/i.test(clean);
+      return isCatbox && hasExt;
+    };
+    
+    const cleanUrl = (url) => {
+      if (!url) return '';
+      return String(url).trim().replace(/\s/g, '');
+    };
+
+    const protect = el => {
+      if (!el) return;
+      ['contextmenu','dragstart','selectstart','copy'].forEach(e => el.addEventListener(e, ev => ev.preventDefault(), {passive:false}));
+      if (el.tagName === 'IMG') { el.draggable = false; el.style.pointerEvents = 'none'; }
+      if (el.tagName === 'VIDEO') el.setAttribute('controlsList', 'nodownload');
+    };
+
+    let render = list => {
+      const g = document.getElementById('grid'); g.innerHTML = '';
+      const emp = document.getElementById('empty');
+      if (!list.length) { emp.classList.remove('hidden'); return; }
+      emp.classList.add('hidden');
+      list.forEach((p, index) => {
+        const v = isVideo(p);
+        const c = document.createElement('div'); c.className = 'card';
+        if (v) {
+          c.innerHTML = `<video class="card-media" src="${cleanUrl(p.url)}" muted playsinline loop preload="metadata" crossorigin="anonymous" decoding="async"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>`;
+          const vid = c.querySelector('video'); protect(vid); obsV(vid);
+          vid.addEventListener('loadedmetadata', () => { if(vid.offsetParent) vid.play().catch(()=>{}); }, {once:true});
+        } else {
+          const loadingAttr = index < 6 ? 'eager' : 'lazy';
+          const priorityAttr = index < 6 ? 'high' : 'auto';
+          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="${loadingAttr}" decoding="async" fetchpriority="${priorityAttr}"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
+          protect(c.querySelector('img'));
+        }
+        c.onclick = () => openMd(p);
+        g.appendChild(c);
+      });
+    };
+
+    const apply = () => {
+      const q = document.getElementById('search').value.toLowerCase().trim();
+      const f = document.querySelector('.filter-btn.active')?.dataset.f || 'all';
+      filtered = data.filter(p => {
+        const v = isVideo(p);
+        const ms = !q || (p.name||'').toLowerCase().includes(q) || (p.title||'').toLowerCase().includes(q);
+        const mt = f === 'all' || (f === 'video' && v) || (f === 'photo' && !v);
+        return ms && mt;
+      });
+      render(filtered);
+    };
+
+    const openMd = p => {
+      saveScroll(); cur = p; pauseThumb();
+      const v = isVideo(p);
+      const img = document.getElementById('md-img'), vid = document.getElementById('md-vid');
+      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
+      if (v) { vid.src = cleanUrl(p.url); vid.load(); protect(vid); img.src = ''; vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true}); }
+      else { img.src = cleanUrl(p.url); protect(img); vid.src = ''; }
+      document.getElementById('md-title').textContent = p.title || '#' + p.name;
+      document.getElementById('md-desc').textContent = p.desc || 'Tidak ada deskripsi';
+      document.getElementById('md-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('md-share').onclick = () => share(p);
+      document.getElementById('md-app').onclick = () => showAppModal();
+    };
+    const closeModal = () => {
+      document.getElementById('modal').classList.remove('active');
+      document.getElementById('md-img').src = ''; const v = document.getElementById('md-vid'); v.pause(); v.src = '';
+      resumeThumb(); restoreScroll(); cur = null;
+    };
+
+    const openFull = p => {
+      saveScroll(); cur = p; pauseThumb();
+      document.querySelector('.header')?.classList.add('hidden');
+      document.getElementById('gallery')?.classList.add('hidden');
+      const fv = document.getElementById('full-view'); fv.classList.add('active');
+      const img = document.getElementById('fv-img'), vid = document.getElementById('fv-vid');
+      const v = isVideo(p);
+      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
+      if (v) { vid.src = cleanUrl(p.url); vid.load(); protect(vid); img.src = ''; vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true}); }
+      else { img.src = cleanUrl(p.url); protect(img); vid.src = ''; }
+      document.getElementById('fv-title').textContent = p.title || '#' + p.name;
+      document.getElementById('fv-desc').textContent = p.desc || 'Tidak ada deskripsi';
+      document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
+      document.getElementById('fv-share').onclick = () => share(p);
+      document.getElementById('fv-app').onclick = () => showAppModal();
+      // Update URL without reloading
+      history.pushState({v: p.name}, '', `/photo/${p.name}`);
+    };
+    const closeFull = () => {
+      document.getElementById('full-view').classList.remove('active');
+      document.getElementById('gallery')?.classList.remove('hidden');
+      document.querySelector('.header')?.classList.remove('hidden');
+      document.getElementById('fv-img').src = ''; const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
+      resumeThumb(); restoreScroll();
+      history.pushState({}, '', '/');
+      cur = null;
+    };
+
+    const tryOpenApp = (itemName) => {
+      saveScroll();
+      const schemeUrl = `${CFG.APP.scheme}://${CFG.APP.path}/${encodeURIComponent(itemName)}`;
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = schemeUrl;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.getElementById('app-modal').classList.add('active');
+        document.body.removeChild(iframe);
+      }, 1500);
+    };
+    
+    const showAppModal = () => { 
+      if (cur && cur.name) {
+        tryOpenApp(cur.name);
+      } else {
+        document.getElementById('app-modal').classList.add('active'); 
+      }
+    };
+    
+    const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); restoreScroll(); };
+    document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
+
+    const share = p => {
+      const cleanLink = `${CFG.BASE}/photo/${p.name}`;
+      if (navigator.share) {
+        navigator.share({ title: p.title || '#' + p.name, text: p.title || '#' + p.name, url: cleanLink }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(cleanLink).then(()=>toast('Link disalin'));
+      }
+    };
+
+    const obsV = el => { if(vObs) vObs.observe(el); };
+    const initObs = () => {
+      vObs = new IntersectionObserver(e => e.forEach(x => {
+        if (document.querySelector('.modal-overlay.active, #full-view.active')) { x.target.pause(); return; }
+        if (x.isIntersecting) x.target.play().catch(()=>{}); else x.target.pause();
+      }), {threshold:0.5});
+    };
+    const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
+    const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
+
+    window.openConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'OPEN_CONFIRM'}, '*'); };
+    window.closeConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'CLOSE_CONFIRM'}, '*'); };
+    window.startChat = () => {
+      document.getElementById('confirm').classList.remove('hidden');
+      document.getElementById('confirm').classList.remove('active');
+      const giscusContainer = document.querySelector('.giscus');
+      if (giscusContainer && !giscusContainer.hasChildNodes()) {
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', 'Jirankun/tkj1');
+        script.setAttribute('data-repo-id', 'R_kgDOQWmG8Q');
+        script.setAttribute('data-category', 'Show and tell');
+        script.setAttribute('data-category-id', 'DIC_kwDOQWmG8c4C63kb');
+        script.setAttribute('data-mapping', 'pathname');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'top');
+        script.setAttribute('data-theme', 'dark_tritanopia');
+        script.setAttribute('data-lang', 'id');
+        script.setAttribute('crossorigin', 'anonymous');
+        script.async = true;
+        giscusContainer.appendChild(script);
+      }
+      if (window.parent !== window) window.parent.postMessage({type: 'SHOW_GISCUS'}, '*');
+    };
+
+    const safeJSON = async paths => {
+      for (const p of paths) {
+        try {
+          const r = await fetch(p+'?t='+Date.now()); if(!r.ok) continue;
+          const ct = r.headers.get('content-type'); if(!ct?.includes('json')) continue;
+          const tx = await r.text(); if(tx.trim()[0]!=='[' && tx.trim()[0]!=='{') continue;
+          return JSON.parse(tx);
+        } catch {}
+      } throw 'Gagal memuat data galeri. Coba refresh halaman.';
+    };
+
+    const loadG = async () => {
+      if (window.done) return; window.done = true;
+      try {
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('error').classList.add('hidden');
+        const d = await safeJSON(CFG.JSON);
+        data = Array.isArray(d) ? d : (d.photos||[]);
+        data.forEach(p => { if(p.url) p.url = cleanUrl(p.url); });
+        data.sort((a,b)=>(parseInt(a.name)||0)-(parseInt(b.name)||0));
+        filtered = [...data];
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('gallery').classList.remove('hidden');
+        initObs(); render(filtered);
+        
+        // Check URL for direct photo access - handle both /photo/{name} pattern
+        const checkPhotoRoute = () => {
+          try {
+            const path = location.pathname; 
+            const parts = path.split('/').filter(Boolean);
+            const photoIndex = parts.findIndex(p => p === 'photo');
+            if (photoIndex !== -1 && parts[photoIndex + 1]) {
+              const n = decodeURIComponent(parts[photoIndex + 1]);
+              const f = data.find(x => String(x.name).toLowerCase() === n.toLowerCase());
+              if (f) {
+                openFull(f);
+                return true;
+              } else {
+                toast('Foto "' + n + '" tidak ditemukan di galeri');
+                return false;
+              }
+            }
+            return false;
+          } catch(e) {
+            console.error('Deep link error:', e);
+            return false;
+          }
+        };
+        
+        // Try to open photo from URL on load
+        checkPhotoRoute();
+      } catch(e) { 
+        document.getElementById('loading').classList.add('hidden'); 
+        document.getElementById('error').textContent = e; 
+        document.getElementById('error').classList.remove('hidden');
+        // Tetap tampilkan gallery kosong biar tidak black screen
+        document.getElementById('gallery').classList.remove('hidden');
+      }
+    };
+
+    const updateCounter = () => {
+      const count = data.length;
+      const visible = filtered.length;
+      let el = document.getElementById('counter');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'counter';
+        el.className = 'counter';
+        const g = document.getElementById('gallery');
+        if (g) g.prepend(el);
+      }
+      el.textContent = visible < count 
+        ? `Menampilkan ${visible} dari ${count} media`
+        : `${count} media`;
+    };
+
+    // Override render to include counter
+    const _origRender = render;
+    render = function(list) {
+      _origRender(list);
+      updateCounter();
+    };
+
+    document.getElementById('search').oninput = apply;
+    document.querySelectorAll('.filter-btn').forEach(b => b.onclick = () => {
+      document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); apply();
+    });
+    document.getElementById('modal').onclick = e => { if(e.target.id==='modal') closeModal(); };
+    document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view') closeFull(); };
+    document.onkeydown = e => { if(e.key==='Escape'){closeModal(); closeFull();} };
+    // Handle browser back/forward for photo routes
+    window.onpopstate = (e) => { 
+      // If we're navigating back and full view is open, close it
+      if (document.getElementById('full-view').classList.contains('active')) {
+        closeFull();
+      }
+    };
+    const updateHeader = () => {
+      const h = document.querySelector('.header');
+      if (!h) return;
+      if (scrollY > 10) {
+        h.classList.add('scrolled');
+      } else {
+        h.classList.remove('scrolled');
+      }
+    };
+    window.onscroll = updateHeader;
+    // Trigger on load in case page is already scrolled
+    updateHeader();
+
+    const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
+
+    // Listen for messages from parent (for routing and giscus)
+    window.addEventListener('message', (e) => {
+      if (!e.data || !e.data.type) return;
+      
+      // Handle OPEN_PHOTO message from parent - with retry mechanism
+      if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
+        const tryOpenPhoto = () => {
+          const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
+          if (f) {
+            openFull(f);
+          } else {
+            // Retry after a short delay if data not loaded yet
+            setTimeout(tryOpenPhoto, 200);
+          }
+        };
+        tryOpenPhoto();
+      }
+    });
+
+    // 🚀 START
+    loadG();
+  </script>
+</body>
+</html>

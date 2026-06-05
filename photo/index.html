@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1C1C1E">
+  <meta name="description" content="TKJ OnE Media Viewer">
+  <title>TKJ OnE</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100dvh;
+      background: #000;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* ── Navigation Bar (iOS-style) ─────────── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      background: rgba(28,28,30,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+      padding: 0 12px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: opacity 0.3s;
+    }
+    #navbar.hidden { opacity: 0; pointer-events: none; }
+    #navbar .title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.3px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: default;
+    }
+    #navbar .counter {
+      font-size: 12px;
+      color: #98989E;
+      margin-right: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    #navbar .actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    #navbar .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: #0A84FF;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+    #navbar .nav-btn:active {
+      background: rgba(10,132,255,0.15);
+    }
+    #navbar .nav-btn.loading {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ── Media Container ─────────────────────── */
+    #media-container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100dvh;
+      overflow: hidden;
+    }
+    #media-track {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100dvh;
+      display: flex;
+      align-items: center;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #media-track.swiping {
+      transition: none;
+    }
+
+    /* ── Image ───────────────────────────────── */
+    #media-img {
+      max-width: 100%;
+      max-height: 100dvh;
+      object-fit: contain;
+      display: none;
+      touch-action: none;
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      will-change: transform;
+    }
+    #media-img.show { display: block; }
+
+    /* ── Video ───────────────────────────────── */
+    #media-video {
+      width: 100%;
+      height: 100dvh;
+      object-fit: contain;
+      background: #000;
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    #media-video.show { display: block; }
+
+    /* ── Video Controls ───────────────────────── */
+    #video-controls {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 15;
+      padding: 20px 20px 40px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6) 40%);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      transition: opacity 0.3s;
+    }
+    #video-controls.show { display: flex; }
+    #video-controls.hidden { opacity: 0; pointer-events: none; }
+
+    #video-progress {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.2);
+      outline: none;
+      cursor: pointer;
+    }
+    #video-progress::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0A84FF;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    #video-progress::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0A84FF;
+      border: 2px solid #fff;
+    }
+    .video-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .video-play-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .video-play-btn:active {
+      background: rgba(255,255,255,0.25);
+    }
+    .video-time {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      font-variant-numeric: tabular-nums;
+      padding-left: 42px;
+    }
+
+    /* ── Loading / Error ──────────────────────── */
+    #loading {
+      color: rgba(255,255,255,0.6);
+      font-size: 1rem;
+      font-family: monospace;
+      text-align: center;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse 1.5s ease-in-out infinite;
+      z-index: 2;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    #error {
+      color: #ff4444;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 24px;
+      display: none;
+      line-height: 1.6;
+      max-width: 320px;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    #error.show { display: block; }
+
+    /* ── Toast ────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2C2C2E;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      max-width: 320px;
+      text-align: center;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ── Info Footer ──────────────────────────── */
+    #info-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 10;
+      background: #2C2C2E;
+      border-top: 0.5px solid rgba(255,255,255,0.05);
+      padding: 14px 16px;
+      padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s;
+      opacity: 0;
+    }
+    #info-footer.show {
+      display: flex;
+      transform: translateY(0);
+      opacity: 1;
+    }
+    #info-footer.hidden {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-name {
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .footer-date {
+      font-size: 13px;
+      color: #98989E;
+    }
+    .footer-copyright {
+      background: rgba(10,132,255,0.08);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: rgba(10,132,255,0.8);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+
+    /* ── Gender Badge ─────────────────────────── */
+    .gender-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .gender-badge.laki-laki {
+      background: rgba(10,132,255,0.15);
+      color: #0A84FF;
+    }
+    .gender-badge.perempuan {
+      background: rgba(255,55,95,0.15);
+      color: #FF375F;
+    }
+    .gender-badge.video {
+      background: rgba(100,210,255,0.15);
+      color: #64D2FF;
+    }
+
+    /* ── Swipe indicator dots ─────────────────── */
+    #dot-indicator {
+      position: fixed;
+      top: 60px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 15;
+      transition: opacity 0.3s;
+    }
+    #dot-indicator.hidden { opacity: 0; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: all 0.3s;
+    }
+    .dot.active {
+      background: #0A84FF;
+      width: 18px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <div id="navbar">
+    <div class="title" id="navTitle">TKJ OnE</div>
+    <span class="counter" id="navCounter"></span>
+    <div class="actions">
+      <button class="nav-btn" id="btnLink" title="Buka tautan">↗</button>
+      <button class="nav-btn" id="btnDownload" title="Download">↓</button>
+    </div>
+  </div>
+
+  <!-- Loading & Error -->
+  <div id="loading">Memuat...</div>
+  <div id="error"></div>
+
+  <!-- Media Container -->
+  <div id="media-container">
+    <div id="media-track">
+      <img id="media-img" src="" alt="" draggable="false">
+      <video id="media-video" playsinline preload="metadata" crossorigin="anonymous"></video>
+    </div>
+  </div>
+
+  <!-- Dot Indicator -->
+  <div id="dot-indicator"></div>
+
+  <!-- Video Controls -->
+  <div id="video-controls">
+    <div class="video-controls-row">
+      <button class="video-play-btn" id="video-play-btn">▶</button>
+      <input type="range" id="video-progress" min="0" max="1000" value="0">
+    </div>
+    <div class="video-time">
+      <span id="video-current">0:00</span>
+      <span id="video-duration">0:00</span>
+    </div>
+  </div>
+
+  <!-- Info Footer -->
+  <div id="info-footer">
+    <div class="footer-row">
+      <span class="footer-name" id="footerName"></span>
+      <span class="gender-badge" id="footerGender"></span>
+    </div>
+    <div class="footer-row">
+      <span class="footer-date" id="footerDate"></span>
+    </div>
+    <div class="footer-copyright">
+      <span>©</span>
+      <span>Hak cipta konten ini ada pada pengambilnya.</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script>
+    'use strict';
+
+    // ── Konfigurasi ───────────────────────────────
+    const APP = {
+      scheme: 'tkjone',
+      path: 'photo',
+      fallback: 'https://github.com/Jirankun/TKJ-One/releases'
+    };
+
+    // ── DOM refs ──────────────────────────────────
+    const $ = id => document.getElementById(id);
+    const loading = $('loading');
+    const error = $('error');
+    const toast = $('toast');
+    const navbar = $('navbar');
+    const navTitle = $('navTitle');
+    const navCounter = $('navCounter');
+    const btnLink = $('btnLink');
+    const btnDownload = $('btnDownload');
+    const container = $('media-container');
+    const track = $('media-track');
+    const mediaImg = $('media-img');
+    const mediaVideo = $('media-video');
+    const videoControls = $('video-controls');
+    const videoProg = $('video-progress');
+    const videoCur = $('video-current');
+    const videoDur = $('video-duration');
+    const footer = $('info-footer');
+    const footerName = $('footerName');
+    const footerGender = $('footerGender');
+    const footerDate = $('footerDate');
+    const dotInd = $('dot-indicator');
+
+    // ── State ─────────────────────────────────────
+    let allPhotos = [];
+    let currentIdx = -1;
+    let currentPhoto = null;
+    let isZoomed = false;
+    let zoomScale = 1;
+    let startX, startY, isSwiping, translateX;
+    let lastPinchDist = 0;
+    let toastTimer = null;
+    let isVideo = false;
+    let hideUITimer = null;
+    let dragStarted = false;
+
+    // ── Proteksi ──────────────────────────────────
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+
+    // ── Toast ─────────────────────────────────────
+    function showToast(msg, duration = 2500) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    // ── Format waktu video ────────────────────────
+    function fmtTime(s) {
+      if (isNaN(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    // ── Ambil nama media dari URL ─────────────────
+    function getMediaName() {
+      try {
+        const p = window.location.pathname;
+        const parts = p.split('/').filter(Boolean);
+        const idx = parts.findIndex(x => x === 'photo');
+        if (idx !== -1 && parts[idx + 1] && parts[idx + 1] !== 'index.html') {
+          return decodeURIComponent(parts.slice(idx + 1).join('/'))
+            .split('?')[0].split('#')[0].trim();
+        }
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('name')) return params.get('name').trim();
+        if (params.has('id')) return params.get('id').trim();
+        const hash = window.location.hash.replace('#', '');
+        if (hash) return hash.trim();
+      } catch (e) { console.error(e); }
+      return null;
+    }
+
+    // ── Load data ────────────────────────────────
+    async function loadMedia() {
+      const name = getMediaName();
+      if (!name) {
+        loading.style.display = 'none';
+        error.textContent = 'Media tidak ditemukan.';
+        error.classList.add('show');
+        return;
+      }
+
+      const paths = ['../DB/photos.json', '/DB/photos.json'];
+      let data = null;
+      for (const p of paths) {
+        try {
+          const r = await fetch(p + '?t=' + Date.now());
+          if (r.ok) { data = await r.json(); break; }
+        } catch {}
+      }
+
+      if (!data || !data.photos) {
+        loading.style.display = 'none';
+        error.textContent = 'Gagal memuat data galeri.';
+        error.classList.add('show');
+        return;
+      }
+
+      allPhotos = data.photos;
+      currentIdx = allPhotos.findIndex(p => String(p.name).trim() === name);
+      if (currentIdx === -1) {
+        loading.style.display = 'none';
+        error.textContent = 'Media "' + name + '" tidak ditemukan.';
+        error.classList.add('show');
+        return;
+      }
+
+      renderDots();
+      showPhoto(currentIdx, false);
+    }
+
+    // ── Dot indicator ─────────────────────────────
+    function renderDots() {
+      if (allPhotos.length <= 1) { dotInd.classList.add('hidden'); return; }
+      dotInd.classList.remove('hidden');
+      dotInd.innerHTML = allPhotos.map((_, i) =>
+        '<div class="dot' + (i === currentIdx ? ' active' : '') + '"></div>'
+      ).join('');
+    }
+
+    function updateDots() {
+      if (allPhotos.length <= 1) return;
+      const dots = dotInd.querySelectorAll('.dot');
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+
+    // ── Hide UI on idle (video) ───────────────────
+    function resetHideTimer() {
+      clearTimeout(hideUITimer);
+      navbar.classList.remove('hidden');
+      videoControls.classList.remove('hidden');
+      // Footer always visible (matches Flutter InfoFooter)
+      if (isVideo) {
+        hideUITimer = setTimeout(() => {
+          navbar.classList.add('hidden');
+          videoControls.classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    container.addEventListener('click', resetHideTimer);
+    container.addEventListener('touchstart', resetHideTimer, { passive: true });
+
+    // ── Show photo by index ───────────────────────
+    function showPhoto(idx, animate = true) {
+      if (idx < 0 || idx >= allPhotos.length) return;
+      const photo = allPhotos[idx];
+      currentIdx = idx;
+      currentPhoto = photo;
+      isZoomed = false;
+      zoomScale = 1;
+      dragStarted = false;
+
+      const url = photo.url.trim().replace(/\s+/g, '');
+      isVideo = String(photo.gender).toLowerCase() === 'video' ||
+        /\.(mp4|webm|mov)$/i.test(url);
+
+      // Nav
+      navTitle.textContent = '#' + photo.name;
+      navCounter.textContent = allPhotos.length > 1 ? (idx + 1) + '/' + allPhotos.length : '';
+      updateDots();
+
+      // Reset media
+      mediaImg.classList.remove('show');
+      mediaImg.src = '';
+      mediaImg.style.transform = 'translate(-50%, -50%) scale(1)';
+      mediaVideo.classList.remove('show');
+      mediaVideo.pause();
+      mediaVideo.removeAttribute('src');
+      mediaVideo.load();
+      videoControls.classList.remove('show');
+      loading.style.display = 'block';
+      loading.textContent = 'Memuat...';
+      error.classList.remove('show');
+      footer.classList.remove('show');
+      footer.style.display = '';
+
+      if (isVideo) {
+        mediaVideo.classList.add('show');
+        mediaVideo.src = url;
+        mediaVideo.load();
+
+        mediaVideo.onloadedmetadata = () => {
+          loading.style.display = 'none';
+          videoControls.classList.add('show');
+          videoProg.max = 1000;
+          videoDur.textContent = fmtTime(mediaVideo.duration);
+          footer.classList.add('show');
+          resetHideTimer();
+        };
+
+        mediaVideo.ontimeupdate = () => {
+          if (mediaVideo.duration) {
+            videoProg.value = (mediaVideo.currentTime / mediaVideo.duration) * 1000;
+            videoCur.textContent = fmtTime(mediaVideo.currentTime);
+          }
+        };
+
+        mediaVideo.onerror = () => {
+          loading.style.display = 'none';
+          error.textContent = 'Video gagal dimuat.';
+          error.classList.add('show');
+        };
+
+        // Tap video to toggle play
+        mediaVideo.onclick = () => {
+          if (mediaVideo.paused) mediaVideo.play().catch(() => {});
+          else mediaVideo.pause();
+        };
+      } else {
+        mediaImg.classList.add('show');
+        mediaImg.src = url;
+
+        mediaImg.onload = () => {
+          loading.style.display = 'none';
+          footer.classList.add('show');
+        };
+
+        mediaImg.onerror = () => {
+          loading.style.display = 'none';
+          error.textContent = 'Gambar gagal dimuat.';
+          error.classList.add('show');
+        };
+      }
+
+      // Footer info
+      const badge = footerGender;
+      if (photo.gender) {
+        const g = photo.gender.toLowerCase();
+        if (g === 'laki-laki' || g === 'laki2' || g === 'laki') {
+          badge.textContent = '♂ Laki-laki';
+          badge.className = 'gender-badge laki-laki';
+        } else if (g === 'perempuan' || g === 'cewek') {
+          badge.textContent = '♀ Perempuan';
+          badge.className = 'gender-badge perempuan';
+        } else if (g === 'video') {
+          badge.textContent = '▶ Video';
+          badge.className = 'gender-badge video';
+        } else {
+          badge.style.display = 'none';
+        }
+        badge.style.display = '';
+      } else {
+        badge.style.display = 'none';
+      }
+      footerName.textContent = '#' + photo.name;
+      footerDate.textContent = photo.date || '';
+      document.title = 'TKJ OnE - ' + photo.name;
+
+      // Update URL (pushState)
+      const newUrl = '/photo/' + encodeURIComponent(photo.name);
+      if (window.location.pathname !== newUrl && !window.location.pathname.includes('/photo/')) {
+        history.pushState({ idx: idx, name: photo.name }, '', newUrl);
+      } else if (window.location.pathname !== newUrl) {
+        history.replaceState({ idx: idx, name: photo.name }, '', newUrl);
+      }
+    }
+
+    // ── Pinch-to-zoom for images ─────────────────
+    function resetZoom() {
+      isZoomed = false;
+      zoomScale = 1;
+      mediaImg.style.transform = 'translate(-50%, -50%) scale(1)';
+    }
+
+    function applyZoom(scale, cxPct, cyPct) {
+      zoomScale = Math.max(0.5, Math.min(4, scale));
+      if (zoomScale > 1) isZoomed = true;
+      const x = cxPct !== undefined ? cxPct : 50;
+      const y = cyPct !== undefined ? cyPct : 50;
+      mediaImg.style.transformOrigin = x + '% ' + y + '%';
+      mediaImg.style.transform = 'translate(-50%, -50%) scale(' + zoomScale + ')';
+    }
+
+    // ── Touch handlers ────────────────────────────
+    let activeTouches = [];
+
+    container.addEventListener('touchstart', e => {
+      activeTouches = Array.from(e.touches);
+      if (activeTouches.length === 1 && !isZoomed) {
+        startX = activeTouches[0].clientX;
+        startY = activeTouches[0].clientY;
+        isSwiping = true;
+        translateX = 0;
+        track.classList.add('swiping');
+      } else if (activeTouches.length === 2 && mediaImg.classList.contains('show')) {
+        isSwiping = false;
+        track.classList.remove('swiping');
+        lastPinchDist = Math.hypot(
+          activeTouches[0].clientX - activeTouches[1].clientX,
+          activeTouches[0].clientY - activeTouches[1].clientY
+        );
+      }
+    }, { passive: true });
+
+    container.addEventListener('touchmove', e => {
+      const touches = Array.from(e.touches);
+
+      if (touches.length === 2 && mediaImg.classList.contains('show')) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          touches[0].clientX - touches[1].clientX,
+          touches[0].clientY - touches[1].clientY
+        );
+        if (lastPinchDist > 0) {
+          const midX = (touches[0].clientX + touches[1].clientX) / 2;
+          const midY = (touches[0].clientY + touches[1].clientY) / 2;
+          const rect = mediaImg.getBoundingClientRect();
+          const cx = ((midX - rect.left) / rect.width) * 100;
+          const cy = ((midY - rect.top) / rect.height) * 100;
+          applyZoom(zoomScale * (dist / lastPinchDist), cx, cy);
+        }
+        lastPinchDist = dist;
+      } else if (touches.length === 1 && isSwiping) {
+        const dx = touches[0].clientX - startX;
+        const dy = touches[0].clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 5) {
+          translateX = dx;
+          track.style.transform = 'translateX(' + dx + 'px)';
+          track.style.opacity = Math.max(0.2, 1 - Math.abs(dx) / 400);
+        } else {
+          isSwiping = false;
+          track.classList.remove('swiping');
+        }
+      }
+    }, { passive: false });
+
+    container.addEventListener('touchend', e => {
+      if (isSwiping && Math.abs(translateX) > 80 && allPhotos.length > 1) {
+        if (translateX < 0 && currentIdx < allPhotos.length - 1) {
+          showPhoto(currentIdx + 1);
+        } else if (translateX > 0 && currentIdx > 0) {
+          showPhoto(currentIdx - 1);
+        }
+      }
+      isSwiping = false;
+      translateX = 0;
+      track.classList.remove('swiping');
+      track.style.transform = '';
+      track.style.opacity = '1';
+      lastPinchDist = 0;
+      activeTouches = [];
+    }, { passive: true });
+
+    // ── Double-tap to zoom ───────────────────────
+    let lastTap = 0;
+    container.addEventListener('touchend', e => {
+      if (e.changedTouches.length === 1 && mediaImg.classList.contains('show')) {
+        const now = Date.now();
+        const elapsed = now - lastTap;
+        if (elapsed < 300 && elapsed > 50) {
+          if (isZoomed) {
+            resetZoom();
+          } else {
+            const t = e.changedTouches[0];
+            const rect = mediaImg.getBoundingClientRect();
+            const cx = ((t.clientX - rect.left) / rect.width) * 100;
+            const cy = ((t.clientY - rect.top) / rect.height) * 100;
+            applyZoom(2.5, cx, cy);
+          }
+          e.preventDefault();
+        }
+        lastTap = now;
+      }
+    }, { passive: false });
+
+    // ── Play button ───────────────────────────────
+    const playBtn = $('video-play-btn');
+    playBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (mediaVideo.paused) {
+        mediaVideo.play().catch(() => {});
+      } else {
+        mediaVideo.pause();
+      }
+    });
+    mediaVideo.addEventListener('play', () => { playBtn.textContent = '⏸'; });
+    mediaVideo.addEventListener('pause', () => { playBtn.textContent = '▶'; });
+
+    // ── Video seek ────────────────────────────────
+    videoProg.addEventListener('input', () => {
+      if (mediaVideo.duration) {
+        mediaVideo.currentTime = (videoProg.value / 1000) * mediaVideo.duration;
+      }
+    });
+
+    // ── Nav: Buka tautan ─────────────────────────
+    btnLink.addEventListener('click', () => {
+      if (!currentPhoto) return;
+      const def = 'https://tkj1.pages.dev';
+      const fallbackUrl = 'https://tkj1.pages.dev/photo/' + encodeURIComponent(currentPhoto.name);
+      const link = (currentPhoto.link && currentPhoto.link !== def)
+        ? currentPhoto.link
+        : fallbackUrl;
+      window.open(link, '_blank');
+    });
+
+    // ── Nav: Download ────────────────────────────
+    btnDownload.addEventListener('click', async () => {
+      if (!currentPhoto) return;
+      btnDownload.classList.add('loading');
+      const url = currentPhoto.url.trim();
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error();
+        const blob = await r.blob();
+        const ext = (url.split('?')[0].split('#')[0].match(/\.(\w+)$/) || [,'jpg'])[1];
+        const safe = currentPhoto.name.replace(/[^a-zA-Z0-9_-]/g, '_');
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'TKJOnE_' + safe + '.' + ext;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+        showToast('Download selesai');
+      } catch {
+        showToast('Download gagal');
+      }
+      btnDownload.classList.remove('loading');
+    });
+
+    // ── Long-press title → Buka Aplikasi (deep link) ──
+    let holdTimer = null;
+    function startHold() {
+      if (!currentPhoto) return;
+      holdTimer = setTimeout(() => {
+        const uri = APP.scheme + '://' + APP.path + '/' + encodeURIComponent(currentPhoto.name);
+        const ifr = document.createElement('iframe');
+        ifr.style.display = 'none';
+        ifr.src = uri;
+        document.body.appendChild(ifr);
+        setTimeout(() => {
+          document.body.removeChild(ifr);
+          showToast('Buka TKJ OnE di perangkat?');
+        }, 1500);
+      }, 600);
+    }
+    function cancelHold() { clearTimeout(holdTimer); }
+
+    navTitle.addEventListener('mousedown', startHold);
+    navTitle.addEventListener('mouseup', cancelHold);
+    navTitle.addEventListener('mouseleave', cancelHold);
+    navTitle.addEventListener('touchstart', startHold, { passive: true });
+    navTitle.addEventListener('touchend', cancelHold);
+    navTitle.addEventListener('touchmove', cancelHold);
+
+    // ── Keyboard ──────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' && currentIdx > 0) showPhoto(currentIdx - 1);
+      else if (e.key === 'ArrowRight' && currentIdx < allPhotos.length - 1) showPhoto(currentIdx + 1);
+      else if (e.key === 'Escape') window.history.back();
+    });
+
+    // ── History ───────────────────────────────────
+    window.addEventListener('popstate', () => {
+      const name = getMediaName();
+      if (name) {
+        const idx = allPhotos.findIndex(p => String(p.name).trim() === name);
+        if (idx !== -1) showPhoto(idx);
+      }
+    });
+
+    // ── Start ─────────────────────────────────────
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadMedia);
+    } else {
+      loadMedia();
+    }
+  </script>
+</body>
+</html>

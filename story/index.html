@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Cerita - TKJ OnE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: #0a0a0f; 
+            color: #fff; 
+            overflow: hidden; 
+            height: 100dvh; 
+            width: 100%; 
+            position: fixed; 
+            touch-action: pan-y;
+        }
+        
+        .story-stage { 
+            position: fixed; 
+            inset: 0; 
+            background: radial-gradient(1200px 600px at 50% -20%, #1a1a2e 0%, #0a0a0f 60%, #000 100%);
+            display: flex; 
+            flex-direction: column;
+        }
+        
+        .film-strip { 
+            position: absolute; top: env(safe-area-inset-top, 0); left: 0; right: 0; 
+            display: flex; gap: 4px; padding: 12px 8px 0; z-index: 50; pointer-events: none;
+        }
+        .film-cell { 
+            flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; 
+            position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .film-cell::before, .film-cell::after {
+            content: ''; position: absolute; left: 0; right: 0; height: 2px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.3) 3px, rgba(255,255,255,0.3) 6px);
+        }
+        .film-cell::before { top: -2px; }
+        .film-cell::after { bottom: -2px; }
+        .film-fill { 
+            position: absolute; inset: 0; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa); 
+            width: 0%; border-radius: 1px; transition: width 0.1s linear;
+        }
+        .film-cell.done .film-fill { 
+            width: 100%; background: linear-gradient(90deg, #22c55e, #10b981); transition: width 0.3s ease;        }        .film-cell.active .film-fill { transition: none; box-shadow: 0 0 12px rgba(139, 92, 246, 0.6); }
+        
+        .story-header { 
+            position: absolute; top: calc(env(safe-area-inset-top, 0) + 20px); left: 16px; right: 16px; 
+            display: flex; align-items: center; gap: 12px; z-index: 50; pointer-events: none;
+        }
+        .creator-badge { 
+            display: flex; align-items: center; gap: 10px; pointer-events: auto; padding: 8px 16px; 
+            background: rgba(22, 22, 38, 0.92); border-radius: 16px; backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3); box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease; position: relative; overflow: visible;
+        }
+        .creator-badge:active { transform: scale(0.98); }
+        .creator-avatar { 
+            width: 38px; height: 38px; border-radius: 12px; 
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa); 
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        .creator-avatar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%); }
+        .creator-avatar svg { width: 20px; height: 20px; fill: #fff; position: relative; z-index: 1; }
+        .creator-info { display: flex; flex-direction: column; line-height: 1.15; }
+        .creator-name { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.2px; }
+        .story-time { font-size: 11px; color: rgba(255,255,255,0.75); font-weight: 500; }
+        
+        /* 🔥 NEW: Profile Info Panel */
+        .profile-info-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 0;
+            height: 0;
+            background: linear-gradient(145deg, #161626 0%, #0f0f1a 100%);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 16px;
+            padding: 0;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.2s ease,
+                        padding 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.2);
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .creator-badge.active .profile-info-panel {            width: 280px;
+            height: auto;
+            padding: 16px 20px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .profile-info-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.25s ease 0.1s, transform 0.25s ease 0.1s;
+        }
+        
+        .creator-badge.active .profile-info-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .profile-info-creator {
+            font-size: 12px;
+            color: #a78bfa;
+            font-weight: 700;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.25s ease 0.15s, transform 0.25s ease 0.15s;
+        }
+        
+        .creator-badge.active .profile-info-creator {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .profile-info-desc {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.4;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.25s ease 0.2s, transform 0.25s ease 0.2s;
+        }
+        
+        .creator-badge.active .profile-info-desc {
+            opacity: 1;
+            transform: translateY(0);
+        }        
+        .story-frame { flex: 1; position: relative; overflow: hidden; }
+        .story-item {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            padding: 80px 20px 100px; will-change: transform, opacity, filter;
+        }
+        .story-item.enter { animation: cinematicIn 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .story-item.exit { animation: cinematicOut 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
+        @keyframes cinematicIn { 0% { opacity: 0; transform: scale(1.08); filter: blur(6px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
+        @keyframes cinematicOut { 0% { opacity: 1; transform: scale(1); filter: blur(0); } 100% { opacity: 0; transform: scale(0.96); filter: blur(4px); } }
+        
+        .story-item img, .story-item video { 
+            max-width: 100%; max-height: calc(100dvh - 180px); object-fit: contain; border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1); display: block;
+        }
+        
+        .story-caption { 
+            position: absolute; bottom: env(safe-area-inset-bottom, 0); left: 0; right: 0; 
+            padding: 0 24px 28px; text-align: center; pointer-events: none; z-index: 40;
+        }
+        .caption-bubble { 
+            background: rgba(22, 22, 38, 0.95); border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 20px; padding: 14px 20px; max-width: 95%; margin: 0 auto;
+            backdrop-filter: blur(8px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }        .caption-text { 
+            font-size: 14px; font-weight: 500; color: #fff; line-height: 1.45; 
+            white-space: pre-wrap; word-wrap: break-word; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* 🎮 NEW: Dedicated Pause Button */
+        .pause-btn {
+            position: absolute; bottom: 100px; right: 20px;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(22, 22, 38, 0.85); border: 1px solid rgba(139, 92, 246, 0.3);
+            backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 45; transition: transform 0.2s ease, background 0.2s ease;
+            pointer-events: auto;
+        }
+        .pause-btn:active { transform: scale(0.92); }
+        .pause-btn svg { width: 20px; height: 20px; fill: #fff; transition: transform 0.2s ease; }
+        .pause-btn .icon-play { display: none; }
+        .pause-btn.is-paused .icon-pause { display: none; }
+        .pause-btn.is-paused .icon-play { display: block; transform: translateX(2px); }
+        
+        .nav-zone { position: absolute; top: 0; bottom: 0; z-index: 30; cursor: pointer; }
+        .nav-zone.prev { left: 0; width: 55%; }
+        .nav-zone.next { right: 0; width: 55%; }
+        .nav-zone::after {
+            content: ''; position: absolute; inset: 0; background: rgba(139, 92, 246, 0.15);
+            opacity: 0; transition: opacity 0.15s ease; pointer-events: none;        }
+        .nav-zone:active::after { opacity: 1; }
+        
+        .loader { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #0a0a0f; z-index: 150; flex-direction: column; gap: 16px; }
+        .loader-ring { width: 44px; height: 44px; border: 3px solid rgba(139, 92, 246, 0.2); border-top-color: #a78bfa; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; }
+        
+        .error-state { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #0a0a0f; z-index: 150; padding: 32px; text-align: center; gap: 24px; }
+        .error-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .error-icon svg { width: 28px; height: 28px; fill: #f87171; }
+        .error-msg { color: #fff; font-size: 15px; max-width: 90%; line-height: 1.45; }
+        .retry-action { padding: 13px 30px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 20px; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4); }
+        .retry-action:active { transform: scale(0.98); }
+        
+        @media (max-height: 720px) {
+            .film-strip { padding: 10px 6px 0; gap: 3px; }
+            .film-cell { height: 3px; }
+            .story-header { top: calc(env(safe-area-inset-top, 0) + 14px); }
+            .creator-badge { padding: 6px 14px; }
+            .creator-avatar { width: 34px; height: 34px; }
+            .creator-name { font-size: 13px; }
+            .story-time { font-size: 10px; }
+            .story-item { padding: 70px 16px 90px; }
+            .caption-bubble { padding: 12px 18px; }
+            .caption-text { font-size: 13px; }
+            .pause-btn { bottom: 85px; right: 16px; width: 44px; height: 44px; }
+            .profile-info-panel { width: 240px !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="story-stage" id="storyStage">
+        <div class="film-strip" id="filmStrip"></div>
+        <div class="story-header">
+            <div class="creator-badge" id="creatorBadge">
+                <div class="creator-avatar">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="creator-info">
+                    <span class="creator-name">TKJ OnE</span>
+                    <span class="story-time" id="storyTime">Baru saja</span>
+                </div>
+                <!-- 🔥 Profile Info Panel -->
+                <div class="profile-info-panel">
+                    <div class="profile-info-title">TKJ OnE</div>
+                    <div class="profile-info-creator">Aokaze Studio™ 2025-2026</div>
+                    <div class="profile-info-desc">Fitur story ini masih dalam tahap pengembangan,jika kamu ingin menyampaikan dan melaporkan bug,silahkan drop komentar di halaman <a href="https://tkj1.pages.dev">website utama</a> > Tab komentar > Login menggunakan akun GitHub dan silahkan berikan kritik dan saran fitur di sana...</div>
+                </div>
+            </div>        </div>
+        
+        <div class="story-frame" id="storyFrame"></div>
+        
+        <div class="story-caption">
+            <div class="caption-bubble">
+                <div class="caption-text" id="captionText"></div>
+            </div>
+        </div>
+        
+        <!-- 🎮 Pause Button -->
+        <button class="pause-btn" id="pauseBtn" aria-label="Pause Story">
+            <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        
+        <div class="nav-zone prev" id="navPrev"></div>
+        <div class="nav-zone next" id="navNext"></div>
+        
+        <div class="loader" id="loader">
+            <div class="loader-ring"></div>
+            <span class="loader-text">Memuat cerita...</span>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            stories: [],
+            current: 0,
+            timer: null,
+            duration: 5000,
+            startTime: 0,
+            progressPercent: 0,
+            isPaused: false,
+            isModal: false,
+            currentVideo: null,
+            profileTimer: null // 🔥 Timer for auto-close profile
+        };
+
+        async function boot() {
+            hideLoader();
+            await loadStories();
+            if (!state.stories.length) {
+                state.stories = [
+                    { name: 'Periksa koneksi internetmu...', date: new Date().toISOString(), url: '', type: 'image' },
+                    { name: 'Coba refresh dan akses kembali', date: new Date(Date.now() - 3600000).toISOString(), url: '', type: 'image' }
+                ];
+            }
+            if (!state.stories.length) { showError('Tidak ada konten tersedia'); return; }
+                        buildFilmStrip();
+            bindEvents();
+            renderStory(0);
+            fetchMetadata();
+        }
+
+        async function loadStories() {
+            // Try native Android interface first
+            try {
+                if (window.AndroidInterface?.getStories) {
+                    const raw = window.AndroidInterface.getStories();
+                    if (raw) {
+                        state.stories = JSON.parse(raw);
+                        return;
+                    }
+                }
+            } catch(e) { console.warn('Android load failed:', e); }
+            
+            // Fallback: fetch from local JSON
+            await fetchStoriesFromJSON();
+        }
+
+        function fetchStoriesFromJSON() {
+            return fetch('/DB/photos.json', { cache: 'no-store' })
+            .then(r => r.ok ? r.json() : Promise.reject('Fetch failed'))
+            .then(data => {
+                if (data?.photos?.length) {
+                    // Sort by date descending (newest first), take only 7
+                    state.stories = data.photos
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .slice(0, 7)
+                        .map(p => ({
+                            name: p.name || '',
+                            date: p.date || new Date().toISOString(),
+                            url: p.url || '',
+                            type: p.gender === 'video' ? 'video' : 'image'
+                        }));
+                }
+            })
+            .catch(() => {});
+        }
+
+        function buildFilmStrip() {
+            const strip = document.getElementById('filmStrip');
+            if (!strip) return;
+            strip.innerHTML = '';
+            state.stories.forEach(() => {
+                const cell = document.createElement('div');
+                cell.className = 'film-cell';
+                cell.innerHTML = '<div class="film-fill"></div>';
+                strip.appendChild(cell);
+            });
+        }
+
+        function syncProgress() {
+            document.querySelectorAll('.film-cell').forEach((cell, i) => {
+                cell.classList.remove('active', 'done');
+                const fill = cell.querySelector('.film-fill');
+                if (i < state.current) {
+                    cell.classList.add('done');
+                    if (fill) fill.style.width = '100%';
+                } else if (i === state.current) {
+                    cell.classList.add('active');                } else {
+                    if (fill) fill.style.width = '0%';
+                }
+            });
+        }
+
+        function renderStory(index) {
+            if (index < 0 || index >= state.stories.length) { exitStory(); return; }
+            state.current = index;
+            const story = state.stories[index];
+            const frame = document.getElementById('storyFrame');
+            const caption = document.getElementById('captionText');
+            const timeEl = document.getElementById('storyTime');
+            const pauseBtn = document.getElementById('pauseBtn');
+            if (!frame || !caption || !timeEl) return;
+            syncProgress();
+            caption.textContent = story.name || '';
+            timeEl.textContent = story.date ? formatTimeAgo(story.date) : 'Baru saja';
+
+            // Reset pause state & button for new story
+            state.isPaused = false;
+            pauseBtn.classList.remove('is-paused');
+            state.currentVideo = null;
+
+            const newItem = document.createElement('div');
+            newItem.className = 'story-item enter';
+
+            const isVideo = story.type === 'video' || /\.(mp4|webm|mov)$/i.test(story.url);
+            if (!story?.url) {
+                newItem.innerHTML = '<div style="color:#fff;padding:24px;font-weight:500;text-align:center">#404 Content Not Found</div>';
+                state.duration = 3000;
+            } else if (isVideo) {
+                const v = document.createElement('video');
+                v.src = story.url; v.autoplay = true; v.loop = true; v.muted = true; v.playsInline = true;
+                v.onerror = () => { newItem.innerHTML = '<div style="color:#fff;padding:24px;font-weight:500;text-align:center">Video tidak dapat dimuat</div>'; };
+                newItem.appendChild(v);
+                state.currentVideo = v;
+                state.duration = 10000;
+            } else {
+                const img = new Image();
+                img.src = story.url;
+                img.onerror = () => { newItem.innerHTML = '<div style="color:#fff;padding:24px;font-weight:500;text-align:center">Gambar tidak dapat dimuat</div>'; };
+                newItem.appendChild(img);
+                state.duration = 5000;
+            }
+
+            frame.appendChild(newItem);
+            const oldItems = frame.querySelectorAll('.story-item');
+            oldItems.forEach(old => {                if (old !== newItem) {
+                    old.classList.remove('enter');
+                    old.classList.add('exit');
+                    setTimeout(() => { if (old.parentNode) old.parentNode.removeChild(old); }, 400);
+                }
+            });
+
+            state.progressPercent = 0;
+            startTimer();
+        }
+
+        function startTimer() {
+            if (state.timer) clearInterval(state.timer);
+            const activeFill = document.querySelector('.film-cell.active .film-fill');
+            if (!activeFill) return;
+                        activeFill.style.width = state.progressPercent + '%';
+            activeFill.style.transition = 'none';
+            state.startTime = Date.now() - Math.floor((state.progressPercent / 100) * state.duration);
+            
+            state.timer = setInterval(() => {
+                if (state.isPaused) return; // ⏸️ Freeze when paused
+                const elapsed = Date.now() - state.startTime;
+                state.progressPercent = Math.min((elapsed / state.duration) * 100, 100);
+                activeFill.style.width = state.progressPercent + '%';
+                
+                if (state.progressPercent >= 100) {
+                    clearInterval(state.timer);
+                    const cells = document.querySelectorAll('.film-cell');
+                    if (cells[state.current]) {
+                        cells[state.current].classList.add('done');
+                        cells[state.current].classList.remove('active');
+                        cells[state.current].querySelector('.film-fill').style.width = '100%';
+                    }
+                    nextStory();
+                }
+            }, 50);
+        }
+
+        // 🎮 Toggle Pause/Resume via Button
+        function togglePause() {
+            const btn = document.getElementById('pauseBtn');
+            if (state.isPaused) {
+                resumeTimer();
+                if (state.currentVideo) state.currentVideo.play().catch(()=>{});
+                btn.classList.remove('is-paused');
+                state.isPaused = false;
+            } else {
+                pauseTimer();
+                if (state.currentVideo) state.currentVideo.pause();                btn.classList.add('is-paused');
+                state.isPaused = true;
+            }
+        }
+
+        function pauseTimer() { if (state.timer && !state.isPaused) state.isPaused = true; }
+        function resumeTimer() { 
+            if (state.timer && state.isPaused) {
+                state.isPaused = false; 
+                state.startTime = Date.now() - Math.floor((state.progressPercent / 100) * state.duration);
+            }
+        }
+
+        function nextStory() {
+            state.progressPercent = 0;
+            if (state.current < state.stories.length - 1) renderStory(state.current + 1);
+            else exitStory();        }
+
+        function prevStory() {
+            state.progressPercent = 0;
+            if (state.current > 0) {
+                const cells = document.querySelectorAll('.film-cell');
+                if (cells[state.current]) {
+                    cells[state.current].classList.remove('done', 'active');
+                    const fill = cells[state.current].querySelector('.film-fill');
+                    if (fill) fill.style.width = '0%';
+                }
+                renderStory(state.current - 1);
+            }
+        }
+
+        // 🔥 Profile Panel Functions
+        function toggleProfilePanel() {
+            const badge = document.getElementById('creatorBadge');
+            if (!badge) return;
+            
+            // Clear existing timer if any
+            if (state.profileTimer) {
+                clearTimeout(state.profileTimer);
+                state.profileTimer = null;
+            }
+            
+            // If already active, just reset timer
+            if (badge.classList.contains('active')) {
+                state.profileTimer = setTimeout(() => {
+                    badge.classList.remove('active');
+                    state.profileTimer = null;
+                }, 5000);
+                return;
+            }
+            
+            // Show panel
+            badge.classList.add('active');
+            
+            // Auto-hide after 8 seconds
+            state.profileTimer = setTimeout(() => {
+                badge.classList.remove('active');
+                state.profileTimer = null;
+            }, 5000);
+        }
+
+        function bindEvents() {
+            // Navigation
+            document.getElementById('navPrev')?.addEventListener('click', (e) => { e.stopPropagation(); prevStory(); });
+            document.getElementById('navNext')?.addEventListener('click', (e) => { e.stopPropagation(); nextStory(); });
+                        // Pause Button
+            document.getElementById('pauseBtn')?.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                togglePause(); 
+            });
+            
+            // 🔥 Profile Badge Click - Toggle Panel
+            document.getElementById('creatorBadge')?.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                toggleProfilePanel(); 
+            });
+            
+            // Prevent all touch movement/shifts
+            const stage = document.getElementById('storyStage');
+            if (stage) {
+                stage.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+            }
+        }
+
+        function hideLoader() { const l = document.getElementById('loader'); if (l) l.style.display = 'none'; }
+
+        function showError(msg) {
+            hideLoader();
+            const stage = document.getElementById('storyStage');
+            if (!stage) return;
+            const err = document.createElement('div');
+            err.className = 'error-state';
+            err.innerHTML = `<div class="error-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><div class="error-msg">${msg}</div><button class="retry-action" onclick="location.reload()">Coba Lagi</button>`;
+            stage.appendChild(err);
+        }
+
+        function exitStory() {
+            try {
+                window.AndroidInterface?.closeStory?.();
+                window.parent.postMessage({type: 'STORY_DONE'}, '*');
+            } catch(e) {}
+        }
+
+        function formatTimeAgo(dateStr) {
+            try {
+                const d = new Date(dateStr);
+                const n = new Date();
+                
+                if (isNaN(d.getTime())) return 'Baru saja';
+                
+                let diff = n - d;
+                if (diff <= 0) return 'Baru saja';
+                
+                const seconds = Math.floor(diff / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+                const weeks = Math.floor(days / 7);
+                
+                // Hitung bulan secara akurat berdasarkan perbandingan tanggal
+                let months = (n.getFullYear() - d.getFullYear()) * 12 + (n.getMonth() - d.getMonth());
+                if (n.getDate() < d.getDate()) months--;
+                const years = Math.floor(months / 12);
+                
+                if (seconds < 60) return 'Baru saja';
+                if (minutes < 60) return minutes === 1 ? '1 menit lalu' : `${minutes} menit lalu`;
+                if (hours < 24) return hours === 1 ? '1 jam lalu' : `${hours} jam lalu`;
+                if (days < 7) return days === 1 ? '1 hari lalu' : `${days} hari lalu`;
+                // Tampilkan minggu hingga 8 minggu (56 hari) sebelum beralih ke bulan
+                if (days < 56) return weeks === 1 ? '1 minggu lalu' : `${weeks} minggu lalu`;
+                if (months < 12) return months === 1 ? '1 bulan lalu' : `${months} bulan lalu`;
+                return years === 1 ? '1 tahun lalu' : `${years} tahun lalu`;
+                
+            } catch { 
+                return 'Baru saja'; 
+            }
+        }
+
+        function fetchMetadata() {
+            if (typeof fetch !== 'function') return;
+            fetch('/DB/photos.json', { method: 'GET', headers: { 'Accept': 'application/json' }, cache: 'no-store' })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.photos?.length && state.stories[state.current]?.date) { const el = document.getElementById('storyTime'); if (el) el.textContent = formatTimeAgo(state.stories[state.current].date); } })
+            .catch(() => {});
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+        else boot();
+    </script>
+</body>
+</html>

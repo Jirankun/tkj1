@@ -1,0 +1,12 @@
+# TKJ OnE Gallery — Robots.txt
+# Izinkan Google index halaman utama & gallery, blokir JSON & foto langsung
+
+User-agent: *
+Allow: /
+Allow: /page/
+Allow: /about/
+Disallow: /DB/
+Disallow: /*.json$
+Disallow: /photo/
+Disallow: /admin/
+Sitemap: https://tkj1.pages.dev/sitemap.xml
