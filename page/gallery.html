@@ -134,6 +134,7 @@
             <p id="fv-meta" class="full-meta"></p>
             <div class="full-actions">
               <button id="fv-share" class="btn btn-secondary">🔗 Bagikan</button>
+              <button id="fv-app" class="btn btn-primary">📱 Buka di App</button>
             </div>
           </div>
         </div>
@@ -156,6 +157,7 @@
         <p id="md-meta" style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px"></p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button id="md-share" class="btn btn-secondary">🔗 Bagikan</button>
+          <button id="md-app" class="btn btn-primary">📱 Buka di App</button>
         </div>
       </div>
     </div>
@@ -277,6 +279,7 @@
       document.getElementById('md-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
       document.getElementById('modal').classList.add('active');
       document.getElementById('md-share').onclick = () => share(p);
+      document.getElementById('md-app').onclick = () => showAppModal();
     };
     const closeModal = () => {
       document.getElementById('modal').classList.remove('active');
@@ -299,6 +302,7 @@
       document.getElementById('fv-desc').textContent = p.desc || 'Tidak ada deskripsi';
       document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
       document.getElementById('fv-share').onclick = () => share(p);
+      document.getElementById('fv-app').onclick = () => showAppModal();
       history.replaceState({v: p.name}, '', `/photo/${p.name}`);
     };
     const closeFull = () => {
@@ -311,8 +315,32 @@
       cur = null;
     };
 
-    // 📱 APP MODAL
-    const showAppModal = () => { saveScroll(); document.getElementById('app-modal').classList.add('active'); };
+    // 📱 APP MODAL & DEEPLINK
+    const tryOpenApp = (itemName) => {
+      saveScroll();
+      const schemeUrl = `${CFG.APP.scheme}://${CFG.APP.path}/${encodeURIComponent(itemName)}`;
+      
+      // Create hidden iframe to trigger deeplink
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = schemeUrl;
+      document.body.appendChild(iframe);
+      
+      // Show modal after short delay (if app didn't open)
+      setTimeout(() => {
+        document.getElementById('app-modal').classList.add('active');
+        document.body.removeChild(iframe);
+      }, 1500);
+    };
+    
+    const showAppModal = () => { 
+      if (cur && cur.name) {
+        tryOpenApp(cur.name);
+      } else {
+        document.getElementById('app-modal').classList.add('active'); 
+      }
+    };
+    
     const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); restoreScroll(); };
     document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
 
