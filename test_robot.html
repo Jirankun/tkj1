@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Robot Popup</title>
+  <style>
+    :root {
+      --bg: #09090b; --surface: #18181b; --border: #27272a;
+      --text: #fafafa; --text-muted: #a1a1aa; --accent: #3b82f6;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui; margin: 0; padding: 20px; }
+    
+    #robot-popup { 
+      position: fixed; inset: 0; background: rgba(9,9,11,0.99); 
+      z-index: 10000; display: none; flex-direction: column; 
+      align-items: center; justify-content: center; padding: 24px; 
+      backdrop-filter: blur(16px); 
+    }
+    #robot-popup.active { display: flex !important; }
+    .robot-content { text-align: center; max-width: 480px; width: 100%; }
+    .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; }
+    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+    .robot-equation { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; font-family: monospace; }
+    .robot-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1.2rem; text-align: center; }
+    .robot-btn { padding: 14px 36px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Test Robot Verification</h1>
+  <p>Buka console browser (F12) untuk melihat debug logs</p>
+  <button onclick="showRobotPopup()">Show Robot Popup</button>
+  
+  <!-- ROBOT POPUP -->
+  <div id="robot-popup">
+    <div class="robot-content">
+      <div class="robot-icon">🤖</div>
+      <h2 class="robot-title">Are you a robot?</h2>
+      <div class="robot-problem">
+        <div id="robot-equation" class="robot-equation"></div>
+        <input type="number" id="robot-input" class="robot-input" placeholder="Your answer..." autocomplete="off">
+      </div>
+      <button id="robot-confirm" class="robot-btn">Confirm</button>
+    </div>
+  </div>
+  
+  <script src="math_challenge.js"></script>
+  <script>
+    console.log('=== TEST PAGE LOADED ===');
+    console.log('g3n3r4t3:', typeof window.g3n3r4t3);
+    console.log('v3r1fy:', typeof window.v3r1fy);
+    
+    let currentProblem = null;
+    
+    const showRobotPopup = () => {
+      console.log('showRobotPopup called');
+      
+      const popup = document.getElementById('robot-popup');
+      const equation = document.getElementById('robot-equation');
+      const input = document.getElementById('robot-input');
+      
+      if (typeof window.g3n3r4t3 === 'function') {
+        const problem = window.g3n3r4t3();
+        currentProblem = problem;
+        console.log('Generated problem:', problem);
+        
+        const displayQuestion = problem.question.replace(/\n/g, '<br>');
+        equation.innerHTML = displayQuestion;
+        
+        input.value = '';
+        input.focus();
+        
+        popup.classList.add('active');
+        console.log('Popup displayed!');
+      } else {
+        console.error('Math challenge NOT loaded!');
+        alert('Error: Math challenge not loaded!');
+      }
+    };
+    
+    document.getElementById('robot-confirm').addEventListener('click', () => {
+      const input = document.getElementById('robot-input');
+      const userAnswer = input.value.trim();
+      
+      if (typeof window.v3r1fy === 'function') {
+        const result = window.v3r1fy(userAnswer);
+        console.log('Verification result:', result);
+        
+        if (result.success) {
+          alert('SUCCESS! You are human.');
+          document.getElementById('robot-popup').classList.remove('active');
+        } else {
+          alert('WRONG! ' + result.message);
+          input.value = '';
+          input.focus();
+        }
+      } else {
+        alert('Verification function not available!');
+      }
+    });
+    
+    // Auto-show on load
+    setTimeout(showRobotPopup, 500);
+  </script>
+</body>
+</html>
