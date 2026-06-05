@@ -308,6 +308,12 @@
     
     // Generate and display math challenge using the external system
     const showRobotPopup = () => {
+      // Prevent multiple popups from stacking
+      const existingPopup = document.getElementById('robot-popup');
+      if (existingPopup && existingPopup.classList.contains('active')) {
+        return; // Popup already showing
+      }
+      
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
       const input = document.getElementById('robot-input');
@@ -469,9 +475,20 @@
           document.body.style.overflow = '';
           document.documentElement.style.overflow = '';
           
-          // Store verification
+          // Store verification in sessionStorage (30 minutes)
           sessionStorage.setItem('robotVerified', 'true');
           sessionStorage.setItem('robotVerifyTime', Date.now().toString());
+          
+          // Also store in localStorage for persistent verification (24 hours)
+          try {
+            localStorage.setItem('math_challenge_completed', JSON.stringify({
+              verified: true,
+              timestamp: Date.now()
+            }));
+            localStorage.setItem('math_verify_time', Date.now().toString());
+          } catch (e) {
+            // Storage might be unavailable
+          }
           
         } else {
           // Wrong answer
@@ -507,7 +524,7 @@
     
     // Check if already verified in this session
     const isRobotVerified = () => {
-      // Check sessionStorage first
+      // Check sessionStorage first (short-term: 30 minutes)
       if (sessionStorage.getItem('robotVerified') === 'true') {
         const verifyTime = sessionStorage.getItem('robotVerifyTime');
         if (verifyTime) {
@@ -518,7 +535,7 @@
         return true;
       }
       
-      // Check localStorage for persistent verification (with expiration)
+      // Check localStorage for persistent verification (with expiration: 24 hours)
       const stored = localStorage.getItem('math_challenge_completed');
       if (stored) {
         try {
@@ -527,6 +544,10 @@
           // Persistent verification valid for 24 hours
           if (elapsed < 24 * 60 * 60 * 1000) {
             return true;
+          } else {
+            // Expired, clear it
+            localStorage.removeItem('math_challenge_completed');
+            localStorage.removeItem('math_verify_time');
           }
         } catch (e) {
           localStorage.removeItem('math_challenge_completed');
@@ -860,16 +881,19 @@
           window.onpopstate = function() {
             history.pushState(null, null, location.href);
           };
+          return true; // Maintenance is active
         } else {
           // Hide maintenance popup
           document.getElementById('maintenance-popup').classList.remove('active');
           document.body.style.overflow = '';
+          return false; // Maintenance is not active
         }
       } catch (err) {
         console.error('Error checking maintenance:', err);
         // If error, hide popup
         document.getElementById('maintenance-popup').classList.remove('active');
         document.body.style.overflow = '';
+        return false;
       }
     };
 
@@ -886,25 +910,51 @@
       }
     });
 
-    // Check maintenance on load
-    checkMaintenance();
-
-    // 🤖 ROBOT VERIFICATION - Show before gallery access (only if not in maintenance)
-    const initRobotCheck = () => {
+    // Check maintenance on load, then robot verification
+    const initPage = async () => {
+      const isMaintenanceActive = await checkMaintenance();
+      
       // Only show robot check if maintenance is NOT active
-      const maintenancePopup = document.getElementById('maintenance-popup');
-      if (!maintenancePopup.classList.contains('active')) {
+      if (!isMaintenanceActive) {
         // Check if already verified in this session
         if (!isRobotVerified()) {
           showRobotPopup();
         }
       }
     };
+    
+    // Run initialization immediately
+    initPage();
+    
+    // Force robot check on page refresh/navigation (bfcache handling)
+    window.addEventListener('pageshow', async function(event) {
+      // If page loaded from bfcache (back/forward), re-check
+      if (event.persisted) {
+        const isMaintenanceActive = await checkMaintenance();
+        if (!isMaintenanceActive && !isRobotVerified()) {
+          showRobotPopup();
+        }
+      }
+    });
+    
+    // Also check on every page load to ensure popup appears
+    document.addEventListener('DOMContentLoaded', async function() {
+      const isMaintenanceActive = await checkMaintenance();
+      if (!isMaintenanceActive && !isRobotVerified()) {
+        showRobotPopup();
+      }
+    });
+    
+    // Final fallback: check on window load
+    window.addEventListener('load', async function() {
+      const isMaintenanceActive = await checkMaintenance();
+      if (!isMaintenanceActive && !isRobotVerified()) {
+        showRobotPopup();
+      }
+    });
 
-    // Run robot check after maintenance check completes
-    setTimeout(initRobotCheck, 500);
-
-    // 🚀 START
+    // 🚀 START - Load gallery after verification checks
+    // Note: Gallery loading happens, but user can't interact until they solve the challenge
     loadG();
   </script>
 </body>
