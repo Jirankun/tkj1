@@ -1,5 +1,5 @@
-# Redirect /photo/* ke /photo/index.html agar routing JS bisa menangani
+# Redirect khusus untuk /photo/* agar langsung ke file photo/index.html (tanpa loop)
 /photo/*    /photo/index.html   200
 
-# Default fallback untuk SPA
+# Default fallback untuk SPA lainnya
 /*    /index.html   200
