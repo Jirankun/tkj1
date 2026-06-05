@@ -46,10 +46,10 @@
     .status-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
     .status-message { color: var(--text-muted); font-size: 1rem; max-width: 500px; line-height: 1.6; }
 
-    /* 🖼️ GALLERY CONTAINER */
-    #gallery-container { position: fixed; inset: 0; z-index: 100; }
+    /* 🖼️ GALLERY CONTAINER - FIXED IFRAME STYLING */
+    #gallery-container { position: fixed; inset: 0; z-index: 100; background: var(--bg); }
     #gallery-container.hidden { display: none; }
-    #gallery-frame { width: 100%; height: 100%; border: none; }
+    #gallery-frame { width: 100%; height: 100%; border: none; display: block; }
 
     /* 💬 GISCUS FULLSCREEN */
     #giscus-full { position: fixed; inset: 0; background: var(--bg); z-index: 400; display: none; flex-direction: column; }
@@ -57,6 +57,9 @@
     .giscus-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(9,9,11,0.95); }
     .giscus-header h3 { font-weight: 600; font-size: 1rem; margin: 0; }
     .giscus-body { flex: 1; overflow-y: auto; padding: 12px; }
+
+    /* 🔐 CONFIRM MODAL PARENT - FIX POPUP CSS */
+    .confirm-box { padding: 28px 20px; text-align: center; }
 
     /* 🛠️ UTILS */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
@@ -125,7 +128,7 @@
 
   <!-- 🖼️ GALLERY CONTAINER -->
   <div id="gallery-container" class="hidden">
-    <iframe id="gallery-frame" src="/page/gallery.html" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    <iframe id="gallery-frame" src="/page/gallery.html" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"></iframe>
   </div>
 
   <script>
@@ -284,7 +287,6 @@
         const photoName = decodeURIComponent(parts.slice(1).join('/'));
         // Store the photo name in sessionStorage for gallery to use
         sessionStorage.setItem('directPhoto', photoName);
-        // Don't redirect - let the gallery iframe handle it via postMessage
         return true;
       }
       return false;
@@ -394,7 +396,10 @@
           // Check if there's a direct photo access
           const directPhoto = sessionStorage.getItem('directPhoto');
           if (directPhoto && iframe.contentWindow) {
-            iframe.contentWindow.postMessage({ type: 'OPEN_PHOTO', name: directPhoto }, '*');
+            // Wait a bit for gallery to load data
+            setTimeout(() => {
+              iframe.contentWindow.postMessage({ type: 'OPEN_PHOTO', name: directPhoto }, '*');
+            }, 500);
             sessionStorage.removeItem('directPhoto');
           }
         });
