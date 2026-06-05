@@ -284,6 +284,7 @@
   </footer>
   <div id="toast" class="toast"></div>
 
+  <script src="math_challenge.js"></script>
   <script>
     'use strict';
     const CFG = {
@@ -299,116 +300,31 @@
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
 
-    // 🤖 ROBOT VERIFICATION SYSTEM
+    // 🤖 ROBOT VERIFICATION SYSTEM - Using external math_challenge.js
     let robotVerified = false;
-    let currentAnswer = null;
-    let attemptCount = 0;
+    let challengeAttempts = 0;
+    const MAX_ATTEMPTS = 3;
+    let currentProblem = null;
     
-    // Generate random math problem with various difficulty levels
-    const generateMathProblem = () => {
-      const difficulty = Math.floor(Math.random() * 5); // 0-4 difficulty levels
-      let problem = '';
-      let answer = 0;
-      
-      // Use crypto-safe random for extra security
-      const secureRandom = (min, max) => {
-        const array = new Uint32Array(1);
-        window.crypto.getRandomValues(array);
-        return min + (array[0] % (max - min + 1));
-      };
-      
-      switch(difficulty) {
-        case 0: // Simple addition/subtraction
-          if (Math.random() > 0.5) {
-            const a = secureRandom(10, 99);
-            const b = secureRandom(10, 99);
-            problem = `${a} + ${b}`;
-            answer = a + b;
-          } else {
-            const a = secureRandom(50, 99);
-            const b = secureRandom(10, 49);
-            problem = `${a} - ${b}`;
-            answer = a - b;
-          }
-          break;
-          
-        case 1: // Multiplication
-          const a1 = secureRandom(3, 12);
-          const b1 = secureRandom(2, 9);
-          problem = `${a1} × ${b1}`;
-          answer = a1 * b1;
-          break;
-          
-        case 2: // Division
-          const b2 = secureRandom(2, 9);
-          const ans2 = secureRandom(3, 15);
-          const a2 = b2 * ans2;
-          problem = `${a2} ÷ ${b2}`;
-          answer = ans2;
-          break;
-          
-        case 3: // Mixed operations
-          const ops = ['+', '-', '×'];
-          const op1 = ops[secureRandom(0, 2)];
-          const op2 = ops[secureRandom(0, 2)];
-          const x = secureRandom(5, 20);
-          const y = secureRandom(2, 10);
-          const z = secureRandom(2, 10);
-          problem = `${x} ${op1} ${y} ${op2} ${z}`;
-          // Calculate answer based on operators
-          let temp = x;
-          if (op1 === '+') temp += y;
-          else if (op1 === '-') temp -= y;
-          else temp *= y;
-          
-          if (op2 === '+') answer = temp + z;
-          else if (op2 === '-') answer = temp - z;
-          else answer = temp * z;
-          break;
-          
-        case 4: // Complex formula (powers, roots, etc.)
-          const formulas = [
-            () => {
-              const base = secureRandom(2, 5);
-              const exp = secureRandom(2, 4);
-              problem = `${base}^${exp}`;
-              answer = Math.pow(base, exp);
-            },
-            () => {
-              const square = secureRandom(2, 9);
-              const result = square * square;
-              problem = `√${result}`;
-              answer = square;
-            },
-            () => {
-              const a = secureRandom(2, 8);
-              const b = secureRandom(2, 8);
-              problem = `${a}² + ${b}²`;
-              answer = (a * a) + (b * b);
-            },
-            () => {
-              const n = secureRandom(3, 7);
-              const fact = [6, 24, 120, 720, 5040];
-              problem = `${n}!`;
-              answer = fact[n - 3];
-            }
-          ];
-          formulas[secureRandom(0, formulas.length - 1)]();
-          break;
-      }
-      
-      return { problem, answer };
-    };
-    
+    // Generate and display math challenge using the external system
     const showRobotPopup = () => {
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
       const input = document.getElementById('robot-input');
       
-      // Generate new problem
-      const math = generateMathProblem();
-      currentAnswer = math.answer;
-      equation.textContent = math.problem + ' = ?';
+      // Use the external math challenge generator (g3n3r4t3)
+      if (typeof window.g3n3r4t3 === 'function') {
+        const problem = window.g3n3r4t3();
+        currentProblem = problem;
+        
+        // Format the question for display (handle newlines for complex problems)
+        const displayQuestion = problem.question.replace(/\n/g, '<br>');
+        equation.innerHTML = displayQuestion;
+      } else {
+        console.error('Math challenge system not loaded');
+        return;
+      }
+      
       input.value = '';
       input.classList.remove('error');
       input.focus();
@@ -416,77 +332,208 @@
       // Show popup and disable body scroll
       popup.classList.add('active');
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
       
-      // Security: Disable right-click, F12, etc.
+      // Advanced security measures
       const preventDevTools = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         return false;
       };
       
-      document.addEventListener('contextmenu', preventDevTools);
-      document.addEventListener('keydown', function preventKeys(e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-            (e.ctrlKey && e.key === 'U') || (e.ctrlKey && e.key === 'S')) {
+      // Disable right-click
+      document.addEventListener('contextmenu', preventDevTools, { capture: true });
+      
+      // Disable developer tools keys
+      const preventKeys = (e) => {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || 
+            (e.ctrlKey && ['U', 'S', 'P'].includes(e.key)) ||
+            (e.ctrlKey && e.altKey && e.key === 'I')) {
           e.preventDefault();
+          e.stopPropagation();
           return false;
         }
-      });
+      };
+      document.addEventListener('keydown', preventKeys, { capture: true });
       
-      // Anti-bypass: Check if popup is hidden via dev tools
-      const integrityCheck = setInterval(() => {
+      // Anti-bypass: Multiple integrity checks
+      const integrityChecks = [];
+      
+      // Check 1: Popup visibility
+      const check1 = setInterval(() => {
         const popupRect = popup.getBoundingClientRect();
-        if (popupRect.width === 0 || popupRect.height === 0) {
+        const isHidden = popupRect.width === 0 || popupRect.height === 0 || 
+                        popup.style.display === 'none' || 
+                        !popup.classList.contains('active');
+        if (isHidden) {
           popup.classList.add('active');
+          popup.style.display = 'flex';
           document.body.style.overflow = 'hidden';
+          document.documentElement.style.overflow = 'hidden';
+        }
+      }, 50);
+      integrityChecks.push(check1);
+      
+      // Check 2: Z-index manipulation
+      const check2 = setInterval(() => {
+        const computedStyle = getComputedStyle(popup);
+        if (parseInt(computedStyle.zIndex) < 9999) {
+          popup.style.zIndex = '10000';
+        }
+        if (computedStyle.position !== 'fixed') {
+          popup.style.position = 'fixed';
         }
       }, 100);
+      integrityChecks.push(check2);
       
-      // Store interval ID for cleanup
-      popup.dataset.integrityCheck = integrityCheck;
+      // Check 3: Body scroll re-enable attempt detection
+      const check3 = setInterval(() => {
+        if (document.body.style.overflow !== 'hidden' || 
+            document.documentElement.style.overflow !== 'hidden') {
+          document.body.style.overflow = 'hidden';
+          document.documentElement.style.overflow = 'hidden';
+          challengeAttempts++;
+          if (challengeAttempts >= MAX_ATTEMPTS) {
+            // Lock out user
+            localStorage.setItem('security_lockdown', 'true');
+            localStorage.setItem('lockdown_time', Date.now().toString());
+            alert('Security violation detected. Page will reload.');
+            window.location.reload();
+          }
+        }
+      }, 200);
+      integrityChecks.push(check3);
+      
+      // Store interval IDs for cleanup
+      popup.dataset.integrityChecks = JSON.stringify(integrityChecks.map((_, i) => i));
+      popup._integrityIntervals = integrityChecks;
+      
+      // Detect dev tools opening
+      let lastWidth = window.outerWidth - window.innerWidth;
+      let lastHeight = window.outerHeight - window.innerHeight;
+      
+      const detectDevTools = () => {
+        const currentWidth = window.outerWidth - window.innerWidth;
+        const currentHeight = window.outerHeight - window.innerHeight;
+        
+        if (currentWidth > lastWidth + 50 || currentHeight > lastHeight + 50) {
+          // Dev tools likely opened
+          challengeAttempts++;
+          if (challengeAttempts >= MAX_ATTEMPTS) {
+            localStorage.setItem('security_lockdown', 'true');
+            localStorage.setItem('lockdown_time', Date.now().toString());
+            window.location.reload();
+          }
+        }
+        
+        lastWidth = currentWidth;
+        lastHeight = currentHeight;
+      };
+      
+      window.addEventListener('resize', detectDevTools);
+      popup._resizeListener = detectDevTools;
     };
     
     const verifyRobotAnswer = () => {
       const input = document.getElementById('robot-input');
-      const userAnswer = parseFloat(input.value);
+      const userAnswer = input.value.trim();
       
-      // Allow small floating point tolerance
-      if (Math.abs(userAnswer - currentAnswer) < 0.001) {
-        // Correct answer
-        robotVerified = true;
-        
-        // Clear integrity check
-        const popup = document.getElementById('robot-popup');
-        if (popup.dataset.integrityCheck) {
-          clearInterval(parseInt(popup.dataset.integrityCheck));
-        }
-        
-        // Hide popup
-        popup.classList.remove('active');
-        document.body.style.overflow = '';
-        
-        // Store verification in session (not localStorage for security)
-        sessionStorage.setItem('robotVerified', 'true');
-        
-        // Enable scrolling again
-        document.body.style.overflow = '';
-      } else {
-        // Wrong answer
-        attemptCount++;
+      if (!userAnswer || isNaN(parseFloat(userAnswer))) {
         input.classList.add('error');
-        input.value = '';
-        input.placeholder = `Attempt ${attemptCount + 1}: Try again...`;
+        setTimeout(() => input.classList.remove('error'), 500);
+        return;
+      }
+      
+      // Use the external verification system (v3r1fy)
+      if (typeof window.v3r1fy === 'function') {
+        const result = window.v3r1fy(userAnswer);
         
-        // Generate harder problem on next attempt
-        setTimeout(() => {
-          input.classList.remove('error');
-          showRobotPopup();
-        }, 800);
+        if (result.success) {
+          // Correct answer - clean up and proceed
+          robotVerified = true;
+          
+          const popup = document.getElementById('robot-popup');
+          
+          // Clear all integrity checks
+          if (popup._integrityIntervals) {
+            popup._integrityIntervals.forEach(interval => clearInterval(interval));
+          }
+          
+          if (popup._resizeListener) {
+            window.removeEventListener('resize', popup._resizeListener);
+          }
+          
+          // Hide popup
+          popup.classList.remove('active');
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+          
+          // Store verification
+          sessionStorage.setItem('robotVerified', 'true');
+          sessionStorage.setItem('robotVerifyTime', Date.now().toString());
+          
+        } else {
+          // Wrong answer
+          challengeAttempts++;
+          input.classList.add('error');
+          input.value = '';
+          
+          const remaining = MAX_ATTEMPTS - challengeAttempts;
+          
+          if (remaining <= 0) {
+            // Maximum attempts reached
+            if (result.locked) {
+              localStorage.setItem('security_lockdown', 'true');
+              localStorage.setItem('lockdown_time', Date.now().toString());
+              alert('Terlalu banyak kesalahan! Halaman akan dimuat ulang.');
+              window.location.reload();
+              return;
+            }
+          }
+          
+          input.placeholder = `Salah! Sisa ${remaining} percobaan`;
+          
+          // Generate new harder problem after delay
+          setTimeout(() => {
+            input.classList.remove('error');
+            showRobotPopup();
+          }, 1000);
+        }
+      } else {
+        console.error('Verification system not available');
       }
     };
     
     // Check if already verified in this session
     const isRobotVerified = () => {
-      return sessionStorage.getItem('robotVerified') === 'true';
+      // Check sessionStorage first
+      if (sessionStorage.getItem('robotVerified') === 'true') {
+        const verifyTime = sessionStorage.getItem('robotVerifyTime');
+        if (verifyTime) {
+          const elapsed = Date.now() - parseInt(verifyTime);
+          // Verification valid for 30 minutes
+          return elapsed < 30 * 60 * 1000;
+        }
+        return true;
+      }
+      
+      // Check localStorage for persistent verification (with expiration)
+      const stored = localStorage.getItem('math_challenge_completed');
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          const elapsed = Date.now() - data.timestamp;
+          // Persistent verification valid for 24 hours
+          if (elapsed < 24 * 60 * 60 * 1000) {
+            return true;
+          }
+        } catch (e) {
+          localStorage.removeItem('math_challenge_completed');
+        }
+      }
+      
+      return false;
     };
 
     const isVideo = (item) => {
