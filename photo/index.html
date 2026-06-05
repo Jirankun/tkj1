@@ -2,13 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Lihat Foto</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { 
-            width: 100%; height: 100%; overflow: hidden; background: #000; 
+            width: 100%; height: 100dvh; overflow: hidden; background: #000; 
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            touch-action: none;
         }
         #canvas-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -27,12 +28,13 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #image-container {
-            position: relative; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center; background: #000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
+            display: none; justify-content: center; align-items: center; background: #000;
+            z-index: 9999;
         }
         #main-image {
-            max-width: 100%; max-height: 100%; object-fit: contain;
-            user-select: none; -webkit-user-drag: none;
+            max-width: 100%; max-height: 100dvh; object-fit: contain;
+            user-select: none; -webkit-user-drag: none; touch-action: none;
         }
         .controls {
             position: absolute; bottom: 20px; left: 0; right: 0;
@@ -62,7 +64,7 @@
     <canvas id="canvas-layer"></canvas>
     <div id="mobile-blocker"><h2>⚠️ Akses Ditolak</h2><p style="margin-top:10px;">Hanya Mobile yang diizinkan.</p></div>
     <div id="security-overlay"><div class="loader"></div><p>Memuat Foto...</p></div>
-    <div id="image-container" style="display:none;">
+    <div id="image-container">
         <img id="main-image" alt="Foto" draggable="false">
         <div class="controls">
             <a href="#" class="btn btn-primary" id="open-app-btn">Buka di App</a>
@@ -70,7 +72,7 @@
             <button class="btn" onclick="window.history.back()">Kembali</button>
         </div>
     </div>
-    <div id="error-container" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; text-align:center;">
+    <div id="error-container" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; text-align:center; width:90%;">
         <p id="error-msg"></p>
         <button class="btn" onclick="window.location.href='/'" style="margin-top:20px;">Ke Beranda</button>
     </div>
@@ -82,10 +84,17 @@
             throw new Error('PC Blocked');
         }
 
-        // 2. AMBIL NAMA FOTO DARI URL: /photo/NAMA_FOTO
-        const path = window.location.pathname;
-        let photoName = path.replace(/^\/photo\//, '').replace(/\/$/, '');
-        try { photoName = decodeURIComponent(photoName); } catch(e) {}
+        // 2. AMBIL NAMA FOTO DARI URL
+        // Support: /photo/120, /photo/index.html?id=120, /photo/index.html#120
+        let path = window.location.pathname;
+        let photoName = path.replace(/^.*\/photo\//, '').replace(/\/$/, '').replace('index.html', '');
+        
+        if (!photoName) {
+            const urlParams = new URLSearchParams(window.location.search);
+            photoName = urlParams.get('id') || window.location.hash.replace('#', '');
+        }
+        
+        try { photoName = decodeURIComponent(photoName.trim()); } catch(e) {}
 
         const mainImage = document.getElementById('main-image');
         const imageContainer = document.getElementById('image-container');
@@ -96,34 +105,41 @@
         if (!photoName) {
             securityOverlay.style.display = 'none';
             errorContainer.style.display = 'block';
-            errorMsg.textContent = "Nama foto tidak ditemukan.";
+            errorMsg.textContent = "Nama foto tidak ditemukan di URL.";
         } else {
-            // CARI FOTO DI BERBAGAI LOKASI
-            const paths = [photoName, 'galeri/'+photoName, 'banner/'+photoName, '../'+photoName, '../galeri/'+photoName];
-            let loaded = false;
-
-            function tryLoad(i) {
-                if (i >= paths.length || loaded) {
-                    if (!loaded) {
+            // FETCH DARI DB/photos.json
+            fetch('../DB/photos.json')
+                .then(res => {
+                    if(!res.ok) throw new Error('Gagal memuat database foto.');
+                    return res.json();
+                })
+                .then(data => {
+                    // Cari foto berdasarkan name
+                    const photo = data.photos.find(p => p.name === photoName);
+                    if (photo && photo.url) {
+                        mainImage.onload = () => {
+                            securityOverlay.style.display = 'none';
+                            imageContainer.style.display = 'flex';
+                            setupButtons(photoName);
+                        };
+                        mainImage.onerror = () => {
+                            securityOverlay.style.display = 'none';
+                            errorContainer.style.display = 'block';
+                            errorMsg.textContent = 'Gagal memuat gambar dari server (URL rusak).';
+                        };
+                        // Trim URL karena ada kemungkinan spasi di JSON
+                        mainImage.src = photo.url.trim(); 
+                    } else {
                         securityOverlay.style.display = 'none';
                         errorContainer.style.display = 'block';
-                        errorMsg.textContent = 'Foto tidak ditemukan.';
+                        errorMsg.textContent = `Foto dengan nama "${photoName}" tidak ditemukan di database.`;
                     }
-                    return;
-                }
-                const img = new Image();
-                img.onload = () => {
-                    if (loaded) return;
-                    loaded = true;
-                    mainImage.src = paths[i];
+                })
+                .catch(err => {
                     securityOverlay.style.display = 'none';
-                    imageContainer.style.display = 'flex';
-                    setupButtons(photoName);
-                };
-                img.onerror = () => { tryLoad(i+1); };
-                img.src = paths[i];
-            }
-            tryLoad(0);
+                    errorContainer.style.display = 'block';
+                    errorMsg.textContent = 'Error: ' + err.message;
+                });
         }
 
         function setupButtons(name) {
