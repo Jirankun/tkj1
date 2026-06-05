@@ -1,5 +1,0 @@
-# Redirect khusus untuk /photo/* agar langsung ke file photo/index.html (tanpa loop)
-/photo/*    /photo/index.html   200
-
-# Fallback untuk SPA - harus di akhir
-/*          /index.html         200
