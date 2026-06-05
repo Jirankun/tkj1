@@ -284,7 +284,14 @@
   </footer>
   <div id="toast" class="toast"></div>
 
+  <!-- Load math challenge system first -->
   <script src="math_challenge.js"></script>
+  <!-- Debug: check if math_challenge.js loaded -->
+  <script>
+    console.log('Math challenge script loaded');
+    console.log('g3n3r4t3 function:', typeof window.g3n3r4t3);
+    console.log('v3r1fy function:', typeof window.v3r1fy);
+  </script>
   <script>
     'use strict';
     const CFG = {
@@ -308,9 +315,12 @@
     
     // Generate and display math challenge using the external system
     const showRobotPopup = () => {
+      console.log('showRobotPopup called');
+      
       // Prevent multiple popups from stacking
       const existingPopup = document.getElementById('robot-popup');
       if (existingPopup && existingPopup.classList.contains('active')) {
+        console.log('Popup already showing, skipping');
         return; // Popup already showing
       }
       
@@ -318,16 +328,23 @@
       const equation = document.getElementById('robot-equation');
       const input = document.getElementById('robot-input');
       
+      console.log('Popup element:', popup);
+      console.log('Equation element:', equation);
+      console.log('g3n3r4t3 function available:', typeof window.g3n3r4t3 === 'function');
+      
       // Use the external math challenge generator (g3n3r4t3)
       if (typeof window.g3n3r4t3 === 'function') {
         const problem = window.g3n3r4t3();
         currentProblem = problem;
+        
+        console.log('Generated problem:', problem);
         
         // Format the question for display (handle newlines for complex problems)
         const displayQuestion = problem.question.replace(/\n/g, '<br>');
         equation.innerHTML = displayQuestion;
       } else {
         console.error('Math challenge system not loaded');
+        alert('Error: Math challenge system not loaded. Please refresh the page.');
         return;
       }
       
@@ -339,6 +356,8 @@
       popup.classList.add('active');
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
+      
+      console.log('Popup displayed successfully');
       
       // Advanced security measures
       const preventDevTools = (e) => {
@@ -536,21 +555,63 @@
       }
       
       // Check localStorage for persistent verification (with expiration: 24 hours)
-      const stored = localStorage.getItem('math_challenge_completed');
-      if (stored) {
-        try {
-          const data = JSON.parse(stored);
-          const elapsed = Date.now() - data.timestamp;
-          // Persistent verification valid for 24 hours
-          if (elapsed < 24 * 60 * 60 * 1000) {
-            return true;
-          } else {
-            // Expired, clear it
-            localStorage.removeItem('math_challenge_completed');
-            localStorage.removeItem('math_verify_time');
+      // Try multiple possible keys used by math_challenge.js
+      const possibleKeys = [
+        'math_challenge_completed',
+        'math_verify_time'
+      ];
+      
+      // First check standard keys
+      for (const key of possibleKeys) {
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          try {
+            const data = JSON.parse(stored);
+            const elapsed = Date.now() - data.timestamp;
+            // Persistent verification valid for 24 hours
+            if (elapsed < 24 * 60 * 60 * 1000) {
+              return true;
+            }
+          } catch (e) {
+            // Might be a simple string value
+            if (stored === 'true') {
+              const timeStored = localStorage.getItem('math_verify_time');
+              if (timeStored) {
+                const elapsed = Date.now() - parseInt(timeStored);
+                if (elapsed < 24 * 60 * 60 * 1000) {
+                  return true;
+                }
+              }
+            }
           }
-        } catch (e) {
-          localStorage.removeItem('math_challenge_completed');
+        }
+      }
+      
+      // Also check for any math_challenge_completed_* keys (from math_challenge.js)
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('math_challenge_completed_')) {
+          const timeStored = localStorage.getItem('math_verify_time');
+          if (timeStored) {
+            const elapsed = Date.now() - parseInt(timeStored);
+            if (elapsed < 24 * 60 * 60 * 1000) {
+              return true;
+            }
+          }
+        }
+      }
+      
+      // Check for math_verified_* session keys
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && key.startsWith('math_verified_')) {
+          const timeStored = sessionStorage.getItem('math_verify_time');
+          if (timeStored) {
+            const elapsed = Date.now() - parseInt(timeStored);
+            if (elapsed < 30 * 60 * 1000) {
+              return true;
+            }
+          }
         }
       }
       
@@ -912,18 +973,30 @@
 
     // Check maintenance on load, then robot verification
     const initPage = async () => {
+      console.log('initPage called');
+      console.log('g3n3r4t3 available:', typeof window.g3n3r4t3);
+      
       const isMaintenanceActive = await checkMaintenance();
       
       // Only show robot check if maintenance is NOT active
       if (!isMaintenanceActive) {
         // Check if already verified in this session
-        if (!isRobotVerified()) {
+        const verified = isRobotVerified();
+        console.log('isRobotVerified:', verified);
+        
+        if (!verified) {
+          console.log('Showing robot popup...');
           showRobotPopup();
+        } else {
+          console.log('Already verified, skipping popup');
         }
+      } else {
+        console.log('Maintenance active, skipping robot check');
       }
     };
     
     // Run initialization immediately
+    console.log('Script loaded, running initPage...');
     initPage();
     
     // Force robot check on page refresh/navigation (bfcache handling)
