@@ -282,13 +282,17 @@
       // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg)
       if (parts.length >= 2 && parts[0] === 'photo') {
         const photoName = parts.slice(1).join('/');
-        // Redirect to photo viewer page
-        window.location.href = '/photo/' + encodeURIComponent(photoName);
+        // Redirect to photo viewer page with query parameter
+        window.location.href = '/photo/index.html?' + encodeURIComponent(photoName);
+        return true;
       }
+      return false;
     };
     
     // Handle photo routing immediately on load
-    handlePhotoRoute();
+    if (handlePhotoRoute()) {
+      // Stop further execution if redirected
+    }
     
     window.addEventListener('message', handleGiscusMessage);
     
@@ -381,15 +385,8 @@
     };
 
     // 🚀 INIT
-    (async () => { 
+    (async () => {
       showTS();
-      // After turnstile passes and gallery loads, check for photo route
-      const checkRouteInterval = setInterval(() => {
-        if (tsOk) {
-          handlePhotoRoute();
-          clearInterval(checkRouteInterval);
-        }
-      }, 200); 
     })();
   </script>
 </body>

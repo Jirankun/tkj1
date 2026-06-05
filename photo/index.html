@@ -217,13 +217,22 @@
         // === FUNGSI UTAMA ===
         
         function getPhotoNameFromURL() {
-            // URL format: /photo/nama-foto.jpg atau /photo/nama-foto
+            // URL format: /photo/index.html?nama-foto.jpg
+            const params = new URLSearchParams(window.location.search);
+            let photoName = params.get('photo') || params.get('name');
+            
+            if (photoName) {
+                return decodeURIComponent(photoName);
+            }
+            
+            // Fallback: coba dari path jika tidak ada query param
             const path = window.location.pathname;
             const parts = path.split('/').filter(p => p);
             
-            if (parts[0] === 'photo' && parts.length >= 2) {
+            if (parts.length >= 2 && parts[0] === 'photo') {
                 return decodeURIComponent(parts.slice(1).join('/'));
             }
+            
             return null;
         }
 
@@ -239,13 +248,13 @@
             
             // Coba beberapa kemungkinan path gambar
             const possiblePaths = [
-                photoName,
-                'galeri/' + photoName,
-                'images/' + photoName,
-                'assets/' + photoName
+                '/' + photoName,                      // Root path
+                '/banner/' + photoName,               // Banner folder
+                '/galeri/' + photoName,               // Galeri folder
+                '/images/' + photoName,               // Images folder
+                '/assets/' + photoName                // Assets folder
             ];
 
-            let loaded = false;
             let attemptIndex = 0;
 
             function tryNextPath() {
@@ -309,7 +318,8 @@
 
             // Tombol Bagikan
             shareBtn.onclick = async function() {
-                const shareUrl = CONFIG.baseUrl + 'photo/' + currentPhotoName;
+                const cleanName = currentPhotoName.split('/').pop();
+                const shareUrl = CONFIG.baseUrl + 'photo/' + cleanName;
                 
                 if (navigator.share) {
                     try {
