@@ -282,8 +282,8 @@
       // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg)
       if (parts.length >= 2 && parts[0] === 'photo') {
         const photoName = parts.slice(1).join('/');
-        // Redirect to photo viewer page with query parameter
-        window.location.href = '/photo/index.html?' + encodeURIComponent(photoName);
+        // Redirect to photo viewer page using clean URL (Cloudflare Pages handles redirect via _redirects)
+        window.location.href = '/photo/' + encodeURIComponent(photoName);
         return true;
       }
       return false;

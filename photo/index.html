@@ -3,410 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TKJ1 Gallery - Photo View</title>
-    <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="Galeri Foto TKJ1 - Full Screen Viewer">
+    <title>Lihat Foto</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #000; 
-            color: #fff; 
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; background: #000; 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        
-        /* Loading State */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #0f172a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+        #canvas-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; opacity: 0.02;
         }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-left-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        #security-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column; color: #fff; text-align: center;
         }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        #loading-text {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #94a3b8;
+        .loader {
+            border: 4px solid #333; border-top: 4px solid #00d2ff;
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
         }
-
-        /* Main Image Container */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #image-container {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            z-index: 1000;
+            position: relative; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center; background: #000;
         }
-        
         #main-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            user-select: none;
-            -webkit-user-drag: none;
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            user-select: none; -webkit-user-drag: none;
         }
-
-        /* Controls Overlay */
-        #controls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            z-index: 1001;
-            opacity: 0;
-            transition: opacity 0.3s;
+        .controls {
+            position: absolute; bottom: 20px; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 15px; z-index: 1000; padding: 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
-        
-        #image-container:hover #controls {
-            opacity: 1;
-        }
-
         .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3); color: #fff;
+            padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-        
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        /* Error State */
-        #error-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #0f172a;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            z-index: 9999;
-        }
-        
-        .error-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        
-        .error-title {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #ef4444;
-        }
-        
-        .error-message {
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
-        /* Security Canvas (Hidden) */
-        #security-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 9998;
+        .btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+        .btn-primary { background: #00d2ff; border-color: #00d2ff; color: #000; }
+        .btn-primary:hover { background: #00b8e6; }
+        #error-msg { color: #ff4757; font-size: 18px; text-align: center; padding: 20px; }
+        #mobile-blocker {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 20000; display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+            color: #fff; text-align: center; padding: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <div id="loading-text">Memuat foto...</div>
-    </div>
-
-    <!-- Error Screen -->
-    <div id="error-screen">
-        <div class="error-icon">⚠️</div>
-        <div class="error-title">Foto Tidak Ditemukan</div>
-        <div class="error-message" id="error-msg">Maaf, foto yang Anda cari tidak tersedia.</div>
-        <button class="btn btn-primary" onclick="window.location.href='/'">Kembali ke Beranda</button>
-    </div>
-
-    <!-- Main Image Container -->
-    <div id="image-container">
-        <img id="main-image" src="" alt="Full Screen Photo" draggable="false">
-        
-        <div id="controls">
-            <button class="btn btn-secondary" onclick="window.location.href='/'">
-                ← Kembali
-            </button>
-            <button class="btn btn-primary" id="open-app-btn">
-                📱 Buka di App
-            </button>
-            <button class="btn btn-secondary" id="share-btn">
-                🔗 Bagikan
-            </button>
+    <canvas id="canvas-layer"></canvas>
+    <div id="mobile-blocker"><h2>⚠️ Akses Ditolak</h2><p style="margin-top:10px;">Hanya Mobile yang diizinkan.</p></div>
+    <div id="security-overlay"><div class="loader"></div><p>Memuat Foto...</p></div>
+    <div id="image-container" style="display:none;">
+        <img id="main-image" alt="Foto" draggable="false">
+        <div class="controls">
+            <a href="#" class="btn btn-primary" id="open-app-btn">Buka di App</a>
+            <button class="btn" id="share-btn">Bagikan</button>
+            <button class="btn" onclick="window.history.back()">Kembali</button>
         </div>
     </div>
-
-    <!-- Security Canvas -->
-    <canvas id="security-canvas"></canvas>
+    <div id="error-container" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; text-align:center;">
+        <p id="error-msg"></p>
+        <button class="btn" onclick="window.location.href='/'" style="margin-top:20px;">Ke Beranda</button>
+    </div>
 
     <script>
-        // === KONFIGURASI ===
-        const CONFIG = {
-            appScheme: 'tkjone://photo/',
-            apkUrl: 'https://example.com/app.apk', // Ganti dengan link APK Anda
-            baseUrl: 'https://tkj1.pages.dev/',
-            imageBasePath: '/' // Path dasar gambar
-        };
-
-        // === STATE ===
-        let currentPhotoName = '';
-        let currentPhotoUrl = '';
-
-        // === DOM ELEMENTS ===
-        const loadingScreen = document.getElementById('loading-screen');
-        const errorScreen = document.getElementById('error-screen');
-        const imageContainer = document.getElementById('image-container');
-        const mainImage = document.getElementById('main-image');
-        const errorMsg = document.getElementById('error-msg');
-        const openAppBtn = document.getElementById('open-app-btn');
-        const shareBtn = document.getElementById('share-btn');
-
-        // === FUNGSI UTAMA ===
-        
-        function getPhotoNameFromURL() {
-            // URL format: /photo/index.html?nama-foto.jpg
-            const params = new URLSearchParams(window.location.search);
-            let photoName = params.get('photo') || params.get('name');
-            
-            if (photoName) {
-                return decodeURIComponent(photoName);
-            }
-            
-            // Fallback: coba dari path jika tidak ada query param
-            const path = window.location.pathname;
-            const parts = path.split('/').filter(p => p);
-            
-            if (parts.length >= 2 && parts[0] === 'photo') {
-                return decodeURIComponent(parts.slice(1).join('/'));
-            }
-            
-            return null;
+        // 1. CEK MOBILE
+        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            document.getElementById('mobile-blocker').style.display = 'flex';
+            throw new Error('PC Blocked');
         }
 
-        function loadImage() {
-            const photoName = getPhotoNameFromURL();
-            
-            if (!photoName) {
-                showError('URL tidak valid. Format: /photo/nama-foto.jpg');
-                return;
-            }
+        // 2. AMBIL NAMA FOTO DARI URL: /photo/NAMA_FOTO
+        const path = window.location.pathname;
+        let photoName = path.replace(/^\/photo\//, '').replace(/\/$/, '');
+        try { photoName = decodeURIComponent(photoName); } catch(e) {}
 
-            currentPhotoName = photoName;
-            
-            // Coba beberapa kemungkinan path gambar
-            const possiblePaths = [
-                '/' + photoName,                      // Root path
-                '/banner/' + photoName,               // Banner folder
-                '/galeri/' + photoName,               // Galeri folder
-                '/images/' + photoName,               // Images folder
-                '/assets/' + photoName                // Assets folder
-            ];
+        const mainImage = document.getElementById('main-image');
+        const imageContainer = document.getElementById('image-container');
+        const securityOverlay = document.getElementById('security-overlay');
+        const errorContainer = document.getElementById('error-container');
+        const errorMsg = document.getElementById('error-msg');
 
-            let attemptIndex = 0;
+        if (!photoName) {
+            securityOverlay.style.display = 'none';
+            errorContainer.style.display = 'block';
+            errorMsg.textContent = "Nama foto tidak ditemukan.";
+        } else {
+            // CARI FOTO DI BERBAGAI LOKASI
+            const paths = [photoName, 'galeri/'+photoName, 'banner/'+photoName, '../'+photoName, '../galeri/'+photoName];
+            let loaded = false;
 
-            function tryNextPath() {
-                if (attemptIndex >= possiblePaths.length) {
-                    showError('Foto tidak ditemukan: ' + photoName);
+            function tryLoad(i) {
+                if (i >= paths.length || loaded) {
+                    if (!loaded) {
+                        securityOverlay.style.display = 'none';
+                        errorContainer.style.display = 'block';
+                        errorMsg.textContent = 'Foto tidak ditemukan.';
+                    }
                     return;
                 }
-
-                const testPath = possiblePaths[attemptIndex];
                 const img = new Image();
-                
-                img.onload = function() {
-                    currentPhotoUrl = testPath;
-                    mainImage.src = testPath;
-                    showImage();
+                img.onload = () => {
+                    if (loaded) return;
+                    loaded = true;
+                    mainImage.src = paths[i];
+                    securityOverlay.style.display = 'none';
+                    imageContainer.style.display = 'flex';
+                    setupButtons(photoName);
                 };
-                
-                img.onerror = function() {
-                    attemptIndex++;
-                    tryNextPath();
-                };
-                
-                img.src = testPath;
+                img.onerror = () => { tryLoad(i+1); };
+                img.src = paths[i];
             }
-
-            tryNextPath();
+            tryLoad(0);
         }
 
-        function showImage() {
-            loadingScreen.style.display = 'none';
-            errorScreen.style.display = 'none';
-            imageContainer.style.display = 'flex';
-            
-            // Setup tombol
-            setupButtons();
-        }
-
-        function showError(message) {
-            loadingScreen.style.display = 'none';
-            imageContainer.style.display = 'none';
-            errorScreen.style.display = 'flex';
-            errorMsg.textContent = message;
-        }
-
-        function setupButtons() {
-            // Tombol Buka di App
-            openAppBtn.onclick = function() {
-                const cleanName = currentPhotoName.split('/').pop();
-                const appUrl = CONFIG.appScheme + cleanName;
-                
-                // Coba buka app
-                window.location.href = appUrl;
-                
-                // Fallback setelah 1.5 detik
-                setTimeout(function() {
-                    if (confirm('Aplikasi belum terpasang. Ingin download APK?')) {
-                        window.location.href = CONFIG.apkUrl;
+        function setupButtons(name) {
+            // DEEP LINK: tkjone://photo/NAMA
+            document.getElementById('open-app-btn').onclick = (e) => {
+                e.preventDefault();
+                window.location.href = 'tkjone://photo/' + encodeURIComponent(name);
+                setTimeout(() => {
+                    if(confirm("App tidak terbuka. Unduh APK?")) {
+                        window.location.href = "https://play.google.com/store/apps/details?id=com.tkjone.app";
                     }
                 }, 1500);
             };
 
-            // Tombol Bagikan
-            shareBtn.onclick = async function() {
-                const cleanName = currentPhotoName.split('/').pop();
-                const shareUrl = CONFIG.baseUrl + 'photo/' + cleanName;
-                
+            // SHARE: https://domain.com/photo/NAMA
+            document.getElementById('share-btn').onclick = async () => {
+                const url = window.location.origin + '/photo/' + name;
                 if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            title: 'Lihat Foto Ini',
-                            url: shareUrl
-                        });
-                    } catch (err) {
-                        console.log('Share dibatalkan');
-                    }
+                    await navigator.share({ title: 'Lihat Foto', url: url });
                 } else {
-                    // Fallback: copy ke clipboard
-                    try {
-                        await navigator.clipboard.writeText(shareUrl);
-                        alert('Link disalin: ' + shareUrl);
-                    } catch (err) {
-                        prompt('Salin link ini:', shareUrl);
-                    }
+                    await navigator.clipboard.writeText(url);
+                    alert('Link disalin: ' + url);
                 }
             };
         }
 
-        // === SECURITY LAYER ===
-        
-        function initSecurity() {
-            const canvas = document.getElementById('security-canvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            // Deteksi aktivitas mencurigakan
-            let lastActivity = Date.now();
-            
-            document.addEventListener('mousemove', () => lastActivity = Date.now());
-            document.addEventListener('touchstart', () => lastActivity = Date.now());
-            document.addEventListener('keydown', () => lastActivity = Date.now());
-            
-            // Proteksi screenshot (basic)
-            setInterval(() => {
-                if (Date.now() - lastActivity > 5000) {
-                    // Tidak ada aktivitas, abaikan
-                }
-            }, 1000);
+        // SECURITY: CANVAS & ANTI-DOWNLOAD
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = '#fff'; ctx.font = '10px Arial';
+            for(let i=0;i<canvas.width;i+=50) for(let j=0;j<canvas.height;j+=50) ctx.fillText('SECURE',i,j);
         }
-
-        // === ANTI-DOWNLOAD PROTECTION ===
-        
-        function initProtection() {
-            // Disable context menu
-            document.addEventListener('contextmenu', e => e.preventDefault());
-            
-            // Disable drag
-            document.addEventListener('dragstart', e => e.preventDefault());
-            
-            // Disable copy
-            document.addEventListener('copy', e => e.preventDefault());
-            document.addEventListener('cut', e => e.preventDefault());
-            
-            // Disable select
-            document.addEventListener('selectstart', e => e.preventDefault());
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', e => {
-                if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'c')) {
-                    e.preventDefault();
-                }
-                if (e.key === 'F12') {
-                    e.preventDefault();
-                }
-            });
-        }
-
-        // === INITIALIZATION ===
-        
-        window.addEventListener('DOMContentLoaded', function() {
-            initSecurity();
-            initProtection();
-            loadImage();
-        });
-
-        // Handle resize
-        window.addEventListener('resize', function() {
-            const canvas = document.getElementById('security-canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('dragstart', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
     </script>
 </body>
 </html>
