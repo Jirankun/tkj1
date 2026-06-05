@@ -29,7 +29,7 @@
     .hidden { display: none !important; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
-    /* 📐 HEADER */
+    /* 📍 HEADER */
     .header { position: sticky; top: 0; left: 0; right: 0; min-height: 88px; z-index: 100; background: rgba(9,9,11,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: box-shadow 0.2s; }
     .header-inner { display: flex; flex-direction: column; gap: 10px; padding: 14px 0 8px; }
     .logo { font-weight: 800; font-size: 1.1rem; text-align: center; letter-spacing: -0.5px; }
@@ -67,11 +67,11 @@
     .full-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; }
     .full-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* 📱 MODALS */
+    /* 💬 MODALS */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; animation: modalIn 0.25s ease; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); }
     .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: var(--surface-hover); border: none; border-radius: 8px; color: var(--text); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
     .modal-body { padding: 20px; }
     .modal-media { width: 100%; max-height: 50vh; object-fit: contain; background: #000; border-radius: 10px; margin-bottom: 14px; display: block; }
@@ -86,7 +86,7 @@
     .btn-ghost { background: transparent; color: var(--text-muted); }
     .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--surface-hover); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin { to { transform: rotate(360deg); }
     .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface); color: var(--text); padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); transition: 0.25s; z-index: 9999; font-size: 0.85rem; opacity: 0; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -126,7 +126,7 @@
       
       <div id="full-view" class="full-view">
         <div class="full-container">
-          <img id="fv-img" class="full-media" src="" alt="">
+          <img id="fv-img" class="full-media" src="" alt="" decoding="async" fetchpriority="high">
           <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
           <div class="full-info">
             <h1 id="fv-title" class="full-title"></h1>
@@ -150,7 +150,7 @@
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal()">×</button>
       <div class="modal-body">
-        <img id="md-img" class="modal-media" src="" alt="">
+        <img id="md-img" class="modal-media" src="" alt="" decoding="async">
         <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
         <h2 id="md-title" style="margin-bottom:6px"></h2>
         <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px"></p>
@@ -211,7 +211,7 @@
       setTimeout(() => window.scrollTo(0, savedScrollY), 10);
     };
 
-    // 🔍 VIDEO DETECTION
+    // 🔎 VIDEO DETECTION
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
       const url = typeof item === 'string' ? item : (item.url || item.src || '');
@@ -221,7 +221,12 @@
       const hasExt = /\.(mp4|webm|mov|mkv|m4v|ogv|avi)$/i.test(clean);
       return isCatbox && hasExt;
     };
-    const cleanUrl = (url) => url ? String(url).trim() : '';
+    
+    // 🛠️ CLEAN URL - Hapus spasi di awal/akhir + semua whitespace (tanpa ubah JSON asli)
+    const cleanUrl = (url) => {
+      if (!url) return '';
+      return String(url).trim().replace(/\s/g, '');  // Hapus semua spasi/whitespace dari link
+    };
 
     // 🔒 PROTECT - Anti Download & Click Protection
     const protect = el => {
@@ -231,21 +236,24 @@
       if (el.tagName === 'VIDEO') el.setAttribute('controlsList', 'nodownload');
     };
 
-    // 🖼️ RENDER
+    // 🖼️ RENDER - dengan optimasi performa
     const render = list => {
       const g = document.getElementById('grid'); g.innerHTML = '';
       const emp = document.getElementById('empty');
       if (!list.length) { emp.classList.remove('hidden'); return; }
       emp.classList.add('hidden');
-      list.forEach((p) => {
+      list.forEach((p, index) => {
         const v = isVideo(p);
         const c = document.createElement('div'); c.className = 'card';
         if (v) {
-          c.innerHTML = `<video class="card-media" src="${cleanUrl(p.url)}" muted playsinline loop preload="metadata" crossorigin="anonymous"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>`;
+          c.innerHTML = `<video class="card-media" src="${cleanUrl(p.url)}" muted playsinline loop preload="metadata" crossorigin="anonymous" decoding="async"></video><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-video">Video</span></div></div>`;
           const vid = c.querySelector('video'); protect(vid); obsV(vid);
           vid.addEventListener('loadedmetadata', () => { if(vid.offsetParent) vid.play().catch(()=>{}); }, {once:true});
         } else {
-          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="lazy"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
+          // Optimasi: lazy + decoding async + fetchpriority tinggi untuk beberapa card pertama
+          const loadingAttr = index < 6 ? 'eager' : 'lazy';
+          const priorityAttr = index < 6 ? 'high' : 'auto';
+          c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="${loadingAttr}" decoding="async" fetchpriority="${priorityAttr}"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
           protect(c.querySelector('img'));
         }
         c.onclick = () => openMd(p);
@@ -287,7 +295,7 @@
       resumeThumb(); restoreScroll(); cur = null;
     };
 
-    // 🖼️ FULL VIEW
+    // 🖼️ FULL VIEW - dengan optimasi performa tinggi
     const openFull = p => {
       saveScroll(); cur = p; pauseThumb();
       document.querySelector('.header')?.classList.add('hidden');
@@ -415,7 +423,7 @@
     // Listen for messages from parent
     window.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'CLOSE_GISCUS') {
-        // Close giscus overlay in iframe if needed
+        // Handle close giscus if needed
       }
       if (e.data && e.data.type === 'HIDE_CONFIRM') {
         document.getElementById('confirm').classList.remove('active');
@@ -450,12 +458,11 @@
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
-        // Check URL for direct photo access - handle both /photo/{name} and messages from parent
+        // Check URL for direct photo access
         const checkPhotoRoute = () => {
           const path = location.pathname; 
           const parts = path.split('/').filter(Boolean);
           
-          // Check for /photo/{name} pattern (when accessed directly or via parent routing)
           const photoIndex = parts.findIndex(p => p === 'photo');
           if (photoIndex !== -1 && parts[photoIndex + 1]) {
             const n = decodeURIComponent(parts[photoIndex + 1]);
@@ -468,9 +475,7 @@
           return false;
         };
         
-        // Try to open photo from URL
         if (!checkPhotoRoute()) {
-          // If not in URL, check hash or wait for parent message
           const hash = location.hash.replace('#', '');
           if (hash && !hash.includes('giscus')) {
             const f = data.find(x => String(x.name).toLowerCase() === hash.toLowerCase());
@@ -484,7 +489,7 @@
       }
     };
 
-    // 🎨 CANVAS SECURITY LAYER (Optional - Untuk deteksi screenshot/recording)
+    // 🎨 CANVAS SECURITY LAYER
     const initSecurityCanvas = () => {
       const canvas = document.getElementById('security-canvas');
       const ctx = canvas.getContext('2d');
@@ -496,7 +501,6 @@
       window.addEventListener('resize', resize);
       resize();
       
-      // Deteksi visibility change (mungkin indikasi screenshot)
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           canvas.classList.add('active');
@@ -512,7 +516,7 @@
       });
     };
 
-    // 🎛️ EVENTS
+    // 🌀 EVENTS
     document.getElementById('search').oninput = apply;
     document.querySelectorAll('.filter-btn').forEach(b => b.onclick = () => {
       document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); apply();
@@ -520,13 +524,10 @@
     document.getElementById('modal').onclick = e => { if(e.target.id==='modal') closeModal(); };
     document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view') closeFull(); };
     document.onkeydown = e => { if(e.key==='Escape'){closeModal(); closeFull();} };
-    // Handle browser back/forward for photo routes
     window.onpopstate = () => { 
       const path = location.pathname;
       const parts = path.split('/').filter(Boolean);
       const photoIndex = parts.findIndex(p => p === 'photo');
-      
-      // If we're NOT on a /photo/ route, close full view
       if (photoIndex === -1 && !document.getElementById('full-view').classList.contains('hidden')) {
         closeFull();
       }
@@ -536,22 +537,17 @@
 
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
 
-    // Listen for messages from parent (for routing and giscus)
     window.addEventListener('message', (e) => {
       if (!e.data || !e.data.type) return;
-      
       if (e.data.type === 'CLOSE_GISCUS') {
         // Handle close giscus if needed
       }
-      
-      // Handle OPEN_PHOTO message from parent
       if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
         const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
         if (f) openFull(f);
       }
     });
 
-    // 🚀 START
     initSecurityCanvas();
     loadG();
   </script>
