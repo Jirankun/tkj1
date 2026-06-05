@@ -274,26 +274,21 @@
       }
     };
     
-    // 🖼️ PHOTO ROUTING - Handle /photo/{photo_name} URLs
-    const handlePhotoRoute = async () => {
+    // 🖼️ PHOTO ROUTING - Redirect /photo/{photo_name} to photo/index.html
+    const handlePhotoRoute = () => {
       const path = window.location.pathname;
       const parts = path.split('/').filter(Boolean);
       
       // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg)
-      if (parts.length === 2 && parts[0] === 'photo') {
-        const photoName = decodeURIComponent(parts[1]);
-        
-        // Wait for gallery to load, then send message to iframe
-        const waitForGallery = setInterval(() => {
-          const iframe = document.getElementById('gallery-frame');
-          if (iframe && iframe.contentWindow) {
-            clearInterval(waitForGallery);
-            // Send message to iframe to open the photo
-            iframe.contentWindow.postMessage({type: 'OPEN_PHOTO', name: photoName}, '*');
-          }
-        }, 100);
+      if (parts.length >= 2 && parts[0] === 'photo') {
+        const photoName = parts.slice(1).join('/');
+        // Redirect to photo viewer page
+        window.location.href = '/photo/' + encodeURIComponent(photoName);
       }
     };
+    
+    // Handle photo routing immediately on load
+    handlePhotoRoute();
     
     window.addEventListener('message', handleGiscusMessage);
     
