@@ -138,9 +138,61 @@
 
     /* ⚡ COUNTER ANIMATION */
     .counter { text-align: center; color: var(--text-muted); font-size: 0.82rem; padding: 10px 0; }
+    
+    /* 🔧 MAINTENANCE POPUP */
+    #maintenance-popup { position: fixed; inset: 0; background: rgba(9,9,11,0.98); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(12px); }
+    #maintenance-popup.active { display: flex !important; }
+    .maintenance-content { text-align: center; max-width: 500px; }
+    .maintenance-icon { font-size: 4rem; margin-bottom: 20px; }
+    .maintenance-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; color: var(--accent); }
+    .maintenance-text { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 28px; }
+    .maintenance-btn { padding: 14px 32px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+    .maintenance-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
+    .maintenance-btn:active { transform: scale(0.98); }
+    
+    /* 🤖 ROBOT VERIFICATION POPUP */
+    #robot-popup { position: fixed; inset: 0; background: rgba(9,9,11,0.99); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(16px); }
+    #robot-popup.active { display: flex !important; }
+    .robot-content { text-align: center; max-width: 480px; width: 100%; }
+    .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--text); }
+    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+    .robot-equation { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+    .robot-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1.2rem; font-weight: 600; text-align: center; outline: none; transition: all 0.2s; }
+    .robot-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+    .robot-input.error { border-color: var(--error); animation: shake 0.4s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    .robot-btn { padding: 14px 36px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; margin-top: 16px; }
+    .robot-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
+    .robot-btn:active { transform: scale(0.98); }
+    .robot-hint { color: var(--text-muted); font-size: 0.8rem; margin-top: 14px; }
   </style>
 </head>
 <body>
+
+  <!-- 🤖 ROBOT VERIFICATION POPUP -->
+  <div id="robot-popup">
+    <div class="robot-content">
+      <div class="robot-icon">🤖</div>
+      <h2 class="robot-title">Are you a robot?</h2>
+      <div class="robot-problem">
+        <div id="robot-equation" class="robot-equation"></div>
+        <input type="number" id="robot-input" class="robot-input" placeholder="Your answer..." autocomplete="off" inputmode="numeric">
+      </div>
+      <button id="robot-confirm" class="robot-btn">Confirm</button>
+      <p class="robot-hint">Prove you're human by solving this challenge</p>
+    </div>
+  </div>
+
+  <!-- 🔧 MAINTENANCE POPUP -->
+  <div id="maintenance-popup">
+    <div class="maintenance-content">
+      <div class="maintenance-icon">⚠️</div>
+      <h2 class="maintenance-title">Maintenance</h2>
+      <p id="maintenance-text" class="maintenance-text"></p>
+      <button id="maintenance-btn" class="maintenance-btn">Baiklah</button>
+    </div>
+  </div>
 
   <header class="header">
     <div class="header-inner">
@@ -246,6 +298,196 @@
     let savedScrollY = 0;
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
+
+    // 🤖 ROBOT VERIFICATION SYSTEM
+    let robotVerified = false;
+    let currentAnswer = null;
+    let attemptCount = 0;
+    
+    // Generate random math problem with various difficulty levels
+    const generateMathProblem = () => {
+      const difficulty = Math.floor(Math.random() * 5); // 0-4 difficulty levels
+      let problem = '';
+      let answer = 0;
+      
+      // Use crypto-safe random for extra security
+      const secureRandom = (min, max) => {
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        return min + (array[0] % (max - min + 1));
+      };
+      
+      switch(difficulty) {
+        case 0: // Simple addition/subtraction
+          if (Math.random() > 0.5) {
+            const a = secureRandom(10, 99);
+            const b = secureRandom(10, 99);
+            problem = `${a} + ${b}`;
+            answer = a + b;
+          } else {
+            const a = secureRandom(50, 99);
+            const b = secureRandom(10, 49);
+            problem = `${a} - ${b}`;
+            answer = a - b;
+          }
+          break;
+          
+        case 1: // Multiplication
+          const a1 = secureRandom(3, 12);
+          const b1 = secureRandom(2, 9);
+          problem = `${a1} × ${b1}`;
+          answer = a1 * b1;
+          break;
+          
+        case 2: // Division
+          const b2 = secureRandom(2, 9);
+          const ans2 = secureRandom(3, 15);
+          const a2 = b2 * ans2;
+          problem = `${a2} ÷ ${b2}`;
+          answer = ans2;
+          break;
+          
+        case 3: // Mixed operations
+          const ops = ['+', '-', '×'];
+          const op1 = ops[secureRandom(0, 2)];
+          const op2 = ops[secureRandom(0, 2)];
+          const x = secureRandom(5, 20);
+          const y = secureRandom(2, 10);
+          const z = secureRandom(2, 10);
+          problem = `${x} ${op1} ${y} ${op2} ${z}`;
+          // Calculate answer based on operators
+          let temp = x;
+          if (op1 === '+') temp += y;
+          else if (op1 === '-') temp -= y;
+          else temp *= y;
+          
+          if (op2 === '+') answer = temp + z;
+          else if (op2 === '-') answer = temp - z;
+          else answer = temp * z;
+          break;
+          
+        case 4: // Complex formula (powers, roots, etc.)
+          const formulas = [
+            () => {
+              const base = secureRandom(2, 5);
+              const exp = secureRandom(2, 4);
+              problem = `${base}^${exp}`;
+              answer = Math.pow(base, exp);
+            },
+            () => {
+              const square = secureRandom(2, 9);
+              const result = square * square;
+              problem = `√${result}`;
+              answer = square;
+            },
+            () => {
+              const a = secureRandom(2, 8);
+              const b = secureRandom(2, 8);
+              problem = `${a}² + ${b}²`;
+              answer = (a * a) + (b * b);
+            },
+            () => {
+              const n = secureRandom(3, 7);
+              const fact = [6, 24, 120, 720, 5040];
+              problem = `${n}!`;
+              answer = fact[n - 3];
+            }
+          ];
+          formulas[secureRandom(0, formulas.length - 1)]();
+          break;
+      }
+      
+      return { problem, answer };
+    };
+    
+    const showRobotPopup = () => {
+      const popup = document.getElementById('robot-popup');
+      const equation = document.getElementById('robot-equation');
+      const input = document.getElementById('robot-input');
+      
+      // Generate new problem
+      const math = generateMathProblem();
+      currentAnswer = math.answer;
+      equation.textContent = math.problem + ' = ?';
+      input.value = '';
+      input.classList.remove('error');
+      input.focus();
+      
+      // Show popup and disable body scroll
+      popup.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Security: Disable right-click, F12, etc.
+      const preventDevTools = (e) => {
+        e.preventDefault();
+        return false;
+      };
+      
+      document.addEventListener('contextmenu', preventDevTools);
+      document.addEventListener('keydown', function preventKeys(e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+            (e.ctrlKey && e.key === 'U') || (e.ctrlKey && e.key === 'S')) {
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // Anti-bypass: Check if popup is hidden via dev tools
+      const integrityCheck = setInterval(() => {
+        const popupRect = popup.getBoundingClientRect();
+        if (popupRect.width === 0 || popupRect.height === 0) {
+          popup.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      }, 100);
+      
+      // Store interval ID for cleanup
+      popup.dataset.integrityCheck = integrityCheck;
+    };
+    
+    const verifyRobotAnswer = () => {
+      const input = document.getElementById('robot-input');
+      const userAnswer = parseFloat(input.value);
+      
+      // Allow small floating point tolerance
+      if (Math.abs(userAnswer - currentAnswer) < 0.001) {
+        // Correct answer
+        robotVerified = true;
+        
+        // Clear integrity check
+        const popup = document.getElementById('robot-popup');
+        if (popup.dataset.integrityCheck) {
+          clearInterval(parseInt(popup.dataset.integrityCheck));
+        }
+        
+        // Hide popup
+        popup.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Store verification in session (not localStorage for security)
+        sessionStorage.setItem('robotVerified', 'true');
+        
+        // Enable scrolling again
+        document.body.style.overflow = '';
+      } else {
+        // Wrong answer
+        attemptCount++;
+        input.classList.add('error');
+        input.value = '';
+        input.placeholder = `Attempt ${attemptCount + 1}: Try again...`;
+        
+        // Generate harder problem on next attempt
+        setTimeout(() => {
+          input.classList.remove('error');
+          showRobotPopup();
+        }, 800);
+      }
+    };
+    
+    // Check if already verified in this session
+    const isRobotVerified = () => {
+      return sessionStorage.getItem('robotVerified') === 'true';
+    };
 
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
@@ -552,6 +794,68 @@
         tryOpenPhoto();
       }
     });
+
+    // 🔧 MAINTENANCE POPUP LOGIC
+    const checkMaintenance = async () => {
+      try {
+        const res = await fetch('/DB/info.json');
+        const json = await res.json();
+        const mainInfo = json.info?.find(item => item.category === 'main');
+        
+        if (mainInfo && mainInfo.status === 'true') {
+          // Show maintenance popup
+          document.getElementById('maintenance-text').textContent = mainInfo.show || 'Sedang dalam perawatan.';
+          document.getElementById('maintenance-popup').classList.add('active');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+          
+          // Disable back button
+          history.pushState(null, null, location.href);
+          window.onpopstate = function() {
+            history.pushState(null, null, location.href);
+          };
+        } else {
+          // Hide maintenance popup
+          document.getElementById('maintenance-popup').classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      } catch (err) {
+        console.error('Error checking maintenance:', err);
+        // If error, hide popup
+        document.getElementById('maintenance-popup').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    };
+
+    // Maintenance button click handler
+    document.getElementById('maintenance-btn').addEventListener('click', function() {
+      window.location.href = 'https://jirankun.github.io/portofoliozhyllan';
+    });
+
+    // Robot verification button and enter key handlers
+    document.getElementById('robot-confirm').addEventListener('click', verifyRobotAnswer);
+    document.getElementById('robot-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verifyRobotAnswer();
+      }
+    });
+
+    // Check maintenance on load
+    checkMaintenance();
+
+    // 🤖 ROBOT VERIFICATION - Show before gallery access (only if not in maintenance)
+    const initRobotCheck = () => {
+      // Only show robot check if maintenance is NOT active
+      const maintenancePopup = document.getElementById('maintenance-popup');
+      if (!maintenancePopup.classList.contains('active')) {
+        // Check if already verified in this session
+        if (!isRobotVerified()) {
+          showRobotPopup();
+        }
+      }
+    };
+
+    // Run robot check after maintenance check completes
+    setTimeout(initRobotCheck, 500);
 
     // 🚀 START
     loadG();
