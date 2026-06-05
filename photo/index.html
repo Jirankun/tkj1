@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TKJ1 Gallery - Photo View</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Galeri Foto TKJ1 - Full Screen Viewer">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #000; 
+            color: #fff; 
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        /* Loading State */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        #loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #94a3b8;
+        }
+
+        /* Main Image Container */
+        #image-container {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 1000;
+        }
+        
+        #main-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Controls Overlay */
+        #controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #image-container:hover #controls {
+            opacity: 1;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Error State */
+        #error-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0f172a;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+        
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .error-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ef4444;
+        }
+        
+        .error-message {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        /* Security Canvas (Hidden) */
+        #security-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9998;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <div id="loading-text">Memuat foto...</div>
+    </div>
+
+    <!-- Error Screen -->
+    <div id="error-screen">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Foto Tidak Ditemukan</div>
+        <div class="error-message" id="error-msg">Maaf, foto yang Anda cari tidak tersedia.</div>
+        <button class="btn btn-primary" onclick="window.location.href='/'">Kembali ke Beranda</button>
+    </div>
+
+    <!-- Main Image Container -->
+    <div id="image-container">
+        <img id="main-image" src="" alt="Full Screen Photo" draggable="false">
+        
+        <div id="controls">
+            <button class="btn btn-secondary" onclick="window.location.href='/'">
+                ← Kembali
+            </button>
+            <button class="btn btn-primary" id="open-app-btn">
+                📱 Buka di App
+            </button>
+            <button class="btn btn-secondary" id="share-btn">
+                🔗 Bagikan
+            </button>
+        </div>
+    </div>
+
+    <!-- Security Canvas -->
+    <canvas id="security-canvas"></canvas>
+
+    <script>
+        // === KONFIGURASI ===
+        const CONFIG = {
+            appScheme: 'tkjone://photo/',
+            apkUrl: 'https://example.com/app.apk', // Ganti dengan link APK Anda
+            baseUrl: 'https://tkj1.pages.dev/',
+            imageBasePath: '/' // Path dasar gambar
+        };
+
+        // === STATE ===
+        let currentPhotoName = '';
+        let currentPhotoUrl = '';
+
+        // === DOM ELEMENTS ===
+        const loadingScreen = document.getElementById('loading-screen');
+        const errorScreen = document.getElementById('error-screen');
+        const imageContainer = document.getElementById('image-container');
+        const mainImage = document.getElementById('main-image');
+        const errorMsg = document.getElementById('error-msg');
+        const openAppBtn = document.getElementById('open-app-btn');
+        const shareBtn = document.getElementById('share-btn');
+
+        // === FUNGSI UTAMA ===
+        
+        function getPhotoNameFromURL() {
+            // URL format: /photo/nama-foto.jpg atau /photo/nama-foto
+            const path = window.location.pathname;
+            const parts = path.split('/').filter(p => p);
+            
+            if (parts[0] === 'photo' && parts.length >= 2) {
+                return decodeURIComponent(parts.slice(1).join('/'));
+            }
+            return null;
+        }
+
+        function loadImage() {
+            const photoName = getPhotoNameFromURL();
+            
+            if (!photoName) {
+                showError('URL tidak valid. Format: /photo/nama-foto.jpg');
+                return;
+            }
+
+            currentPhotoName = photoName;
+            
+            // Coba beberapa kemungkinan path gambar
+            const possiblePaths = [
+                photoName,
+                'galeri/' + photoName,
+                'images/' + photoName,
+                'assets/' + photoName
+            ];
+
+            let loaded = false;
+            let attemptIndex = 0;
+
+            function tryNextPath() {
+                if (attemptIndex >= possiblePaths.length) {
+                    showError('Foto tidak ditemukan: ' + photoName);
+                    return;
+                }
+
+                const testPath = possiblePaths[attemptIndex];
+                const img = new Image();
+                
+                img.onload = function() {
+                    currentPhotoUrl = testPath;
+                    mainImage.src = testPath;
+                    showImage();
+                };
+                
+                img.onerror = function() {
+                    attemptIndex++;
+                    tryNextPath();
+                };
+                
+                img.src = testPath;
+            }
+
+            tryNextPath();
+        }
+
+        function showImage() {
+            loadingScreen.style.display = 'none';
+            errorScreen.style.display = 'none';
+            imageContainer.style.display = 'flex';
+            
+            // Setup tombol
+            setupButtons();
+        }
+
+        function showError(message) {
+            loadingScreen.style.display = 'none';
+            imageContainer.style.display = 'none';
+            errorScreen.style.display = 'flex';
+            errorMsg.textContent = message;
+        }
+
+        function setupButtons() {
+            // Tombol Buka di App
+            openAppBtn.onclick = function() {
+                const cleanName = currentPhotoName.split('/').pop();
+                const appUrl = CONFIG.appScheme + cleanName;
+                
+                // Coba buka app
+                window.location.href = appUrl;
+                
+                // Fallback setelah 1.5 detik
+                setTimeout(function() {
+                    if (confirm('Aplikasi belum terpasang. Ingin download APK?')) {
+                        window.location.href = CONFIG.apkUrl;
+                    }
+                }, 1500);
+            };
+
+            // Tombol Bagikan
+            shareBtn.onclick = async function() {
+                const shareUrl = CONFIG.baseUrl + 'photo/' + currentPhotoName;
+                
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Lihat Foto Ini',
+                            url: shareUrl
+                        });
+                    } catch (err) {
+                        console.log('Share dibatalkan');
+                    }
+                } else {
+                    // Fallback: copy ke clipboard
+                    try {
+                        await navigator.clipboard.writeText(shareUrl);
+                        alert('Link disalin: ' + shareUrl);
+                    } catch (err) {
+                        prompt('Salin link ini:', shareUrl);
+                    }
+                }
+            };
+        }
+
+        // === SECURITY LAYER ===
+        
+        function initSecurity() {
+            const canvas = document.getElementById('security-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Deteksi aktivitas mencurigakan
+            let lastActivity = Date.now();
+            
+            document.addEventListener('mousemove', () => lastActivity = Date.now());
+            document.addEventListener('touchstart', () => lastActivity = Date.now());
+            document.addEventListener('keydown', () => lastActivity = Date.now());
+            
+            // Proteksi screenshot (basic)
+            setInterval(() => {
+                if (Date.now() - lastActivity > 5000) {
+                    // Tidak ada aktivitas, abaikan
+                }
+            }, 1000);
+        }
+
+        // === ANTI-DOWNLOAD PROTECTION ===
+        
+        function initProtection() {
+            // Disable context menu
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Disable drag
+            document.addEventListener('dragstart', e => e.preventDefault());
+            
+            // Disable copy
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+            
+            // Disable select
+            document.addEventListener('selectstart', e => e.preventDefault());
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'c')) {
+                    e.preventDefault();
+                }
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        // === INITIALIZATION ===
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            initSecurity();
+            initProtection();
+            loadImage();
+        });
+
+        // Handle resize
+        window.addEventListener('resize', function() {
+            const canvas = document.getElementById('security-canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
