@@ -344,11 +344,18 @@
     const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); restoreScroll(); };
     document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
 
-    // 🔗 SHARE
+    // 🔗 SHARE - Simple clean link with /photo/ prefix
     const share = p => {
-      const t = `📷 ${p.title||'#'+p.name}\n🔗 ${CFG.BASE}/photo/${p.name}`;
-      if (navigator.share) navigator.share({title:'TKJ Gallery',text:t}).catch(()=>{});
-      else navigator.clipboard.writeText(t).then(()=>toast('Link disalin'));
+      const cleanLink = `${CFG.BASE}/photo/${p.name}`;
+      if (navigator.share) {
+        navigator.share({
+          title: p.title || '#' + p.name,
+          text: p.title || '#' + p.name,
+          url: cleanLink
+        }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(cleanLink).then(()=>toast('Link disalin'));
+      }
     };
 
     // 🎬 VIDEO OBSERVER
@@ -442,14 +449,39 @@
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
-        const path = location.pathname; const parts = path.split('/').filter(Boolean);
-        if (parts[0]==='photo' && parts[1]) {
-          const n = decodeURIComponent(parts[1]);
-          const f = data.find(x=>String(x.name).toLowerCase()===n.toLowerCase());
-          if (f) openFull(f);
-          else { document.getElementById('error').textContent = `Item "${n}" tidak ditemukan.`; document.getElementById('error').classList.remove('hidden'); }
+        
+        // Check URL for direct photo access - handle both /photo/{name} and messages from parent
+        const checkPhotoRoute = () => {
+          const path = location.pathname; 
+          const parts = path.split('/').filter(Boolean);
+          
+          // Check for /photo/{name} pattern (when accessed directly or via parent routing)
+          const photoIndex = parts.findIndex(p => p === 'photo');
+          if (photoIndex !== -1 && parts[photoIndex + 1]) {
+            const n = decodeURIComponent(parts[photoIndex + 1]);
+            const f = data.find(x => String(x.name).toLowerCase() === n.toLowerCase());
+            if (f) {
+              openFull(f);
+              return true;
+            }
+          }
+          return false;
+        };
+        
+        // Try to open photo from URL
+        if (!checkPhotoRoute()) {
+          // If not in URL, check hash or wait for parent message
+          const hash = location.hash.replace('#', '');
+          if (hash && !hash.includes('giscus')) {
+            const f = data.find(x => String(x.name).toLowerCase() === hash.toLowerCase());
+            if (f) openFull(f);
+          }
         }
-      } catch(e) { document.getElementById('loading').classList.add('hidden'); document.getElementById('error').textContent = e; document.getElementById('error').classList.remove('hidden'); }
+      } catch(e) { 
+        document.getElementById('loading').classList.add('hidden'); 
+        document.getElementById('error').textContent = e; 
+        document.getElementById('error').classList.remove('hidden'); 
+      }
     };
 
     // 🎨 CANVAS SECURITY LAYER (Optional - Untuk deteksi screenshot/recording)
@@ -486,17 +518,36 @@
       document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); apply();
     });
     document.getElementById('modal').onclick = e => { if(e.target.id==='modal') closeModal(); };
-    document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view' && !location.pathname.includes('/photo/')) closeFull(); };
-    document.onkeydown = e => { if(e.key==='Escape'){closeModal();} };
-    window.onpopstate = () => { if(!location.pathname.includes('/photo/')&&!document.getElementById('full-view').classList.contains('hidden')) closeFull(); };
-    window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
+    document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view') closeFull(); };
+    document.onkeydown = e => { if(e.key==='Escape'){closeModal(); closeFull();} };
+    // Handle browser back/forward for photo routes
+    window.onpopstate = () => { 
+      const path = location.pathname;
+      const parts = path.split('/').filter(Boolean);
+      const photoIndex = parts.findIndex(p => p === 'photo');
+      
+      // If we're NOT on a /photo/ route, close full view
+      if (photoIndex === -1 && !document.getElementById('full-view').classList.contains('hidden')) {
+        closeFull();
+      }
+    };
     
+    window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
+
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
 
-    // Listen for messages from parent
+    // Listen for messages from parent (for routing and giscus)
     window.addEventListener('message', (e) => {
-      if (e.data && e.data.type === 'CLOSE_GISCUS') {
+      if (!e.data || !e.data.type) return;
+      
+      if (e.data.type === 'CLOSE_GISCUS') {
         // Handle close giscus if needed
+      }
+      
+      // Handle OPEN_PHOTO message from parent
+      if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
+        const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
+        if (f) openFull(f);
       }
     });
 
