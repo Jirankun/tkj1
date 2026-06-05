@@ -1,6 +1,0 @@
-# Cegah redirect otomatis .html → clean URL
-/page/gallery.html /page/gallery.html 200
-/page/gallery       /page/gallery.html 200
-
-# Rewrite photo deep links ke photo/index.html
-/photo/* /photo/index.html 200
