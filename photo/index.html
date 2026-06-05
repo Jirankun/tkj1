@@ -3,83 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lihat Foto</title>
+    <meta name="theme-color" content="#000000">
+    <title>TKJ OnE Photo Viewer</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { 
-            width: 100%; height: 100%; overflow: hidden; background: #000; 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        /* Reset total, biar gak ada margin atau padding bangsat yang bikin scroll */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        #canvas-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9998; opacity: 0.02;
+
+        body, html {
+            width: 100%;
+            height: 100dvh; /* Dynamic viewport height buat mobile, biar pas nutup layar Android, jir! */
+            background-color: #000000;
+            overflow: hidden; /* Mencegah scroll atau reload gak jelas */
+            touch-action: none; /* Mencegah zoom/scroll pake jari, anjing! */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
         }
-        #security-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 10000;
-            display: flex; justify-content: center; align-items: center;
-            flex-direction: column; color: #fff; text-align: center;
+
+        #photo-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
-        .loader {
-            border: 4px solid #333; border-top: 4px solid #00d2ff;
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
+
+        #target-image {
+            max-width: 100%;
+            max-height: 100dvh;
+            object-fit: contain;
+            display: none; /* Hidden dulu sampe data kebaca */
+            user-select: none;
+            -webkit-user-drag: none;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #image-container {
-            position: relative; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center; background: #000;
+
+        #error-msg {
+            color: #ff3333;
+            font-family: monospace;
+            font-size: 1rem;
+            text-align: center;            padding: 20px;
+            display: none;
+            line-height: 1.5;
         }
-        #main-image {
-            max-width: 100%; max-height: 100%; object-fit: contain;
-            user-select: none; -webkit-user-drag: none;
+
+        #loading {
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 1rem;
+            animation: pulse 1.5s infinite;
         }
-        .controls {
-            position: absolute; bottom: 20px; left: 0; right: 0;
-            display: flex; justify-content: center; gap: 15px; z-index: 1000; padding: 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        }
-        .btn {
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3); color: #fff;
-            padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-        .btn-primary { background: #00d2ff; border-color: #00d2ff; color: #000; }
-        .btn-primary:hover { background: #00b8e6; }
-        #error-msg { color: #ff4757; font-size: 18px; text-align: center; padding: 20px; }
-        #mobile-blocker {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 20000; display: none;
-            justify-content: center; align-items: center; flex-direction: column;
-            color: #fff; text-align: center; padding: 20px;
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas-layer"></canvas>
-    <div id="mobile-blocker"><h2>⚠️ Akses Ditolak</h2><p style="margin-top:10px;">Hanya Mobile yang diizinkan.</p></div>
-    <div id="security-overlay"><div class="loader"></div><p>Memuat Foto...</p></div>
-    <div id="image-container" style="display:none;">
-        <img id="main-image" alt="Foto" draggable="false">
-        <div class="controls">
-            <a href="#" class="btn btn-primary" id="open-app-btn">Buka di App</a>
-            <button class="btn" id="share-btn">Bagikan</button>
-            <button class="btn" onclick="window.history.back()">Kembali</button>
-        </div>
-    </div>
-    <div id="error-container" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index:9999; text-align:center;">
-        <p id="error-msg"></p>
-        <button class="btn" onclick="window.location.href='/'" style="margin-top:20px;">Ke Beranda</button>
+    <div id="photo-container">
+        <div id="loading">Loading data, sabar bre...</div>
+        <div id="error-msg"></div>
+        <img id="target-image" src="" alt="Target Photo">
     </div>
 
     <script>
-        // 1. CEK MOBILE
-        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            document.getElementById('mobile-blocker').style.display = 'flex';
-            throw new Error('PC Blocked');
+        // KUNCI: Mencegah browser mobile melakukan reload gak jelas
+        window.onbeforeunload = function() {
+            return null;
+        };
+
+        // Fungsi ambil ID dari URL (support /photo/120, ?id=120, atau #120)
+        function getPhotoId() {
+            const path = window.location.pathname;
+            const pathMatch = path.match(/\/photo\/(\d+)/i);
+            if (pathMatch) return pathMatch[1];
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('id')) return params.get('id');
+
+            const hash = window.location.hash.replace('#', '');
+            if (hash) return hash;
+
+            return null;
         }
 
         // 2. AMBIL NAMA FOTO DARI URL: /photo/NAMA_FOTO
@@ -172,43 +184,51 @@
             }
         }
 
-        function setupButtons(name) {
-            // DEEP LINK: tkjone://photo/NAMA
-            document.getElementById('open-app-btn').onclick = (e) => {
-                e.preventDefault();
-                window.location.href = 'tkjone://photo/' + encodeURIComponent(name);
-                setTimeout(() => {
-                    if(confirm("App tidak terbuka. Unduh APK?")) {
-                        window.location.href = "https://play.google.com/store/apps/details?id=com.tkjone.app";
-                    }
-                }, 1500);
-            };
+            try {
+                // Fetch JSON dari DB dengan cache busting biar gak ambil data lama
+                const response = await fetch('../DB/photos.json?t=' + new Date().getTime());
+                if (!response.ok) throw new Error("Gagal ambil JSON, status: " + response.status);
+                
+                const photos = await response.json();
+                
+                // Cari foto berdasarkan name (string comparison biar aman dari tipe data)
+                const targetPhoto = photos.find(p => String(p.name).trim() === String(photoId).trim());
 
-            // SHARE: https://domain.com/photo/NAMA
-            document.getElementById('share-btn').onclick = async () => {
-                const url = window.location.origin + '/photo/' + name;
-                if (navigator.share) {
-                    await navigator.share({ title: 'Lihat Foto', url: url });
-                } else {
-                    await navigator.clipboard.writeText(url);
-                    alert('Link disalin: ' + url);
+                if (!targetPhoto || !targetPhoto.url) {
+                    throw new Error(`Foto dengan name "${photoId}" gak ketemu di DB, kontol!`);
                 }
-            };
-        }
 
-        // SECURITY: CANVAS & ANTI-DOWNLOAD
-        const canvas = document.getElementById('canvas-layer');
-        const ctx = canvas.getContext('2d');
-        function resizeCanvas() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = '#fff'; ctx.font = '10px Arial';
-            for(let i=0;i<canvas.width;i+=50) for(let j=0;j<canvas.height;j+=50) ctx.fillText('SECURE',i,j);
+                // Bersihin URL dari spasi di ujung (trim) biar gak broken
+                const cleanUrl = targetPhoto.url.trim();
+
+                // Set gambar
+                imgEl.src = cleanUrl;
+                imgEl.style.display = 'block';
+                loadingEl.style.display = 'none';
+
+                // Event listener kalo link gambar rusak/404
+                imgEl.onerror = function() {
+                    loadingEl.style.display = 'none';
+                    imgEl.style.display = 'none';
+                    errorEl.textContent = "Link gambar rusak atau diblokir sama server, bre!\nCek link catbox lu.";
+                    errorEl.style.display = 'block';
+                };
+
+            } catch (error) {
+                console.error("Error load photo:", error);
+                loadingEl.style.display = 'none';
+                errorEl.textContent = "Error System:\n" + error.message;
+                errorEl.style.display = 'block';
+                
+                // PENTING: JANGAN PERNAH TARUH window.location.reload() DI SINI, BANGSAT!
+            }
         }
-        window.addEventListener('resize', resizeCanvas); resizeCanvas();
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        document.addEventListener('selectstart', e => e.preventDefault());
+        // Jalankan pas DOM ready, dijamin cuma jalan sekali
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadPhoto);
+        } else {
+            loadPhoto();
+        }
     </script>
 </body>
 </html>
