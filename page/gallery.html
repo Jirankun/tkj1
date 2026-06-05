@@ -56,10 +56,10 @@
     .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
     .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
-    /* 🖼️ FULL VIEW */
-    .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
-    .full-view.active { display: flex; }
-    .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    /* 🖼️ FULL VIEW - FIXED POPUP CSS */
+    .full-view { position: fixed; inset: 0; background: rgba(9,9,11,0.98); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 40px; backdrop-filter: blur(8px); }
+    .full-view.active { display: flex !important; }
+    .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
     .full-media { width: 100%; max-height: 70vh; object-fit: contain; background: #000; display: block; }
     .full-info { padding: 20px; }
     .full-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
@@ -196,7 +196,7 @@
   <script>
     'use strict';
     const CFG = {
-      JSON: ['/photos.json', '/DB/photos.json'],
+      JSON: ['/DB/photos.json', '/photos.json'],
       BASE: window.location.origin || 'https://tkj1.pages.dev',
       APP: { scheme: 'tkjone', path: 'photo', pkgs: ['com.tkjone.app'], fallback: 'https://github.com/Jirankun/TKJ-One/releases' }
     };
@@ -303,7 +303,8 @@
       document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
       document.getElementById('fv-share').onclick = () => share(p);
       document.getElementById('fv-app').onclick = () => showAppModal();
-      history.replaceState({v: p.name}, '', `/photo/${p.name}`);
+      // Update URL without reloading
+      history.pushState({v: p.name}, '', `/photo/${p.name}`);
     };
     const closeFull = () => {
       document.getElementById('full-view').classList.remove('active');
@@ -311,7 +312,7 @@
       document.querySelector('.header')?.classList.remove('hidden');
       document.getElementById('fv-img').src = ''; const v = document.getElementById('fv-vid'); v.pause(); v.src = '';
       resumeThumb(); restoreScroll();
-      history.replaceState({}, '', location.pathname.split('/photo/')[0] || '/');
+      history.pushState({}, '', '/');
       cur = null;
     };
 
@@ -450,7 +451,7 @@
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
-        // Check URL for direct photo access - handle both /photo/{name} and messages from parent
+        // Check URL for direct photo access - handle both /photo/{name} pattern
         const checkPhotoRoute = () => {
           const path = location.pathname; 
           const parts = path.split('/').filter(Boolean);
@@ -468,15 +469,8 @@
           return false;
         };
         
-        // Try to open photo from URL
-        if (!checkPhotoRoute()) {
-          // If not in URL, check hash or wait for parent message
-          const hash = location.hash.replace('#', '');
-          if (hash && !hash.includes('giscus')) {
-            const f = data.find(x => String(x.name).toLowerCase() === hash.toLowerCase());
-            if (f) openFull(f);
-          }
-        }
+        // Try to open photo from URL on load
+        checkPhotoRoute();
       } catch(e) { 
         document.getElementById('loading').classList.add('hidden'); 
         document.getElementById('error').textContent = e; 
@@ -521,13 +515,9 @@
     document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view') closeFull(); };
     document.onkeydown = e => { if(e.key==='Escape'){closeModal(); closeFull();} };
     // Handle browser back/forward for photo routes
-    window.onpopstate = () => { 
-      const path = location.pathname;
-      const parts = path.split('/').filter(Boolean);
-      const photoIndex = parts.findIndex(p => p === 'photo');
-      
-      // If we're NOT on a /photo/ route, close full view
-      if (photoIndex === -1 && !document.getElementById('full-view').classList.contains('hidden')) {
+    window.onpopstate = (e) => { 
+      // If we're navigating back and full view is open, close it
+      if (document.getElementById('full-view').classList.contains('active')) {
         closeFull();
       }
     };
@@ -540,14 +530,18 @@
     window.addEventListener('message', (e) => {
       if (!e.data || !e.data.type) return;
       
-      if (e.data.type === 'CLOSE_GISCUS') {
-        // Handle close giscus if needed
-      }
-      
-      // Handle OPEN_PHOTO message from parent
+      // Handle OPEN_PHOTO message from parent - with retry mechanism
       if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
-        const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
-        if (f) openFull(f);
+        const tryOpenPhoto = () => {
+          const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
+          if (f) {
+            openFull(f);
+          } else {
+            // Retry after a short delay if data not loaded yet
+            setTimeout(tryOpenPhoto, 200);
+          }
+        };
+        tryOpenPhoto();
       }
     });
 
