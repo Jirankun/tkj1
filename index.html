@@ -274,25 +274,24 @@
       }
     };
     
-    // 🖼️ PHOTO ROUTING - Redirect /photo/{photo_name} to photo/index.html
+    // 🖼️ PHOTO ROUTING - Handle /photo/{photo_name} pattern
     const handlePhotoRoute = () => {
       const path = window.location.pathname;
       const parts = path.split('/').filter(Boolean);
       
-      // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg)
+      // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg or /photo/1)
       if (parts.length >= 2 && parts[0] === 'photo') {
-        const photoName = parts.slice(1).join('/');
-        // Redirect to photo viewer page using clean URL (Cloudflare Pages handles redirect via _redirects)
-        window.location.href = '/photo/' + encodeURIComponent(photoName);
+        const photoName = decodeURIComponent(parts.slice(1).join('/'));
+        // Store the photo name in sessionStorage for gallery to use
+        sessionStorage.setItem('directPhoto', photoName);
+        // Don't redirect - let the gallery iframe handle it via postMessage
         return true;
       }
       return false;
     };
     
     // Handle photo routing immediately on load
-    if (handlePhotoRoute()) {
-      // Stop further execution if redirected
-    }
+    const isDirectPhoto = handlePhotoRoute();
     
     window.addEventListener('message', handleGiscusMessage);
     
@@ -387,6 +386,19 @@
     // 🚀 INIT
     (async () => {
       showTS();
+      
+      // Send photo route info to gallery iframe once it loads
+      const iframe = document.getElementById('gallery-frame');
+      if (iframe) {
+        iframe.addEventListener('load', () => {
+          // Check if there's a direct photo access
+          const directPhoto = sessionStorage.getItem('directPhoto');
+          if (directPhoto && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'OPEN_PHOTO', name: directPhoto }, '*');
+            sessionStorage.removeItem('directPhoto');
+          }
+        });
+      }
     })();
   </script>
 </body>
