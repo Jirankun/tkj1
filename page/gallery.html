@@ -6,510 +6,131 @@
   <meta name="theme-color" content="#09090b" />
   <meta name="description" content="TKJ OnE Gallery - Galeri Foto dan Video"/>
   <title>Gallery - TKJ OnE</title>
-  
   <style>
-    :root {
-      --bg: #09090b;
-      --surface: #18181b;
-      --surface-hover: #27272a;
-      --border: #27272a;
-      --text: #fafafa;
-      --text-muted: #a1a1aa;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --error: #ef4444;
-      --radius: 14px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
-    
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      -webkit-tap-highlight-color: transparent; 
-    }
-    
-    html { 
-      scroll-behavior: smooth; 
-      overflow-x: hidden; 
-    }
-    
-    body { 
-      background: var(--bg); 
-      color: var(--text); 
-      line-height: 1.5; 
-      min-height: 100vh; 
-      overflow-x: hidden;
-    }
-    
-    .hidden { display: none !important; }
-    
-    /* Header */
-    .header { 
-      position: sticky; 
-      top: 0; 
-      left: 0; 
-      right: 0; 
-      z-index: 100; 
-      background: rgba(9,9,11,0.95); 
-      backdrop-filter: blur(12px); 
-      border-bottom: 1px solid var(--border); 
-    }
-    
-    .header-inner { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 10px; 
-      padding: 14px 16px 12px; 
-      max-width: 1100px; 
-      margin: 0 auto;
-    }
-    
-    .logo { 
-      font-weight: 800; 
-      font-size: 1.15rem; 
-      text-align: center; 
-      letter-spacing: -0.5px; 
-    }
-    
-    .search-box { position: relative; }
-    
-    .search-input { 
-      width: 100%; 
-      padding: 10px 36px 10px 14px; 
-      background: var(--surface); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      color: var(--text); 
-      font-size: 0.95rem; 
-      outline: none; 
-      transition: border-color 0.2s;
-    }
-    
-    .search-input:focus { border-color: var(--accent); }
-    
-    .search-icon { 
-      position: absolute; 
-      right: 14px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      color: var(--text-muted); 
-      pointer-events: none; 
-      font-size: 1rem; 
-    }
-    
-    .filter-row { 
-      display: flex; 
-      gap: 8px; 
-      flex-wrap: wrap; 
-      align-items: center; 
-    }
-    
-    .filter-btn { 
-      padding: 8px 16px; 
-      background: var(--surface); 
-      border: 1px solid var(--border); 
-      border-radius: 9999px; 
-      color: var(--text-muted); 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      white-space: nowrap; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-    }
-    
-    .filter-btn.active, .filter-btn:hover { 
-      background: var(--accent); 
-      color: #fff; 
-      border-color: var(--accent); 
-    }
-    
-    .chat-btn { 
-      padding: 8px 16px; 
-      background: var(--surface-hover); 
-      border: 1px solid var(--border); 
-      border-radius: 9999px; 
-      color: var(--text); 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      cursor: pointer; 
-      margin-left: auto; 
-      transition: all 0.2s; 
-    }
-    
-    .chat-btn:hover { background: var(--accent); color: #fff; }
-    
-    /* Main Content */
-    .main { 
-      padding-top: 140px; 
-      padding-bottom: 80px; 
-      min-height: 100vh; 
-    }
-    
-    .container { 
-      max-width: 1100px; 
-      margin: 0 auto; 
-      padding: 0 16px; 
-    }
-    
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-      gap: 12px; 
-    }
-    
-    @media (min-width: 768px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-    }
-    
-    .card { 
-      background: var(--surface); 
-      border: 1px solid var(--border); 
-      border-radius: var(--radius); 
-      overflow: hidden; 
-      cursor: pointer; 
-      transition: transform 0.2s, box-shadow 0.2s; 
-    }
-    
-    .card:hover { 
-      transform: translateY(-3px); 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-    }
-    
-    .card-media { 
-      width: 100%; 
-      aspect-ratio: 4/3; 
-      object-fit: cover; 
-      background: #000; 
-      display: block; 
-    }
-    
-    .card-info { padding: 10px 12px; }
-    
-    .card-title { 
-      font-weight: 600; 
-      font-size: 0.9rem; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-    }
-    
-    .card-meta { 
-      font-size: 0.75rem; 
-      color: var(--text-muted); 
-      display: flex; 
-      gap: 8px; 
-      align-items: center; 
-      margin-top: 4px; 
-    }
-    
-    .badge { 
-      padding: 2px 8px; 
-      border-radius: 6px; 
-      font-size: 0.7rem; 
-      font-weight: 700; 
-    }
-    
-    .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
-    .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
-    
-    /* Full View Modal */
-    .full-view { 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(9,9,11,0.98); 
-      z-index: 200; 
-      overflow-y: auto; 
-      display: none; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 24px 16px 40px; 
-      backdrop-filter: blur(8px); 
-    }
-    
-    .full-view.active { display: flex !important; }
-    
-    .full-container { 
-      width: 100%; 
-      max-width: 680px; 
-      background: var(--surface); 
-      border-radius: var(--radius); 
-      overflow: hidden; 
-      border: 1px solid var(--border); 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4); 
-    }
-    
-    .full-media { 
-      width: 100%; 
-      max-height: 70vh; 
-      object-fit: contain; 
-      background: #000; 
-      display: block; 
-    }
-    
-    .full-info { padding: 20px; }
-    
-    .full-title { 
-      font-size: 1.3rem; 
-      font-weight: 700; 
-      margin-bottom: 8px; 
-    }
-    
-    .full-desc { 
-      color: var(--text-muted); 
-      margin-bottom: 16px; 
-      line-height: 1.5; 
-      font-size: 0.95rem; 
-    }
-    
-    .full-meta { 
-      color: var(--text-muted); 
-      font-size: 0.85rem; 
-      margin-bottom: 18px; 
-    }
-    
-    .full-actions { 
-      display: flex; 
-      gap: 10px; 
-      flex-wrap: wrap; 
-    }
-    
-    /* Generic Modal */
-    .modal-overlay { 
-      position: fixed; 
-      inset: 0; 
-      background: rgba(0,0,0,0.85); 
-      z-index: 300; 
-      display: none; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 16px; 
-      backdrop-filter: blur(6px); 
-    }
-    
-    .modal-overlay.active { display: flex; }
-    
-    .modal-box { 
-      background: var(--surface); 
-      border-radius: var(--radius); 
-      width: 100%; 
-      max-width: 460px; 
-      max-height: 90vh; 
-      overflow-y: auto; 
-      border: 1px solid var(--border); 
-      position: relative; 
-      animation: modalIn 0.25s ease; 
-    }
-    
-    @keyframes modalIn { 
-      from { opacity: 0; transform: scale(0.96); } 
-      to { opacity: 1; transform: scale(1); } 
-    }
-    
-    .modal-close { 
-      position: absolute; 
-      top: 12px; 
-      right: 12px; 
-      width: 32px; 
-      height: 32px; 
-      background: var(--surface-hover); 
-      border: none; 
-      border-radius: 10px; 
-      color: var(--text); 
-      font-size: 1.3rem; 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      z-index: 10;
-    }
-    
-    .modal-body { padding: 20px; }
-    
-    .modal-media { 
-      width: 100%; 
-      max-height: 50vh; 
-      object-fit: contain; 
-      background: #000; 
-      border-radius: 12px; 
-      margin-bottom: 14px; 
-      display: block; 
-    }
-    
-    .app-modal-box, .confirm-box { 
-      text-align: center; 
-      padding: 28px 20px; 
-    }
-    
-    /* Buttons */
-    .btn { 
-      display: inline-flex; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 6px; 
-      padding: 10px 18px; 
-      border-radius: 12px; 
-      font-weight: 600; 
-      font-size: 0.9rem; 
-      border: none; 
-      cursor: pointer; 
-      transition: 0.2s; 
-    }
-    
-    .btn:active { transform: scale(0.98); }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost { background: transparent; color: var(--text-muted); }
-    
-    /* Loading & Empty States */
-    .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-    
-    .spinner { 
-      width: 36px; 
-      height: 36px; 
-      border: 3px solid var(--surface-hover); 
-      border-top-color: var(--accent); 
-      border-radius: 50%; 
-      animation: spin 0.8s linear infinite; 
-      margin: 0 auto 12px; 
-    }
-    
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-    
-    /* Toast */
-    .toast { 
-      position: fixed; 
-      bottom: 20px; 
-      left: 50%; 
-      transform: translateX(-50%) translateY(100px); 
-      background: var(--surface); 
-      color: var(--text); 
-      padding: 10px 16px; 
-      border-radius: 12px; 
-      border: 1px solid var(--border); 
-      transition: 0.25s; 
-      z-index: 9999; 
-      font-size: 0.85rem; 
-      opacity: 0; 
-      pointer-events: none; 
-    }
-    
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    
-    /* Security Canvas */
-    #security-canvas { 
-      position: fixed; 
-      inset: 0; 
-      z-index: 9999; 
-      pointer-events: none; 
-      display: none; 
-    }
-    
-    #security-canvas.active { display: block; }
+    :root{--bg:#09090b;--surface:#18181b;--surface-hover:#27272a;--border:#27272a;--text:#fafafa;--text-muted:#a1a1aa;--accent:#3b82f6;--radius:12px;font-family:'Inter',system-ui,-apple-system,sans-serif}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth;overflow-x:hidden}
+    body{background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;overflow-x:hidden}
+    .hidden{display:none!important}
+    .header{position:sticky;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.98);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:8px 0}
+    .header-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;gap:8px}
+    .logo{font-weight:700;font-size:1rem;text-align:center;letter-spacing:-0.3px;padding:4px 0}
+    .search-box{position:relative}
+    .search-input{width:100%;padding:8px 32px 8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.9rem;outline:none;transition:border-color 0.2s}
+    .search-input:focus{border-color:var(--accent)}
+    .search-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;font-size:0.9rem}
+    .filter-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-bottom:4px}
+    .filter-btn{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:999px;color:var(--text-muted);font-size:0.8rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all 0.2s}
+    .filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .chat-btn{margin-left:auto;padding:6px 12px;background:var(--surface-hover);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.8rem;font-weight:600;cursor:pointer;transition:0.2s}
+    .chat-btn:active{transform:scale(0.96)}
+    .main{padding-top:8px}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px 80px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+    @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}}
+    @media(min-width:900px){.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}}
+    .card{background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;position:relative}
+    .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);border-color:var(--surface-hover)}
+    .card:active{transform:scale(0.98)}
+    .card-media{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#000}
+    .card-info{padding:10px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);position:absolute;bottom:0;left:0;right:0}
+    .card-title{font-size:0.85rem;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .badge{padding:2px 8px;border-radius:999px;font-size:0.7rem;font-weight:700;text-transform:uppercase}
+    .badge-photo{background:var(--accent);color:#fff}
+    .badge-video{background:#f59e0b;color:#000}
+    .full-view{position:fixed;inset:0;background:rgba(0,0,0,0.98);z-index:200;display:none;flex-direction:column;overflow-y:auto}
+    .full-view.active{display:flex}
+    .full-container{width:100%;max-width:700px;margin:auto;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+    .full-media{width:100%;max-height:65vh;object-fit:contain;background:#000;display:block}
+    .full-info{padding:16px}
+    .full-title{font-size:1.15rem;font-weight:700;margin-bottom:6px}
+    .full-desc{color:var(--text-muted);margin-bottom:12px;line-height:1.5;font-size:0.9rem}
+    .full-meta{color:var(--text-muted);font-size:0.8rem;margin-bottom:14px}
+    .full-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+    .modal-overlay.active{display:flex}
+    .modal-box{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);max-width:420px;width:100%;max-height:85vh;overflow-y:auto;position:relative}
+    .modal-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:var(--surface-hover);border:none;border-radius:50%;color:var(--text);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+    .modal-body{padding:16px}
+    .modal-media{width:100%;max-height:45vh;object-fit:contain;background:#000;border-radius:8px;margin-bottom:12px;display:block}
+    .app-modal-box,.confirm-box{text-align:center;padding:24px 16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-weight:600;font-size:0.85rem;border:none;cursor:pointer;transition:0.2s}
+    .btn:active{transform:scale(0.96)}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .loading,.empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
+    .spinner{width:32px;height:32px;border:3px solid var(--surface-hover);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface);color:var(--text);padding:10px 16px;border-radius:10px;border:1px solid var(--border);transition:0.25s;z-index:9999;font-size:0.85rem;opacity:0;pointer-events:none}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    #security-canvas{position:fixed;inset:0;z-index:9999;pointer-events:none;display:none}
+    #security-canvas.active{display:block}
   </style>
 </head>
 <body>
-
   <canvas id="security-canvas"></canvas>
-
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">TKJ OnE Gallery</div>
-      <div class="search-box">
-        <input type="text" id="search" class="search-input" placeholder="Cari foto atau video...">
-        <span class="search-icon">🔍</span>
-      </div>
-      <div class="filter-row">
-        <button class="filter-btn active" data-f="all">Semua</button>
-        <button class="filter-btn" data-f="photo">Foto</button>
-        <button class="filter-btn" data-f="video">Video</button>
-        <button class="chat-btn" onclick="openConfirm()">💬 Chat Dev</button>
-      </div>
+  <header class="header"><div class="header-inner">
+    <div class="logo">📷 TKJ OnE Gallery</div>
+    <div class="search-box"><input type="text" id="search" class="search-input" placeholder="Cari foto/video..."><span class="search-icon">🔍</span></div>
+    <div class="filter-row">
+      <button class="filter-btn active" data-f="all">Semua</button>
+      <button class="filter-btn" data-f="photo">Foto</button>
+      <button class="filter-btn" data-f="video">Video</button>
+      <button class="chat-btn" onclick="openConfirm()">💬 Chat Dev</button>
     </div>
-  </header>
-
-  <main class="main">
-    <div class="container">
-      <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <div>Memuat galeri...</div>
-      </div>
-      <div id="error" class="empty hidden" style="color:var(--error)"></div>
-      
-      <!-- Full View Popup -->
-      <div id="full-view" class="full-view">
-        <div class="full-container">
-          <img id="fv-img" class="full-media" src="" alt="" decoding="async" fetchpriority="high">
-          <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
-          <div class="full-info">
-            <h1 id="fv-title" class="full-title"></h1>
-            <p id="fv-desc" class="full-desc"></p>
-            <p id="fv-meta" class="full-meta"></p>
-            <div class="full-actions">
-              <button id="fv-share" class="btn btn-secondary">🔗 Bagikan</button>
-              <button id="fv-app" class="btn btn-primary">📱 Buka di App</button>
-            </div>
-          </div>
+  </div></header>
+  <main class="main"><div class="container">
+    <div id="loading" class="loading"><div class="spinner"></div><div>Memuat galeri...</div></div>
+    <div id="error" class="empty hidden" style="color:var(--error)"></div>
+    <div id="full-view" class="full-view"><div class="full-container">
+      <img id="fv-img" class="full-media" src="" alt="" decoding="async" fetchpriority="high">
+      <video id="fv-vid" class="full-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
+      <div class="full-info">
+        <h1 id="fv-title" class="full-title"></h1>
+        <p id="fv-desc" class="full-desc"></p>
+        <p id="fv-meta" class="full-meta"></p>
+        <div class="full-actions">
+          <button id="fv-share" class="btn btn-secondary">🔗 Bagikan</button>
+          <button id="fv-app" class="btn btn-primary">📱 Buka di App</button>
         </div>
       </div>
-      
-      <!-- Gallery Grid -->
-      <div id="gallery" class="hidden">
-        <div id="grid" class="grid"></div>
-        <div id="empty" class="empty hidden">Tidak ada hasil ditemukan.</div>
+    </div></div>
+    <div id="gallery" class="hidden"><div id="grid" class="grid"></div><div id="empty" class="empty hidden">Tidak ada hasil ditemukan.</div></div>
+  </div></main>
+  <div id="modal" class="modal-overlay"><div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-body">
+      <img id="md-img" class="modal-media" src="" alt="" decoding="async">
+      <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
+      <h2 id="md-title" style="margin-bottom:6px;font-size:1.1rem"></h2>
+      <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px;font-size:0.9rem"></p>
+      <p id="md-meta" style="color:var(--text-muted);font-size:0.75rem;margin-bottom:14px"></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="md-share" class="btn btn-secondary">🔗 Bagikan</button>
+        <button id="md-app" class="btn btn-primary">📱 Buka di App</button>
       </div>
     </div>
-  </main>
-
-  <!-- Detail Modal -->
-  <div id="modal" class="modal-overlay">
-    <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">×</button>
-      <div class="modal-body">
-        <img id="md-img" class="modal-media" src="" alt="" decoding="async">
-        <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
-        <h2 id="md-title" style="margin-bottom:6px"></h2>
-        <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px"></p>
-        <p id="md-meta" style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px"></p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button id="md-share" class="btn btn-secondary">🔗 Bagikan</button>
-          <button id="md-app" class="btn btn-primary">📱 Buka di App</button>
-        </div>
-      </div>
+  </div></div>
+  <div id="confirm" class="modal-overlay"><div class="confirm-box">
+    <div style="font-size:2rem;margin-bottom:8px">🔐</div>
+    <h3 style="margin-bottom:8px;font-size:1.1rem">Akses Diskusi Developer</h3>
+    <p style="color:var(--text-muted);margin-bottom:18px;line-height:1.5;font-size:0.85rem">Login GitHub diperlukan untuk fitur komentar. Hanya untuk diskusi teknis.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-primary" onclick="startChat()">Lanjutkan</button>
+      <button class="btn btn-secondary" onclick="closeConfirm()">Batal</button>
     </div>
-  </div>
-
-  <!-- Confirm Modal -->
-  <div id="confirm" class="modal-overlay">
-    <div class="confirm-box">
-      <div style="font-size:2rem;margin-bottom:8px">🔐</div>
-      <h3 style="margin-bottom:8px">Akses Diskusi Developer</h3>
-      <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:0.9rem">Login GitHub diperlukan untuk fitur komentar. Hanya untuk diskusi teknis.</p>
-      <div style="display:flex;gap:10px;justify-content:center">
-        <button class="btn btn-primary" onclick="startChat()">Lanjutkan</button>
-        <button class="btn btn-secondary" onclick="closeConfirm()">Batal</button>
-      </div>
+  </div></div>
+  <div id="app-modal" class="modal-overlay"><div class="app-modal-box">
+    <div style="font-size:2.5rem;margin-bottom:10px">📱</div>
+    <h3 style="margin-bottom:6px;font-size:1.1rem">Membuka Aplikasi...</h3>
+    <p style="color:var(--text-muted);margin-bottom:14px;font-size:0.85rem">Jika tidak otomatis terbuka, instal aplikasi resmi.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button id="btn-dl" class="btn btn-primary">Download</button>
+      <button class="btn btn-secondary" onclick="closeAppModal()">Tutup</button>
     </div>
-  </div>
-
-  <!-- App Modal -->
-  <div id="app-modal" class="modal-overlay">
-    <div class="app-modal-box">
-      <div style="font-size:2.5rem;margin-bottom:12px">📱</div>
-      <h3 style="margin-bottom:8px">Membuka Aplikasi...</h3>
-      <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.85rem">Jika tidak otomatis terbuka, instal aplikasi resmi.</p>
-      <div style="display:flex;gap:10px;justify-content:center">
-        <button id="btn-dl" class="btn btn-primary">Download</button>
-        <button class="btn btn-secondary" onclick="closeAppModal()">Tutup</button>
-      </div>
-    </div>
-  </div>
-
+  </div></div>
   <div id="toast" class="toast"></div>
-  
   <script src="/page/gallery.js"></script>
 </body>
 </html>
