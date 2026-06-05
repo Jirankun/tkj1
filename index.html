@@ -274,6 +274,27 @@
       }
     };
     
+    // 🖼️ PHOTO ROUTING - Handle /photo/{photo_name} URLs
+    const handlePhotoRoute = async () => {
+      const path = window.location.pathname;
+      const parts = path.split('/').filter(Boolean);
+      
+      // Check for pattern: /photo/{photo_name} (e.g., /photo/ECCENTRICCIRCUS.jpg)
+      if (parts.length === 2 && parts[0] === 'photo') {
+        const photoName = decodeURIComponent(parts[1]);
+        
+        // Wait for gallery to load, then send message to iframe
+        const waitForGallery = setInterval(() => {
+          const iframe = document.getElementById('gallery-frame');
+          if (iframe && iframe.contentWindow) {
+            clearInterval(waitForGallery);
+            // Send message to iframe to open the photo
+            iframe.contentWindow.postMessage({type: 'OPEN_PHOTO', name: photoName}, '*');
+          }
+        }, 100);
+      }
+    };
+    
     window.addEventListener('message', handleGiscusMessage);
     
     // Load Giscus in parent window
@@ -366,7 +387,14 @@
 
     // 🚀 INIT
     (async () => { 
-      showTS(); 
+      showTS();
+      // After turnstile passes and gallery loads, check for photo route
+      const checkRouteInterval = setInterval(() => {
+        if (tsOk) {
+          handlePhotoRoute();
+          clearInterval(checkRouteInterval);
+        }
+      }, 200); 
     })();
   </script>
 </body>
