@@ -1,0 +1,1 @@
+Nothing should be ignored based on the provided file changes. The changes only include HTML files (gallery.html and index.html), which are source files and not build artifacts, dependencies, or temporary files.
