@@ -157,7 +157,16 @@
     .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
     .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--text); }
     .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
-    .robot-equation { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+    .robot-equation { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 16px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; }
+    .robot-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .robot-opt { padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.95rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+    .robot-opt:hover { border-color: var(--accent); background: var(--surface-hover); transform: translateY(-1px); }
+    .robot-opt:active { transform: scale(0.98); }
+    .robot-opt .key { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.85rem; }
+    .robot-opt.correct { border-color: var(--success); background: rgba(34,197,94,0.1); }
+    .robot-opt.wrong { border-color: var(--error); background: rgba(239,68,68,0.1); }
+    .robot-opt:disabled { opacity: 0.6; cursor: not-allowed; }
+    @media (max-width: 400px) { .robot-options { grid-template-columns: 1fr; } }
     .robot-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1.2rem; font-weight: 600; text-align: center; outline: none; transition: all 0.2s; }
     .robot-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
     .robot-input.error { border-color: var(--error); animation: shake 0.4s; }
@@ -177,10 +186,9 @@
       <h2 class="robot-title">Are you a robot?</h2>
       <div class="robot-problem">
         <div id="robot-equation" class="robot-equation"></div>
-        <input type="number" id="robot-input" class="robot-input" placeholder="Your answer..." autocomplete="off" inputmode="numeric">
+        <div id="robot-options" class="robot-options"></div>
       </div>
-      <button id="robot-confirm" class="robot-btn">Confirm</button>
-      <p class="robot-hint">Prove you're human by solving this challenge</p>
+      <p class="robot-hint">Pilih jawaban yang benar A/B/C/D/E</p>
     </div>
   </div>
 
@@ -255,14 +263,23 @@
   </div>
 
   <div id="confirm" class="modal-overlay">
-    <div class="confirm-box">
-      <div style="font-size:2rem;margin-bottom:8px">🔐</div>
-      <h3 style="margin-bottom:8px">Akses Diskusi Developer</h3>
-      <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:0.9rem">Login GitHub diperlukan untuk fitur komentar. Hanya untuk diskusi teknis.</p>
+    <!-- Confirm awal -->
+    <div id="confirm-start" class="modal-box" style="max-width:500px;padding:32px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🔐</div>
+      <h3 style="margin-bottom:8px;font-size:1.2rem">Akses Diskusi Developer</h3>
+      <p style="color:var(--text-muted);margin-bottom:20px;line-height:1.5;font-size:0.9rem">Login GitHub diperlukan untuk fitur komentar. Hanya untuk diskusi teknis TKJ.</p>
       <div style="display:flex;gap:10px;justify-content:center">
-        <button class="btn btn-primary" onclick="startChat()">Lanjutkan</button>
+        <button class="btn btn-primary" onclick="startChat()">Lanjutkan →</button>
         <button class="btn btn-secondary" onclick="closeConfirm()">Batal</button>
       </div>
+    </div>
+    <!-- Container Giscus (muncul setelah Lanjutkan diklik) -->
+    <div id="confirm-giscus" class="modal-box" style="max-width:640px;padding:20px;display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h3 style="font-size:1rem">💬 Diskusi Developer</h3>
+        <button onclick="closeConfirm()" style="background:none;border:none;color:var(--text-muted);font-size:1.5rem;cursor:pointer;padding:4px 8px;border-radius:8px">×</button>
+      </div>
+      <div class="giscus"></div>
     </div>
   </div>
 
@@ -286,11 +303,8 @@
 
   <!-- Load math challenge system first -->
   <script src="math_challenge.js"></script>
-  <!-- Debug: check if math_challenge.js loaded -->
   <script>
-    console.log('Math challenge script loaded');
-    console.log('g3n3r4t3 function:', typeof window.g3n3r4t3);
-    console.log('v3r1fy function:', typeof window.v3r1fy);
+    console.log('🧮 TKJ Math Challenge loaded:', typeof window.mathChallenge);
   </script>
   <script>
     'use strict';
@@ -307,314 +321,123 @@
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
 
-    // 🤖 ROBOT VERIFICATION SYSTEM - Using external math_challenge.js
-    let robotVerified = false;
+    // 🤖 ROBOT VERIFICATION — menggunakan mathChallenge API
     let challengeAttempts = 0;
     const MAX_ATTEMPTS = 3;
-    let currentProblem = null;
     
-    // Generate and display math challenge using the external system
-    const showRobotPopup = () => {
-      console.log('showRobotPopup called');
-      
-      // Prevent multiple popups from stacking
-      const existingPopup = document.getElementById('robot-popup');
-      if (existingPopup && existingPopup.classList.contains('active')) {
-        console.log('Popup already showing, skipping');
-        return; // Popup already showing
-      }
-      
+    function waitForMathAPI(retries = 30) {
+      return new Promise((resolve, reject) => {
+        const check = () => {
+          if (window.mathChallenge && typeof window.mathChallenge.generate === 'function') {
+            resolve();
+          } else if (retries <= 0) {
+            reject(new Error('MathChallenge API tidak terload'));
+          } else {
+            retries--;
+            setTimeout(check, 100);
+          }
+        };
+        check();
+      });
+    }
+    
+    let robotAnswered = false;
+    
+    const showRobotPopup = async () => {
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
-      const input = document.getElementById('robot-input');
+      const optContainer = document.getElementById('robot-options');
       
-      console.log('Popup element:', popup);
-      console.log('Equation element:', equation);
-      console.log('g3n3r4t3 function available:', typeof window.g3n3r4t3 === 'function');
+      if (!popup || !equation) return;
+      if (popup.classList.contains('active')) return;
       
-      // Use the external math challenge generator (g3n3r4t3)
-      if (typeof window.g3n3r4t3 === 'function') {
-        const problem = window.g3n3r4t3();
-        currentProblem = problem;
-        
-        console.log('Generated problem:', problem);
-        
-        // Format the question for display (handle newlines for complex problems)
-        const displayQuestion = problem.question.replace(/\n/g, '<br>');
-        equation.innerHTML = displayQuestion;
-      } else {
-        console.error('Math challenge system not loaded');
-        alert('Error: Math challenge system not loaded. Please refresh the page.');
+      if (!window.mathChallenge || typeof window.mathChallenge.generate !== 'function') {
+        equation.innerHTML = '❌ Sistem tidak terload. <button onclick="location.reload()" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;margin-top:8px">Refresh</button>';
         return;
       }
       
-      input.value = '';
-      input.classList.remove('error');
-      input.focus();
+      const problem = window.mathChallenge.generate();
+      equation.innerHTML = problem.question;
+      robotAnswered = false;
       
-      // Show popup and disable body scroll
+      // Render A/B/C/D/E options
+      optContainer.innerHTML = '';
+      if (problem.options && problem.options.length) {
+        problem.options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'robot-opt';
+          btn.dataset.key = opt.key;
+          btn.innerHTML = `<span class="key">${opt.key}</span><span>${opt.text}</span>`;
+          btn.addEventListener('click', function handler() {
+            if (robotAnswered) return;
+            robotAnswered = true;
+            document.querySelectorAll('.robot-opt').forEach(b => b.disabled = true);
+            
+            const result = window.mathChallenge.verify(opt.key);
+            
+            if (result.success) {
+              btn.classList.add('correct');
+              challengeAttempts = 0;
+              setTimeout(() => {
+                if (popup._preventKeys) document.removeEventListener('keydown', popup._preventKeys, { capture: true });
+                popup.classList.remove('active');
+                document.body.style.overflow = '';
+                document.documentElement.style.overflow = '';
+              }, 600);
+            } else if (result.maxed) {
+              // 3× salah → lanjut soal baru, ga reload!
+              btn.classList.add('wrong');
+              if (result.correctAnswer) {
+                document.querySelectorAll('.robot-opt').forEach(b => {
+                  if (b.dataset.key === result.correctAnswer) b.classList.add('correct');
+                });
+              }
+              challengeAttempts = 0;
+              setTimeout(() => { robotAnswered = false; showRobotPopup(); }, 1200);
+            } else {
+              challengeAttempts++;
+              btn.classList.add('wrong');
+              if (result.correctAnswer) {
+                document.querySelectorAll('.robot-opt').forEach(b => {
+                  if (b.dataset.key === result.correctAnswer) b.classList.add('correct');
+                });
+              }
+              setTimeout(() => { robotAnswered = false; showRobotPopup(); }, 1200);
+            }
+          });
+          optContainer.appendChild(btn);
+        });
+      }
+      
       popup.classList.add('active');
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
       
-      console.log('Popup displayed successfully');
-      
-      // Advanced security measures
-      const preventDevTools = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      };
-      
-      // Disable right-click
-      document.addEventListener('contextmenu', preventDevTools, { capture: true });
-      
-      // Disable developer tools keys
       const preventKeys = (e) => {
-        if (e.key === 'F12' || 
-            (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || 
-            (e.ctrlKey && ['U', 'S', 'P'].includes(e.key)) ||
-            (e.ctrlKey && e.altKey && e.key === 'I')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) e.preventDefault();
       };
       document.addEventListener('keydown', preventKeys, { capture: true });
-      
-      // Anti-bypass: Multiple integrity checks
-      const integrityChecks = [];
-      
-      // Check 1: Popup visibility
-      const check1 = setInterval(() => {
-        const popupRect = popup.getBoundingClientRect();
-        const isHidden = popupRect.width === 0 || popupRect.height === 0 || 
-                        popup.style.display === 'none' || 
-                        !popup.classList.contains('active');
-        if (isHidden) {
-          popup.classList.add('active');
-          popup.style.display = 'flex';
-          document.body.style.overflow = 'hidden';
-          document.documentElement.style.overflow = 'hidden';
-        }
-      }, 50);
-      integrityChecks.push(check1);
-      
-      // Check 2: Z-index manipulation
-      const check2 = setInterval(() => {
-        const computedStyle = getComputedStyle(popup);
-        if (parseInt(computedStyle.zIndex) < 9999) {
-          popup.style.zIndex = '10000';
-        }
-        if (computedStyle.position !== 'fixed') {
-          popup.style.position = 'fixed';
-        }
-      }, 100);
-      integrityChecks.push(check2);
-      
-      // Check 3: Body scroll re-enable attempt detection
-      const check3 = setInterval(() => {
-        if (document.body.style.overflow !== 'hidden' || 
-            document.documentElement.style.overflow !== 'hidden') {
-          document.body.style.overflow = 'hidden';
-          document.documentElement.style.overflow = 'hidden';
-          challengeAttempts++;
-          if (challengeAttempts >= MAX_ATTEMPTS) {
-            // Lock out user
-            localStorage.setItem('security_lockdown', 'true');
-            localStorage.setItem('lockdown_time', Date.now().toString());
-            alert('Security violation detected. Page will reload.');
-            window.location.reload();
-          }
-        }
-      }, 200);
-      integrityChecks.push(check3);
-      
-      // Store interval IDs for cleanup
-      popup.dataset.integrityChecks = JSON.stringify(integrityChecks.map((_, i) => i));
-      popup._integrityIntervals = integrityChecks;
-      
-      // Detect dev tools opening
-      let lastWidth = window.outerWidth - window.innerWidth;
-      let lastHeight = window.outerHeight - window.innerHeight;
-      
-      const detectDevTools = () => {
-        const currentWidth = window.outerWidth - window.innerWidth;
-        const currentHeight = window.outerHeight - window.innerHeight;
-        
-        if (currentWidth > lastWidth + 50 || currentHeight > lastHeight + 50) {
-          // Dev tools likely opened
-          challengeAttempts++;
-          if (challengeAttempts >= MAX_ATTEMPTS) {
-            localStorage.setItem('security_lockdown', 'true');
-            localStorage.setItem('lockdown_time', Date.now().toString());
-            window.location.reload();
-          }
-        }
-        
-        lastWidth = currentWidth;
-        lastHeight = currentHeight;
-      };
-      
-      window.addEventListener('resize', detectDevTools);
-      popup._resizeListener = detectDevTools;
+      popup._preventKeys = preventKeys;
     };
     
-    const verifyRobotAnswer = () => {
-      const input = document.getElementById('robot-input');
-      const userAnswer = input.value.trim();
-      
-      if (!userAnswer || isNaN(parseFloat(userAnswer))) {
-        input.classList.add('error');
-        setTimeout(() => input.classList.remove('error'), 500);
-        return;
-      }
-      
-      // Use the external verification system (v3r1fy)
-      if (typeof window.v3r1fy === 'function') {
-        const result = window.v3r1fy(userAnswer);
-        
-        if (result.success) {
-          // Correct answer - clean up and proceed
-          robotVerified = true;
-          
-          const popup = document.getElementById('robot-popup');
-          
-          // Clear all integrity checks
-          if (popup._integrityIntervals) {
-            popup._integrityIntervals.forEach(interval => clearInterval(interval));
-          }
-          
-          if (popup._resizeListener) {
-            window.removeEventListener('resize', popup._resizeListener);
-          }
-          
-          // Hide popup
-          popup.classList.remove('active');
-          document.body.style.overflow = '';
-          document.documentElement.style.overflow = '';
-          
-          // Store verification in sessionStorage (30 minutes)
-          sessionStorage.setItem('robotVerified', 'true');
-          sessionStorage.setItem('robotVerifyTime', Date.now().toString());
-          
-          // Also store in localStorage for persistent verification (24 hours)
-          try {
-            localStorage.setItem('math_challenge_completed', JSON.stringify({
-              verified: true,
-              timestamp: Date.now()
-            }));
-            localStorage.setItem('math_verify_time', Date.now().toString());
-          } catch (e) {
-            // Storage might be unavailable
-          }
-          
-        } else {
-          // Wrong answer
-          challengeAttempts++;
-          input.classList.add('error');
-          input.value = '';
-          
-          const remaining = MAX_ATTEMPTS - challengeAttempts;
-          
-          if (remaining <= 0) {
-            // Maximum attempts reached
-            if (result.locked) {
-              localStorage.setItem('security_lockdown', 'true');
-              localStorage.setItem('lockdown_time', Date.now().toString());
-              alert('Terlalu banyak kesalahan! Halaman akan dimuat ulang.');
-              window.location.reload();
-              return;
-            }
-          }
-          
-          input.placeholder = `Salah! Sisa ${remaining} percobaan`;
-          
-          // Generate new harder problem after delay
-          setTimeout(() => {
-            input.classList.remove('error');
-            showRobotPopup();
-          }, 1000);
-        }
-      } else {
-        console.error('Verification system not available');
-      }
-    };
-    
-    // Check if already verified in this session
+    // Cek apakah sudah pernah verifikasi
     const isRobotVerified = () => {
-      // Check sessionStorage first (short-term: 30 minutes)
+      // Pakai API mathChallenge.isVerified()
+      if (window.mathChallenge && typeof window.mathChallenge.isVerified === 'function') {
+        return window.mathChallenge.isVerified();
+      }
+      // Fallback
       if (sessionStorage.getItem('robotVerified') === 'true') {
-        const verifyTime = sessionStorage.getItem('robotVerifyTime');
-        if (verifyTime) {
-          const elapsed = Date.now() - parseInt(verifyTime);
-          // Verification valid for 30 minutes
-          return elapsed < 30 * 60 * 1000;
-        }
-        return true;
+        const time = sessionStorage.getItem('robotVerifyTime');
+        if (time && Date.now() - parseInt(time) < 30 * 60 * 1000) return true;
       }
-      
-      // Check localStorage for persistent verification (with expiration: 24 hours)
-      // Try multiple possible keys used by math_challenge.js
-      const possibleKeys = [
-        'math_challenge_completed',
-        'math_verify_time'
-      ];
-      
-      // First check standard keys
-      for (const key of possibleKeys) {
-        const stored = localStorage.getItem(key);
+      try {
+        const stored = localStorage.getItem('tkj_math_done');
         if (stored) {
-          try {
-            const data = JSON.parse(stored);
-            const elapsed = Date.now() - data.timestamp;
-            // Persistent verification valid for 24 hours
-            if (elapsed < 24 * 60 * 60 * 1000) {
-              return true;
-            }
-          } catch (e) {
-            // Might be a simple string value
-            if (stored === 'true') {
-              const timeStored = localStorage.getItem('math_verify_time');
-              if (timeStored) {
-                const elapsed = Date.now() - parseInt(timeStored);
-                if (elapsed < 24 * 60 * 60 * 1000) {
-                  return true;
-                }
-              }
-            }
-          }
+          const data = JSON.parse(stored);
+          if (data.verified && Date.now() - data.time < 24 * 60 * 60 * 1000) return true;
         }
-      }
-      
-      // Also check for any math_challenge_completed_* keys (from math_challenge.js)
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('math_challenge_completed_')) {
-          const timeStored = localStorage.getItem('math_verify_time');
-          if (timeStored) {
-            const elapsed = Date.now() - parseInt(timeStored);
-            if (elapsed < 24 * 60 * 60 * 1000) {
-              return true;
-            }
-          }
-        }
-      }
-      
-      // Check for math_verified_* session keys
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key && key.startsWith('math_verified_')) {
-          const timeStored = sessionStorage.getItem('math_verify_time');
-          if (timeStored) {
-            const elapsed = Date.now() - parseInt(timeStored);
-            if (elapsed < 30 * 60 * 1000) {
-              return true;
-            }
-          }
-        }
-      }
-      
+      } catch(e) {}
       return false;
     };
 
@@ -766,31 +589,39 @@
     const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
     const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
 
-    window.openConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'OPEN_CONFIRM'}, '*'); };
-    window.closeConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'CLOSE_CONFIRM'}, '*'); };
-    window.startChat = () => {
-      document.getElementById('confirm').classList.remove('hidden');
+    window.openConfirm = () => {
+      const m = document.getElementById('confirm');
+      document.getElementById('confirm-start').style.display = 'block';
+      document.getElementById('confirm-giscus').style.display = 'none';
+      m.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    };
+    window.closeConfirm = () => {
       document.getElementById('confirm').classList.remove('active');
-      const giscusContainer = document.querySelector('.giscus');
-      if (giscusContainer && !giscusContainer.hasChildNodes()) {
-        const script = document.createElement('script');
-        script.src = 'https://giscus.app/client.js';
-        script.setAttribute('data-repo', 'Jirankun/tkj1');
-        script.setAttribute('data-repo-id', 'R_kgDOQWmG8Q');
-        script.setAttribute('data-category', 'Show and tell');
-        script.setAttribute('data-category-id', 'DIC_kwDOQWmG8c4C63kb');
-        script.setAttribute('data-mapping', 'pathname');
-        script.setAttribute('data-strict', '0');
-        script.setAttribute('data-reactions-enabled', '1');
-        script.setAttribute('data-emit-metadata', '0');
-        script.setAttribute('data-input-position', 'top');
-        script.setAttribute('data-theme', 'dark_tritanopia');
-        script.setAttribute('data-lang', 'id');
-        script.setAttribute('crossorigin', 'anonymous');
-        script.async = true;
-        giscusContainer.appendChild(script);
+      document.body.style.overflow = '';
+    };
+    window.startChat = () => {
+      document.getElementById('confirm-start').style.display = 'none';
+      document.getElementById('confirm-giscus').style.display = 'block';
+      const gc = document.querySelector('.giscus');
+      if (gc && !gc.hasChildNodes()) {
+        const s = document.createElement('script');
+        s.src = 'https://giscus.app/client.js';
+        s.setAttribute('data-repo', 'Jirankun/tkj1');
+        s.setAttribute('data-repo-id', 'R_kgDOQWmG8Q');
+        s.setAttribute('data-category', 'Show and tell');
+        s.setAttribute('data-category-id', 'DIC_kwDOQWmG8c4C63kb');
+        s.setAttribute('data-mapping', 'pathname');
+        s.setAttribute('data-strict', '0');
+        s.setAttribute('data-reactions-enabled', '1');
+        s.setAttribute('data-emit-metadata', '0');
+        s.setAttribute('data-input-position', 'top');
+        s.setAttribute('data-theme', 'dark_tritanopia');
+        s.setAttribute('data-lang', 'id');
+        s.setAttribute('crossorigin', 'anonymous');
+        s.async = true;
+        gc.appendChild(s);
       }
-      if (window.parent !== window) window.parent.postMessage({type: 'SHOW_GISCUS'}, '*');
     };
 
     const safeJSON = async paths => {
@@ -963,18 +794,12 @@
       window.location.href = 'https://jirankun.github.io/portofoliozhyllan';
     });
 
-    // Robot verification button and enter key handlers
-    document.getElementById('robot-confirm').addEventListener('click', verifyRobotAnswer);
-    document.getElementById('robot-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        verifyRobotAnswer();
-      }
-    });
+    // Robot verification menggunakan A/B/C/D/E (built into showRobotPopup)
 
     // Check maintenance on load, then robot verification
     const initPage = async () => {
       console.log('initPage called');
-      console.log('g3n3r4t3 available:', typeof window.g3n3r4t3);
+      console.log('mathChallenge API available:', typeof window.mathChallenge?.generate);
       
       const isMaintenanceActive = await checkMaintenance();
       

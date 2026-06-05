@@ -3,105 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Robot Popup</title>
+  <title>🧮 Test Robot — TKJ A/B/C/D/E Challenge</title>
   <style>
     :root {
-      --bg: #09090b; --surface: #18181b; --border: #27272a;
-      --text: #fafafa; --text-muted: #a1a1aa; --accent: #3b82f6;
+      --bg: #0a0a0f; --surface: #16162a; --surface-hover: #1e1e3a;
+      --border: #2a2a4a; --text: #f0f0ff; --text-muted: #8888aa;
+      --accent: #7c3aed; --accent2: #3b82f6; --success: #22c55e; --error: #ef4444;
+      --radius: 16px;
     }
-    body { background: var(--bg); color: var(--text); font-family: system-ui; margin: 0; padding: 20px; }
-    
-    #robot-popup { 
-      position: fixed; inset: 0; background: rgba(9,9,11,0.99); 
-      z-index: 10000; display: none; flex-direction: column; 
-      align-items: center; justify-content: center; padding: 24px; 
-      backdrop-filter: blur(16px); 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh; padding: 40px 20px;
+      background-image: radial-gradient(ellipse at 50% -20%, rgba(124,58,237,0.08) 0%, transparent 60%);
     }
-    #robot-popup.active { display: flex !important; }
-    .robot-content { text-align: center; max-width: 480px; width: 100%; }
-    .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
-    .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; }
-    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
-    .robot-equation { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; font-family: monospace; }
-    .robot-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1.2rem; text-align: center; }
-    .robot-btn { padding: 14px 36px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+    .container { max-width: 720px; margin: 0 auto; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px; margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .card-header .icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .card-header h1 { font-size: 1.4rem; font-weight: 800; }
+    .card-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+    .status-bar {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .status-badge {
+      padding: 6px 14px; border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+      background: var(--surface-hover); border: 1px solid var(--border);
+    }
+    .status-badge.ok { background: rgba(34,197,94,0.1); border-color: var(--success); color: var(--success); }
+    .problem-box {
+      background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(59,130,246,0.05));
+      border: 2px solid rgba(124,58,237,0.2); border-radius: 14px;
+      padding: 24px; margin-bottom: 20px; min-height: 80px;
+    }
+    .problem-type {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent); font-weight: 700; margin-bottom: 10px;
+    }
+    .problem-text { font-size: 1.05rem; line-height: 1.7; color: var(--text); }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .opt-btn {
+      padding: 16px 20px; border-radius: 12px; border: 2px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 1rem;
+      cursor: pointer; transition: all 0.2s; text-align: left;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .opt-btn:hover { border-color: var(--accent); background: var(--surface-hover); transform: translateY(-1px); }
+    .opt-btn:active { transform: scale(0.98); }
+    .opt-btn .key {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--accent); color: #fff; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .opt-btn .val { font-weight: 500; flex: 1; }
+    .opt-btn.correct { border-color: var(--success); background: rgba(34,197,94,0.1); }
+    .opt-btn.wrong { border-color: var(--error); background: rgba(239,68,68,0.1); }
+    .opt-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    @media (min-width: 600px) {
+      .options-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .options-grid .opt-btn:last-child { grid-column: 2; }
+    }
+    .result-box {
+      padding: 14px 18px; border-radius: 12px; font-weight: 600;
+      font-size: 0.95rem; margin-bottom: 16px; display: none;
+    }
+    .result-box.success { display: block; background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.2); }
+    .result-box.error { display: block; background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid rgba(239,68,68,0.2); }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface-hover); color: var(--text); border: 1px solid var(--border); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: scale(0.98); }
+    .console-log {
+      background: #050508; border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; font-family: 'Courier New', monospace; font-size: 0.8rem;
+      color: var(--text-muted); max-height: 200px; overflow-y: auto;
+    }
+    .console-log .line { padding: 2px 0; }
+    .console-log .line.info { color: var(--accent2); }
+    .console-log .line.success { color: var(--success); }
+    .console-log .line.error { color: var(--error); }
   </style>
 </head>
 <body>
-  <h1>Test Robot Verification</h1>
-  <p>Buka console browser (F12) untuk melihat debug logs</p>
-  <button onclick="showRobotPopup()">Show Robot Popup</button>
-  
-  <!-- ROBOT POPUP -->
-  <div id="robot-popup">
-    <div class="robot-content">
-      <div class="robot-icon">🤖</div>
-      <h2 class="robot-title">Are you a robot?</h2>
-      <div class="robot-problem">
-        <div id="robot-equation" class="robot-equation"></div>
-        <input type="number" id="robot-input" class="robot-input" placeholder="Your answer..." autocomplete="off">
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon">🧮</div>
+        <div>
+          <h1>TKJ A/B/C/D/E Challenge</h1>
+          <p>Zero reload — 3× salah langsung soal baru!</p>
+        </div>
       </div>
-      <button id="robot-confirm" class="robot-btn">Confirm</button>
+      <div class="status-bar">
+        <span class="status-badge" id="statusAPI">⏳ Status</span>
+        <span class="status-badge" id="statusVerify">⚡ Verifikasi: —</span>
+      </div>
+      <div class="problem-box" id="problemBox">
+        <div class="problem-type" id="problemType">—</div>
+        <div class="problem-text" id="problemText">Klik "Generate Soal" untuk memulai</div>
+      </div>
+      <div class="options-grid" id="optionsGrid"></div>
+      <div class="result-box" id="resultBox"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="generateBtn">🎲 Generate Soal Baru</button>
+        <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="icon" style="background: linear-gradient(135deg, #059669, #10b981);">📋</div>
+        <div><h2>Console Output</h2><p>Log aktivitas sistem</p></div>
+      </div>
+      <div class="console-log" id="consoleLog">
+        <div class="line info">🧮 TKJ Challenge — Zero Reload</div>
+        <div class="line">Menunggu...</div>
+      </div>
     </div>
   </div>
-  
   <script src="math_challenge.js"></script>
   <script>
-    console.log('=== TEST PAGE LOADED ===');
-    console.log('g3n3r4t3:', typeof window.g3n3r4t3);
-    console.log('v3r1fy:', typeof window.v3r1fy);
-    
-    let currentProblem = null;
-    
-    const showRobotPopup = () => {
-      console.log('showRobotPopup called');
-      
-      const popup = document.getElementById('robot-popup');
-      const equation = document.getElementById('robot-equation');
-      const input = document.getElementById('robot-input');
-      
-      if (typeof window.g3n3r4t3 === 'function') {
-        const problem = window.g3n3r4t3();
-        currentProblem = problem;
-        console.log('Generated problem:', problem);
-        
-        const displayQuestion = problem.question.replace(/\n/g, '<br>');
-        equation.innerHTML = displayQuestion;
-        
-        input.value = '';
-        input.focus();
-        
-        popup.classList.add('active');
-        console.log('Popup displayed!');
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const log = $('consoleLog');
+    let answered = false;
+
+    function addLog(msg, type = '') {
+      const line = document.createElement('div');
+      line.className = 'line ' + type;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function updateStatus() {
+      $('statusAPI').textContent = window.mathChallenge ? '✅ MCv3.1 OK' : '❌ Gagal';
+      $('statusAPI').className = 'status-badge' + (window.mathChallenge ? ' ok' : '');
+      const v = window.mathChallenge?.isVerified?.();
+      $('statusVerify').textContent = v ? '✅ Verified' : '⏳ Belum';
+      $('statusVerify').className = 'status-badge' + (v ? ' ok' : '');
+    }
+
+    function generateNew() {
+      if (!window.mathChallenge) return;
+      const problem = window.mathChallenge.generate();
+      if (!problem) return;
+      const typeName = problem.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      $('problemType').textContent = '📖 ' + typeName;
+      $('problemText').innerHTML = problem.question;
+      renderOptions(problem);
+      $('resultBox').style.display = 'none';
+      answered = false;
+      updateStatus();
+      addLog(`📝 Soal: ${typeName}`, 'info');
+    }
+
+    function renderOptions(problem) {
+      const grid = $('optionsGrid');
+      grid.innerHTML = '';
+      if (!problem.options) return;
+      problem.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.dataset.key = opt.key;
+        btn.innerHTML = `<span class="key">${opt.key}</span><span class="val">${opt.text}</span>`;
+        btn.addEventListener('click', () => handleClick(btn, opt.key));
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleClick(btn, key) {
+      if (answered) return;
+      answered = true;
+      document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+      const result = window.mathChallenge?.verify?.(key);
+      if (!result) return;
+
+      if (result.success) {
+        btn.classList.add('correct');
+        $('resultBox').className = 'result-box success';
+        $('resultBox').textContent = '🎉 ' + result.message;
+        $('resultBox').style.display = 'block';
+        addLog('✅ BENAR!', 'success');
+        updateStatus();
+      } else if (result.maxed) {
+        btn.classList.add('wrong');
+        if (result.correctAnswer) document.querySelectorAll(`.opt-btn[data-key="${result.correctAnswer}"]`).forEach(b => b.classList.add('correct'));
+        $('resultBox').className = 'result-box error';
+        $('resultBox').textContent = '🔄 3× salah! Soal baru...';
+        $('resultBox').style.display = 'block';
+        addLog('🔄 3× salah -> soal baru', 'info');
+        setTimeout(() => { generateNew(); }, 1200);
       } else {
-        console.error('Math challenge NOT loaded!');
-        alert('Error: Math challenge not loaded!');
+        btn.classList.add('wrong');
+        if (result.correctAnswer) document.querySelectorAll(`.opt-btn[data-key="${result.correctAnswer}"]`).forEach(b => b.classList.add('correct'));
+        $('resultBox').className = 'result-box error';
+        $('resultBox').textContent = '✗ ' + result.message;
+        $('resultBox').style.display = 'block';
+        addLog(`❌ Salah. Jawaban: ${result.correctAnswer}`, 'error');
+        setTimeout(() => { generateNew(); }, 1200);
       }
-    };
-    
-    document.getElementById('robot-confirm').addEventListener('click', () => {
-      const input = document.getElementById('robot-input');
-      const userAnswer = input.value.trim();
-      
-      if (typeof window.v3r1fy === 'function') {
-        const result = window.v3r1fy(userAnswer);
-        console.log('Verification result:', result);
-        
-        if (result.success) {
-          alert('SUCCESS! You are human.');
-          document.getElementById('robot-popup').classList.remove('active');
-        } else {
-          alert('WRONG! ' + result.message);
-          input.value = '';
-          input.focus();
-        }
-      } else {
-        alert('Verification function not available!');
-      }
-    });
-    
-    // Auto-show on load
-    setTimeout(showRobotPopup, 500);
+    }
+
+    $('generateBtn').addEventListener('click', generateNew);
+    $('resetBtn').addEventListener('click', () => { window.mathChallenge?.reset(); generateNew(); });
+
+    function init() {
+      const check = () => {
+        if (window.mathChallenge) {
+          addLog('✅ MCv3.1 zero-reload siap!', 'success');
+          updateStatus();
+          setTimeout(generateNew, 500);
+        } else { setTimeout(check, 200); }
+      };
+      setTimeout(check, 300);
+    }
+    init();
   </script>
 </body>
 </html>
