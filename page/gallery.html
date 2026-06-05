@@ -16,102 +16,31 @@
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { 
-      overflow-x: hidden; 
-      -webkit-overflow-scrolling: touch;
-    }
+    html, body { overflow-x: hidden; -webkit-overflow-scrolling: touch; }
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
     .hidden { display: none !important; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
-    /* HEADER - Sticky solid, tidak aneh */
     .header { 
-      position: sticky; 
-      top: 0; 
-      left: 0; 
-      right: 0; 
-      z-index: 100; 
-      background: rgba(9,9,11,0.95); 
-      backdrop-filter: blur(12px); 
+      position: sticky; top: 0; left: 0; right: 0; z-index: 100; 
+      background: rgba(9,9,11,0.95); backdrop-filter: blur(12px); 
       border-bottom: 1px solid var(--border); 
-      transition: box-shadow 0.2s ease;
     }
     .header-inner { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 10px; 
-      padding: 14px 16px 12px; 
-      max-width: 1100px; 
-      margin: 0 auto;
+      display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 12px; max-width: 1100px; margin: 0 auto;
     }
-    .logo { 
-      font-weight: 800; 
-      font-size: 1.15rem; 
-      text-align: center; 
-      letter-spacing: -0.5px; 
-    }
+    .logo { font-weight: 800; font-size: 1.15rem; text-align: center; letter-spacing: -0.5px; }
     .search-box { position: relative; }
-    .search-input { 
-      width: 100%; 
-      padding: 10px 36px 10px 14px; 
-      background: var(--surface); 
-      border: 1px solid var(--border); 
-      border-radius: 12px; 
-      color: var(--text); 
-      font-size: 0.95rem; 
-      outline: none; 
-      transition: border-color 0.2s;
-    }
+    .search-input { width: 100%; padding: 10px 36px 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 0.95rem; outline: none; }
     .search-input:focus { border-color: var(--accent); }
-    .search-icon { 
-      position: absolute; 
-      right: 14px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      color: var(--text-muted); 
-      pointer-events: none; 
-      font-size: 1rem; 
-    }
-    .filter-row { 
-      display: flex; 
-      gap: 8px; 
-      flex-wrap: wrap; 
-      align-items: center;
-    }
-    .filter-btn { 
-      padding: 8px 16px; 
-      background: var(--surface); 
-      border: 1px solid var(--border); 
-      border-radius: 9999px; 
-      color: var(--text-muted); 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      white-space: nowrap; 
-      cursor: pointer; 
-      transition: all 0.2s ease;
-    }
-    .filter-btn.active, .filter-btn:hover { 
-      background: var(--accent); 
-      color: #fff; 
-      border-color: var(--accent); 
-      transform: translateY(-1px);
-    }
-    .chat-btn { 
-      padding: 8px 16px; 
-      background: var(--surface-hover); 
-      border: 1px solid var(--border); 
-      border-radius: 9999px; 
-      color: var(--text); 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      cursor: pointer; 
-      margin-left: auto; 
-      transition: all 0.2s;
-    }
+    .search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 1rem; }
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 9999px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .chat-btn { padding: 8px 16px; background: var(--surface-hover); border: 1px solid var(--border); border-radius: 9999px; color: var(--text); font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-left: auto; transition: all 0.2s; }
     .chat-btn:hover { background: var(--accent); color: #fff; }
 
-    /* MAIN */
     .main { padding-top: 140px; padding-bottom: 80px; min-height: 100vh; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
@@ -124,7 +53,6 @@
     .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
     .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
-    /* FULL VIEW */
     .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 20px 16px 40px; }
     .full-view.active { display: flex; }
     .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
@@ -135,7 +63,6 @@
     .full-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; }
     .full-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* MODALS */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; animation: modalIn 0.25s ease; }
@@ -447,10 +374,15 @@
     };
 
     window.addEventListener('message', (e) => {
-      if (e.data && e.data.type === 'CLOSE_GISCUS') {}
-      if (e.data && e.data.type === 'HIDE_CONFIRM') {
-        document.getElementById('confirm').classList.remove('active');
-        document.getElementById('confirm').classList.add('hidden');
+      if (!e.data || !e.data.type) return;
+      if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
+        const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
+        if (f) {
+          openFull(f);
+        } else {
+          toast('Foto tidak ditemukan');
+          document.getElementById('gallery').classList.remove('hidden');
+        }
       }
     });
 
@@ -462,7 +394,7 @@
           const tx = await r.text(); if(tx.trim()[0]!=='[' && tx.trim()[0]!=='{') continue;
           return JSON.parse(tx);
         } catch {}
-      } throw 'Gagal memuat data galeri.';
+      } throw 'Gagal memuat data galeri. Coba refresh halaman.';
     };
 
     const loadG = async () => {
@@ -479,17 +411,30 @@
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
+        // Deep link handler - graceful fallback
         const checkPhotoRoute = () => {
-          const path = location.pathname; 
-          const parts = path.split('/').filter(Boolean);
-          const photoIndex = parts.findIndex(p => p === 'photo');
-          if (photoIndex !== -1 && parts[photoIndex + 1]) {
-            const n = decodeURIComponent(parts[photoIndex + 1]);
-            const f = data.find(x => String(x.name).toLowerCase() === n.toLowerCase());
-            if (f) { openFull(f); return true; }
+          try {
+            const path = location.pathname; 
+            const parts = path.split('/').filter(Boolean);
+            const photoIndex = parts.findIndex(p => p === 'photo');
+            if (photoIndex !== -1 && parts[photoIndex + 1]) {
+              const n = decodeURIComponent(parts[photoIndex + 1]);
+              const f = data.find(x => String(x.name).toLowerCase() === n.toLowerCase());
+              if (f) {
+                openFull(f);
+                return true;
+              } else {
+                toast('Foto "' + n + '" tidak ditemukan di galeri');
+                return false;
+              }
+            }
+            return false;
+          } catch(e) {
+            console.error('Deep link error:', e);
+            return false;
           }
-          return false;
         };
+        
         if (!checkPhotoRoute()) {
           const hash = location.hash.replace('#', '');
           if (hash && !hash.includes('giscus')) {
@@ -500,7 +445,9 @@
       } catch(e) { 
         document.getElementById('loading').classList.add('hidden'); 
         document.getElementById('error').textContent = e; 
-        document.getElementById('error').classList.remove('hidden'); 
+        document.getElementById('error').classList.remove('hidden');
+        // Tetap tampilkan gallery kosong biar tidak black screen
+        document.getElementById('gallery').classList.remove('hidden');
       }
     };
 
@@ -538,14 +485,6 @@
     window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
 
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
-
-    window.addEventListener('message', (e) => {
-      if (!e.data || !e.data.type) return;
-      if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
-        const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
-        if (f) openFull(f);
-      }
-    });
 
     initSecurityCanvas();
     loadG();
