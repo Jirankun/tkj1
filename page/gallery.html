@@ -7,14 +7,6 @@
   <meta name="description" content="TKJ OnE Gallery - Galeri Foto dan Video"/>
   <title>Gallery - TKJ OnE</title>
   
-  <!-- 💬 GISCUS -->
-  <script src="https://giscus.app/client.js"
-    data-repo="Jirankun/tkj1" data-repo-id="R_kgDOQWmG8Q"
-    data-category="Show and tell" data-category-id="DIC_kwDOQWmG8c4C63kb"
-    data-mapping="pathname" data-strict="0" data-reactions-enabled="1"
-    data-emit-metadata="0" data-input-position="top"
-    data-theme="dark_tritanopia" data-lang="id" crossorigin="anonymous" async></script>
-
   <style>
     :root {
       --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
@@ -24,87 +16,159 @@
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html { scroll-behavior: smooth; overflow-x: hidden; }
+    html, body { 
+      overflow-x: hidden; 
+      -webkit-overflow-scrolling: touch;
+    }
+    html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
     .hidden { display: none !important; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
-    /* 📍 HEADER */
-    .header { position: sticky; top: 0; left: 0; right: 0; min-height: 88px; z-index: 100; background: rgba(9,9,11,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: box-shadow 0.2s; }
-    .header-inner { display: flex; flex-direction: column; gap: 10px; padding: 14px 0 8px; }
-    .logo { font-weight: 800; font-size: 1.1rem; text-align: center; letter-spacing: -0.5px; }
+    /* HEADER - Sticky solid, tidak aneh */
+    .header { 
+      position: sticky; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      z-index: 100; 
+      background: rgba(9,9,11,0.95); 
+      backdrop-filter: blur(12px); 
+      border-bottom: 1px solid var(--border); 
+      transition: box-shadow 0.2s ease;
+    }
+    .header-inner { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      padding: 14px 16px 12px; 
+      max-width: 1100px; 
+      margin: 0 auto;
+    }
+    .logo { 
+      font-weight: 800; 
+      font-size: 1.15rem; 
+      text-align: center; 
+      letter-spacing: -0.5px; 
+    }
     .search-box { position: relative; }
-    .search-input { width: 100%; padding: 9px 34px 9px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 0.9rem; outline: none; }
+    .search-input { 
+      width: 100%; 
+      padding: 10px 36px 10px 14px; 
+      background: var(--surface); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      color: var(--text); 
+      font-size: 0.95rem; 
+      outline: none; 
+      transition: border-color 0.2s;
+    }
     .search-input:focus { border-color: var(--accent); }
-    .search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 0.9rem; }
-    .filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; align-items: center; }
-    .filter-row::-webkit-scrollbar { display: none; }
-    .filter-btn { padding: 6px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 0.8rem; font-weight: 500; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-    .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .chat-btn { padding: 6px 12px; background: var(--surface-hover); border: none; border-radius: 8px; color: var(--text); font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; margin-left: auto; }
+    .search-icon { 
+      position: absolute; 
+      right: 14px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      color: var(--text-muted); 
+      pointer-events: none; 
+      font-size: 1rem; 
+    }
+    .filter-row { 
+      display: flex; 
+      gap: 8px; 
+      flex-wrap: wrap; 
+      align-items: center;
+    }
+    .filter-btn { 
+      padding: 8px 16px; 
+      background: var(--surface); 
+      border: 1px solid var(--border); 
+      border-radius: 9999px; 
+      color: var(--text-muted); 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      white-space: nowrap; 
+      cursor: pointer; 
+      transition: all 0.2s ease;
+    }
+    .filter-btn.active, .filter-btn:hover { 
+      background: var(--accent); 
+      color: #fff; 
+      border-color: var(--accent); 
+      transform: translateY(-1px);
+    }
+    .chat-btn { 
+      padding: 8px 16px; 
+      background: var(--surface-hover); 
+      border: 1px solid var(--border); 
+      border-radius: 9999px; 
+      color: var(--text); 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      margin-left: auto; 
+      transition: all 0.2s;
+    }
+    .chat-btn:hover { background: var(--accent); color: #fff; }
 
-    /* 📦 MAIN & GRID */
-    .main { padding-top: 120px; padding-bottom: 80px; min-height: 100vh; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    /* MAIN */
+    .main { padding-top: 140px; padding-bottom: 80px; min-height: 100vh; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .card-media { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #000; display: block; pointer-events: none; }
-    .card-info { padding: 12px; }
-    .card-title { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-    .card-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
-    .badge { padding: 2px 6px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .card-media { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #000; display: block; }
+    .card-info { padding: 12px 14px; }
+    .card-title { font-weight: 600; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .badge { padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
     .badge-video { background: rgba(239,68,68,0.15); color: #f87171; }
     .badge-photo { background: rgba(59,130,246,0.15); color: #60a5fa; }
 
-    /* 🖼️ FULL VIEW */
-    .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 24px 16px 40px; }
+    /* FULL VIEW */
+    .full-view { position: fixed; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; display: none; flex-direction: column; align-items: center; padding: 20px 16px 40px; }
     .full-view.active { display: flex; }
     .full-container { width: 100%; max-width: 680px; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
     .full-media { width: 100%; max-height: 70vh; object-fit: contain; background: #000; display: block; }
     .full-info { padding: 20px; }
-    .full-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+    .full-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
     .full-desc { color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; font-size: 0.95rem; }
     .full-meta { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; }
     .full-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* 💬 MODALS */
+    /* MODALS */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(6px); }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); position: relative; animation: modalIn 0.25s ease; }
     @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); }
-    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: var(--surface-hover); border: none; border-radius: 8px; color: var(--text); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: var(--surface-hover); border: none; border-radius: 10px; color: var(--text); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 20px; }
-    .modal-media { width: 100%; max-height: 50vh; object-fit: contain; background: #000; border-radius: 10px; margin-bottom: 14px; display: block; }
-    .app-modal-box { text-align: center; padding: 28px 20px; }
-    .confirm-box { padding: 28px 20px; text-align: center; }
+    .modal-media { width: 100%; max-height: 50vh; object-fit: contain; background: #000; border-radius: 12px; margin-bottom: 14px; display: block; }
+    .app-modal-box, .confirm-box { text-align: center; padding: 28px 20px; }
 
-    /* 🛠️ UTILS */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.2s; }
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
     .btn-ghost { background: transparent; color: var(--text-muted); }
     .loading { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--surface-hover); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
-    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface); color: var(--text); padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); transition: 0.25s; z-index: 9999; font-size: 0.85rem; opacity: 0; pointer-events: none; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface); color: var(--text); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border); transition: 0.25s; z-index: 9999; font-size: 0.85rem; opacity: 0; pointer-events: none; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .footer { padding: 32px 16px; text-align: center; border-top: 1px solid var(--border); margin-top: auto; }
     .footer a { color: var(--accent); text-decoration: none; }
 
-    /* 🎨 CANVAS SECURITY LAYER (Optional) */
     #security-canvas { position: fixed; inset: 0; z-index: 9999; pointer-events: none; display: none; }
     #security-canvas.active { display: block; }
   </style>
 </head>
 <body>
 
-  <!-- 🎨 SECURITY CANVAS (Untuk proteksi tambahan) -->
   <canvas id="security-canvas"></canvas>
 
   <header class="header">
-    <div class="container header-inner">
+    <div class="header-inner">
       <div class="logo">TKJ OnE Gallery</div>
       <div class="search-box">
         <input type="text" id="search" class="search-input" placeholder="Cari foto atau video...">
@@ -204,14 +268,10 @@
     let data = [], filtered = [], cur = null;
     let vObs = null, playV = null, appT = null;
     
-    // 🔁 SCROLL PRESERVATION
     let savedScrollY = 0;
     const saveScroll = () => { savedScrollY = window.scrollY; };
-    const restoreScroll = () => { 
-      setTimeout(() => window.scrollTo(0, savedScrollY), 10);
-    };
+    const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
 
-    // 🔎 VIDEO DETECTION
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
       const url = typeof item === 'string' ? item : (item.url || item.src || '');
@@ -222,13 +282,11 @@
       return isCatbox && hasExt;
     };
     
-    // 🛠️ CLEAN URL - Hapus spasi di awal/akhir + semua whitespace (tanpa ubah JSON asli)
     const cleanUrl = (url) => {
       if (!url) return '';
-      return String(url).trim().replace(/\s/g, '');  // Hapus semua spasi/whitespace dari link
+      return String(url).trim().replace(/\s/g, '');
     };
 
-    // 🔒 PROTECT - Anti Download & Click Protection
     const protect = el => {
       if (!el) return;
       ['contextmenu','dragstart','selectstart','copy'].forEach(e => el.addEventListener(e, ev => ev.preventDefault(), {passive:false}));
@@ -236,7 +294,6 @@
       if (el.tagName === 'VIDEO') el.setAttribute('controlsList', 'nodownload');
     };
 
-    // 🖼️ RENDER - dengan optimasi performa
     const render = list => {
       const g = document.getElementById('grid'); g.innerHTML = '';
       const emp = document.getElementById('empty');
@@ -250,7 +307,6 @@
           const vid = c.querySelector('video'); protect(vid); obsV(vid);
           vid.addEventListener('loadedmetadata', () => { if(vid.offsetParent) vid.play().catch(()=>{}); }, {once:true});
         } else {
-          // Optimasi: lazy + decoding async + fetchpriority tinggi untuk beberapa card pertama
           const loadingAttr = index < 6 ? 'eager' : 'lazy';
           const priorityAttr = index < 6 ? 'high' : 'auto';
           c.innerHTML = `<img class="card-media" src="${cleanUrl(p.url)}" alt="${p.title||p.name}" loading="${loadingAttr}" decoding="async" fetchpriority="${priorityAttr}"><div class="card-info"><div class="card-title">${p.title||'#'+p.name}</div><div class="card-meta"><span class="badge badge-photo">Foto</span></div></div>`;
@@ -261,7 +317,6 @@
       });
     };
 
-    // 🔍 FILTER
     const apply = () => {
       const q = document.getElementById('search').value.toLowerCase().trim();
       const f = document.querySelector('.filter-btn.active')?.dataset.f || 'all';
@@ -274,7 +329,6 @@
       render(filtered);
     };
 
-    // 💬 MODAL
     const openMd = p => {
       saveScroll(); cur = p; pauseThumb();
       const v = isVideo(p);
@@ -295,7 +349,6 @@
       resumeThumb(); restoreScroll(); cur = null;
     };
 
-    // 🖼️ FULL VIEW - dengan optimasi performa tinggi
     const openFull = p => {
       saveScroll(); cur = p; pauseThumb();
       document.querySelector('.header')?.classList.add('hidden');
@@ -323,18 +376,13 @@
       cur = null;
     };
 
-    // 📱 APP MODAL & DEEPLINK
     const tryOpenApp = (itemName) => {
       saveScroll();
       const schemeUrl = `${CFG.APP.scheme}://${CFG.APP.path}/${encodeURIComponent(itemName)}`;
-      
-      // Create hidden iframe to trigger deeplink
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = schemeUrl;
       document.body.appendChild(iframe);
-      
-      // Show modal after short delay (if app didn't open)
       setTimeout(() => {
         document.getElementById('app-modal').classList.add('active');
         document.body.removeChild(iframe);
@@ -352,21 +400,15 @@
     const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); restoreScroll(); };
     document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
 
-    // 🔗 SHARE - Simple clean link with /photo/ prefix
     const share = p => {
       const cleanLink = `${CFG.BASE}/photo/${p.name}`;
       if (navigator.share) {
-        navigator.share({
-          title: p.title || '#' + p.name,
-          text: p.title || '#' + p.name,
-          url: cleanLink
-        }).catch(()=>{});
+        navigator.share({ title: p.title || '#' + p.name, text: p.title || '#' + p.name, url: cleanLink }).catch(()=>{});
       } else {
         navigator.clipboard.writeText(cleanLink).then(()=>toast('Link disalin'));
       }
     };
 
-    // 🎬 VIDEO OBSERVER
     const obsV = el => { if(vObs) vObs.observe(el); };
     const initObs = () => {
       vObs = new IntersectionObserver(e => e.forEach(x => {
@@ -377,23 +419,11 @@
     const pauseThumb = () => { document.querySelectorAll('.card-media').forEach(v => { if(v.tagName==='VIDEO'&&!v.paused){playV=v;v.pause();}}); };
     const resumeThumb = () => { if(playV&&document.contains(playV)){const r=playV.getBoundingClientRect();if(r.top<innerHeight)playV.play().catch(()=>{});playV=null;}};
 
-    // 💬 GISCUS FLOW - Communicate with parent window
-    window.openConfirm = () => { 
-      // Notify parent to show confirm dialog
-      if (window.parent !== window) {
-        window.parent.postMessage({type: 'OPEN_CONFIRM'}, '*');
-      }
-    };
-    window.closeConfirm = () => { 
-      if (window.parent !== window) {
-        window.parent.postMessage({type: 'CLOSE_CONFIRM'}, '*');
-      }
-    };
-    window.startChat = () => { 
-      document.getElementById('confirm').classList.remove('hidden'); 
+    window.openConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'OPEN_CONFIRM'}, '*'); };
+    window.closeConfirm = () => { if (window.parent !== window) window.parent.postMessage({type: 'CLOSE_CONFIRM'}, '*'); };
+    window.startChat = () => {
+      document.getElementById('confirm').classList.remove('hidden');
       document.getElementById('confirm').classList.remove('active');
-      
-      // Load Giscus dynamically if not loaded
       const giscusContainer = document.querySelector('.giscus');
       if (giscusContainer && !giscusContainer.hasChildNodes()) {
         const script = document.createElement('script');
@@ -413,25 +443,17 @@
         script.async = true;
         giscusContainer.appendChild(script);
       }
-      
-      // Notify parent window to show fullscreen giscus
-      if (window.parent !== window) {
-        window.parent.postMessage({type: 'SHOW_GISCUS'}, '*');
-      }
+      if (window.parent !== window) window.parent.postMessage({type: 'SHOW_GISCUS'}, '*');
     };
-    
-    // Listen for messages from parent
+
     window.addEventListener('message', (e) => {
-      if (e.data && e.data.type === 'CLOSE_GISCUS') {
-        // Handle close giscus if needed
-      }
+      if (e.data && e.data.type === 'CLOSE_GISCUS') {}
       if (e.data && e.data.type === 'HIDE_CONFIRM') {
         document.getElementById('confirm').classList.remove('active');
         document.getElementById('confirm').classList.add('hidden');
       }
     });
 
-    // ✅ SAFE JSON FETCH
     const safeJSON = async paths => {
       for (const p of paths) {
         try {
@@ -443,7 +465,6 @@
       } throw 'Gagal memuat data galeri.';
     };
 
-    // 🚀 INIT
     const loadG = async () => {
       if (window.done) return; window.done = true;
       try {
@@ -458,23 +479,17 @@
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
-        // Check URL for direct photo access
         const checkPhotoRoute = () => {
           const path = location.pathname; 
           const parts = path.split('/').filter(Boolean);
-          
           const photoIndex = parts.findIndex(p => p === 'photo');
           if (photoIndex !== -1 && parts[photoIndex + 1]) {
             const n = decodeURIComponent(parts[photoIndex + 1]);
             const f = data.find(x => String(x.name).toLowerCase() === n.toLowerCase());
-            if (f) {
-              openFull(f);
-              return true;
-            }
+            if (f) { openFull(f); return true; }
           }
           return false;
         };
-        
         if (!checkPhotoRoute()) {
           const hash = location.hash.replace('#', '');
           if (hash && !hash.includes('giscus')) {
@@ -489,18 +504,11 @@
       }
     };
 
-    // 🎨 CANVAS SECURITY LAYER
     const initSecurityCanvas = () => {
       const canvas = document.getElementById('security-canvas');
       const ctx = canvas.getContext('2d');
-      
-      const resize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-      window.addEventListener('resize', resize);
-      resize();
-      
+      const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+      window.addEventListener('resize', resize); resize();
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           canvas.classList.add('active');
@@ -510,13 +518,10 @@
           ctx.font = '24px Inter';
           ctx.textAlign = 'center';
           ctx.fillText('⚠️ Aktivitas terdeteksi', canvas.width/2, canvas.height/2);
-        } else {
-          canvas.classList.remove('active');
-        }
+        } else { canvas.classList.remove('active'); }
       });
     };
 
-    // 🌀 EVENTS
     document.getElementById('search').oninput = apply;
     document.querySelectorAll('.filter-btn').forEach(b => b.onclick = () => {
       document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); apply();
@@ -524,24 +529,18 @@
     document.getElementById('modal').onclick = e => { if(e.target.id==='modal') closeModal(); };
     document.getElementById('full-view').onclick = e => { if(e.target.id==='full-view') closeFull(); };
     document.onkeydown = e => { if(e.key==='Escape'){closeModal(); closeFull();} };
-    window.onpopstate = () => { 
+    window.onpopstate = () => {
       const path = location.pathname;
       const parts = path.split('/').filter(Boolean);
       const photoIndex = parts.findIndex(p => p === 'photo');
-      if (photoIndex === -1 && !document.getElementById('full-view').classList.contains('hidden')) {
-        closeFull();
-      }
+      if (photoIndex === -1 && !document.getElementById('full-view').classList.contains('hidden')) closeFull();
     };
-    
     window.onscroll = () => { document.querySelector('.header').style.boxShadow = scrollY>10 ? '0 4px 12px rgba(0,0,0,0.4)' : 'none'; };
 
     const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
 
     window.addEventListener('message', (e) => {
       if (!e.data || !e.data.type) return;
-      if (e.data.type === 'CLOSE_GISCUS') {
-        // Handle close giscus if needed
-      }
       if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
         const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
         if (f) openFull(f);
