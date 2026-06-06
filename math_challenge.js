@@ -21,13 +21,13 @@ const S={cur:null,att:0,max:3,ok:false,t:0,min:1200,log:[]}
 
 // ─── Generate opsi A/B/C/D/E dari jawaban benar ───
 function mo(c){
-let pool=[c],mag=_.abs(c)
+let pool=[c],mag=_.abs(c)||1
 let step=mag<1?.1:mag<10?1:mag<100?5:mag<1000?50:mag<10000?500:mag<100000?5000:mag<1e6?50000:100000
-for(let m of[-3,-2,-1,1,2,3,4,5]){let v=parseFloat((c+m*step).toFixed(step<1?1:0));if(v>0)pool.push(v)}
-let u=[...new Set(pool)].slice(0,5);while(u.length<5)u.push(_.abs(c)+u.length*step||1)
+for(let m of[-3,-2,-1,1,2,3,4,5]){let v=typeof c==='number'?parseFloat((c+m*step).toFixed(step<1?1:0)):c+m;if(typeof c!=='number'||v>0)pool.push(v)}
+let u=[...new Set(pool)].slice(0,5);while(u.length<5)u.push(typeof c==='number'?(_.abs(c)+u.length*step||1):c+u.length)
 for(let i=u.length-1;i>0;i--){let j=$r(0,i);[u[i],u[j]]=[u[j],u[i]]}
-let o=u.map(v=>({value:v,text:v%1===0?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,'.'):v.toFixed(1)})),ck=''
-o.forEach((x,i)=>{x.key=String.fromCharCode(65+i);if(_.abs(x.value-c)<0.01)ck=x.key})
+let o=u.map((v,i)=>({value:v,text:typeof v==='number'&&(v%1===0)?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,'.'):v.toFixed?v.toFixed(1):v,key:String.fromCharCode(65+i)})),ck=''
+o.forEach(x=>{if(String(x.value)===String(c))ck=x.key})
 return {options:o,correctKey:ck}}
 
 // ═══════════════════════════════════════════════════════════════════
