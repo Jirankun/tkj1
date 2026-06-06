@@ -203,7 +203,8 @@
           answered = false; 
           document.querySelectorAll('.opt-btn').forEach(b => b.disabled = false);
           $('resultBox').style.display = 'none';
-        }, 900);
+          btn.classList.remove('wrong');
+        }, 1000);
         updateStatus();
         return;
       }
@@ -222,7 +223,7 @@
         $('resultBox').textContent = '🔄 3× salah! Soal baru...';
         $('resultBox').style.display = 'block';
         addLog('🔄 3× salah -> soal baru', 'info');
-        setTimeout(() => { generateNew(); }, 900);
+        setTimeout(() => { generateNew(); }, 1000);
       } else {
         btn.classList.add('wrong');
         if (result.correctAnswer) document.querySelectorAll(`.opt-btn[data-key="${result.correctAnswer}"]`).forEach(b => b.classList.add('correct'));
@@ -230,7 +231,7 @@
         $('resultBox').textContent = '✗ ' + result.message;
         $('resultBox').style.display = 'block';
         addLog(`❌ Salah. Jawaban: ${result.correctAnswer}`, 'error');
-        setTimeout(() => { generateNew(); }, 900);
+        setTimeout(() => { generateNew(); }, 1000);
       }
     }
 
