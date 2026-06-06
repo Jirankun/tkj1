@@ -27,8 +27,8 @@ for(let m of[-3,-2,-1,1,2,3,4,5]){let v=typeof c==='number'?parseFloat((c+m*step
 let u=[...new Set(pool)].slice(0,5);while(u.length<5)u.push(typeof c==='number'?(_.abs(c)+u.length*step||1):c+u.length)
 for(let i=u.length-1;i>0;i--){let j=$r(0,i);[u[i],u[j]]=[u[j],u[i]]}
 let o=u.map((v,i)=>({value:v,text:typeof v==='number'&&(v%1===0)?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,'.'):v.toFixed?v.toFixed(1):v,key:String.fromCharCode(65+i)})),ck=''
-o.forEach(x=>{if(String(x.value)===String(c))ck=x.key})
-return {options:o,correctKey:ck}}
+o.forEach(x=>{if(String(x.value).trim()===String(c).trim())ck=x.key})
+if(!ck&&o.length>0)ck=o[0].key;return {options:o,correctKey:ck}}
 
 // ═══════════════════════════════════════════════════════════════════
 //  65 GENERATOR — return {type,q,a,h}
