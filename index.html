@@ -156,9 +156,11 @@
     .robot-content { text-align: center; max-width: 480px; width: 100%; }
     .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
     .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--text); }
-    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
-    .robot-equation { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 16px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; }
-    .robot-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; position: relative; min-height: 180px; }
+    .robot-equation { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 16px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; transition: opacity 0.3s ease; }
+    .robot-equation.loading { opacity: 0; }
+    .robot-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; transition: opacity 0.3s ease; }
+    .robot-options.loading { opacity: 0; pointer-events: none; }
     .robot-opt { padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.95rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
     .robot-opt:hover { border-color: var(--accent); background: var(--surface-hover); transform: translateY(-1px); }
     .robot-opt:active { transform: scale(0.98); }
@@ -175,6 +177,21 @@
     .robot-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
     .robot-btn:active { transform: scale(0.98); }
     .robot-hint { color: var(--text-muted); font-size: 0.8rem; margin-top: 14px; }
+    
+    /* ⏳ LOADING ANIMATION */
+    .robot-loading { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(24,24,27,0.95); border-radius: 16px; z-index: 10; }
+    .robot-loading.active { display: flex; }
+    .robot-spinner { width: 48px; height: 48px; border: 4px solid var(--surface-hover); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .robot-loading-text { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    
+    /* 📊 ATTEMPT INDICATOR */
+    .robot-attempts { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+    .attempt-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-hover); transition: all 0.3s ease; }
+    .attempt-dot.used { background: var(--error); }
+    .attempt-dot.current { background: var(--accent); transform: scale(1.2); }
+    .attempt-label { color: var(--text-muted); font-size: 0.75rem; margin-top: 8px; text-align: center; }
   </style>
 </head>
 <body>
@@ -187,7 +204,12 @@
       <div class="robot-problem">
         <div id="robot-equation" class="robot-equation"></div>
         <div id="robot-options" class="robot-options"></div>
+        <div id="robot-loading" class="robot-loading">
+          <div class="robot-spinner"></div>
+          <div class="robot-loading-text">Menyiapkan soal...</div>
+        </div>
       </div>
+      <div class="robot-attempts" id="robot-attempts"></div>
       <p class="robot-hint">Pilih jawaban yang benar A/B/C/D/E</p>
     </div>
   </div>
@@ -343,24 +365,68 @@
     
     let robotAnswered = false;
     
+    let isLoadingQuestion = false;
+
+    // Update attempt dots indicator
+    function updateAttemptDots() {
+      const container = document.getElementById('robot-attempts');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      for (let i = 0; i < MAX_ATTEMPTS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'attempt-dot';
+        if (i < challengeAttempts) {
+          dot.classList.add('used');
+        } else if (i === challengeAttempts) {
+          dot.classList.add('current');
+        }
+        container.appendChild(dot);
+      }
+      
+      if (challengeAttempts > 0) {
+        const label = document.createElement('div');
+        label.className = 'attempt-label';
+        label.textContent = `Kesempatan tersisa: ${MAX_ATTEMPTS - challengeAttempts}`;
+        container.appendChild(label);
+      }
+    }
     const showRobotPopup = async (force = false) => {
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
       const optContainer = document.getElementById('robot-options');
+      const loadingOverlay = document.getElementById('robot-loading');
+
+      if (!popup || !equation || !optContainer) return;
+      if (!force && popup.classList.contains('active') && !isLoadingQuestion) return;
+
+      // Show loading animation
+      isLoadingQuestion = true;
+      loadingOverlay.classList.add('active');
+      equation.classList.add('loading');
+      optContainer.classList.add('loading');
       
-      if (!popup || !equation) return;
-      // Skip 'already active' check kalau dipaksa (misal dari setTimeout setelah salah)
-      if (!force && popup.classList.contains('active')) return;
-      
+      // Delay untuk animasi loading (minimal 600ms)
+      await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 400));
+
       if (!window.mathChallenge || typeof window.mathChallenge.generate !== 'function') {
+        loadingOverlay.classList.remove('active');
         equation.innerHTML = '❌ Sistem tidak terload. <button onclick="location.reload()" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;margin-top:8px">Refresh</button>';
+        equation.classList.remove('loading');
+        isLoadingQuestion = false;
         return;
       }
-      
+
       const problem = window.mathChallenge.generate();
       equation.innerHTML = problem.question;
       robotAnswered = false;
-      
+      isLoadingQuestion = false;
+
+      // Hide loading, show content
+      loadingOverlay.classList.remove('active');
+      equation.classList.remove('loading');
+      optContainer.classList.remove('loading');
+
       // Render A/B/C/D/E options
       optContainer.innerHTML = '';
       if (problem.options && problem.options.length) {
@@ -370,15 +436,16 @@
           btn.dataset.key = opt.key;
           btn.innerHTML = `<span class="key">${opt.key}</span><span>${opt.text}</span>`;
           btn.addEventListener('click', function handler() {
-            if (robotAnswered) return;
+            if (robotAnswered || isLoadingQuestion) return;
             robotAnswered = true;
             document.querySelectorAll('.robot-opt').forEach(b => b.disabled = true);
-            
+
             const result = window.mathChallenge.verify(opt.key);
-            
+
             if (result.success) {
               btn.classList.add('correct');
               challengeAttempts = 0;
+              updateAttemptDots();
               setTimeout(() => {
                 if (popup._preventKeys) document.removeEventListener('keydown', popup._preventKeys, { capture: true });
                 popup.classList.remove('active');
@@ -394,9 +461,11 @@
                 });
               }
               challengeAttempts = 0;
+              updateAttemptDots();
               setTimeout(() => { robotAnswered = false; showRobotPopup(true); }, 1200);
             } else {
               challengeAttempts++;
+              updateAttemptDots();
               btn.classList.add('wrong');
               if (result.correctAnswer) {
                 document.querySelectorAll('.robot-opt').forEach(b => {
@@ -409,11 +478,14 @@
           optContainer.appendChild(btn);
         });
       }
-      
+
+      // Update attempt indicators
+      updateAttemptDots();
+
       popup.classList.add('active');
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
-      
+
       const preventKeys = (e) => {
         if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) e.preventDefault();
       };
