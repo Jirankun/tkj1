@@ -332,8 +332,13 @@ return {question:p.q,hint:p.h||'',type:p.type,options:op.options,correctKey:op.c
 // ─── Verifikasi — GA PAKE RELOAD, langsung reset att ───
 function ver(key){
 if(!S.cur)return {success:false,message:'Tidak ada soal aktif.',reset:true}
-// Cek terlalu cepat (robot check) - min 1.2 detik setelah soal muncul
-if(Date.now()-S.t<S.min)return {success:false,message:'Terlalu cepat! Kamu robot? 😏',tooFast:true}
+// Cek terlalu cepat (robot check) - min 500ms setelah soal muncul
+let elapsed=Date.now()-S.t
+if(elapsed<S.min){
+// Reset timer agar user bisa coba lagi tanpa reload
+S.t=Date.now()-S.min+100 // Beri sedikit buffer
+return {success:false,message:'Terlalu cepat! Tunggu sebentar... 🤖',tooFast:true,waitMs:S.min-elapsed}
+}
 if(!key)return {success:false,message:'Pilih A, B, C, D, atau E!'}
 let ok=key.toUpperCase()===S.cur.ck
 if(ok){S.ok=true;S.att=0
@@ -342,6 +347,7 @@ return {success:true,message:'🎉 Benar! Kamu manusia! Masuk galeri.'}}
 else{S.att++
 if(S.att>=S.max){S.att=0;return {success:false,message:'3× salah! Coba soal baru.',maxed:true,reset:true}}
 return {success:false,message:`✗ Salah! Jawaban: ${S.cur.ck}. Sisa ${S.max-S.att}.`,remaining:S.max-S.att,correctAnswer:S.cur.ck}}}
+console.log('%c✅ 3× salah → soal baru, hemat kuota!','color:#22c55e;font-weight:bold')
 
 function rst(){S.cur=null;S.att=0;S.ok=false
 try{sessionStorage.removeItem('tkj_verified');sessionStorage.removeItem('tkj_verify_time');localStorage.removeItem('tj_math_done')}catch(e){}}
@@ -354,6 +360,5 @@ return S.ok}
 window.mathChallenge={generate:gen,verify:ver,reset:rst,isVerified:cek}
 window.MC=window.mathChallenge;window.generateProblem=gen;window.verifyAnswer=ver
 console.log('🧮 TKJ MCv4.0 —',Object.keys(G).length,'jenis soal Matematika SMA & TKJ — zero reload!')
-console.log('%c✅ 3× salah → soal baru, hemat kuota!','color:#22c55e;font-weight:bold')
 Object.freeze(G);Object.seal(S)
 })()
