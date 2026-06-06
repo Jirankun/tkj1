@@ -17,7 +17,7 @@ const EXCEL_FN=[{n:'SUM',d:'menjumlahkan'},{n:'AVERAGE',d:'rata-rata'},{n:'COUNT
 const SHC=[{n:'Ctrl+C',d:'Copy'},{n:'Ctrl+V',d:'Paste'},{n:'Ctrl+X',d:'Cut'},{n:'Ctrl+Z',d:'Undo'},{n:'Ctrl+Y',d:'Redo'},{n:'Ctrl+S',d:'Save'},{n:'Ctrl+B',d:'Bold'},{n:'Ctrl+I',d:'Italic'},{n:'Ctrl+U',d:'Underline'},{n:'Ctrl+A',d:'Select All'},{n:'Ctrl+F',d:'Find'},{n:'Ctrl+P',d:'Print'}]
 const WCOMP=['Ribbon','Title Bar','Status Bar','Scroll Bar','Ruler','Tab Stop']
 const TOPO=[{n:'Bus',k:'satu kabel backbone'},{n:'Ring',k:'melingkar'},{n:'Star',k:'hub/switch pusat'},{n:'Mesh',k:'semua terhubung'}]
-const S={cur:null,att:0,max:3,ok:false,t:0,min:1200,log:[]}
+const S={cur:null,att:0,max:3,ok:false,t:0,min:500,log:[]}
 
 // ─── Generate opsi A/B/C/D/E dari jawaban benar ───
 function mo(c){
@@ -326,13 +326,13 @@ uu_pdp:()=>{return {type:'uu_pdp',q:`UU PDP Indonesia tentang?`,a:'pelindungan d
 // ─── Generate soal ───
 function gen(){
 let k=$p(Object.keys(G)),p=G[k](),op=mo(p.a)
-S.cur={...p,a:p.a,opts:op.options,ck:op.correctKey,createdAt:Date.now(),sid:_.random().toString(36).substring(2,8)}
-S.t=Date.now();S.log.push(p.type)
+S.cur={...p,a:p.a,opts:op.options,ck:op.correctKey,createdAt:Date.now(),sid:_.random().toString(36).substring(2,8)};S.t=Date.now();S.log.push(p.type)
 return {question:p.q,hint:p.h||'',type:p.type,options:op.options,correctKey:op.correctKey}}
 
 // ─── Verifikasi — GA PAKE RELOAD, langsung reset att ───
 function ver(key){
 if(!S.cur)return {success:false,message:'Tidak ada soal aktif.',reset:true}
+// Cek terlalu cepat (robot check) - min 1.2 detik setelah soal muncul
 if(Date.now()-S.t<S.min)return {success:false,message:'Terlalu cepat! Kamu robot? 😏',tooFast:true}
 if(!key)return {success:false,message:'Pilih A, B, C, D, atau E!'}
 let ok=key.toUpperCase()===S.cur.ck

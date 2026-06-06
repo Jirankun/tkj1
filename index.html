@@ -448,6 +448,19 @@
 
             const result = window.mathChallenge.verify(opt.key);
 
+            if (result.tooFast) {
+              // Terlalu cepat - tampilkan pesan dan biarkan user coba lagi
+              btn.classList.add('wrong');
+              challengeAttempts++;
+              updateAttemptDots();
+              setTimeout(() => { 
+                robotAnswered = false; 
+                document.querySelectorAll('.robot-opt').forEach(b => b.disabled = false);
+                btn.classList.remove('wrong');
+              }, 900);
+              return;
+            }
+
             if (result.success) {
               btn.classList.add('correct');
               challengeAttempts = 0;
@@ -637,7 +650,7 @@
       setTimeout(() => {
         document.getElementById('app-modal').classList.add('active');
         document.body.removeChild(iframe);
-      }, 1500);
+      }, 900);
     };
     
     const showAppModal = () => { 
