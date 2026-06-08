@@ -484,21 +484,12 @@
       return m + ':' + (sec < 10 ? '0' : '') + sec;
     }
 
-    // ── Ambil nama media dari URL ─────────────────
+    // ── Ambil nama media dari URL (query param only) ─────────────────
     function getMediaName() {
       try {
-        const p = window.location.pathname;
-        const parts = p.split('/').filter(Boolean);
-        const idx = parts.findIndex(x => x === 'photo');
-        if (idx !== -1 && parts[idx + 1] && parts[idx + 1] !== 'index.html') {
-          return decodeURIComponent(parts.slice(idx + 1).join('/'))
-            .split('?')[0].split('#')[0].trim();
-        }
         const params = new URLSearchParams(window.location.search);
         if (params.has('name')) return params.get('name').trim();
         if (params.has('id')) return params.get('id').trim();
-        const hash = window.location.hash.replace('#', '');
-        if (hash) return hash.trim();
       } catch (e) { console.error(e); }
       return null;
     }
@@ -680,11 +671,9 @@
       footerDate.textContent = photo.date || '';
       document.title = 'TKJ OnE - ' + photo.name;
 
-      // Update URL (pushState)
-      const newUrl = '/photo/' + encodeURIComponent(photo.name);
-      if (window.location.pathname !== newUrl && !window.location.pathname.includes('/photo/')) {
-        history.pushState({ idx: idx, name: photo.name }, '', newUrl);
-      } else if (window.location.pathname !== newUrl) {
+      // Update URL (pushState) - keep within /photo/index.html with query param
+      const newUrl = '/photo/index.html?name=' + encodeURIComponent(photo.name);
+      if (window.location.search !== '?name=' + encodeURIComponent(photo.name)) {
         history.replaceState({ idx: idx, name: photo.name }, '', newUrl);
       }
     }
@@ -821,7 +810,8 @@
     btnLink.addEventListener('click', () => {
       if (!currentPhoto) return;
       const def = 'https://tkj1.pages.dev';
-      const fallbackUrl = 'https://tkj1.pages.dev/photo/' + encodeURIComponent(currentPhoto.name);
+      // Use query param URL format for consistency
+      const fallbackUrl = window.location.origin + '/photo/index.html?name=' + encodeURIComponent(currentPhoto.name);
       const link = (currentPhoto.link && currentPhoto.link !== def)
         ? currentPhoto.link
         : fallbackUrl;
@@ -882,7 +872,7 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft' && currentIdx > 0) showPhoto(currentIdx - 1);
       else if (e.key === 'ArrowRight' && currentIdx < allPhotos.length - 1) showPhoto(currentIdx + 1);
-      else if (e.key === 'Escape') window.history.back();
+      else if (e.key === 'Escape') window.location.href = '/';
     });
 
     // ── History ───────────────────────────────────
@@ -891,6 +881,9 @@
       if (name) {
         const idx = allPhotos.findIndex(p => String(p.name).trim() === name);
         if (idx !== -1) showPhoto(idx);
+      } else {
+        // No media name in URL - go back to main page
+        window.location.href = '/';
       }
     });
 

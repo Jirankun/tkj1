@@ -391,6 +391,9 @@
         container.appendChild(label);
       }
     }
+    // 🤖 ROBOT VERIFICATION POPUP
+    let robotPopupLocked = false;
+    
     const showRobotPopup = async (force = false) => {
       const popup = document.getElementById('robot-popup');
       const equation = document.getElementById('robot-equation');
@@ -398,7 +401,11 @@
       const loadingOverlay = document.getElementById('robot-loading');
 
       if (!popup || !equation || !optContainer) return;
+      if (robotPopupLocked) return;
       if (!force && popup.classList.contains('active') && !isLoadingQuestion) return;
+
+      // Lock to prevent multiple calls
+      robotPopupLocked = true;
 
       // Show loading animation - super fast
       isLoadingQuestion = true;
@@ -414,6 +421,7 @@
         equation.innerHTML = '❌ Sistem tidak terload. <button onclick="location.reload()" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;margin-top:8px">Refresh</button>';
         equation.classList.remove('loading');
         isLoadingQuestion = false;
+        robotPopupLocked = false;
         return;
       }
 
@@ -441,7 +449,11 @@
           btn.className = 'robot-opt';
           btn.dataset.key = opt.key;
           btn.innerHTML = `<span class="key">${opt.key}</span><span>${opt.text}</span>`;
-          btn.addEventListener('click', function handler() {
+          
+          // Use touchstart for faster response on mobile
+          const handleTap = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (robotAnswered || isLoadingQuestion) return;
             robotAnswered = true;
             document.querySelectorAll('.robot-opt').forEach(b => b.disabled = true);
@@ -470,6 +482,7 @@
                 popup.classList.remove('active');
                 document.body.style.overflow = '';
                 document.documentElement.style.overflow = '';
+                robotPopupLocked = false;
               }, 150);
             } else if (result.maxed) {
               // 3× salah → lanjut soal baru, ga reload!
@@ -482,7 +495,11 @@
               challengeAttempts = 0;
               updateAttemptDots();
               // Fast retry - langsung soal baru tanpa delay lama
-              setTimeout(() => { robotAnswered = false; showRobotPopup(true); }, 150);
+              setTimeout(() => { 
+                robotAnswered = false; 
+                robotPopupLocked = false;
+                showRobotPopup(true); 
+              }, 150);
             } else {
               challengeAttempts++;
               updateAttemptDots();
@@ -493,9 +510,16 @@
                 });
               }
               // Fast retry - langsung soal baru tanpa delay lama
-              setTimeout(() => { robotAnswered = false; showRobotPopup(true); }, 150);
+              setTimeout(() => { 
+                robotAnswered = false; 
+                robotPopupLocked = false;
+                showRobotPopup(true); 
+              }, 150);
             }
-          });
+          };
+          
+          btn.addEventListener('click', handler);
+          btn.addEventListener('touchstart', handleTap, { passive: false });
           optContainer.appendChild(btn);
         });
       }
@@ -512,6 +536,7 @@
       };
       document.addEventListener('keydown', preventKeys, { capture: true });
       popup._preventKeys = preventKeys;
+      isLoadingQuestion = false;
     };
     
     // Cek apakah sudah pernah verifikasi
@@ -613,23 +638,11 @@
     };
 
     const openFull = p => {
-      saveScroll(); cur = p; pauseThumb();
-      document.querySelector('.header')?.classList.add('hidden');
-      document.getElementById('gallery')?.classList.add('hidden');
-      const fv = document.getElementById('full-view'); fv.classList.add('active');
-      const img = document.getElementById('fv-img'), vid = document.getElementById('fv-vid');
-      const v = isVideo(p);
-      img.style.display = v ? 'none' : 'block'; vid.style.display = v ? 'block' : 'none';
-      if (v) { vid.src = cleanUrl(p.url); vid.load(); protect(vid); img.src = ''; vid.addEventListener('loadedmetadata', () => vid.play().catch(()=>{}), {once:true}); }
-      else { img.src = cleanUrl(p.url); protect(img); vid.src = ''; }
-      document.getElementById('fv-title').textContent = p.title || '#' + p.name;
-      document.getElementById('fv-desc').textContent = p.desc || 'Tidak ada deskripsi';
-      document.getElementById('fv-meta').textContent = `👤 ${p.gender||'-'} • 📅 ${p.date||'-'}`;
-      document.getElementById('fv-share').onclick = () => share(p);
-      document.getElementById('fv-app').onclick = () => showAppModal();
-      // Update URL without reloading
-      history.pushState({v: p.name}, '', `/photo/${p.name}`);
+      // Redirect to /photo/index.html for full-screen viewing with authentication
+      const photoUrl = `/photo/index.html?name=${encodeURIComponent(p.name)}`;
+      window.location.href = photoUrl;
     };
+    
     const closeFull = () => {
       document.getElementById('full-view').classList.remove('active');
       document.getElementById('gallery')?.classList.remove('hidden');
@@ -743,7 +756,7 @@
         document.getElementById('gallery').classList.remove('hidden');
         initObs(); render(filtered);
         
-        // Check URL for direct photo access - handle both /photo/{name} pattern
+        // Check URL for direct photo access - redirect to /photo/index.html
         const checkPhotoRoute = () => {
           try {
             const path = location.pathname; 
@@ -834,7 +847,7 @@
     window.addEventListener('message', (e) => {
       if (!e.data || !e.data.type) return;
       
-      // Handle OPEN_PHOTO message from parent - with retry mechanism
+      // Handle OPEN_PHOTO message from parent - redirect to /photo/index.html
       if (e.data.type === 'OPEN_PHOTO' && e.data.name) {
         const tryOpenPhoto = () => {
           const f = data.find(x => String(x.name).toLowerCase() === String(e.data.name).toLowerCase());
