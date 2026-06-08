@@ -367,7 +367,7 @@
     <span class="counter" id="navCounter"></span>
     <div class="actions">
       <button class="nav-btn" id="btnLink" title="Buka tautan">↗</button>
-      <button class="nav-btn" id="btnDownload" title="Download">↓</button>
+      <button class="nav-btn" id="btnDownload" title="Buka ke App">📱</button>
     </div>
   </div>
 
@@ -818,29 +818,18 @@
       window.open(link, '_blank');
     });
 
-    // ── Nav: Download ────────────────────────────
-    btnDownload.addEventListener('click', async () => {
+    // ── Nav: Buka ke App (Deep Link) ────────────────────────────
+    btnDownload.addEventListener('click', () => {
       if (!currentPhoto) return;
-      btnDownload.classList.add('loading');
-      const url = currentPhoto.url.trim();
-      try {
-        const r = await fetch(url);
-        if (!r.ok) throw new Error();
-        const blob = await r.blob();
-        const ext = (url.split('?')[0].split('#')[0].match(/\.(\w+)$/) || [,'jpg'])[1];
-        const safe = currentPhoto.name.replace(/[^a-zA-Z0-9_-]/g, '_');
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'TKJOnE_' + safe + '.' + ext;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-        showToast('Download selesai');
-      } catch {
-        showToast('Download gagal');
-      }
-      btnDownload.classList.remove('loading');
+      const uri = APP.scheme + '://' + APP.path + '/' + encodeURIComponent(currentPhoto.name);
+      const ifr = document.createElement('iframe');
+      ifr.style.display = 'none';
+      ifr.src = uri;
+      document.body.appendChild(ifr);
+      setTimeout(() => {
+        document.body.removeChild(ifr);
+        showToast('Membuka aplikasi...');
+      }, 900);
     });
 
     // ── Long-press title → Buka Aplikasi (deep link) ──

@@ -311,7 +311,7 @@
       <h3 style="margin-bottom:8px">Membuka Aplikasi...</h3>
       <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.85rem">Jika tidak otomatis terbuka, instal aplikasi resmi.</p>
       <div style="display:flex;gap:10px;justify-content:center">
-        <button id="btn-dl" class="btn btn-primary">Download</button>
+        <button id="btn-dl" class="btn btn-primary">Buka ke App</button>
         <button class="btn btn-secondary" onclick="closeAppModal()">Tutup</button>
       </div>
     </div>
@@ -641,6 +641,13 @@
       // Redirect to /photo/index.html for full-screen viewing with authentication
       const photoUrl = `/photo/index.html?name=${encodeURIComponent(p.name)}`;
       window.location.href = photoUrl;
+      
+      // Setup fv-app button to open app when on full view (if needed in future)
+      document.getElementById('fv-app').onclick = () => {
+        if (p && p.name) {
+          tryOpenApp(p.name);
+        }
+      };
     };
     
     const closeFull = () => {
@@ -675,7 +682,14 @@
     };
     
     const closeAppModal = () => { document.getElementById('app-modal').classList.remove('active'); restoreScroll(); };
-    document.getElementById('btn-dl').onclick = () => { closeAppModal(); location.replace(CFG.APP.fallback); };
+    document.getElementById('btn-dl').onclick = () => { 
+      if (cur && cur.name) {
+        tryOpenApp(cur.name);
+      } else {
+        closeAppModal(); 
+        location.replace(CFG.APP.fallback); 
+      }
+    };
 
     const share = p => {
       const cleanLink = `${CFG.BASE}/photo/${p.name}`;
