@@ -35,13 +35,55 @@
       border-bottom-color: rgba(59,130,246,0.2);
       box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(59,130,246,0.1);
     }
+    /* 🏷️ TOP BANNER */
+    .top-banner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; background: rgba(24,24,27,0.95);
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .banner-left {
+      display: flex; align-items: center; gap: 10px;
+      flex: 1; min-width: 0;
+    }
+    .banner-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      object-fit: contain; background: var(--surface);
+      flex-shrink: 0;
+    }
+    .banner-text {
+      font-weight: 700; font-size: 0.95rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .banner-btn {
+      flex-shrink: 0;
+      padding: 6px 14px; background: var(--accent);
+      color: #fff; border: none; border-radius: 8px;
+      font-weight: 600; font-size: 0.8rem; cursor: pointer;
+      transition: all 0.1s; white-space: nowrap;
+    }
+    .banner-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
+    .banner-btn:active { transform: scale(0.98); }
+    
     .header-inner { 
       display: flex; flex-direction: column; gap: 8px; 
       padding: 14px 16px 12px; max-width: 1100px; margin: 0 auto;
       transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .header.scrolled .header-inner { 
-      padding: 4px 16px 6px; gap: 4px; 
+      padding: 8px 16px 10px; gap: 4px; 
+    }
+    .header.scrolled .top-banner {
+      padding: 4px 16px;
+    }
+    .header.scrolled .banner-icon {
+      width: 24px; height: 24px;
+    }
+    .header.scrolled .banner-text {
+      font-size: 0.8rem;
+    }
+    .header.scrolled .banner-btn {
+      padding: 4px 10px; font-size: 0.7rem;
     }
     .logo { 
       font-weight: 800; font-size: 1.15rem; text-align: center; letter-spacing: -0.5px;
@@ -88,7 +130,7 @@
       padding: 3px 9px; font-size: 0.7rem; border-radius: 6px;
     }
 
-    .main { padding-top: 138px; padding-bottom: 80px; min-height: 100vh; }
+    .main { padding-top: 188px; padding-bottom: 80px; min-height: 100vh; }
     /* Pastikan halaman tetap bisa discroll meski data kosong */
     .grid:empty + .empty { min-height: 120vh; display: flex !important; align-items: center; justify-content: center; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
@@ -296,6 +338,15 @@
   </div>
 
   <header class="header">
+    <div class="top-banner">
+      <div class="banner-left">
+        <img src="/yn.png" alt="TKJ OnE Icon" class="banner-icon" onerror="this.style.display='none'">
+        <span class="banner-text">TKJ OnE APP</span>
+      </div>
+      <button class="banner-btn" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases', '_blank')">
+        📥 Download
+      </button>
+    </div>
     <div class="header-inner">
       <div class="logo">TKJ OnE Gallery</div>
       <div class="search-box">
