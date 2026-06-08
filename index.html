@@ -192,9 +192,80 @@
     .attempt-dot.used { background: var(--error); }
     .attempt-dot.current { background: var(--accent); transform: scale(1.2); }
     .attempt-label { color: var(--text-muted); font-size: 0.75rem; margin-top: 8px; text-align: center; }
+    
+    /* 🎬 STORY FAB BUTTON */
+    .story-fab {
+      position: fixed; bottom: 24px; right: 24px; z-index: 150;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: none; box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: fabPulse 2s ease-in-out infinite;
+    }
+    .story-fab:active { transform: scale(0.92); }
+    .story-fab svg { width: 26px; height: 26px; fill: #fff; }
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5); }
+      50% { box-shadow: 0 8px 32px rgba(99, 102, 241, 0.7); }
+    }
+    
+    /* 📱 STORY DRAWER */
+    .story-drawer-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 199; display: none; backdrop-filter: blur(4px);
+    }
+    .story-drawer-overlay.active { display: block; }
+    .story-drawer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 85vh; max-height: 680px;
+      background: var(--bg);
+      border-radius: 24px 24px 0 0;
+      z-index: 200;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .story-drawer.active { transform: translateY(0); }
+    .story-drawer-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .story-drawer-title { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .story-drawer-close {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--surface-hover); border: none;
+      color: var(--text); font-size: 1.4rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.1s;
+    }
+    .story-drawer-close:active { transform: scale(0.94); }
+    .story-drawer-body { flex: 1; overflow: hidden; position: relative; }
+    .story-drawer-iframe {
+      width: 100%; height: 100%; border: none; display: block;
+    }
   </style>
 </head>
 <body>
+  
+  <!-- 🎬 STORY FAB BUTTON -->
+  <button class="story-fab" id="storyFab" aria-label="Buka Story">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  </button>
+  
+  <!-- 📱 STORY DRAWER -->
+  <div class="story-drawer-overlay" id="storyDrawerOverlay"></div>
+  <div class="story-drawer" id="storyDrawer">
+    <div class="story-drawer-header">
+      <span class="story-drawer-title">🎬 Cerita TKJ OnE</span>
+      <button class="story-drawer-close" id="storyDrawerClose">×</button>
+    </div>
+    <div class="story-drawer-body">
+      <iframe class="story-drawer-iframe" id="storyIframe" src="" loading="lazy"></iframe>
+    </div>
+  </div>
 
   <!-- 🤖 ROBOT VERIFICATION POPUP -->
   <div id="robot-popup">
@@ -997,6 +1068,33 @@
     
     // Also check on every page load to ensure popup appears
     document.addEventListener('DOMContentLoaded', async function() {
+      // 🎬 STORY FAB & DRAWER EVENTS
+      const storyFab = document.getElementById('storyFab');
+      const storyDrawer = document.getElementById('storyDrawer');
+      const storyDrawerOverlay = document.getElementById('storyDrawerOverlay');
+      const storyDrawerClose = document.getElementById('storyDrawerClose');
+      const storyIframe = document.getElementById('storyIframe');
+      
+      function openStoryDrawer() {
+        storyIframe.src = '/story/index.html';
+        storyDrawer.classList.add('active');
+        storyDrawerOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeStoryDrawer() {
+        storyDrawer.classList.remove('active');
+        storyDrawerOverlay.classList.remove('active');
+        setTimeout(() => {
+          storyIframe.src = '';
+        }, 300);
+        document.body.style.overflow = '';
+      }
+      
+      if (storyFab) storyFab.addEventListener('click', openStoryDrawer);
+      if (storyDrawerClose) storyDrawerClose.addEventListener('click', closeStoryDrawer);
+      if (storyDrawerOverlay) storyDrawerOverlay.addEventListener('click', closeStoryDrawer);
+      
       clearVerification();
       const isMaintenanceActive = await checkMaintenance();
       if (!isMaintenanceActive && !isRobotVerified()) {
