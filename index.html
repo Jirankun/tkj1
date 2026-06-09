@@ -446,10 +446,10 @@
   <div id="toast" class="toast"></div>
 
   <!-- Load math challenge system first -->
-  <script src="math_challenge.js"></script>
+  <!-- <script src="math_challenge.js"></script>
   <script>
     console.log('🧮 TKJ Math Challenge loaded:', typeof window.mathChallenge);
-  </script>
+  </script> -->
   <script>
     'use strict';
     const CFG = {
@@ -465,7 +465,8 @@
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
 
-    // 🤖 ROBOT VERIFICATION — menggunakan mathChallenge API
+    // 🤖 ROBOT VERIFICATION — menggunakan mathChallenge API [COMMENTED OUT]
+    /*
     let challengeAttempts = 0;
     const MAX_ATTEMPTS = 3;
     
@@ -681,6 +682,7 @@
       } catch(e) {}
       return false;
     };
+    */
 
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
@@ -1037,7 +1039,8 @@
       window.location.href = 'https://jirankun.github.io/portofoliozhyllan';
     });
 
-    // Robot verification menggunakan A/B/C/D/E (built into showRobotPopup)
+    // Robot verification menggunakan A/B/C/D/E (built into showRobotPopup) [COMMENTED OUT]
+    /*
 
     // Check maintenance on load, then robot verification
     const initPage = async () => {
@@ -1161,6 +1164,7 @@
         showRobotPopup();
       }
     });
+    */
 
     // 🚀 START - Load gallery after verification checks
     // Note: Gallery loading happens, but user can't interact until they solve the challenge
