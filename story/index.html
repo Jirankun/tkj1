@@ -465,8 +465,13 @@
 
         function nextStory() {
             state.progressPercent = 0;
-            if (state.current < state.stories.length - 1) renderStory(state.current + 1);
-            else exitStory();        }
+            if (state.current < state.stories.length - 1) {
+                renderStory(state.current + 1);
+            } else {
+                // Story habis, auto close drawer
+                exitStory();
+            }
+        }
 
         function prevStory() {
             state.progressPercent = 0;
@@ -527,10 +532,27 @@
                 toggleProfilePanel(); 
             });
             
-            // Prevent all touch movement/shifts
+            // Prevent all touch movement/shifts, but allow swipe down at the top
             const stage = document.getElementById('storyStage');
             if (stage) {
-                stage.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+                let touchStartY = 0;
+                
+                stage.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                stage.addEventListener('touchmove', (e) => {
+                    const touchCurrentY = e.touches[0].clientY;
+                    const diff = touchCurrentY - touchStartY;
+                    
+                    // Allow swipe down only when at the very top
+                    if (diff > 0) {
+                        // Send message to parent to close drawer
+                        window.parent.postMessage({type: 'SWIPE_DOWN', deltaY: diff}, '*');
+                    } else {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
             }
         }
 
