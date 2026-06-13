@@ -1129,12 +1129,34 @@
     
     // Also check on every page load to ensure popup appears
     document.addEventListener('DOMContentLoaded', async function() {
-      // 🎬 STORY FAB & DRAWER EVENTS
+      // Check maintenance on DOM ready
+      await checkMaintenance();
+    });
+    
+    // 🎬 STORY FAB & DRAWER EVENTS - Setup immediately when script runs
+    let closeStoryDrawer; // Declare in outer scope so it's accessible globally
+    
+    function setupStoryDrawer() {
       const storyFab = document.getElementById('storyFab');
       const storyDrawer = document.getElementById('storyDrawer');
       const storyDrawerOverlay = document.getElementById('storyDrawerOverlay');
       const storyDrawerClose = document.getElementById('storyDrawerClose');
       const storyIframe = document.getElementById('storyIframe');
+      
+      if (!storyFab || !storyDrawer || !storyIframe) {
+        console.log('Story elements not found, retrying...');
+        setTimeout(setupStoryDrawer, 100);
+        return;
+      }
+      
+      closeStoryDrawer = function() {
+        storyDrawer.classList.remove('active');
+        storyDrawerOverlay.classList.remove('active');
+        setTimeout(() => {
+          storyIframe.src = '';
+        }, 300);
+        document.body.style.overflow = '';
+      };
       
       function openStoryDrawer() {
         storyIframe.src = '/story/index.html';
@@ -1186,44 +1208,33 @@
         storyFab.removeEventListener('click', openStoryDrawer);
       }
       
-      function closeStoryDrawer() {
-        storyDrawer.classList.remove('active');
-        storyDrawerOverlay.classList.remove('active');
-        setTimeout(() => {
-          storyIframe.src = '';
-        }, 300);
-        document.body.style.overflow = '';
-      }
+      storyFab.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openStoryDrawer();
+      });
+      storyFab.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        openStoryDrawer();
+      });
       
-      if (storyFab) {
-        storyFab.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          openStoryDrawer();
-        });
-        storyFab.addEventListener('touchend', function(e) {
-          e.preventDefault();
-          openStoryDrawer();
-        });
-      }
       if (storyDrawerClose) storyDrawerClose.addEventListener('click', closeStoryDrawer);
       if (storyDrawerOverlay) storyDrawerOverlay.addEventListener('click', closeStoryDrawer);
       
-      // Listen for story done message from iframe
-      window.addEventListener('message', (e) => {
-        if (e.data && e.data.type === 'STORY_DONE') {
-          closeStoryDrawer();
-        }
-        // Handle swipe down gesture from inside iframe
-        if (e.data && e.data.type === 'SWIPE_DOWN' && e.data.deltaY > 150) {
-          closeStoryDrawer();
-        }
-      });
-      
-      clearVerification();
-      const isMaintenanceActive = await checkMaintenance();
-      if (!isMaintenanceActive && !isRobotVerified()) {
-        showRobotPopup();
+      console.log('Story FAB and Drawer initialized successfully');
+    }
+    
+    // Initialize Story Drawer immediately
+    setupStoryDrawer();
+    
+    // Listen for story done message from iframe
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'STORY_DONE') {
+        if (typeof closeStoryDrawer === 'function') closeStoryDrawer();
+      }
+      // Handle swipe down gesture from inside iframe
+      if (e.data && e.data.type === 'SWIPE_DOWN' && e.data.deltaY > 150) {
+        if (typeof closeStoryDrawer === 'function') closeStoryDrawer();
       }
     });
     
