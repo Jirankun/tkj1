@@ -1152,6 +1152,8 @@
       closeStoryDrawer = function() {
         storyDrawer.classList.remove('active');
         storyDrawerOverlay.classList.remove('active');
+        // Reset inline transform immediately
+        storyDrawer.style.transform = '';
         setTimeout(() => {
           storyIframe.src = '';
         }, 300);
@@ -1159,45 +1161,73 @@
       };
       
       function openStoryDrawer() {
+        // Reset any inline transforms first
+        storyDrawer.style.transform = '';
         storyIframe.src = '/story/index.html';
         storyDrawer.classList.add('active');
         storyDrawerOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         
+        // Remove old listeners to prevent duplicates
+        storyDrawer.removeEventListener('touchstart', handleTouchStart);
+        storyDrawer.removeEventListener('touchmove', handleTouchMove);
+        storyDrawer.removeEventListener('touchend', handleTouchEnd);
+        
         // Enable swipe down to close
         let touchStartY = 0;
         let touchCurrentY = 0;
+        let isSwiping = false;
         
         const handleTouchStart = (e) => {
-          touchStartY = e.touches[0].clientY;
+          // Only track swipe if we're at the very top of the drawer
+          if (storyDrawer.scrollTop === 0 || !storyDrawer.scrollTop) {
+            touchStartY = e.touches[0].clientY;
+            touchCurrentY = touchStartY;
+            isSwiping = false;
+          }
         };
         
         const handleTouchMove = (e) => {
+          if (touchStartY === 0) return;
+          
           touchCurrentY = e.touches[0].clientY;
           const diff = touchCurrentY - touchStartY;
           
-          // Only allow swipe down when at the top
+          // Only allow swipe down (positive diff) when at the top
           if (diff > 0) {
+            isSwiping = true;
             e.preventDefault();
-            storyDrawer.style.transform = `translateY(${diff}px)`;
+            // Move the entire drawer down
+            storyDrawer.style.transform = `translateY(${Math.min(diff, window.innerHeight)}px)`;
           }
         };
         
         const handleTouchEnd = (e) => {
-          const diff = touchCurrentY - touchStartY;
-          
-          if (diff > 150) {
-            // Swipe down enough to close
-            closeStoryDrawer();
-          } else {
-            // Reset position
-            storyDrawer.style.transform = '';
+          if (touchStartY === 0) {
+            touchStartY = 0;
+            touchCurrentY = 0;
+            return;
           }
           
-          // Clean up listeners
-          storyDrawer.removeEventListener('touchstart', handleTouchStart);
-          storyDrawer.removeEventListener('touchmove', handleTouchMove);
-          storyDrawer.removeEventListener('touchend', handleTouchEnd);
+          const diff = touchCurrentY - touchStartY;
+          
+          if (isSwiping && diff > 100) {
+            // Swipe down enough to close (reduced threshold to 100px)
+            closeStoryDrawer();
+          } else {
+            // Reset position smoothly
+            storyDrawer.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+            storyDrawer.style.transform = 'translateY(0)';
+            // Remove transition after animation completes
+            setTimeout(() => {
+              storyDrawer.style.transition = '';
+            }, 300);
+          }
+          
+          // Reset variables
+          touchStartY = 0;
+          touchCurrentY = 0;
+          isSwiping = false;
         };
         
         storyDrawer.addEventListener('touchstart', handleTouchStart, { passive: true });

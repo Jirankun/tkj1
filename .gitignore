@@ -1,5 +1,3 @@
-(index.html is a source file, so no need to add anything to .gitignore)
+(index.html is a source file, so no changes needed to .gitignore)
 
-```gitignore
-
-```
+# No changes needed - only source/config files detected
