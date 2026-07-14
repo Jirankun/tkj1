@@ -46,6 +46,10 @@
       display: flex; align-items: center; gap: 10px;
       flex: 1; min-width: 0;
     }
+    .banner-right {
+      display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
+    }
     .banner-icon {
       width: 32px; height: 32px; border-radius: 8px;
       object-fit: contain; background: var(--surface);
@@ -352,9 +356,14 @@
         <img src="/yn.png" alt="TKJ OnE Icon" class="banner-icon" onerror="this.style.display='none'">
         <span class="banner-text">TKJ OnE APP</span>
       </div>
-      <button class="banner-btn" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases', '_blank')">
-        📥 Download
-      </button>
+      <div class="banner-right">
+        <button class="banner-btn" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases', '_blank')">
+          📥 Download
+        </button>
+        <button class="banner-btn" onclick="window.open('https://jirankun.github.io/contribute/', '_blank')">
+          👥 Lihat Kontributor
+        </button>
+      </div>
     </div>
     <div class="header-inner">
       <div class="logo">TKJ OnE Gallery</div>
