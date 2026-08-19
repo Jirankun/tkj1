@@ -1,14 +1,14 @@
 {
   "info": [
     {
-      "status": "true",
+      "status": "false",
       "category": "main",
       "show": "Sistem sedang perbaikan,silahkan kunjungi sekitar 21 hari lagi..."
     },
     {
-      "status": "false",
+      "status": "true",
       "category": "info",
-      "show": "Fitur unduh batch sudah aktif! Coba sekarang."
+      "show": "Dimohon jangan melakukan tindakan aneh dan pencurian data,karena server masih dalam perbaikan,tetapi,sudah dapat di akses dengan normal"
     }
   ]
 }
