@@ -27,7 +27,6 @@
       background: rgba(28,28,30,0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 0.5px solid rgba(255,255,255,0.08);
       padding: 0 12px;
       height: 52px;
       display: flex;
@@ -343,7 +342,7 @@
     <div class="title" id="navTitle">TKJ OnE</div>
     <span class="counter" id="navCounter"></span>
     <div class="actions">
-      <button class="nav-btn" id="btnLink" title="Buka tautan"><i class="fas fa-link"></i></button>
+      <button class="nav-btn" id="btnLink" title="Salin tautan"><i class="fas fa-link"></i></button>
       <button class="nav-btn" id="btnDownload" title="Buka ke App"><i class="fas fa-mobile-alt"></i></button>
     </div>
   </div>
@@ -652,9 +651,11 @@
 
     // ── Touch handlers ────────────────────────────
     let activeTouches = [];
+    let touchStartTime = 0;
 
     container.addEventListener('touchstart', e => {
       activeTouches = Array.from(e.touches);
+      touchStartTime = Date.now();
       if (activeTouches.length === 1 && !isZoomed) {
         startX = activeTouches[0].clientX;
         startY = activeTouches[0].clientY;
@@ -692,30 +693,47 @@
       } else if (touches.length === 1 && isSwiping) {
         const dx = touches[0].clientX - startX;
         const dy = touches[0].clientY - startY;
-        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 5) {
+        // Hanya swipe horizontal jika gerakan horizontal lebih dominan
+        if (Math.abs(dx) > Math.abs(dy)) {
+          e.preventDefault();
           translateX = dx;
-          track.style.transform = 'translateX(' + dx + 'px)';
-          track.style.opacity = Math.max(0.2, 1 - Math.abs(dx) / 400);
-        } else {
-          isSwiping = false;
-          track.classList.remove('swiping');
+          const resistance = Math.abs(dx) > window.innerWidth ? 0.5 : 1;
+          track.style.transform = 'translateX(' + (dx * resistance) + 'px)';
+          track.style.opacity = Math.max(0.5, 1 - Math.abs(dx) / window.innerWidth);
         }
       }
     }, { passive: false });
 
     container.addEventListener('touchend', e => {
-      if (isSwiping && Math.abs(translateX) > 80 && allPhotos.length > 1) {
-        if (translateX < 0 && currentIdx < allPhotos.length - 1) {
+      const touchDuration = Date.now() - touchStartTime;
+      const swipeThreshold = Math.min(50, window.innerWidth * 0.15);
+      const velocity = Math.abs(translateX) / touchDuration;
+      
+      if (isSwiping && allPhotos.length > 1) {
+        const shouldSwipeLeft = (translateX < -swipeThreshold || velocity > 0.5) && currentIdx < allPhotos.length - 1;
+        const shouldSwipeRight = (translateX > swipeThreshold || velocity > 0.5) && currentIdx > 0;
+        
+        if (shouldSwipeLeft) {
           showPhoto(currentIdx + 1);
-        } else if (translateX > 0 && currentIdx > 0) {
+        } else if (shouldSwipeRight) {
           showPhoto(currentIdx - 1);
+        } else {
+          // Kembalikan ke posisi semula dengan smooth
+          track.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s';
+          track.style.transform = 'translateX(0)';
+          track.style.opacity = '1';
+          setTimeout(() => {
+            track.style.transition = '';
+          }, 300);
         }
       }
       isSwiping = false;
       translateX = 0;
       track.classList.remove('swiping');
-      track.style.transform = '';
-      track.style.opacity = '1';
+      if (!track.style.transition) {
+        track.style.transform = '';
+        track.style.opacity = '1';
+      }
       lastPinchDist = 0;
       activeTouches = [];
     }, { passive: true });
@@ -762,16 +780,28 @@
       }
     });
 
-    // ── Nav: Buka tautan ─────────────────────────
+    // ── Nav: Salin tautan ────────────────────────
     btnLink.addEventListener('click', () => {
       if (!currentPhoto) return;
-      const def = 'https://tkj1.pages.dev';
-      // Use query param URL format for consistency
-      const fallbackUrl = window.location.origin + '/photo/index.html?name=' + encodeURIComponent(currentPhoto.name);
-      const link = (currentPhoto.link && currentPhoto.link !== def)
-        ? currentPhoto.link
-        : fallbackUrl;
-      window.open(link, '_blank');
+      const shortUrl = window.location.origin + '/photo/index.html?name=' + encodeURIComponent(currentPhoto.name);
+      navigator.clipboard.writeText(shortUrl).then(() => {
+        showToast('Tautan disalin!');
+      }).catch(() => {
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = shortUrl;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast('Tautan disalin!');
+        } catch (err) {
+          showToast('Gagal menyalin tautan');
+        }
+        document.body.removeChild(textArea);
+      });
     });
 
     // ── Nav: Buka ke App (Deep Link) ────────────────────────────
