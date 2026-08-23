@@ -1,0 +1,362 @@
+/* ============================================
+   TKJ OnE Upload - Native Material Design
+   Colors match Flutter app_config.dart
+   No cursor/hover - pure mobile touch UX
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #00E5FF;
+  --primary-dark: #00B8D4;
+  --primary-glow: rgba(0, 229, 255, 0.3);
+  --bg: #0A0E17;
+  --card: #151B2B;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --input-bg: #1A2235;
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-border-focus: #00E5FF;
+  --text: #FFFFFF;
+  --text-dim: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.35);
+  --success: #00E676;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 24px 24px;
+}
+
+/* ==================== UPLOAD BUTTON (FAB) ==================== */
+.main-upload-btn {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.35), 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.main-upload-btn:active {
+  transform: scale(0.92);
+}
+
+.main-upload-btn svg {
+  color: #000;
+  width: 36px;
+  height: 36px;
+}
+
+/* Instruction text */
+.upload-hint {
+  margin-top: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ==================== PREVIEW MODAL ==================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 14, 23, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, visibility 0.25s;
+  padding: 24px;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 340px;
+  text-align: center;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.modal img {
+  max-width: 100%;
+  max-height: 280px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  object-fit: contain;
+  background: #000;
+}
+
+.modal p {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 0.15s;
+}
+
+.modal-btn:active {
+  opacity: 0.65;
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
+}
+
+.btn-upload {
+  background: var(--primary);
+  color: #000;
+}
+
+/* ==================== LOADING ==================== */
+.loading {
+  display: none;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 24px;
+  font-size: 15px;
+  text-align: center;
+  padding: 14px 28px;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+}
+
+/* ==================== RESULT SECTION ==================== */
+.result-section {
+  display: none;
+  margin-top: 16px;
+  max-width: 400px;
+  width: 100%;
+  background: var(--card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.uploaded-preview {
+  max-width: 100%;
+  max-height: 260px;
+  border-radius: var(--radius-md);
+  margin: 12px 0 16px;
+  object-fit: contain;
+  background: #000;
+}
+
+.result-link {
+  display: block;
+  margin: 12px 0;
+  color: var(--primary);
+  word-break: break-all;
+  font-size: 13px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  background: var(--input-bg);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  user-select: text;
+  -webkit-user-select: text;
+  border: 1px solid var(--card-border);
+}
+
+/* ==================== FORM FIELDS (Material) ==================== */
+.form-group {
+  margin: 16px 0;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 14px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ==================== RADIO GROUP ==================== */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
+  transition: border-color 0.15s;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.radio-option input {
+  accent-color: var(--primary);
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* ==================== CODE PREVIEW ==================== */
+.code-preview {
+  background: #050810;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin: 16px 0;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: left;
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.5;
+}
+
+/* ==================== SEND BUTTON ==================== */
+.send-btn {
+  margin-top: 8px;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  width: 100%;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  transition: opacity 0.15s;
+  text-transform: uppercase;
+}
+
+.send-btn.enabled {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+
+.send-btn.enabled:active {
+  opacity: 0.75;
+}
+
+.send-btn.disabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 40px 20px 20px;
+  }
+  .main-upload-btn {
+    width: 80px;
+    height: 80px;
+  }
+  .main-upload-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+  .result-section {
+    padding: 20px;
+    border-radius: var(--radius-md);
+  }
+  .modal-content {
+    padding: 24px 20px;
+  }
+}
