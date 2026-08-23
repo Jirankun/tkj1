@@ -318,16 +318,18 @@
             return fetch('/DB/photos.json', { cache: 'no-store' })
             .then(r => r.ok ? r.json() : Promise.reject('Fetch failed'))
             .then(data => {
-                if (data?.photos?.length) {
+                // Handle both array and object with photos property
+                const photos = Array.isArray(data) ? data : (data?.photos || []);
+                if (photos.length) {
                     // Sort by date descending (newest first), take only 7
-                    state.stories = data.photos
+                    state.stories = photos
                         .sort((a, b) => new Date(b.date) - new Date(a.date))
                         .slice(0, 7)
                         .map(p => ({
                             name: p.name || '',
                             date: p.date || new Date().toISOString(),
                             url: p.url || '',
-                            type: p.gender === 'video' ? 'video' : 'image'
+                            type: p.type === 'video' ? 'video' : 'image'
                         }));
                 }
             })
@@ -614,7 +616,14 @@
             if (typeof fetch !== 'function') return;
             fetch('/DB/photos.json', { method: 'GET', headers: { 'Accept': 'application/json' }, cache: 'no-store' })
             .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data?.photos?.length && state.stories[state.current]?.date) { const el = document.getElementById('storyTime'); if (el) el.textContent = formatTimeAgo(state.stories[state.current].date); } })
+            .then(data => {
+                // Handle both array and object with photos property
+                const photos = Array.isArray(data) ? data : (data?.photos || []);
+                if (photos.length && state.stories[state.current]?.date) { 
+                    const el = document.getElementById('storyTime'); 
+                    if (el) el.textContent = formatTimeAgo(state.stories[state.current].date); 
+                }
+            })
             .catch(() => {});
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
