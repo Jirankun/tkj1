@@ -130,7 +130,7 @@
     #video-controls {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      z-index: 15;
+      z-index: 25;
       padding: 20px 20px 40px;
       background: linear-gradient(transparent, rgba(0,0,0,0.6) 40%);
       display: none;
@@ -314,18 +314,19 @@
     /* ── Swipe indicator dots ─────────────────── */
     #dot-indicator {
       position: fixed;
-      top: 60px; left: 50%;
+      top: 70px; left: 50%;
       transform: translateX(-50%);
       display: flex;
       gap: 6px;
-      z-index: 15;
+      z-index: 25;
       transition: opacity 0.3s;
+      pointer-events: none;
     }
     #dot-indicator.hidden { opacity: 0; }
     .dot {
       width: 6px; height: 6px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.5);
       transition: all 0.3s;
     }
     .dot.active {
@@ -428,10 +429,7 @@
     let allPhotos = [];
     let currentIdx = -1;
     let currentPhoto = null;
-    let isZoomed = false;
-    let zoomScale = 1;
     let startX, startY, isSwiping, translateX;
-    let lastPinchDist = 0;
     let toastTimer = null;
     let isVideo = false;
     let hideUITimer = null;
@@ -545,8 +543,6 @@
       const photo = allPhotos[idx];
       currentIdx = idx;
       currentPhoto = photo;
-      isZoomed = false;
-      zoomScale = 1;
       dragStarted = false;
 
       const url = photo.url.trim().replace(/\s+/g, '');
@@ -633,22 +629,6 @@
       }
     }
 
-    // ── Pinch-to-zoom for images ─────────────────
-    function resetZoom() {
-      isZoomed = false;
-      zoomScale = 1;
-      mediaImg.style.transform = 'translate(-50%, -50%) scale(1)';
-    }
-
-    function applyZoom(scale, cxPct, cyPct) {
-      zoomScale = Math.max(0.5, Math.min(4, scale));
-      if (zoomScale > 1) isZoomed = true;
-      const x = cxPct !== undefined ? cxPct : 50;
-      const y = cyPct !== undefined ? cyPct : 50;
-      mediaImg.style.transformOrigin = x + '% ' + y + '%';
-      mediaImg.style.transform = 'translate(-50%, -50%) scale(' + zoomScale + ')';
-    }
-
     // ── Touch handlers ────────────────────────────
     let activeTouches = [];
     let touchStartTime = 0;
@@ -656,41 +636,19 @@
     container.addEventListener('touchstart', e => {
       activeTouches = Array.from(e.touches);
       touchStartTime = Date.now();
-      if (activeTouches.length === 1 && !isZoomed) {
+      if (activeTouches.length === 1) {
         startX = activeTouches[0].clientX;
         startY = activeTouches[0].clientY;
         isSwiping = true;
         translateX = 0;
         track.classList.add('swiping');
-      } else if (activeTouches.length === 2 && mediaImg.classList.contains('show')) {
-        isSwiping = false;
-        track.classList.remove('swiping');
-        lastPinchDist = Math.hypot(
-          activeTouches[0].clientX - activeTouches[1].clientX,
-          activeTouches[0].clientY - activeTouches[1].clientY
-        );
       }
     }, { passive: true });
 
     container.addEventListener('touchmove', e => {
       const touches = Array.from(e.touches);
 
-      if (touches.length === 2 && mediaImg.classList.contains('show')) {
-        e.preventDefault();
-        const dist = Math.hypot(
-          touches[0].clientX - touches[1].clientX,
-          touches[0].clientY - touches[1].clientY
-        );
-        if (lastPinchDist > 0) {
-          const midX = (touches[0].clientX + touches[1].clientX) / 2;
-          const midY = (touches[0].clientY + touches[1].clientY) / 2;
-          const rect = mediaImg.getBoundingClientRect();
-          const cx = ((midX - rect.left) / rect.width) * 100;
-          const cy = ((midY - rect.top) / rect.height) * 100;
-          applyZoom(zoomScale * (dist / lastPinchDist), cx, cy);
-        }
-        lastPinchDist = dist;
-      } else if (touches.length === 1 && isSwiping) {
+      if (touches.length === 1 && isSwiping) {
         const dx = touches[0].clientX - startX;
         const dy = touches[0].clientY - startY;
         // Hanya swipe horizontal jika gerakan horizontal lebih dominan
@@ -707,11 +665,12 @@
     container.addEventListener('touchend', e => {
       const touchDuration = Date.now() - touchStartTime;
       const swipeThreshold = Math.min(50, window.innerWidth * 0.15);
-      const velocity = Math.abs(translateX) / touchDuration;
       
       if (isSwiping && allPhotos.length > 1) {
-        const shouldSwipeLeft = (translateX < -swipeThreshold || velocity > 0.5) && currentIdx < allPhotos.length - 1;
-        const shouldSwipeRight = (translateX > swipeThreshold || velocity > 0.5) && currentIdx > 0;
+        // Swipe left (finger moves left, dx is negative) -> next photo
+        const shouldSwipeLeft = translateX < -swipeThreshold && currentIdx < allPhotos.length - 1;
+        // Swipe right (finger moves right, dx is positive) -> previous photo
+        const shouldSwipeRight = translateX > swipeThreshold && currentIdx > 0;
         
         if (shouldSwipeLeft) {
           showPhoto(currentIdx + 1);
@@ -734,31 +693,8 @@
         track.style.transform = '';
         track.style.opacity = '1';
       }
-      lastPinchDist = 0;
       activeTouches = [];
     }, { passive: true });
-
-    // ── Double-tap to zoom ───────────────────────
-    let lastTap = 0;
-    container.addEventListener('touchend', e => {
-      if (e.changedTouches.length === 1 && mediaImg.classList.contains('show')) {
-        const now = Date.now();
-        const elapsed = now - lastTap;
-        if (elapsed < 300 && elapsed > 50) {
-          if (isZoomed) {
-            resetZoom();
-          } else {
-            const t = e.changedTouches[0];
-            const rect = mediaImg.getBoundingClientRect();
-            const cx = ((t.clientX - rect.left) / rect.width) * 100;
-            const cy = ((t.clientY - rect.top) / rect.height) * 100;
-            applyZoom(2.5, cx, cy);
-          }
-          e.preventDefault();
-        }
-        lastTap = now;
-      }
-    }, { passive: false });
 
     // ── Play button ───────────────────────────────
     const playBtn = $('video-play-btn');
