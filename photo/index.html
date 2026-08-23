@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#1C1C1E">
   <meta name="description" content="TKJ OnE Media Viewer">
   <title>TKJ OnE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -55,7 +56,7 @@
     #navbar .actions {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 4px;
     }
     #navbar .nav-btn {
       display: flex;
@@ -67,7 +68,7 @@
       border: none;
       background: transparent;
       color: #0A84FF;
-      font-size: 20px;
+      font-size: 16px;
       cursor: pointer;
       transition: background 0.2s;
       -webkit-tap-highlight-color: transparent;
@@ -311,30 +312,6 @@
       line-height: 1.4;
     }
 
-    /* ── Gender Badge ─────────────────────────── */
-    .gender-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-    .gender-badge.laki-laki {
-      background: rgba(10,132,255,0.15);
-      color: #0A84FF;
-    }
-    .gender-badge.perempuan {
-      background: rgba(255,55,95,0.15);
-      color: #FF375F;
-    }
-    .gender-badge.video {
-      background: rgba(100,210,255,0.15);
-      color: #64D2FF;
-    }
-
     /* ── Swipe indicator dots ─────────────────── */
     #dot-indicator {
       position: fixed;
@@ -366,8 +343,8 @@
     <div class="title" id="navTitle">TKJ OnE</div>
     <span class="counter" id="navCounter"></span>
     <div class="actions">
-      <button class="nav-btn" id="btnLink" title="Buka tautan">↗</button>
-      <button class="nav-btn" id="btnDownload" title="Buka ke App">📱</button>
+      <button class="nav-btn" id="btnLink" title="Buka tautan"><i class="fas fa-link"></i></button>
+      <button class="nav-btn" id="btnDownload" title="Buka ke App"><i class="fas fa-mobile-alt"></i></button>
     </div>
   </div>
 
@@ -389,7 +366,7 @@
   <!-- Video Controls -->
   <div id="video-controls">
     <div class="video-controls-row">
-      <button class="video-play-btn" id="video-play-btn">▶</button>
+      <button class="video-play-btn" id="video-play-btn"><i class="fas fa-play"></i></button>
       <input type="range" id="video-progress" min="0" max="1000" value="0">
     </div>
     <div class="video-time">
@@ -402,7 +379,6 @@
   <div id="info-footer">
     <div class="footer-row">
       <span class="footer-name" id="footerName"></span>
-      <span class="gender-badge" id="footerGender"></span>
     </div>
     <div class="footer-row">
       <span class="footer-date" id="footerDate"></span>
@@ -446,7 +422,6 @@
     const videoDur = $('video-duration');
     const footer = $('info-footer');
     const footerName = $('footerName');
-    const footerGender = $('footerGender');
     const footerDate = $('footerDate');
     const dotInd = $('dot-indicator');
 
@@ -513,14 +488,14 @@
         } catch {}
       }
 
-      if (!data || !data.photos) {
+      if (!data || !Array.isArray(data)) {
         loading.style.display = 'none';
         error.textContent = 'Gagal memuat data galeri.';
         error.classList.add('show');
         return;
       }
 
-      allPhotos = data.photos;
+      allPhotos = data;
       currentIdx = allPhotos.findIndex(p => String(p.name).trim() === name);
       if (currentIdx === -1) {
         loading.style.display = 'none';
@@ -576,7 +551,7 @@
       dragStarted = false;
 
       const url = photo.url.trim().replace(/\s+/g, '');
-      isVideo = String(photo.gender).toLowerCase() === 'video' ||
+      isVideo = String(photo.type).toLowerCase() === 'video' ||
         /\.(mp4|webm|mov)$/i.test(url);
 
       // Nav
@@ -647,26 +622,7 @@
         };
       }
 
-      // Footer info
-      const badge = footerGender;
-      if (photo.gender) {
-        const g = photo.gender.toLowerCase();
-        if (g === 'laki-laki' || g === 'laki2' || g === 'laki') {
-          badge.textContent = '♂ Laki-laki';
-          badge.className = 'gender-badge laki-laki';
-        } else if (g === 'perempuan' || g === 'cewek') {
-          badge.textContent = '♀ Perempuan';
-          badge.className = 'gender-badge perempuan';
-        } else if (g === 'video') {
-          badge.textContent = '▶ Video';
-          badge.className = 'gender-badge video';
-        } else {
-          badge.style.display = 'none';
-        }
-        badge.style.display = '';
-      } else {
-        badge.style.display = 'none';
-      }
+      // Footer info - simplified
       footerName.textContent = '#' + photo.name;
       footerDate.textContent = photo.date || '';
       document.title = 'TKJ OnE - ' + photo.name;
@@ -796,8 +752,8 @@
         mediaVideo.pause();
       }
     });
-    mediaVideo.addEventListener('play', () => { playBtn.textContent = '⏸'; });
-    mediaVideo.addEventListener('pause', () => { playBtn.textContent = '▶'; });
+    mediaVideo.addEventListener('play', () => { playBtn.innerHTML = '<i class="fas fa-pause"></i>'; });
+    mediaVideo.addEventListener('pause', () => { playBtn.innerHTML = '<i class="fas fa-play"></i>'; });
 
     // ── Video seek ────────────────────────────────
     videoProg.addEventListener('input', () => {
