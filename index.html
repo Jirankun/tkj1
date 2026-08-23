@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#09090b" />
   <meta name="description" content="TKJ OnE Gallery - Galeri Foto dan Video"/>
   <title>Gallery - TKJ OnE</title>
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
@@ -65,6 +65,7 @@
       color: #fff; border: none; border-radius: 8px;
       font-weight: 600; font-size: 0.8rem; cursor: pointer;
       transition: all 0.1s; white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
     }
     .banner-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
     .banner-btn:active { transform: scale(0.98); }
@@ -196,49 +197,6 @@
     .maintenance-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
     .maintenance-btn:active { transform: scale(0.98); }
     
-    /* 🤖 ROBOT VERIFICATION POPUP */
-    #robot-popup { position: fixed; inset: 0; background: rgba(9,9,11,0.99); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(16px); }
-    #robot-popup.active { display: flex !important; }
-    .robot-content { text-align: center; max-width: 480px; width: 100%; }
-    .robot-icon { font-size: 3.5rem; margin-bottom: 16px; }
-    .robot-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 20px; color: var(--text); }
-    .robot-problem { background: var(--surface); border: 2px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; position: relative; min-height: 180px; }
-    .robot-equation { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 16px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; transition: opacity 0.08s ease; }
-    .robot-equation.loading { opacity: 0; }
-    .robot-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; transition: opacity 0.08s ease; }
-    .robot-options.loading { opacity: 0; pointer-events: none; }
-    .robot-opt { padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.95rem; cursor: pointer; transition: all 0.05s; display: flex; align-items: center; gap: 10px; }
-    .robot-opt:hover { border-color: var(--accent); background: var(--surface-hover); transform: translateY(-1px); }
-    .robot-opt:active { transform: scale(0.98); }
-    .robot-opt .key { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.85rem; }
-    .robot-opt.correct { border-color: var(--success); background: rgba(34,197,94,0.1); }
-    .robot-opt.wrong { border-color: var(--error); background: rgba(239,68,68,0.1); }
-    .robot-opt:disabled { opacity: 0.6; cursor: not-allowed; }
-    @media (max-width: 400px) { .robot-options { grid-template-columns: 1fr; } }
-    .robot-input { width: 100%; padding: 14px 18px; background: var(--bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text); font-size: 1.2rem; font-weight: 600; text-align: center; outline: none; transition: all 0.05s; }
-    .robot-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-    .robot-input.error { border-color: var(--error); animation: shake 0.2s; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-    .robot-btn { padding: 14px 36px; background: var(--accent); color: #fff; border: none; border-radius: 14px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.05s; margin-top: 16px; }
-    .robot-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
-    .robot-btn:active { transform: scale(0.98); }
-    .robot-hint { color: var(--text-muted); font-size: 0.8rem; margin-top: 14px; }
-    
-    /* ⏳ LOADING ANIMATION */
-    .robot-loading { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(24,24,27,0.95); border-radius: 16px; z-index: 10; }
-    .robot-loading.active { display: flex; }
-    .robot-spinner { width: 48px; height: 48px; border: 4px solid var(--surface-hover); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.3s linear infinite; margin-bottom: 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .robot-loading-text { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; animation: pulse 0.4s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-    
-    /* 📊 ATTEMPT INDICATOR */
-    .robot-attempts { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
-    .attempt-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-hover); transition: all 0.08s ease; }
-    .attempt-dot.used { background: var(--error); }
-    .attempt-dot.current { background: var(--accent); transform: scale(1.2); }
-    .attempt-label { color: var(--text-muted); font-size: 0.75rem; margin-top: 8px; text-align: center; }
-    
     /* 🎬 STORY FAB BUTTON */
     .story-fab {
       position: fixed; bottom: 24px; right: 24px; z-index: 9998;
@@ -314,36 +272,18 @@
   <div class="story-drawer-overlay" id="storyDrawerOverlay"></div>
   <div class="story-drawer" id="storyDrawer">
     <div class="story-drawer-header">
-      <span class="story-drawer-title">🎬 Cerita TKJ OnE</span>
-      <button class="story-drawer-close" id="storyDrawerClose">×</button>
+      <span class="story-drawer-title"><i class="fas fa-film"></i> Cerita TKJ OnE</span>
+      <button class="story-drawer-close" id="storyDrawerClose"><i class="fas fa-times"></i></button>
     </div>
     <div class="story-drawer-body">
       <iframe class="story-drawer-iframe" id="storyIframe" src="" loading="lazy"></iframe>
     </div>
   </div>
 
-  <!-- 🤖 ROBOT VERIFICATION POPUP -->
-  <div id="robot-popup">
-    <div class="robot-content">
-      <div class="robot-icon">🤖</div>
-      <h2 class="robot-title">Are you a robot?</h2>
-      <div class="robot-problem">
-        <div id="robot-equation" class="robot-equation"></div>
-        <div id="robot-options" class="robot-options"></div>
-        <div id="robot-loading" class="robot-loading">
-          <div class="robot-spinner"></div>
-          <div class="robot-loading-text">Menyiapkan soal...</div>
-        </div>
-      </div>
-      <div class="robot-attempts" id="robot-attempts"></div>
-      <p class="robot-hint">Pilih jawaban yang benar A/B/C/D/E</p>
-    </div>
-  </div>
-
   <!-- 🔧 MAINTENANCE POPUP -->
   <div id="maintenance-popup">
     <div class="maintenance-content">
-      <div class="maintenance-icon">⚠️</div>
+      <div class="maintenance-icon"><i class="fas fa-exclamation-triangle"></i></div>
       <h2 class="maintenance-title">Maintenance</h2>
       <p id="maintenance-text" class="maintenance-text"></p>
       <button id="maintenance-btn" class="maintenance-btn">Baiklah</button>
@@ -358,10 +298,10 @@
       </div>
       <div class="banner-right">
         <button class="banner-btn" onclick="window.open('https://github.com/Jirankun/TKJ-One/releases', '_blank')">
-          📥 Download
+          <i class="fas fa-download"></i> Download
         </button>
         <button class="banner-btn" onclick="window.open('https://jirankun.github.io/contribute/', '_blank')">
-          👥 Lihat Kontributor
+          <i class="fas fa-users"></i> Lihat Kontributor
         </button>
       </div>
     </div>
@@ -369,13 +309,13 @@
       <div class="logo">TKJ OnE Gallery</div>
       <div class="search-box">
         <input type="text" id="search" class="search-input" placeholder="Cari foto atau video...">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon"><i class="fas fa-search"></i></span>
       </div>
       <div class="filter-row">
         <button class="filter-btn active" data-f="all">Semua</button>
         <button class="filter-btn" data-f="photo">Foto</button>
         <button class="filter-btn" data-f="video">Video</button>
-        <button class="chat-btn" onclick="openConfirm()">💬 Chat Dev</button>
+        <button class="chat-btn" onclick="openConfirm()"><i class="fas fa-comments"></i> Chat Dev</button>
       </div>
     </div>
   </header>
@@ -394,8 +334,8 @@
             <p id="fv-desc" class="full-desc"></p>
             <p id="fv-meta" class="full-meta"></p>
             <div class="full-actions">
-              <button id="fv-share" class="btn btn-secondary">🔗 Bagikan</button>
-              <button id="fv-app" class="btn btn-primary">📱 Buka di App</button>
+              <button id="fv-share" class="btn btn-secondary"><i class="fas fa-link"></i> Bagikan</button>
+              <button id="fv-app" class="btn btn-primary"><i class="fas fa-mobile-alt"></i> Buka di App</button>
             </div>
           </div>
         </div>
@@ -409,7 +349,7 @@
 
   <div id="modal" class="modal-overlay">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
       <div class="modal-body">
         <img id="md-img" class="modal-media" src="" alt="" decoding="async">
         <video id="md-vid" class="modal-media" controls controlsList="nodownload" playsinline preload="metadata" crossorigin="anonymous"></video>
@@ -417,8 +357,8 @@
         <p id="md-desc" style="color:var(--text-muted);margin-bottom:10px"></p>
         <p id="md-meta" style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px"></p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button id="md-share" class="btn btn-secondary">🔗 Bagikan</button>
-          <button id="md-app" class="btn btn-primary">📱 Buka di App</button>
+          <button id="md-share" class="btn btn-secondary"><i class="fas fa-link"></i> Bagikan</button>
+          <button id="md-app" class="btn btn-primary"><i class="fas fa-mobile-alt"></i> Buka di App</button>
         </div>
       </div>
     </div>
@@ -463,11 +403,6 @@
   </footer>
   <div id="toast" class="toast"></div>
 
-  <!-- Load math challenge system first -->
-  <script src="math_challenge.js"></script>
-  <script>
-    console.log('🧮 TKJ Math Challenge loaded:', typeof window.mathChallenge);
-  </script>
   <script>
     'use strict';
     const CFG = {
@@ -482,225 +417,6 @@
     let savedScrollY = 0;
     const saveScroll = () => { savedScrollY = window.scrollY; };
     const restoreScroll = () => { setTimeout(() => window.scrollTo(0, savedScrollY), 10); };
-
-    // 🤖 ROBOT VERIFICATION — menggunakan mathChallenge API [COMMENTED OUT]
-    /*
-    let challengeAttempts = 0;
-    const MAX_ATTEMPTS = 3;
-    
-    function waitForMathAPI(retries = 30) {
-      return new Promise((resolve, reject) => {
-        const check = () => {
-          if (window.mathChallenge && typeof window.mathChallenge.generate === 'function') {
-            resolve();
-          } else if (retries <= 0) {
-            reject(new Error('MathChallenge API tidak terload'));
-          } else {
-            retries--;
-            setTimeout(check, 100);
-          }
-        };
-        check();
-      });
-    }
-    
-    let robotAnswered = false;
-    
-    let isLoadingQuestion = false;
-
-    // Update attempt dots indicator
-    function updateAttemptDots() {
-      const container = document.getElementById('robot-attempts');
-      if (!container) return;
-      container.innerHTML = '';
-      
-      for (let i = 0; i < MAX_ATTEMPTS; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'attempt-dot';
-        if (i < challengeAttempts) {
-          dot.classList.add('used');
-        } else if (i === challengeAttempts) {
-          dot.classList.add('current');
-        }
-        container.appendChild(dot);
-      }
-      
-      if (challengeAttempts > 0) {
-        const label = document.createElement('div');
-        label.className = 'attempt-label';
-        label.textContent = `Kesempatan tersisa: ${MAX_ATTEMPTS - challengeAttempts}`;
-        container.appendChild(label);
-      }
-    }
-    // 🤖 ROBOT VERIFICATION POPUP
-    let robotPopupLocked = false;
-    
-    const showRobotPopup = async (force = false) => {
-      const popup = document.getElementById('robot-popup');
-      const equation = document.getElementById('robot-equation');
-      const optContainer = document.getElementById('robot-options');
-      const loadingOverlay = document.getElementById('robot-loading');
-
-      if (!popup || !equation || !optContainer) return;
-      if (robotPopupLocked) return;
-      if (!force && popup.classList.contains('active') && !isLoadingQuestion) return;
-
-      // Lock to prevent multiple calls
-      robotPopupLocked = true;
-
-      // Show loading animation - super fast
-      isLoadingQuestion = true;
-      loadingOverlay.classList.add('active');
-      equation.classList.add('loading');
-      optContainer.classList.add('loading');
-      
-      // Delay minimal hanya untuk smooth transition (20ms)
-      await new Promise(resolve => setTimeout(resolve, 20));
-
-      if (!window.mathChallenge || typeof window.mathChallenge.generate !== 'function') {
-        loadingOverlay.classList.remove('active');
-        equation.innerHTML = '❌ Sistem tidak terload. <button onclick="location.reload()" style="background:none;border:1px solid #3b82f6;color:#3b82f6;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.9rem;margin-top:8px">Refresh</button>';
-        equation.classList.remove('loading');
-        isLoadingQuestion = false;
-        robotPopupLocked = false;
-        return;
-      }
-
-      // Generate soal
-      const problem = window.mathChallenge.generate();
-      
-      // Render pertanyaan dulu (staged loading bagian 1)
-      equation.innerHTML = problem.question;
-      robotAnswered = false;
-      
-      // Hide loading overlay, tampilkan pertanyaan
-      loadingOverlay.classList.remove('active');
-      equation.classList.remove('loading');
-      
-      // Delay sangat singkat sebelum render opsi (staged loading bagian 2)
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
-      optContainer.classList.remove('loading');
-
-      // Render A/B/C/D/E options
-      optContainer.innerHTML = '';
-      if (problem.options && problem.options.length) {
-        problem.options.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.className = 'robot-opt';
-          btn.dataset.key = opt.key;
-          btn.innerHTML = `<span class="key">${opt.key}</span><span>${opt.text}</span>`;
-          
-          // Use touchstart for faster response on mobile
-          const handleTap = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (robotAnswered || isLoadingQuestion) return;
-            robotAnswered = true;
-            document.querySelectorAll('.robot-opt').forEach(b => b.disabled = true);
-
-            const result = window.mathChallenge.verify(opt.key);
-
-            if (result.tooFast) {
-              // Terlalu cepat - tampilkan pesan dan biarkan user coba lagi
-              btn.classList.add('wrong');
-              challengeAttempts++;
-              updateAttemptDots();
-              setTimeout(() => { 
-                robotAnswered = false; 
-                document.querySelectorAll('.robot-opt').forEach(b => b.disabled = false);
-                btn.classList.remove('wrong');
-              }, 900);
-              return;
-            }
-
-            if (result.success) {
-              btn.classList.add('correct');
-              challengeAttempts = 0;
-              updateAttemptDots();
-              setTimeout(() => {
-                if (popup._preventKeys) document.removeEventListener('keydown', popup._preventKeys, { capture: true });
-                popup.classList.remove('active');
-                document.body.style.overflow = '';
-                document.documentElement.style.overflow = '';
-                robotPopupLocked = false;
-              }, 150);
-            } else if (result.maxed) {
-              // 3× salah → lanjut soal baru, ga reload!
-              btn.classList.add('wrong');
-              if (result.correctAnswer) {
-                document.querySelectorAll('.robot-opt').forEach(b => {
-                  if (b.dataset.key === result.correctAnswer) b.classList.add('correct');
-                });
-              }
-              challengeAttempts = 0;
-              updateAttemptDots();
-              // Fast retry - langsung soal baru tanpa delay lama
-              setTimeout(() => { 
-                robotAnswered = false; 
-                robotPopupLocked = false;
-                showRobotPopup(true); 
-              }, 150);
-            } else {
-              challengeAttempts++;
-              updateAttemptDots();
-              btn.classList.add('wrong');
-              if (result.correctAnswer) {
-                document.querySelectorAll('.robot-opt').forEach(b => {
-                  if (b.dataset.key === result.correctAnswer) b.classList.add('correct');
-                });
-              }
-              // Fast retry - langsung soal baru tanpa delay lama
-              setTimeout(() => { 
-                robotAnswered = false; 
-                robotPopupLocked = false;
-                showRobotPopup(true); 
-              }, 150);
-            }
-          };
-          
-          btn.addEventListener('click', handler);
-          btn.addEventListener('touchstart', handleTap, { passive: false });
-          optContainer.appendChild(btn);
-        });
-      }
-
-      // Update attempt indicators
-      updateAttemptDots();
-
-      popup.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-
-      const preventKeys = (e) => {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) e.preventDefault();
-      };
-      document.addEventListener('keydown', preventKeys, { capture: true });
-      popup._preventKeys = preventKeys;
-      isLoadingQuestion = false;
-    };
-    
-    // Cek apakah sudah pernah verifikasi
-    const isRobotVerified = () => {
-      // Pakai API mathChallenge.isVerified()
-      if (window.mathChallenge && typeof window.mathChallenge.isVerified === 'function') {
-        return window.mathChallenge.isVerified();
-      }
-      // Fallback
-      if (sessionStorage.getItem('robotVerified') === 'true') {
-        const time = sessionStorage.getItem('robotVerifyTime');
-        if (time && Date.now() - parseInt(time) < 30 * 60 * 1000) return true;
-      }
-      try {
-        const stored = localStorage.getItem('tkj_math_done');
-        if (stored) {
-          const data = JSON.parse(stored);
-          if (data.verified && Date.now() - data.time < 24 * 60 * 60 * 1000) return true;
-        }
-      } catch(e) {}
-      return false;
-    };
-    */
 
     const isVideo = (item) => {
       if (item && item.gender && String(item.gender).toLowerCase() === 'video') return true;
@@ -1057,91 +773,16 @@
       window.location.href = 'https://jirankun.github.io/portofoliozhyllan';
     });
 
-    // Robot verification menggunakan A/B/C/D/E (built into showRobotPopup)
-
-    // Check maintenance on load, then robot verification
+    // Check maintenance on load
     const initPage = async () => {
-      console.log('initPage called');
-      console.log('mathChallenge API available:', typeof window.mathChallenge?.generate);
-      
       const isMaintenanceActive = await checkMaintenance();
-      
-      // Only show robot check if maintenance is NOT active
       if (!isMaintenanceActive) {
-        // Check if already verified in this session
-        const verified = isRobotVerified();
-        console.log('isRobotVerified:', verified);
-        
-        if (!verified) {
-          console.log('Showing robot popup...');
-          showRobotPopup();
-        } else {
-          console.log('Already verified, skipping popup');
-        }
-      } else {
-        console.log('Maintenance active, skipping robot check');
+        // No robot verification - just load the page
       }
     };
-    
-    // 🚨 Bersihin storage biar pas refresh dapet soal baru
-    const clearVerification = () => {
-      if (window.mathChallenge && typeof window.mathChallenge.reset === 'function') {
-        window.mathChallenge.reset();
-      }
-      try {
-        sessionStorage.removeItem('tkj_verified');
-        sessionStorage.removeItem('tkj_verify_time');
-        localStorage.removeItem('tj_math_done');
-        localStorage.removeItem('tkj_math_done');
-      } catch(e) {}
-    };
-    
-    // Hapus verifikasi pas browser mau reload/tutup — biar refresh dapet soal baru
-    window.addEventListener('beforeunload', () => {
-      clearVerification();
-    });
-    
-    // 🔍 Deteksi pindah tab — pas balik, reset & kasih soal baru
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        // Tab kembali aktif — cek maintenance dulu
-        checkMaintenance().then(isMaintenanceActive => {
-          if (isMaintenanceActive) return;
-          
-          // Selalu reset verifikasi pas balik ke tab
-          clearVerification();
-          
-          // Kalau popup gak lagi aktif, kasih soal baru
-          const popup = document.getElementById('robot-popup');
-          if (popup && !popup.classList.contains('active')) {
-            robotAnswered = false;
-            showRobotPopup();
-          }
-        });
-      }
-    });
     
     // Run initialization immediately
-    console.log('Script loaded, running initPage...');
     initPage();
-    
-    // Force robot check on page refresh/navigation (bfcache handling)
-    window.addEventListener('pageshow', async function(event) {
-      // Clear verification first — soal baru tiap refresh
-      clearVerification();
-      
-      // If page loaded from bfcache (back/forward), re-check
-      const isMaintenanceActive = await checkMaintenance();
-      if (!isMaintenanceActive && !isRobotVerified()) {
-        showRobotPopup();
-      }
-    });
-    
-    // Also check on every page load to ensure popup appears
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Check maintenance on DOM ready
-      await checkMaintenance();
-    });
     
     // 🎬 STORY FAB & DRAWER EVENTS - Setup immediately when script runs
     let closeStoryDrawer; // Declare in outer scope so it's accessible globally
