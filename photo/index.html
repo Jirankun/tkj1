@@ -314,24 +314,30 @@
     /* ── Swipe indicator dots ─────────────────── */
     #dot-indicator {
       position: fixed;
-      top: 70px; left: 50%;
+      top: 60px; left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 6px;
-      z-index: 25;
+      gap: 8px;
+      z-index: 30;
       transition: opacity 0.3s;
       pointer-events: none;
+      padding: 8px 12px;
+      background: rgba(28,28,30,0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
     }
     #dot-indicator.hidden { opacity: 0; }
     .dot {
       width: 6px; height: 6px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      transition: all 0.3s;
+      background: rgba(255,255,255,0.4);
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      flex-shrink: 0;
     }
     .dot.active {
       background: #0A84FF;
-      width: 18px;
+      width: 20px;
       border-radius: 3px;
     }
   </style>
@@ -520,6 +526,18 @@
       dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
     }
 
+    // Update dots during swipe for real-time feedback
+    function updateDotsDuringSwipe(progress) {
+      if (allPhotos.length <= 1) return;
+      const dots = dotInd.querySelectorAll('.dot');
+      dots.forEach((d, i) => {
+        d.classList.remove('active');
+        if (i === currentIdx) {
+          d.classList.add('active');
+        }
+      });
+    }
+
     // ── Hide UI on idle (video) ───────────────────
     function resetHideTimer() {
       clearTimeout(hideUITimer);
@@ -658,6 +676,10 @@
           const resistance = Math.abs(dx) > window.innerWidth ? 0.5 : 1;
           track.style.transform = 'translateX(' + (dx * resistance) + 'px)';
           track.style.opacity = Math.max(0.5, 1 - Math.abs(dx) / window.innerWidth);
+          
+          // Update dots opacity based on swipe progress
+          const swipeProgress = Math.abs(dx) / window.innerWidth;
+          dotInd.style.opacity = Math.max(0.3, 1 - swipeProgress);
         }
       }
     }, { passive: false });
@@ -693,6 +715,8 @@
         track.style.transform = '';
         track.style.opacity = '1';
       }
+      // Reset dot indicator opacity
+      dotInd.style.opacity = '';
       activeTouches = [];
     }, { passive: true });
 
