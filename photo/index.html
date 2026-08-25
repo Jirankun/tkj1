@@ -317,17 +317,25 @@
       top: 60px; left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 8px;
+      gap: 6px;
       z-index: 30;
       transition: opacity 0.3s;
       pointer-events: none;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: rgba(28,28,30,0.4);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-radius: 20px;
+      max-width: calc(100vw - 40px);
+      overflow: hidden;
     }
     #dot-indicator.hidden { opacity: 0; }
+    .dot-wrapper {
+      display: flex;
+      gap: 6px;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
     .dot {
       width: 6px; height: 6px;
       border-radius: 50%;
@@ -512,18 +520,79 @@
     }
 
     // ── Dot indicator ─────────────────────────────
+    let dotWrapper = null;
+    
     function renderDots() {
       if (allPhotos.length <= 1) { dotInd.classList.add('hidden'); return; }
       dotInd.classList.remove('hidden');
-      dotInd.innerHTML = allPhotos.map((_, i) =>
+      
+      // Buat wrapper untuk dots agar bisa di-scroll
+      dotInd.innerHTML = '<div class="dot-wrapper"></div>';
+      dotWrapper = dotInd.querySelector('.dot-wrapper');
+      dotWrapper.innerHTML = allPhotos.map((_, i) =>
         '<div class="dot' + (i === currentIdx ? ' active' : '') + '"></div>'
       ).join('');
+      
+      updateDotScroll();
     }
 
     function updateDots() {
-      if (allPhotos.length <= 1) return;
-      const dots = dotInd.querySelectorAll('.dot');
+      if (allPhotos.length <= 1 || !dotWrapper) return;
+      const dots = dotWrapper.querySelectorAll('.dot');
       dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+      updateDotScroll();
+    }
+
+    // Scroll dot aktif ke tengah
+    function updateDotScroll() {
+      if (!dotWrapper) return;
+      const dots = dotWrapper.querySelectorAll('.dot');
+      if (dots.length === 0) return;
+      
+      const activeIndex = currentIdx;
+      scrollDotsToIndex(activeIndex);
+    }
+    
+    // Scroll dots dengan index dinamis (untuk swipe)
+    function updateDotScrollDynamic(targetIndex) {
+      if (!dotWrapper) return;
+      const dots = dotWrapper.querySelectorAll('.dot');
+      if (dots.length === 0) return;
+      
+      // Clamp target index agar tidak keluar bounds
+      const clampedIndex = Math.max(0, Math.min(targetIndex, allPhotos.length - 1));
+      scrollDotsToIndex(clampedIndex);
+    }
+    
+    // Helper function untuk scroll dots ke posisi tertentu
+    function scrollDotsToIndex(index) {
+      const containerWidth = dotInd.clientWidth - 20; // padding
+      const dotWidth = 18; // lebar dot aktif
+      const gap = 6;
+      const totalDotWidth = dotWidth + gap;
+      
+      // Hitung posisi dot aktif
+      const activeDotOffset = index * totalDotWidth;
+      const centerOffset = (containerWidth / 2) - (dotWidth / 2);
+      const scrollPosition = activeDotOffset - centerOffset;
+      
+      // Batasi scroll agar tidak keluar bounds
+      const maxScroll = Math.max(0, (allPhotos.length * totalDotWidth) - containerWidth);
+      const clampedScroll = Math.max(0, Math.min(scrollPosition, maxScroll));
+      
+      dotWrapper.style.transform = `translateX(-${clampedScroll}px)`;
+    }
+
+    // Update dots during swipe for real-time feedback
+    function updateDotsDuringSwipe(progress) {
+      if (allPhotos.length <= 1 || !dotWrapper) return;
+      const dots = dotWrapper.querySelectorAll('.dot');
+      dots.forEach((d, i) => {
+        d.classList.remove('active');
+        if (i === currentIdx) {
+          d.classList.add('active');
+        }
+      });
     }
 
     // Update dots during swipe for real-time feedback
@@ -680,6 +749,13 @@
           // Update dots opacity based on swipe progress
           const swipeProgress = Math.abs(dx) / window.innerWidth;
           dotInd.style.opacity = Math.max(0.3, 1 - swipeProgress);
+          
+          // Update dot scroll position during swipe for dynamic feedback
+          if (dotWrapper && allPhotos.length > 1) {
+            const swipeIndexOffset = dx / window.innerWidth;
+            const targetIndex = currentIdx - swipeIndexOffset;
+            updateDotScrollDynamic(targetIndex);
+          }
         }
       }
     }, { passive: false });
@@ -706,6 +782,9 @@
           setTimeout(() => {
             track.style.transition = '';
           }, 300);
+          
+          // Reset dot scroll position jika swipe dibatalkan
+          updateDotScroll();
         }
       }
       isSwiping = false;
@@ -828,6 +907,13 @@
     } else {
       loadMedia();
     }
+    
+    // Update dot scroll saat window resize
+    window.addEventListener('resize', () => {
+      if (allPhotos.length > 1) {
+        updateDotScroll();
+      }
+    });
   </script>
 </body>
 </html>
