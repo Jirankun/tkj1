@@ -345,7 +345,7 @@
     }
     .dot.active {
       background: #0A84FF;
-      width: 18px;
+      width: 20px;
       border-radius: 3px;
     }
   </style>
@@ -587,6 +587,18 @@
     function updateDotsDuringSwipe(progress) {
       if (allPhotos.length <= 1 || !dotWrapper) return;
       const dots = dotWrapper.querySelectorAll('.dot');
+      dots.forEach((d, i) => {
+        d.classList.remove('active');
+        if (i === currentIdx) {
+          d.classList.add('active');
+        }
+      });
+    }
+
+    // Update dots during swipe for real-time feedback
+    function updateDotsDuringSwipe(progress) {
+      if (allPhotos.length <= 1) return;
+      const dots = dotInd.querySelectorAll('.dot');
       dots.forEach((d, i) => {
         d.classList.remove('active');
         if (i === currentIdx) {
