@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1C1C1E">
+  <meta name="theme-color" content="#0B1220">
   <meta name="description" content="TKJ OnE Media Viewer">
   <title>TKJ OnE</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -286,6 +286,12 @@
       align-items: center;
       gap: 6px;
     }
+    .footer-row[hidden] { display: none !important; }
+    .footer-uploader {
+      font-size: 12px;
+      color: #82B1FF; /* aksen biru — nama uploader */
+      letter-spacing: 0.2px;
+    }
     .footer-name {
       font-weight: 700;
       font-size: 16px;
@@ -397,6 +403,9 @@
     <div class="footer-row">
       <span class="footer-date" id="footerDate"></span>
     </div>
+    <div class="footer-row footer-uploader-row" id="footerUploaderRow" hidden>
+      <span class="footer-uploader" id="footerUploader"></span>
+    </div>
     <div class="footer-copyright">
       <span>©</span>
       <span>Hak cipta konten ini ada pada pengambilnya.</span>
@@ -437,6 +446,8 @@
     const footer = $('info-footer');
     const footerName = $('footerName');
     const footerDate = $('footerDate');
+    const footerUploaderRow = $('footerUploaderRow');
+    const footerUploader = $('footerUploader');
     const dotInd = $('dot-indicator');
 
     // ── State ─────────────────────────────────────
@@ -707,6 +718,14 @@
       // Footer info - simplified
       footerName.textContent = '#' + photo.name;
       footerDate.textContent = photo.date || '';
+      // Tampilkan uploader jika ada di data (field baru dari sistem upload)
+      if (photo.uploader) {
+        footerUploader.textContent = '📷 Diunggah oleh ' + photo.uploader;
+        footerUploaderRow.hidden = false;
+      } else {
+        footerUploader.textContent = '';
+        footerUploaderRow.hidden = true;
+      }
       document.title = 'TKJ OnE - ' + photo.name;
 
       // Update URL (pushState) - keep within /photo/index.html with query param
