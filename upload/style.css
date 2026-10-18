@@ -1,10 +1,11 @@
-/* ============================================
-   TKJ OnE Upload — Material Design (Aksen BIRU)
-   Warna selaras dengan aplikasi pendamping.
-   Tanpa hover/cursor — murni UX sentuh mobile.
-   ============================================ */
+/* ============================================================
+   TKJ OnE — Upload Foto
+   Gaya datar (tanpa kartu popup), aksen biru, khusus mobile.
+   ============================================================ */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,314 +13,377 @@
 }
 
 :root {
-  --primary: #2979FF;          /* aksen biru utama */
-  --primary-dark: #1565C0;
-  --primary-light: #82B1FF;
-  --primary-glow: rgba(41, 121, 255, 0.35);
-  --bg: #0B1220;
-  --card: #131C2E;
-  --card-border: rgba(255, 255, 255, 0.07);
-  --input-bg: #182338;
-  --input-border: rgba(255, 255, 255, 0.12);
-  --text: #FFFFFF;
-  --text-dim: rgba(255, 255, 255, 0.65);
-  --text-muted: rgba(255, 255, 255, 0.38);
-  --success: #00E676;
-  --error: #FF5252;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --primary: #2979ff;
+  --primary-dark: #1565c0;
+  --primary-light: #82b1ff;
+  --primary-glow: rgba(41, 121, 255, 0.3);
+
+  --bg: #0b1220;
+  --surface: #141d2f;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.66);
+  --text-muted: rgba(255, 255, 255, 0.4);
+
+  --success: #22c55e;
+  --error: #ff5b5b;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  overflow-x: hidden;
-  user-select: none;
-  -webkit-user-select: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ==================== HEADER ==================== */
-.app-header {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 20px 24px 0;
-}
-.app-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  color: var(--primary-light);
-}
-.app-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* ==================== MAIN (PILIH FOTO) ==================== */
+/* ==================== PILIH FOTO ==================== */
 .main-content {
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px 24px 24px;
+  padding: calc(env(safe-area-inset-top, 0px) + 34px) 22px 24px;
 }
 
 .main-upload-btn {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--primary), var(--primary-dark));
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  outline: none;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 4px 20px var(--primary-glow), 0 8px 32px rgba(0, 0, 0, 0.4);
+  width: 86px;
+  height: 86px;
+  color: #fff;
+  background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 6px 22px var(--primary-glow);
+  touch-action: manipulation;
+  transition: transform 0.15s ease;
 }
-.main-upload-btn:active { transform: scale(0.92); }
-.main-upload-btn svg { color: #fff; width: 36px; height: 36px; }
+
+.main-upload-btn:active {
+  transform: scale(0.93);
+}
+
+.main-upload-btn svg {
+  width: 34px;
+  height: 34px;
+}
 
 .upload-hint {
-  margin-top: 32px;
+  margin-top: 22px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13.5px;
+  line-height: 1.65;
 }
 
-/* ==================== FORM SECTION ==================== */
-.form-section,
-.result-section {
-  display: none;
-  margin: 16px 0 32px;
-  max-width: 400px;
-  width: calc(100% - 32px);
-  background: var(--card);
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.form-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--primary-light);
-  margin-bottom: 12px;
-  letter-spacing: 0.3px;
+/* ==================== FORM ==================== */
+.form-section {
+  width: calc(100% - 40px);
+  max-width: 440px;
+  margin: calc(env(safe-area-inset-top, 0px) + 20px) 0 36px;
 }
 
 .preview-wrap {
-  background: #000;
-  border-radius: var(--radius-md);
+  position: relative;
   overflow: hidden;
-  border: 1px solid var(--card-border);
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
 }
+
 .uploaded-preview {
   display: block;
   width: 100%;
-  max-height: 240px;
+  max-height: 260px;
   object-fit: contain;
 }
 
-/* ==================== FIELDS ==================== */
-.form-group { margin: 16px 0; text-align: left; }
+.preview-change {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(6, 11, 20, 0.78);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.preview-change:active {
+  background: rgba(41, 121, 255, 0.32);
+}
+
+.compress-note {
+  margin-top: 10px;
+  padding: 9px 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--primary-light);
+  background: rgba(41, 121, 255, 0.09);
+  border: 1px solid rgba(41, 121, 255, 0.22);
+  border-radius: var(--radius-sm);
+}
+
+.compress-note.done {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.compress-note.warn {
+  color: #ffd08a;
+  background: rgba(255, 193, 94, 0.08);
+  border-color: rgba(255, 193, 94, 0.25);
+}
+
+.form-group {
+  margin-top: 20px;
+  text-align: left;
+}
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 600;
   font-size: 12px;
-  color: var(--text-dim);
+  font-weight: 700;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  color: var(--text-dim);
 }
-.req { color: var(--primary-light); text-transform: none; letter-spacing: 0; }
 
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group textarea {
+.req {
+  margin-left: 2px;
+  color: var(--primary-light);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.field {
   width: 100%;
-  padding: 14px;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-size: 15px;
+  height: 50px;
+  padding: 0 14px;
   font-family: inherit;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.form-group input:focus,
-.form-group textarea:focus {
+
+.field:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
-.form-group input::placeholder,
-.form-group textarea::placeholder { color: var(--text-muted); }
-.form-group input[type="date"] { color-scheme: dark; }
 
-/* ==================== RADIO ==================== */
-.radio-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-
-.radio-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-sm);
-  background: var(--input-bg);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--text);
-  transition: border-color 0.15s;
-}
-.radio-option:has(input:checked) {
-  border-color: var(--primary);
-  background: rgba(41, 121, 255, 0.10);
-}
-.radio-option input {
-  accent-color: var(--primary);
-  margin: 0;
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-}
-
-/* ==================== JSON PREVIEW ==================== */
-.code-preview {
-  background: #060B14;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  margin: 16px 0;
-  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--primary-light);
-  text-align: left;
-  overflow-x: auto;
-  white-space: pre;
-  line-height: 1.5;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-/* ==================== BUTTONS ==================== */
-.submit-btn {
-  margin-top: 8px;
-  padding: 16px;
-  border: none;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  width: 100%;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: opacity 0.15s;
-}
-.submit-btn.enabled {
-  background: linear-gradient(145deg, var(--primary), var(--primary-dark));
-  color: #fff;
-  box-shadow: 0 4px 16px var(--primary-glow);
-}
-.submit-btn.enabled:active { opacity: 0.75; }
-.submit-btn.disabled {
-  background: rgba(255, 255, 255, 0.06);
+.field::placeholder {
   color: var(--text-muted);
 }
 
-/* ==================== PROGRESS OVERLAY ==================== */
-.progress-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(11, 18, 32, 0.92);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 24px;
+.field[type="date"] {
+  color-scheme: dark;
 }
-.progress-overlay.active { display: flex; }
 
-.progress-card {
-  width: 100%;
-  max-width: 320px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
-  padding: 28px 24px;
+.field-hint,
+.submit-hint {
+  margin-top: 7px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.submit-hint {
   text-align: center;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
 }
-.progress-icon { font-size: 34px; margin-bottom: 12px; }
-.progress-step {
+
+/* ==================== ERROR ==================== */
+.form-error {
+  margin-top: 16px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #ffb3b3;
+  background: rgba(255, 91, 91, 0.1);
+  border: 1px solid rgba(255, 91, 91, 0.3);
+  border-radius: var(--radius-sm);
+}
+
+/* ==================== PROGRESS INLINE ==================== */
+.progress-inline {
+  margin-top: 20px;
+}
+
+.progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
   color: var(--text-dim);
-  font-size: 14px;
-  margin-bottom: 16px;
-  min-height: 20px;
 }
-.progress-track {
-  height: 8px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--primary-light));
-  transition: width 0.25s ease;
-}
-.progress-percent {
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: 700;
+
+#progressPercent {
+  font-weight: 800;
   color: var(--primary-light);
   font-variant-numeric: tabular-nums;
 }
 
-/* ==================== RESULT ==================== */
-.result-section { text-align: center; }
-.result-icon { font-size: 44px; margin: 8px 0; }
-.result-icon.fail { color: var(--error); }
-.result-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-.result-desc { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
-.result-link {
-  display: block;
-  margin: 12px 0 20px;
-  color: var(--primary-light);
-  word-break: break-all;
-  font-size: 12px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  background: var(--input-bg);
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  user-select: text;
-  -webkit-user-select: text;
-  border: 1px solid var(--card-border);
+.progress-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
 }
 
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 480px) {
-  .main-content { padding: 36px 20px 20px; }
-  .main-upload-btn { width: 80px; height: 80px; }
-  .main-upload-btn svg { width: 32px; height: 32px; }
-  .form-section, .result-section { padding: 20px; border-radius: var(--radius-md); }
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transition: width 0.25s ease;
+}
+
+/* ==================== TOMBOL ==================== */
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 22px;
+  padding: 15px 18px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-md);
+  touch-action: manipulation;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.submit-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.submit-btn.enabled {
+  background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 6px 18px var(--primary-glow);
+}
+
+.submit-btn.enabled:active {
+  transform: scale(0.985);
+  opacity: 0.9;
+}
+
+.submit-btn.disabled {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ==================== HASIL ==================== */
+.result-section {
+  width: calc(100% - 40px);
+  max-width: 440px;
+  margin: calc(env(safe-area-inset-top, 0px) + 24px) 0 40px;
+  text-align: center;
+}
+
+.result-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 8px auto 14px;
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 50%;
+}
+
+.result-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.result-icon.fail {
+  color: var(--error);
+  background: rgba(255, 91, 91, 0.12);
+  border-color: rgba(255, 91, 91, 0.3);
+}
+
+.result-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.result-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.result-link {
+  display: block;
+  margin: 0 0 18px;
+  padding: 11px 12px;
+  font-size: 11.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--primary-light);
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+}
+
+/* ==================== UTIL ==================== */
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 380px) {
+  .main-content {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 26px);
+  }
+
+  .main-upload-btn {
+    width: 78px;
+    height: 78px;
+  }
 }

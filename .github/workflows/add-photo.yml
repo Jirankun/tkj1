@@ -1,0 +1,136 @@
+name: Add photo entry
+
+# Menambahkan hasil upload ke DB/photos.json (append di akhir array).
+# - Manual : Actions -> "Add photo entry" -> Run workflow
+# - Otomatis: POST /repos/Jirankun/tkj1/dispatches
+#   { "event_type": "add-photo",
+#     "client_payload": { "name": "17", "url": "https://...",
+#                         "date": "2026-10-19", "uploader": "admin",
+#                         "type": "photo" } }
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Nama/ID foto (harus unik)"
+        required: true
+        type: string
+      url:
+        description: "URL gambar/video (https://...)"
+        required: true
+        type: string
+      date:
+        description: "Tanggal (YYYY-MM-DD)"
+        required: true
+        type: string
+      uploader:
+        description: "Nama uploader"
+        required: false
+        default: "admin"
+        type: string
+      type:
+        description: "Tipe media"
+        required: false
+        default: "photo"
+        type: choice
+        options: [photo, video]
+
+  repository_dispatch:
+    types: [add-photo]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: add-photo
+  cancel-in-progress: false
+
+jobs:
+  add-photo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tambahkan entri ke DB/photos.json
+        env:
+          IN_NAME: ${{ github.event.inputs.name }}
+          IN_URL: ${{ github.event.inputs.url }}
+          IN_DATE: ${{ github.event.inputs.date }}
+          IN_UPLOADER: ${{ github.event.inputs.uploader }}
+          IN_TYPE: ${{ github.event.inputs.type }}
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+          DB_PATH: DB/photos.json
+        run: |
+          python3 - <<'PY'
+          import json, os, re, sys, pathlib
+
+          payload = {}
+          raw = os.environ.get("PAYLOAD", "").strip()
+          if raw and raw not in ("null", "{}"):
+              try:
+                  payload = json.loads(raw)
+              except json.JSONDecodeError:
+                  print("client_payload bukan JSON yang valid")
+                  sys.exit(1)
+
+          def pick(key, env_key):
+              v = (payload.get(key) or "").strip()
+              if not v:
+                  v = (os.environ.get(env_key) or "").strip()
+              return v
+
+          name = pick("name", "IN_NAME")
+          url = pick("url", "IN_URL")
+          date = pick("date", "IN_DATE")
+          uploader = pick("uploader", "IN_UPLOADER") or "admin"
+          kind = (pick("type", "IN_TYPE") or "photo").lower()
+
+          if not name:
+              print("name wajib diisi")
+              sys.exit(1)
+          if not re.fullmatch(r"https?://\S+", url):
+              print("url harus http(s) dan tanpa spasi")
+              sys.exit(1)
+          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+              print("date harus YYYY-MM-DD")
+              sys.exit(1)
+          if kind not in ("photo", "video"):
+              print("type harus photo/video")
+              sys.exit(1)
+
+          path = pathlib.Path(os.environ["DB_PATH"])
+          data = json.loads(path.read_text(encoding="utf-8"))
+          if not isinstance(data, list):
+              print("DB/photos.json harus berupa array")
+              sys.exit(1)
+
+          if any(str(p.get("name", "")).strip().lower() == name.lower() for p in data):
+              print(f'Entri "{name}" sudah ada, tidak ada yang diubah')
+              sys.exit(0)
+
+          data.append({
+              "name": name,
+              "type": kind,
+              "url": url.strip(),
+              "date": date,
+              "uploader": uploader,
+          })
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(f'Ditambahkan: #{name} ({kind}) oleh {uploader}')
+          PY
+
+      - name: Commit perubahan
+        run: |
+          git config user.name "tkjone-bot"
+          git config user.email "tkjone-bot@users.noreply.github.com"
+          if git diff --quiet -- DB/photos.json; then
+            echo "Tidak ada perubahan untuk di-commit"
+            exit 0
+          fi
+          git add DB/photos.json
+          git commit -m "chore(gallery): tambah hasil upload ke photos.json"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

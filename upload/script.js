@@ -1,367 +1,602 @@
 /* ============================================================
-   TKJ OnE — Upload Otomatis (ImgBB + GitHub JSON)
+   TKJ OnE — Upload Foto (ImgBB + GitHub Contents API)
    ------------------------------------------------------------
-   ALUR BARU:
-     1. User pilih foto
-     2. User isi: Nama Foto, Tanggal, Uploader (nama dia sendiri)
-     3. User klik UPLOAD → progress otomatis:
-        a. Upload gambar ke ImgBB
-        b. Ambil DB/photos.json terbaru dari branch
-        c. Tambah entri baru (name,type,url,date,gender,uploader)
-        d. Commit balik ke repo via GitHub API
-   SELESAI — tanpa WhatsApp, tanpa kontak admin.
+   Alur:
+     1. Pilih foto
+     2. Isi nama foto, tanggal, uploader
+     3. Upload -> progress inline di halaman:
+        a. foto ke ImgBB
+        b. baca DB/photos.json terbaru
+        c. entri { name, type, url, date, uploader } ditambahkan
+        d. commit ke repo lewat GitHub Contents API
 
-   ⚠️ CATATAN KEAMANAN PENTING:
-   Halaman statis tidak bisa menyembunyikan token. Token yang
-   dipakai di sini HARUS fine-grained PAT dengan akses:
-     - Contents: Read & Write  pada SATU repo ini saja
-     - Expire: 30/90 hari (wajib)
-   Simpan idealnya lewat GitHub Actions/Secrets (lihat README).
+   Konfigurasi diambil dari window.__TJK_CONFIG__ (aplikasi) atau
+   window.TJK_DEFAULTS (config.js).
    ============================================================ */
 'use strict';
 
-// ==================== KONFIGURASI ====================
-const INJ = window.__TJK_CONFIG__ || {};       // injeksi dari aplikasi pendamping (WebView)
-const DEF = window.TJK_DEFAULTS   || {};       // fallback dari ./config.js
+(function () {
+  /* ---------------- Konfigurasi ---------------- */
+  const INJ = (window.__TJK_CONFIG__ && typeof window.__TJK_CONFIG__ === 'object')
+    ? window.__TJK_CONFIG__ : {};
+  const DEF = (window.TJK_DEFAULTS && typeof window.TJK_DEFAULTS === 'object')
+    ? window.TJK_DEFAULTS : {};
 
-const IMGBB_API_KEY = INJ.IMGBB_API_KEY || DEF.IMGBB_API_KEY || "";
-const GITHUB_TOKEN  = INJ.GITHUB_TOKEN  || DEF.GITHUB_TOKEN  || "";
-const GITHUB_REPO   = INJ.GITHUB_REPO   || DEF.GITHUB_REPO   || "";
-const GITHUB_BRANCH = INJ.GITHUB_BRANCH || DEF.GITHUB_BRANCH || "main";
-const PHOTOS_PATH   = INJ.PHOTOS_PATH   || DEF.PHOTOS_PATH   || "DB/photos.json";
+  const str = (v) => String(v == null ? '' : v).trim();
 
-// ==================== ELEMEN ====================
-const $ = id => document.getElementById(id);
-const triggerBtn     = $("triggerBtn");
-const fileInput      = $("fileInput");
-const mainContent    = $("mainContent");
-const formSection    = $("formSection");
-const uploadedImg    = $("uploadedImg");
-const photoNameInput = $("photoName");
-const photoDateInput = $("photoDate");
-const uploaderInput  = $("uploaderName");
-const genderInputs   = document.querySelectorAll('input[name="gender"]');
-const codePreview    = $("codePreview");
-const submitBtn      = $("submitBtn");
-const overlay        = $("progressOverlay");
-const progressIcon   = $("progressIcon");
-const progressStep   = $("progressStep");
-const progressFill   = $("progressFill");
-const progressPct    = $("progressPercent");
-const resultSection  = $("resultSection");
-const resultIcon     = $("resultIcon");
-const resultTitle    = $("resultTitle");
-const resultDesc     = $("resultDesc");
-const resultLink     = $("resultLink");
-const againBtn       = $("againBtn");
+  const IMGBB_KEY = str(INJ.IMGBB_API_KEY || DEF.IMGBB_API_KEY);
+  const TOKEN = str(INJ.GITHUB_TOKEN || DEF.GITHUB_TOKEN);
+  const REPO = str(INJ.GITHUB_REPO || DEF.GITHUB_REPO);
+  const BRANCH = str(INJ.GITHUB_BRANCH || DEF.GITHUB_BRANCH) || 'main';
+  const PHOTOS_PATH = str(INJ.PHOTOS_PATH || DEF.PHOTOS_PATH) || 'DB/photos.json';
 
-// ==================== STATE ====================
-let selectedFile = null;
-let imgbbUrl     = "";
-let busy         = false;
+  /* ---------------- Elemen ---------------- */
+  const $ = (id) => document.getElementById(id);
 
-// ==================== UTIL ====================
-function todayISO() {
-  const n = new Date();
-  return n.getFullYear() + "-" +
-    String(n.getMonth() + 1).padStart(2, "0") + "-" +
-    String(n.getDate()).padStart(2, "0");
-}
+  const triggerBtn = $('triggerBtn');
+  const changeBtn = $('changeBtn');
+  const fileInput = $('fileInput');
+  const mainContent = $('mainContent');
+  const formSection = $('formSection');
+  const uploadedImg = $('uploadedImg');
+  const photoName = $('photoName');
+  const photoDate = $('photoDate');
+  const uploaderName = $('uploaderName');
+  const formError = $('formError');
+  const submitBtn = $('submitBtn');
+  const submitText = $('submitText');
+  const submitHint = $('submitHint');
+  const compressNote = $('compressNote');
 
-function setProgress(pct, stepText, icon) {
-  progressFill.style.width = Math.max(0, Math.min(100, pct)) + "%";
-  progressPct.textContent  = Math.round(Math.max(0, Math.min(100, pct))) + "%";
-  if (stepText) progressStep.textContent = stepText;
-  if (icon)     progressIcon.textContent = icon;
-}
+  const progressBox = $('progressBox');
+  const progressStep = $('progressStep');
+  const progressFill = $('progressFill');
+  const progressPercent = $('progressPercent');
 
-function showOverlay(on) {
-  overlay.classList.toggle("active", on);
-  overlay.setAttribute("aria-hidden", String(!on));
-  busy = on;
-}
+  const resultSection = $('resultSection');
+  const resultIcon = $('resultIcon');
+  const resultTitle = $('resultTitle');
+  const resultDesc = $('resultDesc');
+  const resultLink = $('resultLink');
+  const againBtn = $('againBtn');
 
-function getGender() {
-  const sel = document.querySelector('input[name="gender"]:checked');
-  return sel ? sel.value : "all";
-}
+  /* ---------------- State ---------------- */
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  const UPLOADER_KEY = 'tjk_uploader';
 
-function buildEntry() {
-  return {
-    name:     photoNameInput.value.trim(),
-    type:     "photo",
-    url:      imgbbUrl,
-    date:     photoDateInput.value || todayISO(),
-    gender:   getGender(),
-    uploader: uploaderInput.value.trim()
-  };
-}
+  // Foto di atas ambang ini dikompresi otomatis di perangkat user.
+  const COMPRESS_LIMIT = 10 * 1024 * 1024;
+  const COMPRESS_STEPS = [
+    { maxSize: 2560, quality: 0.85 },
+    { maxSize: 2048, quality: 0.72 },
+    { maxSize: 1600, quality: 0.6 },
+    { maxSize: 1280, quality: 0.5 }
+  ];
 
-function updatePreview() {
-  codePreview.textContent = JSON.stringify(buildEntry(), null, 2);
-}
+  let file = null;        // file asli pilihan user
+  let uploadFile = null;  // file yang benar-benar diunggah (hasil kompresi bila ada)
+  let compressing = false;
+  let previewUrl = '';
+  let busy = false;
+  let remoteUrl = '';
 
-function validateForm() {
-  const ok = !!selectedFile &&
-             photoNameInput.value.trim().length > 0 &&
-             !!photoDateInput.value &&
-             uploaderInput.value.trim().length > 0 &&
-             !busy;
-  submitBtn.className = ok ? "submit-btn enabled" : "submit-btn disabled";
-}
-
-function resetAll() {
-  selectedFile = null;
-  imgbbUrl = "";
-  fileInput.value = "";
-  photoNameInput.value = "";
-  photoDateInput.value = todayISO();
-  uploaderInput.value  = localStorage.getItem("tjk_uploader") || "";
-  document.querySelector('input[name="gender"][value="all"]').checked = true;
-  mainContent.style.display  = "flex";
-  formSection.style.display  = "none";
-  resultSection.style.display = "none";
-  updatePreview();
-  validateForm();
-}
-
-// ==================== LANGKAH 1 : PILIH FOTO ====================
-triggerBtn.addEventListener("click", () => { if (!busy) fileInput.click(); });
-
-fileInput.addEventListener("change", (e) => {
-  const file = e.target.files && e.target.files[0];
-  if (!file) return;
-
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-  const fileName = file.name || "";
-  const ext = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
-  const allowedExts = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
-  if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
-    alert("Format file tidak didukung. Gunakan JPG, PNG, WebP, atau GIF.");
-    fileInput.value = "";
-    return;
-  }
-  if (file.size > 10 * 1024 * 1024) {
-    alert("Ukuran file terlalu besar. Maksimal 10MB.");
-    fileInput.value = "";
-    return;
+  /* ---------------- Util ---------------- */
+  function todayISO() {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
   }
 
-  selectedFile = file;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    uploadedImg.src = ev.target.result;
-    mainContent.style.display = "none";
-    formSection.style.display = "block";
-    if (!photoDateInput.value) photoDateInput.value = todayISO();
-    updatePreview();
-    validateForm();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-  reader.readAsDataURL(selectedFile);
-});
-
-// ==================== BINDINGS FORM ====================
-photoNameInput.addEventListener("input", () => { updatePreview(); validateForm(); });
-photoDateInput.addEventListener("change", () => { updatePreview(); validateForm(); });
-uploaderInput.addEventListener("input", () => {
-  localStorage.setItem("tjk_uploader", uploaderInput.value.trim());
-  updatePreview();
-  validateForm();
-});
-genderInputs.forEach(r => r.addEventListener("change", () => { updatePreview(); validateForm(); }));
-
-// ==================== UPLOAD IMGEBB (dengan progress) ====================
-function uploadToImgBB() {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const fd = new FormData();
-    fd.append("key", IMGBB_API_KEY);
-    fd.append("image", selectedFile);
-
-    xhr.upload.onprogress = (ev) => {
-      if (ev.lengthComputable) {
-        // fase upload ImgBB dipetakan ke 0–70% total
-        setProgress((ev.loaded / ev.total) * 70, "Mengunggah foto ke ImgBB...", "📤");
-      }
-    };
-    xhr.onload = () => {
-      try {
-        const res = JSON.parse(xhr.responseText);
-        if (res.success && res.data && res.data.url) resolve(res.data.url);
-        else reject(new Error((res.error && res.error.message) || "ImgBB menolak file"));
-      } catch { reject(new Error("Respons ImgBB tidak valid")); }
-    };
-    xhr.onerror = () => reject(new Error("Gagal koneksi ke ImgBB"));
-    xhr.open("POST", "https://api.imgbb.com/1/upload");
-    xhr.send(fd);
-  });
-}
-
-// ==================== DECODE BASE64 → UTF-8 ====================
-function b64ToUtf8(b64) {
-  const bin = atob(b64.replace(/\n/g, ""));
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder("utf-8").decode(bytes);
-}
-
-// ==================== BACA photos.json TERKINI (+SHA) ====================
-async function readPhotosJson(token) {
-  const ghEnabled = !!GITHUB_REPO;
-
-  // -- Sumber 1: GitHub Contents API (terbaru di branch, sertakan SHA) --
-  if (ghEnabled) {
-    const headers = { "Accept": "application/vnd.github+json" };
-    if (token) headers["Authorization"] = "Bearer " + token;
-    const r = await fetch(
-      `https://api.github.com/repos/${GITHUB_REPO}/contents/${PHOTOS_PATH}?ref=${GITHUB_BRANCH}`,
-      { headers }
-    );
-    if (!r.ok) throw new Error("Gagal membaca photos.json dari GitHub (HTTP " + r.status + ")");
-    const meta = await r.json(); // { sha, content(base64), ... }
-    const text = meta.content ? b64ToUtf8(meta.content) : null;
-    if (!text) throw new Error("Konten photos.json kosong dari GitHub API");
-    const arr = JSON.parse(text);
-    if (!Array.isArray(arr)) throw new Error("photos.json bukan array valid");
-    return { list: arr, sha: meta.sha || null };
+  function photoLink(name) {
+    return location.origin + '/photo/?name=' + encodeURIComponent(name);
   }
 
-  // -- Sumber 2: tanpa repo — pakai file lokal situs yang sama (mode manual/bridge) --
-  const paths = ["../DB/photos.json", "/DB/photos.json"];
-  for (const p of paths) {
-    try {
-      const r = await fetch(p + "?t=" + Date.now(), { cache: "no-store" });
-      if (r.ok) {
-        const arr = await r.json();
-        if (Array.isArray(arr)) return { list: arr, sha: null };
-      }
-    } catch {}
-  }
-  throw new Error("Tidak dapat memuat photos.json. Isi GITHUB_REPO di config.js.");
-}
-
-// ==================== COMMIT KE GITHUB ====================
-async function commitToGitHub(contentStr, sha, token) {
-  const entry = buildEntry();
-  const message = "chore(gallery): add photo \"" + entry.name +
-                  "\" by " + entry.uploader + " (" + entry.date + ")";
-
-  const body = {
-    message: message,
-    branch:  GITHUB_BRANCH,
-    content: btoa(unescape(encodeURIComponent(contentStr))),
-    committer: { name: entry.uploader, email: entry.uploader.toLowerCase().replace(/[^a-z0-9]/g, "") + "@users.noreply.github.com" }
-  };
-  if (sha) body.sha = sha;
-
-  const r = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/${PHOTOS_PATH}`,
-    {
-      method: "PUT",
-      headers: {
-        "Accept": "application/vnd.github+json",
-        "Authorization": "Bearer " + token,
-        "X-GitHub-Api-Version": "2022-11-28"
-      },
-      body: JSON.stringify(body)
+  function showError(message) {
+    if (!message) {
+      formError.textContent = '';
+      formError.classList.add('hidden');
+      return;
     }
-  );
-
-  const res = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    throw new Error("GitHub menolak commit: " + ((res.message || "")) + " (HTTP " + r.status + ")");
-  }
-  return res;
-}
-
-// ==================== KLIK UPLOAD ====================
-submitBtn.addEventListener("click", async () => {
-  if (submitBtn.classList.contains("disabled") || busy) return;
-
-  if (!IMGBB_API_KEY) {
-    alert("IMGBB_API_KEY belum diisi. Buka upload/config.js dan isi API key ImgBB kamu.");
-    return;
+    formError.textContent = message;
+    formError.classList.remove('hidden');
   }
 
-  showOverlay(true);
-  setProgress(2, "Menyiapkan...", "📤");
+  function setProgress(value, text) {
+    const v = Math.max(0, Math.min(100, value));
+    progressFill.style.width = v + '%';
+    progressPercent.textContent = Math.round(v) + '%';
+    if (text) progressStep.textContent = text;
+  }
 
-  try {
-    // ── 1. Upload ke ImgBB ─────────────────────────────
-    imgbbUrl = await uploadToImgBB();
-    setProgress(72, "Foto tersimpan di ImgBB ✔", "🖼️");
-
-    // ── 2. Baca photos.json terkini ────────────────────
-    const hasToken = !!GITHUB_TOKEN;
-    const canCommit = hasToken && !!GITHUB_REPO;
-    const token = hasToken ? GITHUB_TOKEN : "";
-    const { list, sha } = await readPhotosJson(token);
-    setProgress(80, "Data galeri dimuat ✔", "🗂️");
-
-    // Validasi duplikat nama
-    const entry = buildEntry();
-    if (list.some(p => String(p.name).trim().toLowerCase() === entry.name.toLowerCase())) {
-      throw new Error("Nama foto \"" + entry.name + "\" sudah ada di galeri. Ganti nama lain ya.");
-    }
-
-    // ── 3. Tambah entri baru ───────────────────────────
-    list.push(entry);
-    const jsonStr = JSON.stringify(list, null, 2) + "\n";
-    setProgress(88, "Entri baru ditambahkan ✔", "🧾");
-
-    // ── 4. Commit ke GitHub ────────────────────────────
-    if (canCommit) {
-      if (!sha) throw new Error("SHA photos.json tidak ditemukan — tidak bisa commit aman.");
-      await commitToGitHub(jsonStr, sha, token);
-      setProgress(100, "Berhasil di-commit ke GitHub! 🎉", "✅");
+  function lockForm(locked) {
+    busy = locked;
+    [photoName, photoDate, uploaderName, submitBtn].forEach((el) => {
+      if (el) el.disabled = locked;
+    });
+    if (changedFileBtn) changedFileBtn.disabled = locked;
+    if (submitText) submitText.textContent = locked ? 'Mengunggah…' : 'Upload Sekarang';
+    if (locked) {
+      progressBox.classList.remove('hidden');
+      submitBtn.classList.remove('enabled');
+      submitBtn.classList.add('disabled');
     } else {
-      // Mode tanpa token (misal dijalankan oleh GitHub Actions / aplikasi pendukung):
-      // hasilkan payload siap kirim ke bridge aplikasi.
-      setProgress(100, "Payload siap dikirim ke aplikasi", "📦");
-      const payload = { repo: GITHUB_REPO, branch: GITHUB_BRANCH, path: PHOTOS_PATH, sha, message: "chore(gallery): add photo \"" + entry.name + "\"", content: jsonStr };
-      if (window.FlutterUploadHandler) {
-        window.FlutterUploadHandler.postMessage(JSON.stringify(payload));
-      } else {
-        console.warn("[TKJ Upload] GITHUB_TOKEN/GITHUB_REPO kosong. Payload manual:", payload);
-      }
+      progressBox.classList.add('hidden');
+      refreshSubmit();
+    }
+  }
+
+  const changedFileBtn = changeBtn;
+
+  function formatMB(bytes) {
+    return (bytes / (1024 * 1024)).toFixed(1).replace('.', ',') + ' MB';
+  }
+
+  function setCompressNote(text, kind) {
+    if (!compressNote) return;
+    compressNote.textContent = text || '';
+    compressNote.classList.toggle('hidden', !text);
+    compressNote.classList.toggle('done', kind === 'done');
+    compressNote.classList.toggle('warn', kind === 'warn');
+  }
+
+  function valid() {
+    return !compressing
+      && !!(uploadFile || file)
+      && photoName.value.trim().length > 0
+      && photoDate.value.length > 0
+      && uploaderName.value.trim().length > 0;
+  }
+
+  function refreshSubmit() {
+    if (busy) return;
+    const ok = valid() && IMGBB_KEY.length > 0;
+    submitBtn.disabled = !ok;
+    submitBtn.classList.toggle('enabled', ok);
+    submitBtn.classList.toggle('disabled', !ok);
+
+    if (compressing) {
+      submitHint.textContent = 'Menyiapkan foto… kamu tetap bisa mengisi data di bawah.';
+    } else if (!IMGBB_KEY) {
+      submitHint.textContent = 'Upload belum bisa dipakai: API key ImgBB belum diisi.';
+    } else if (ok) {
+      submitHint.textContent = 'Siap diunggah. Periksa data sebelum menekan tombol.';
+    } else {
+      submitHint.textContent = 'Lengkapi nama foto, tanggal, dan uploader.';
+    }
+  }
+
+  /* ---------------- Pilih foto ---------------- */
+  function pickFile() {
+    if (!busy) fileInput.click();
+  }
+
+  triggerBtn.addEventListener('click', pickFile);
+  if (changeBtn) changeBtn.addEventListener('click', pickFile);
+
+  fileInput.addEventListener('change', (e) => {
+    const picked = e.target.files && e.target.files[0];
+    if (!picked) return;
+
+    const ext = picked.name.slice(picked.name.lastIndexOf('.')).toLowerCase();
+    if (!ALLOWED_TYPES.includes(picked.type) && !ALLOWED_EXTS.includes(ext)) {
+      showError('Format tidak didukung. Gunakan JPG, PNG, WebP, atau GIF.');
+      fileInput.value = '';
+      return;
     }
 
-    // ── 5. Tampilkan hasil ─────────────────────────────
-    setTimeout(() => {
-      showOverlay(false);
-      formSection.style.display = "none";
-      resultIcon.textContent = "✅";
-      resultIcon.classList.remove("fail");
-      resultTitle.textContent = "Upload Berhasil!";
-      resultDesc.textContent =
-        "Foto \"" + entry.name + "\" oleh " + entry.uploader +
-        (canCommit ? " sudah masuk galeri TKJ OnE." : " menunggu sinkronisasi oleh aplikasi pendukung.");
-      resultLink.textContent = imgbbUrl;
-      resultSection.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 600);
+    showError('');
+    file = picked;
+    uploadFile = picked;
+    compressing = false;
+    setCompressNote('');
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      uploadedImg.src = String(ev.target.result);
+      mainContent.classList.add('hidden');
+      formSection.classList.remove('hidden');
+      formSection.setAttribute('aria-hidden', 'false');
+      if (!photoDate.value) photoDate.value = todayISO();
+      refreshSubmit();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      maybeCompress(picked);
+    };
+    reader.onerror = () => {
+      file = null;
+      showError('Gagal membaca file. Coba pilih ulang.');
+    };
+    reader.readAsDataURL(picked);
+  });
 
-  } catch (err) {
-    showOverlay(false);
-    resultIcon.textContent = "⚠️";
-    resultIcon.classList.add("fail");
-    resultTitle.textContent = "Upload Gagal";
-    resultDesc.textContent = err.message || "Terjadi kesalahan tidak diketahui.";
-    resultLink.textContent = imgbbUrl || "-";
-    formSection.style.display = "none";
-    resultSection.style.display = "block";
+  /* ---------------- Input ---------------- */
+  photoName.addEventListener('input', () => { showError(''); refreshSubmit(); });
+  photoDate.addEventListener('change', () => { showError(''); refreshSubmit(); });
+  uploaderName.addEventListener('input', () => {
+    localStorage.setItem(UPLOADER_KEY, uploaderName.value.trim());
+    showError('');
+    refreshSubmit();
+  });
+
+  /* ---------------- Kompresi foto besar ---------------- */
+  function compressOnce(srcFile, step) {
+    return new Promise((resolve, reject) => {
+      if (typeof window.Compressor !== 'function') {
+        reject(new Error('Library kompresi tidak tersedia'));
+        return;
+      }
+      new window.Compressor(srcFile, {
+        maxWidth: step.maxSize,
+        maxHeight: step.maxSize,
+        quality: step.quality,
+        mimeType: 'image/jpeg',
+        success: resolve,
+        error: reject
+      });
+    });
   }
-});
 
-// ==================== UPLOAD LAGI ====================
-againBtn.addEventListener("click", resetAll);
+  async function compressToLimit(srcFile) {
+    let result = null;
+    for (let i = 0; i < COMPRESS_STEPS.length; i++) {
+      setCompressNote('Mengompres ' + formatMB(srcFile.size) + '…');
+      try {
+        result = await compressOnce(srcFile, COMPRESS_STEPS[i]);
+      } catch (e) {
+        return null;
+      }
+      if (result && result.size <= COMPRESS_LIMIT) break;
+    }
+    return result;
+  }
 
-// ==================== INIT ====================
-(function init() {
-  photoDateInput.value = todayISO();
-  photoDateInput.max   = todayISO();
-  uploaderInput.value  = localStorage.getItem("tjk_uploader") || "";
-  updatePreview();
-  validateForm();
+  async function maybeCompress(srcFile) {
+    if (srcFile.size <= COMPRESS_LIMIT) {
+      setCompressNote('');
+      return;
+    }
+
+    if (srcFile.type === 'image/gif') {
+      setCompressNote(
+        'GIF ' + formatMB(srcFile.size) + ' tidak dikompresi agar tetap bergerak.',
+        'warn'
+      );
+      return;
+    }
+
+    compressing = true;
+    refreshSubmit();
+    setCompressNote('Foto ' + formatMB(srcFile.size) + ' — mengompres di perangkat…');
+
+    const out = await compressToLimit(srcFile);
+
+    // Abaikan hasil bila user sudah memilih foto lain.
+    if (srcFile !== file) return;
+
+    compressing = false;
+
+    if (out && out.size < srcFile.size) {
+      uploadFile = out;
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(out);
+      uploadedImg.src = previewUrl;
+      setCompressNote(
+        'Foto diringkas ' + formatMB(srcFile.size) + ' → ' + formatMB(out.size) + ' ✓',
+        'done'
+      );
+    } else {
+      setCompressNote(
+        'Kompresi tidak berhasil. Foto asli (' + formatMB(srcFile.size) + ') tetap dipakai.',
+        'warn'
+      );
+    }
+
+    refreshSubmit();
+  }
+
+  /* ---------------- ImgBB ---------------- */
+  function uploadToImgBB() {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const body = new FormData();
+      body.append('key', IMGBB_KEY);
+      body.append('image', uploadFile || file);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          setProgress((e.loaded / e.total) * 70, 'Mengunggah foto…');
+        }
+      };
+
+      xhr.onload = () => {
+        let res = null;
+        try { res = JSON.parse(xhr.responseText); } catch (e) { /* di bawah */ }
+        if (res && res.success && res.data && res.data.url) {
+          resolve(String(res.data.url));
+        } else {
+          const msg = res && res.error && res.error.message;
+          reject(new Error(msg || 'ImgBB menolak file (HTTP ' + xhr.status + ').'));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error('Gagal terhubung ke ImgBB.'));
+      xhr.ontimeout = () => reject(new Error('Upload ke ImgBB melewati batas waktu.'));
+
+      xhr.open('POST', 'https://api.imgbb.com/1/upload');
+      xhr.timeout = 60000;
+      xhr.send(body);
+    });
+  }
+
+  /* ---------------- GitHub ---------------- */
+  function b64ToUtf8(b64) {
+    const bin = atob(String(b64).replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
+  function utf8ToB64(text) {
+    const bytes = new TextEncoder().encode(text);
+    let bin = '';
+    bytes.forEach((b) => { bin += String.fromCharCode(b); });
+    return btoa(bin);
+  }
+
+  function ghHeaders(withAuth) {
+    const h = {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+    if (withAuth) h.Authorization = 'Bearer ' + TOKEN;
+    return h;
+  }
+
+  async function readPhotos() {
+    const url = 'https://api.github.com/repos/' + REPO +
+      '/contents/' + PHOTOS_PATH + '?ref=' + encodeURIComponent(BRANCH);
+    const res = await fetch(url + '&t=' + Date.now(), { headers: ghHeaders(!!TOKEN) });
+
+    if (res.status === 404) throw new Error('File ' + PHOTOS_PATH + ' tidak ditemukan di repo.');
+    if (!res.ok) throw new Error('Gagal membaca data galeri (HTTP ' + res.status + ').');
+
+    const meta = await res.json();
+    if (!meta.content) throw new Error('Isi data galeri kosong.');
+
+    let data;
+    try { data = JSON.parse(b64ToUtf8(meta.content)); } catch (e) {
+      throw new Error('Data galeri bukan JSON yang valid.');
+    }
+
+    const list = Array.isArray(data) ? data
+      : (Array.isArray(data.entries) ? data.entries : null);
+    if (!list) throw new Error('Struktur data galeri tidak dikenali.');
+
+    return { data, list, sha: meta.sha || null };
+  }
+
+  function serialize(data, list) {
+    const out = Array.isArray(data) ? list : Object.assign({}, data, { entries: list });
+    return JSON.stringify(out, null, 2) + '\n';
+  }
+
+  async function commit(text, sha) {
+    const entryName = photoName.value.trim();
+    const uploader = uploaderName.value.trim();
+    const date = photoDate.value;
+
+    const body = {
+      message: 'chore(gallery): add "' + entryName + '" by ' + uploader + ' (' + date + ')',
+      content: utf8ToB64(text),
+      branch: BRANCH
+    };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(
+      'https://api.github.com/repos/' + REPO + '/contents/' + PHOTOS_PATH,
+      {
+        method: 'PUT',
+        headers: Object.assign(ghHeaders(true), { 'Content-Type': 'application/json' }),
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (res.status === 409) {
+      const err = new Error('CONFLICT');
+      err.conflict = true;
+      throw err;
+    }
+
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(
+        'GitHub menolak menyimpan data (' + res.status + ')' +
+        (payload && payload.message ? ': ' + payload.message : '.')
+      );
+    }
+    return payload;
+  }
+
+  /* ---------------- Bridge aplikasi ---------------- */
+  function sendToAppBridge(payload) {
+    try {
+      if (window.FlutterUploadHandler &&
+          typeof window.FlutterUploadHandler.postMessage === 'function') {
+        window.FlutterUploadHandler.postMessage(JSON.stringify(payload));
+        return true;
+      }
+    } catch (e) { /* diabaikan */ }
+
+    try {
+      if (window.AndroidInterface &&
+          typeof window.AndroidInterface.savePhoto === 'function') {
+        window.AndroidInterface.savePhoto(JSON.stringify(payload));
+        return true;
+      }
+    } catch (e) { /* diabaikan */ }
+
+    return false;
+  }
+
+  /* ---------------- Hasil ---------------- */
+  function showResult(ok, title, desc, link) {
+    formSection.classList.add('hidden');
+    formSection.setAttribute('aria-hidden', 'true');
+    mainContent.classList.add('hidden');
+    resultSection.classList.remove('hidden');
+    resultSection.setAttribute('aria-hidden', 'false');
+
+    resultIcon.classList.toggle('fail', !ok);
+    resultIcon.innerHTML = ok
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12 3.4 13.4 9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2Zm1 15h-2v-2h2v2Zm0-4h-2V9h2v4Z"/></svg>';
+
+    resultTitle.textContent = title;
+    resultDesc.textContent = desc;
+
+    if (link) {
+      resultLink.href = link;
+      resultLink.textContent = 'Buka foto';
+      resultLink.classList.remove('hidden');
+    } else {
+      resultLink.classList.add('hidden');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ---------------- Submit ---------------- */
+  submitBtn.addEventListener('click', async () => {
+    if (busy || !valid()) {
+      showError('Lengkapi nama foto, tanggal, dan uploader dulu.');
+      return;
+    }
+
+    showError('');
+    lockForm(true);
+    setProgress(2, 'Menyiapkan…');
+    remoteUrl = '';
+
+    const entry = {
+      name: photoName.value.trim(),
+      type: 'photo',
+      url: '',
+      date: photoDate.value,
+      uploader: uploaderName.value.trim()
+    };
+
+    try {
+      remoteUrl = await uploadToImgBB();
+      entry.url = remoteUrl;
+      setProgress(70, 'Foto tersimpan ✓');
+
+      if (!REPO) {
+        throw new Error('Repo GitHub belum diatur, data galeri tidak bisa disimpan.');
+      }
+
+      setProgress(78, 'Membaca data galeri…');
+      let { data, list, sha } = await readPhotos();
+
+      const dup = list.some(
+        (p) => String(p && p.name).trim().toLowerCase() === entry.name.toLowerCase()
+      );
+      if (dup) {
+        throw new Error('Nama foto "' + entry.name + '" sudah dipakai. Gunakan nama lain.');
+      }
+
+      let nextList = list.concat([entry]);
+      setProgress(86, 'Menyimpan entri baru…');
+
+      if (!TOKEN) {
+        const payload = {
+          repo: REPO,
+          branch: BRANCH,
+          path: PHOTOS_PATH,
+          sha: sha,
+          entry: entry,
+          content: serialize(data, nextList)
+        };
+        const sent = sendToAppBridge(payload);
+        if (!sent) {
+          throw new Error('Token GitHub belum diatur, jadi data tidak bisa disimpan otomatis.');
+        }
+        setProgress(100, 'Dikirim ke aplikasi ✓');
+        lockForm(false);
+        showResult(true, 'Terkirim ke aplikasi',
+          'Foto "' + entry.name + '" sudah di ImgBB. Data galeri diteruskan ke aplikasi.',
+          remoteUrl);
+        return;
+      }
+
+      let saved = false;
+      for (let attempt = 0; attempt < 2 && !saved; attempt++) {
+        try {
+          await commit(serialize(data, nextList), sha);
+          saved = true;
+        } catch (err) {
+          if (err && err.conflict && attempt === 0) {
+            setProgress(80, 'Data berubah, menyegarkan ulang…');
+            const fresh = await readPhotos();
+            data = fresh.data;
+            sha = fresh.sha;
+            const stillDup = fresh.list.some(
+              (p) => String(p && p.name).trim().toLowerCase() === entry.name.toLowerCase()
+            );
+            if (stillDup) {
+              throw new Error('Nama foto "' + entry.name + '" baru saja dipakai orang lain.');
+            }
+            nextList = fresh.list.concat([entry]);
+            continue;
+          }
+          throw err;
+        }
+      }
+
+      if (!saved) throw new Error('Gagal menyimpan data galeri.');
+
+      setProgress(100, 'Selesai ✓');
+      lockForm(false);
+      showResult(true, 'Upload berhasil',
+        'Foto "' + entry.name + '" oleh ' + entry.uploader + ' sudah masuk galeri.',
+        photoLink(entry.name));
+    } catch (err) {
+      lockForm(false);
+      showResult(false, 'Upload gagal',
+        err && err.message ? err.message : 'Terjadi kesalahan.',
+        remoteUrl || null);
+    }
+  });
+
+  /* ---------------- Upload lagi ---------------- */
+  againBtn.addEventListener('click', () => {
+    file = null;
+    uploadFile = null;
+    compressing = false;
+    remoteUrl = '';
+    fileInput.value = '';
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = ''; }
+    uploadedImg.removeAttribute('src');
+    photoName.value = '';
+    photoDate.value = todayISO();
+    uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+    showError('');
+    setCompressNote('');
+    setProgress(0, 'Menyiapkan…');
+
+    resultSection.classList.add('hidden');
+    resultSection.setAttribute('aria-hidden', 'true');
+    formSection.classList.add('hidden');
+    formSection.setAttribute('aria-hidden', 'true');
+    mainContent.classList.remove('hidden');
+
+    refreshSubmit();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---------------- Init ---------------- */
+  photoDate.value = todayISO();
+  photoDate.max = todayISO();
+  uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+  refreshSubmit();
 })();

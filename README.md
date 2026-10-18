@@ -1,237 +1,259 @@
+# TKJ OnE — Web Galeri Kelas
+
+Situs statis (tanpa framework, tanpa build step) untuk galeri foto/video kelas, plus satu halaman upload yang **dipanggil dari aplikasi Android** lewat in-app browser.
+
+Repo web: `Jirankun/tkj1` · Situs: `https://tkj1.pages.dev`
+
 ---
 
-# 📸 Dokumentasi Album Foto Kelas – TKJ OnE
+## 1. Status & verifikasi
 
-> Sebuah proyek ringan namun bermakna untuk mendokumentasikan kebersamaan kelas, dibangun dengan prinsip performa, aksesibilitas, dan kemudahan pemeliharaan — sesuai semangat **TKJ OnE**: *One Team, One Spirit, One Excellence*.
+- Semua halaman web lolos cek sintaks, id DOM, dan link lokal.
+- Alur upload diuji di DOM (jsdom): pilih foto → validasi → progress inline → hasil → link foto.
+- Kompresi diuji: file > 10 MB dikompres, hasil kompresi yang diunggah; file kecil tidak disentuh; fallback ke file asli bila kompresi gagal.
+- Aplikasi Android (`Jirankun/TKJ-One`) berhasil `assembleDebug`.
+- **Belum diuji**: upload jaringan nyata (ImgBB + GitHub) dan tampilan di perangkat/emulator.
+- Upload di server **baru aktif setelah `upload/config.js` diinjeksi**. Tanpa injeksi, tombol upload sengaja nonaktif dan menampilkan pesan.
 
 ---
 
-## 🗂️ Struktur Folder
+## 2. Struktur file
 
 ```
-Album kelas/
-├── index.html                 # Halaman utama – responsif, tema gelap/terang, fitur interaktif
-├── DB/
-│   └── photos.json           # Database foto dalam format JSON (satu-satunya sumber data)
-└── README.md                 # Dokumentasi ini – panduan lengkap untuk kontributor
+tkj1/
+├── index.html                  # Galeri: pencarian, filter, grid, banner unduh app
+├── photo/index.html            # Pratinjau media (gaya aplikasi): bar atas + info bawah
+├── story/index.html            # Cerita (media terbaru), progress bar, nav bawah
+├── upload/                     # Halaman upload (app-only, noindex)
+│   ├── index.html              # Pilih foto → form → progress inline → hasil
+│   ├── style.css               # Tema gelap + aksen biru, tanpa kartu popup
+│   ├── script.js               # Kompresi, ImgBB, GitHub Contents API, bridge
+│   ├── config.js               # Placeholder; diisi lewat injeksi/env
+│   └── vendor/
+│       ├── compressor.min.js   # compressorjs 1.4.0 (MIT)
+│       └── LICENSE.compressorjs
+├── assets/theme.css            # Token warna, komponen, nav bawah, banner
+├── DB/photos.json              # Sumber data galeri (array JSON)
+├── sw.js                       # Service worker (cache v3)
+├── _redirects                  # /photo/:name → /photo/?name=:name (301)
+├── robots.txt · sitemap.xml
+└── .github/workflows/
+    ├── add-photo.yml           # Tambah entri ke DB/photos.json (ubuntu-latest + python3)
+    └── web-deploy.yml          # Injeksi config + deploy Cloudflare Pages
 ```
+
+Aplikasi Android berada di repo terpisah (`Jirankun/TKJ-One`): `app/src/main/assets/upload/` adalah salinan halaman upload untuk pemakaian lokal WebView, sedangkan alur produksi memakai URL server.
 
 ---
 
-## ➕ Cara Menambahkan Foto Baru
+## 3. Routing & URL
 
-### 1. Edit File `DB/photos.json`
+| URL | Isi | Catatan |
+|---|---|---|
+| `/` | Galeri | Kartu menuju `/photo/?name=ID` |
+| `/photo/?name=<ID>` | Pratinjau foto/video | Bentuk **kanonik**, langsung tanpa lewat beranda |
+| `/photo/<ID>` | Redirect 301 ke bentuk kanonik | Link lama |
+| `/story/` | Cerita | `noindex` |
+| `/upload/` | Upload | `noindex`, tidak ditautkan dari web |
 
-File ini adalah **satu-satunya sumber kebenaran** (*single source of truth*) untuk semua foto. Tidak ada gambar disimpan lokal — semuanya di-host eksternal untuk efisiensi dan kompatibilitas offline-first jika diperlukan di masa depan.
-
-Contoh entri dasar:
-```json
-{
-  "photos": [
-    {
-      "name": "Nama Siswa",
-      "gender": "male",
-      "url": "https://link-ke-gambar.jpg"
-    }
-  ]
-}
-```
-
-### 2. Format Data yang Valid
-
-| Field     | Tipe    | Nilai yang Diizinkan                     | Catatan |
-|-----------|---------|------------------------------------------|--------|
-| `name`    | String  | Nama lengkap atau panggilan              | Unik & mudah dikenali |
-| `gender`  | String  | `"male"` atau `"female"`                 | Digunakan untuk filter |
-| `url`     | String  | URL publik ke gambar (HTTPS)             | Gunakan CDN seperti ImgBB |
-
-### 3. Contoh Penambahan Multi-Foto
-
-```json
-{
-  "photos": [
-    {
-      "name": "Zhyllan",
-      "gender": "male",
-      "url": "https://i.ibb.co/Fqy0Dgdj/4-Nov-14-35-lmc-8-4-1.jpg"
-    },
-    {
-      "name": "Thallita",
-      "gender": "female",
-      "url": "https://i.ibb.co/8xYtK6m/thallita.jpg"
-    },
-    {
-      "name": "Siswa Baru",
-      "gender": "male",
-      "url": "https://i.ibb.co/new-id/photo.jpg"
-    }
-  ]
-}
-```
-
-> 💡 **Best Practice**: Simpan ID unik di path URL (misal: `i.ibb.co/<ID>/nama.jpg`) agar mudah dilacak.
+Nav bawah (`Galeri · Cerita`) tampil di galeri & cerita. Halaman pratinjau sengaja tanpa nav (gaya viewer aplikasi).
 
 ---
 
-## ☁️ Rekomendasi Hosting Gambar
+## 4. Sumber data — `DB/photos.json`
 
-Untuk menjaga **performa dan stabilitas**, gunakan layanan berikut:
-
-- ✅ **[ImgBB](https://imgbb.com)** *(rekomendasi utama)*  
-  - Gratis, tanpa watermark, mendukung HTTPS, dan stabil.
-- Alternatif: Imgur, Postimages.org  
-  - Hindari layanan yang memblokir hotlinking atau menambahkan iklan.
-
-> ⚠️ Pastikan link **langsung ke gambar** (bukan halaman web). Contoh benar: `https://i.ibb.co/xxx/image.jpg`
-
----
-
-## 🧩 Format JSON yang Benar
-
-Pastikan struktur JSON **valid**:
+Berupa **array**. Setiap entri:
 
 ```json
 {
-  "photos": [
-    { "name": "Ali", "gender": "male", "url": "https://..." },
-    { "name": "Bella", "gender": "female", "url": "https://..." }
-  ]
-}
-```
-
-### Aturan Penting:
-- Gunakan **kutip ganda (`"`)** — bukan kutip tunggal.
-- **Tidak ada koma** setelah item terakhir dalam array.
-- Validasi dengan [JSONLint](https://jsonlint.com/) jika ragu.
-
----
-
-## 📤 Sistem Upload Otomatis (halaman `/upload`)
-
-Alur baru — **tanpa WhatsApp, tanpa kontak admin**, semua otomatis:
-
-1. User **pilih foto** dari galeri.
-2. User isi **Nama Foto**, **Tanggal**, dan **Uploader** (nama dia sendiri).
-3. User klik **UPLOAD** → progress bar berjalan otomatis:
-   - Foto diunggah ke **ImgBB** (progress real-time).
-   - `DB/photos.json` terbaru dibaca langsung dari branch via **GitHub Contents API**.
-   - Entri baru ditambahkan + **di-commit balik ke repo** (langsung tampil di galeri web & aplikasi setelah deploy).
-
-Format entri baru di `DB/photos.json`:
-
-```json
-{
-  "name": "Kenangan kelas XI",
+  "name": "17",
   "type": "photo",
-  "url": "https://i.ibb.co.com/xxxx.jpg",
+  "url": "https://i.ibb.co.com/xxxx/foto.jpg",
   "date": "2026-10-19",
-  "gender": "all",
-  "uploader": "Nama Si Pengunggah"
+  "uploader": "admin"
 }
 ```
 
-Field **`uploader`** ditampilkan oleh halaman `/photo` (footer) dan bisa dipakai aplikasi pendamping.
+| Field | Wajib | Keterangan |
+|---|---|---|
+| `name` | ya | ID unik (dipakai di URL). Duplikat ditolak |
+| `url` | ya | URL gambar/video (https) |
+| `type` | tidak | `photo` (default) atau `video` |
+| `date` | tidak | `YYYY-MM-DD` |
+| `uploader` | tidak | Nama pengunggah, ditampilkan di kartu & pratinjau |
 
-### ⚙️ Konfigurasi (`upload/config.js`)
+Data saat ini: **284 entri**, semuanya `uploader: "admin"`. File ditulis ulang dengan indentasi 2 spasi dan newline akhir.
 
-| Key | Isi | Keterangan |
-|-----|-----|------------|
-| `IMGBB_API_KEY` | key ImgBB kamu | https://api.imgbb.com |
-| `GITHUB_REPO` | `"username/repo"` | repo tempat `DB/photos.json` berada |
-| `GITHUB_BRANCH` | `"main"` | branch tujuan commit |
-| `PHOTOS_PATH` | `"DB/photos.json"` | path file data |
+Dibaca oleh galeri, cerita, pratinjau, dan aplikasi Android (`PHOTOS_JSON_URL`) memakai cache-buster `?t=<timestamp>`.
 
-Aplikasi pendamping (WebView) boleh menyuntik config dinamis sebelum `script.js` jalan:
+---
+
+## 5. Alur upload
+
+1. User memilih foto (JPG/PNG/WebP/GIF).
+2. Pratinjau tampil. Jika ukuran > **10 MB** dan bukan GIF, kompresi jalan otomatis di perangkat sambil user mengisi form:
+   - library `compressorjs`, output JPEG, empat tahap: 2560px/0.85 → 2048px/0.72 → 1600px/0.6 → 1280px/0.5;
+   - berhenti saat hasil ≤ 10 MB;
+   - pratinjau diganti blob hasil kompresi, status inline menunjukkan “18,4 MB → 2,9 MB”;
+   - GIF tidak dikompresi (agar animasi tetap); jika kompresi gagal, file asli tetap dipakai.
+3. Form: **Nama Foto**, **Tanggal**, **Uploader** (nama user). Nama uploader disimpan di `localStorage` (`tjk_uploader`).
+4. Klik Upload → progress inline (bukan popup):
+   - `POST https://api.imgbb.com/1/upload` (form: `key`, `image`), progress 0–70%;
+   - `GET` GitHub Contents API untuk `DB/photos.json` + `sha`;
+   - cek duplikat `name` (case-insensitive);
+   - `PUT` GitHub Contents API untuk commit entri baru; jika 409 → baca ulang + coba sekali lagi;
+   - hasil menampilkan tautan langsung `/photo/?name=<ID>`.
+5. Tanpa `GITHUB_TOKEN`: data tidak di-commit; payload dikirim ke aplikasi lewat bridge.
+
+### Konfigurasi (wajib untuk produksi)
+
+`upload/config.js` hanya placeholder. Nilai dibaca dari `window.__TJK_CONFIG__` (prioritas) atau `window.TJK_DEFAULTS`:
+
+| Key | Isi |
+|---|---|
+| `IMGBB_API_KEY` | API key ImgBB |
+| `GITHUB_TOKEN` | fine-grained PAT, `Contents: Read & Write`, hanya repo web |
+| `GITHUB_REPO` | `Jirankun/tkj1` |
+| `GITHUB_BRANCH` | `main` |
+| `PHOTOS_PATH` | `DB/photos.json` |
+
+Jangan pernah commit nilai asli. `web-deploy.yml` mengisi file ini di runner sebelum deploy.
+
+### Bridge aplikasi (jika tanpa token)
 
 ```js
-webView.evaluateJavascript("window.__TJK_CONFIG__={IMGBB_API_KEY:'...',GITHUB_TOKEN:'...',GITHUB_REPO:'user/repo',GITHUB_BRANCH:'main'}");
+window.FlutterUploadHandler.postMessage(JSON.stringify(payload))
+// atau
+window.AndroidInterface.savePhoto(JSON.stringify(payload))
 ```
 
-Bridge yang dipertahankan: `window.FlutterUploadHandler.postMessage(payload)` (mode tanpa token → payload JSON siap-commit dikirim ke aplikasi), dan deep link URI `tkjone://photo/<nama>` dari halaman `/photo`.
+Payload: `{ repo, branch, path, sha, entry: { name, type, url, date, uploader }, content }`.
 
-### 🔐 GitHub Secrets / ENV (untuk Actions)
+### Kontrak GitHub Contents API
 
-Simpan di **Settings → Secrets and variables → Actions**:
+`GET /repos/Jirankun/tkj1/contents/DB/photos.json?ref=main` → `{ content (base64), sha }`
 
-| Nama Secret | Nilai |
-|-------------|-------|
-| `IMGBB_API_KEY` | API key ImgBB |
-| `GITHUB_TOKEN` | fine-grained PAT (Contents: Read & Write, satu repo saja) — atau `${{ secrets.GITHUB_TOKEN }}` bawaan Actions |
-| `GH_REPO` | `username/repo` |
-| `GH_BRANCH` | `main` |
+`PUT /repos/Jirankun/tkj1/contents/DB/photos.json`
 
-Lalu pada workflow deploy, sematkan nilainya ke `upload/config.js` (contoh step):
-
-```yaml
-- name: Inject secrets into upload config
-  env:
-    IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}   # <-- API KEY IMGEBB MASUK KE SINI
-    GH_REPO:       ${{ secrets.GH_REPO }}         # <-- "username/repo" MASUK KE SINI
-    GH_BRANCH:     ${{ secrets.GH_BRANCH }}       # <-- nama branch MASUK KE SINI
-  run: |
-    sed -i "s|IMGBB_API_KEY: \"[^\"]*\"|IMGBB_API_KEY: \"$IMGBB_API_KEY\"|" upload/config.js
-    sed -i "s|GITHUB_REPO:   \"[^\"]*\"|GITHUB_REPO:   \"$GH_REPO\"|"           upload/config.js
-    sed -i "s|GITHUB_BRANCH: \"[^\"]*\"|GITHUB_BRANCH: \"$GH_BRANCH\"|"         upload/config.js
+```json
+{
+  "message": "chore(gallery): add \"17\" by admin (2026-10-19)",
+  "content": "<base64 JSON baru>",
+  "branch": "main",
+  "sha": "<sha lama>"
+}
 ```
 
-> ⚠️ Halaman statis tidak bisa menyembunyikan rahasia. Token yang dipakai browser **harus** fine-grained PAT berumur pendek dengan akses *Contents: Read & Write* hanya ke repo ini. Untuk keamanan maksimal, suruh aplikasi pendamping yang menyuntik `window.__TJK_CONFIG__` (token tidak pernah tertulis di file publik).
+---
+
+## 6. Integrasi aplikasi Android
+
+- **Halaman upload**: `AppConfig.UPLOAD_URL` = `https://tkj1.pages.dev/upload`, dibuka lewat Custom Tab / in-app browser.
+- **Link foto** (share/copy): `https://tkj1.pages.dev/photo/?name=<ID>` (URL-encoded). Aplikasi juga menerima `tkjone://photo/<ID>`.
+- **AndroidManifest** (`UriViewerActivity`) menangkap:
+  - `https://tkj1.pages.dev/photo...` (`pathPrefix="/photo"`), dan
+  - skema `tkjone`.
+- **Ekstraksi ID** (`UriViewerActivity.extractPhotoName`) mendukung:
+  - `?name=ID` / `?id=ID`;
+  - `https://host/photo/<ID>`;
+  - `tkjone://photo/<ID>`;
+  - `tkjone://photo?name=<ID>`.
+- **Model** `Photo` punya `uploader`; detail foto (viewer & deep link) menampilkan “Diunggah oleh …”.
+- Data aplikasi diambil dari `PHOTOS_JSON_URL` (`.../DB/photos.json`).
 
 ---
 
-## 🌟 Fitur Website (TKJ OnE Edition)
+## 7. Service worker (`sw.js`)
 
-| Fitur                          | Deskripsi |
-|-------------------------------|----------|
-| 🔤 Sortir Otomatis            | Foto diurutkan A–Z berdasarkan nama |
-| 🚻 Filter Gender              | Tampilkan hanya laki-laki/perempuan |
-| 🔍 Pencarian Real-time        | Cari berdasarkan nama (case-insensitive) |
-| 🌓 Toggle Tema                | Simpan preferensi tema (gelap/terang) di localStorage |
-| 📱 Responsive Design          | Tampil sempurna di HP, tablet, desktop |
-| ⏳ Lazy Loading               | Gambar dimuat saat scroll — hemat kuota & RAM |
-| 💾 Download Foto              | Tombol unduh dengan timestamp otomatis |
-| 📞 Menu Developer             | Akses cepat ke kontak WhatsApp (untuk kolaborasi & feedback) |
-| 🧠 Persistensi Preferensi     | Filter, pencarian, dan tema diingat antar kunjungan |
-
-> Semua fitur dibangun **tanpa framework berat** — murni HTML, CSS, dan Vanilla JavaScript — demi efisiensi dan kompatibilitas jangka panjang.
+- Cache `tkjone-v3`; precache: `/`, `/index.html`, `/photo/`, `/story/`, `/assets/theme.css`, `/DB/photos.json`.
+- Navigasi & file `.json` → **network-first** (data selalu segar).
+- Aset statis → cache-first.
+- Request ke origin lain (gambar ImgBB) tidak disentuh.
 
 ---
 
-## 🛠️ Tips & Best Practices
+## 8. GitHub Actions
 
-1. **Nama Siswa**: Gunakan nama yang **unik dan konsisten** (hindari duplikat).
-2. **Ukuran Gambar**: Kompres ke **200–500 KB** (gunakan [TinyPNG](https://tinypng.com/) atau [Squoosh](https://squoosh.app/)).
-3. **Format**: `.jpg` lebih ringan; `.png` jika butuh transparansi.
-4. **Link Aktif**: Uji setiap URL sebelum commit — pastikan bisa diakses publik.
-5. **Git Friendly**: Setiap perubahan di `photos.json` bisa dilacak via version control.
+Semua workflow web ada di **repo web** (`Jirankun/tkj1`), berjalan di `ubuntu-latest` dan memakai `python3` bawaan runner.
+
+### 8.1 `add-photo.yml` — menambah hasil upload ke JSON
+
+- Trigger: `workflow_dispatch` (input: name, url, date, uploader, type) dan `repository_dispatch` tipe `add-photo`.
+- Aksi: validasi (URL http(s), tanggal `YYYY-MM-DD`, tipe photo/video), cek duplikat nama, **append entri baru di akhir array**, commit `DB/photos.json`, `git pull --rebase` lalu push.
+- Permission: `contents: write`; concurrency `add-photo` agar tidak balapan.
+
+Dispatch manual via API:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $GH_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/Jirankun/tkj1/dispatches \
+  -d '{
+    "event_type": "add-photo",
+    "client_payload": {
+      "name": "17",
+      "url": "https://i.ibb.co.com/xxxx/foto.jpg",
+      "date": "2026-10-19",
+      "uploader": "admin",
+      "type": "photo"
+    }
+  }'
+```
+
+### 8.2 `web-deploy.yml` — injeksi config + deploy
+
+- Trigger: push ke `main` / manual.
+- Menolak jalan bila secret wajib kosong.
+- Mengisi `upload/config.js` **hanya di runner** (tidak di-commit), lalu `wrangler pages deploy`.
+- Secret: `IMGBB_API_KEY`, `GH_UPLOAD_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
+
+> Jika Cloudflare Pages sudah terhubung otomatis ke GitHub, workflow ini opsional — tetapi tanpa injeksi config, halaman upload tidak bisa dipakai.
+
+### 8.3 `android-ci.yml`
+
+Berada di repo aplikasi (`Jirankun/TKJ-One`), bukan repo web. Menangani versi, build APK, dan release.
 
 ---
 
-## 🚨 Troubleshooting
+## 9. Checklist sebelum push
 
-| Masalah                     | Solusi |
-|----------------------------|--------|
-| Foto tidak muncul          | - Cek URL (harus langsung ke gambar)<br>- Validasi JSON<br>- Buka DevTools → tab Network → cek error 404/403 |
-| Website error / blank      | - Buka **Console (F12)**<br>- Pastikan `DB/photos.json` tersedia dan format valid |
-| Perubahan tidak terlihat   | - **Hard refresh**: `Ctrl + F5` (Windows) / `Cmd + Shift + R` (Mac)<br>- Clear cache browser |
-| Filter/search tidak bekerja| - Pastikan tidak ada typo di field `gender` atau `name` |
-
----
-
-## 🤝 Dukungan & Kolaborasi
-
-Proyek ini dibuat untuk **komunitas TKJ OnE** — terbuka untuk kontribusi, saran, dan pengembangan bersama.
-
-💬 **Butuh bantuan?**  
-Gunakan tombol **"Hubungi Developer"** di website untuk langsung terhubung via WhatsApp.
-
-🌐 Ingin berkontribusi?  
-- Fork repositori  
-- Edit `photos.json`  
-- Submit pull request  
-
-> *"Satu kelas, satu keluarga. Dokumentasi ini adalah warisan digital kita."*
+- [ ] `upload/config.js` tetap kosong (tanpa key/token).
+- [ ] Secret Actions sudah diisi (untuk `web-deploy.yml`).
+- [ ] `_redirects` ikut ter-deploy (Cloudflare Pages).
+- [ ] `DB/photos.json` valid & nama unik.
+- [ ] File lama yang sudah dihapus (`spam/`, `reader.html`, `banner/`, dll.) memang tidak dipakai lagi.
+- [ ] `ads.txt` dan file verifikasi Google Search Console — jika masih dibutuhkan — dipulihkan sebelum push.
 
 ---
 
-✨ **Dibangun dengan semangat TKJ OnE — teknologi, kolaborasi, dan kebanggaan kelas.**  
-🛠️ *Optimized for learning, sharing, and preserving memories.*
+## 10. Menjalankan & menguji lokal
+
+```bash
+# server statis
+python3 -m http.server 8123
+
+# cek sintaks
+node --check upload/script.js
+node --check sw.js
+```
+
+Untuk mencoba upload lokal tanpa menyentuh rahasia, isi `upload/config.js` sementara atau set `window.__TJK_CONFIG__` lewat console, lalu **jangan commit** nilainya.
+
+---
+
+## 11. Keamanan
+
+- Halaman statis tidak bisa menyembunyikan token. Token di browser wajib fine-grained, hanya repo ini, hanya `Contents: Read & Write`, masa aktif pendek.
+- API key ImgBB pernah ter-commit pada riwayat lama — **rotasi key tersebut**.
+- `/upload/` diberi `noindex, nofollow` dan `Disallow` di robots.
+- `DB/photos.json` sengaja `Disallow` untuk crawler, tetapi tetap dapat diakses langsung (dibutuhkan aplikasi).
+
+---
+
+## 12. Keterbatasan & langkah berikutnya
+
+- Belum ada uji upload nyata ke ImgBB/GitHub dari browser/perangkat.
+- Kompresi baru diuji dengan stub di jsdom; perlu dicek sekali di ponsel (terutama foto besar & GIF).
+- Halaman upload versi aset Android harus disinkronkan manual jika web berubah.
+- Pratinjau web sudah tanpa nav bawah (gaya aplikasi); jika ingin nav kembali khusus web, tambahkan di `photo/index.html`.

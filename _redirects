@@ -1,0 +1,3 @@
+# Link foto lama (/photo/<id>) diarahkan ke bentuk kanonik.
+# Aplikasi tetap menangani /photo/<id> lewat app link.
+/photo/:name  /photo/?name=:name  301

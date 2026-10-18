@@ -2,85 +2,85 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#0B1220">
-  <title>Upload Foto - TKJ OnE</title>
-  <link rel="stylesheet" href="./style.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B1220" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Upload Foto — TKJ OnE</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <header class="app-header">
-    <span class="app-title">TKJ OnE</span>
-    <span class="app-subtitle">Galeri Kelas</span>
-  </header>
-
-  <!-- ===== LANGKAH 1 : PILIH FOTO ===== -->
+  <!-- Langkah 1: pilih foto -->
   <main class="main-content" id="mainContent">
-    <button class="main-upload-btn" id="triggerBtn" aria-label="Pilih gambar">
-      <svg viewBox="0 0 24 24" width="36" height="36"><path fill="currentColor" d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 13l-3.5-4.5 2.05-2.6L12 12.5l2.45-3.1L17 14h-5z"/></svg>
+    <button class="main-upload-btn" id="triggerBtn" type="button" aria-label="Pilih foto dari galeri">
+      <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true">
+        <path fill="currentColor" d="M19 5v14H5V5h14m0-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-7 13l-3.5-4.5 2.05-2.6L12 12.5l2.45-3.1L17 14h-5Z"/>
+      </svg>
     </button>
-    <p class="upload-hint">Pilih foto dari galeri untuk diunggah<br/>ke album kelas TKJ OnE</p>
+    <p class="upload-hint">
+      Ketuk untuk memilih foto dari galeri.<br />
+      JPG, PNG, WebP, atau GIF · foto besar otomatis dikompresi.
+    </p>
   </main>
 
-  <!-- ===== FORM DATA (LANGKAH 3) ===== -->
-  <section class="form-section" id="formSection" aria-hidden="true">
-    <h2 class="form-title">Detail Foto</h2>
-
+  <!-- Langkah 2: detail -->
+  <section class="form-section hidden" id="formSection" aria-hidden="true">
     <div class="preview-wrap">
-      <img class="uploaded-preview" id="uploadedImg" alt="Preview foto" />
+      <img class="uploaded-preview" id="uploadedImg" alt="Pratinjau foto" />
+      <button class="preview-change" id="changeBtn" type="button">Ganti foto</button>
+    </div>
+    <p class="compress-note hidden" id="compressNote" role="status" aria-live="polite"></p>
+
+    <div class="form-group">
+      <label for="photoName">Nama Foto <span class="req">wajib</span></label>
+      <input type="text" id="photoName" class="field" placeholder="Contoh: Kebersamaan kelas XI" maxlength="60" autocomplete="off" />
     </div>
 
     <div class="form-group">
-      <label for="photoName">Nama Foto <span class="req">(wajib)</span></label>
-      <input type="text" id="photoName" placeholder="Contoh: Kenangan kelas XI" maxlength="60" autocomplete="off" />
+      <label for="photoDate">Tanggal <span class="req">wajib</span></label>
+      <input type="date" id="photoDate" class="field" />
     </div>
 
     <div class="form-group">
-      <label for="photoDate">Tanggal <span class="req">(wajib)</span></label>
-      <input type="date" id="photoDate" />
+      <label for="uploaderName">Uploader <span class="req">wajib</span></label>
+      <input type="text" id="uploaderName" class="field" placeholder="Tulis namamu sendiri" maxlength="50" autocomplete="name" />
+      <p class="field-hint">Nama ini tampil di galeri sebagai pengunggah foto.</p>
     </div>
 
-    <div class="form-group">
-      <label for="uploaderName">Uploader — Nama Kamu <span class="req">(wajib)</span></label>
-      <input type="text" id="uploaderName" placeholder="Isi dengan nama kamu sendiri..." maxlength="50" autocomplete="name" />
-    </div>
+    <p class="form-error hidden" id="formError" role="alert"></p>
 
-    <div class="form-group">
-      <label>Jenis Foto:</label>
-      <div class="radio-group">
-        <label class="radio-option"><input type="radio" name="gender" value="all" checked> Foto bersama</label>
-        <label class="radio-option"><input type="radio" name="gender" value="male"> Laki-laki</label>
-        <label class="radio-option"><input type="radio" name="gender" value="female"> Perempuan</label>
+    <!-- Progress inline (bukan popup) -->
+    <div class="progress-inline hidden" id="progressBox" role="status" aria-live="polite">
+      <div class="progress-head">
+        <span id="progressStep">Menyiapkan…</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
       </div>
     </div>
 
-    <div class="code-preview" id="codePreview" aria-live="polite"></div>
-
-    <button class="submit-btn disabled" id="submitBtn" type="button">UPLOAD</button>
+    <button class="submit-btn disabled" id="submitBtn" type="button" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v5H5v-5H3v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-2ZM12 15l-4-4 1.4-1.4L11 11.2V3h2v8.2l1.6-1.6L16 11l-4 4Z"/></svg>
+      <span id="submitText">Upload Sekarang</span>
+    </button>
+    <p class="submit-hint" id="submitHint">Lengkapi nama foto, tanggal, dan uploader.</p>
   </section>
 
-  <!-- ===== PROGRESS OVERLAY ===== -->
-  <div class="progress-overlay" id="progressOverlay" aria-hidden="true">
-    <div class="progress-card">
-      <div class="progress-icon" id="progressIcon">📤</div>
-      <div class="progress-step" id="progressStep">Menyiapkan...</div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-percent" id="progressPercent">0%</div>
+  <!-- Langkah 3: hasil -->
+  <section class="result-section hidden" id="resultSection" aria-hidden="true">
+    <div class="result-icon" id="resultIcon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12 3.4 13.4 9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
     </div>
-  </div>
-
-  <!-- ===== HASIL ===== -->
-  <section class="result-section" id="resultSection" aria-hidden="true">
-    <div class="result-icon" id="resultIcon">✅</div>
-    <h2 class="result-title" id="resultTitle">Berhasil!</h2>
+    <h2 class="result-title" id="resultTitle">Upload berhasil</h2>
     <p class="result-desc" id="resultDesc"></p>
-    <div class="result-link" id="resultLink"></div>
-    <button class="submit-btn enabled" id="againBtn" type="button">UPLOAD LAGI</button>
+    <a class="result-link" id="resultLink" href="#" target="_blank" rel="noopener noreferrer">Buka foto</a>
+    <button class="submit-btn enabled" id="againBtn" type="button">Upload Lagi</button>
   </section>
 
-  <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;" />
+  <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
 
+  <script src="./vendor/compressor.min.js"></script>
   <script src="./config.js"></script>
   <script src="./script.js"></script>
 </body>

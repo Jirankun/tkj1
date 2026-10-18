@@ -1,94 +1,95 @@
 // ============================================================
-// TKJ OnE Gallery — Service Worker
-// Strategi: Cache First untuk aset statis, Network First untuk data
+// TKJ OnE — Service Worker
+// Statis: cache-first · JSON & navigasi: network-first
 // ============================================================
-const CACHE_NAME = 'tkjone-v1';
-const STATIC_ASSETS = [
+'use strict';
+
+const CACHE = 'tkjone-v3';
+
+const PRECACHE = [
   '/',
   '/index.html',
-  '/page/gallery.html',
-  '/about/index.html',
-  '/DB/photos.json',
-  '/DB/info.json',
-  '/DB/status.json',
-  '/DB/banner.json',
-  '/photos.json',
-  '/manifest.json'
+  '/photo/',
+  '/story/',
+  '/assets/theme.css',
+  '/DB/photos.json'
 ];
 
-// ─── Install: cache aset statis ───────────────────────────────
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    }).then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    // Tambahkan satu per satu: satu file hilang tidak menggagalkan instalasi.
+    await Promise.all(PRECACHE.map(async (url) => {
+      try {
+        const res = await fetch(url, { cache: 'reload' });
+        if (res.ok) await cache.put(url, res);
+      } catch (e) {
+        /* offline saat instalasi — lewati */
+      }
+    }));
+    await self.skipWaiting();
+  })());
 });
 
-// ─── Activate: bersihkan cache lama ───────────────────────────
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((names) => {
-      return Promise.all(
-        names
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    }).then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter((n) => n !== CACHE).map((n) => caches.delete(n)));
+    await self.clients.claim();
+  })());
 });
 
-// ─── Fetch: strategi hybrid ───────────────────────────────────
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
-  // Hanya tangani request dari origin kita sendiri
-  if (url.origin !== self.location.origin) return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return; // gambar ImgBB biarkan langsung
 
-  // JSON data → Network First (tetap update walau offline fallback)
-  if (url.pathname.endsWith('.json')) {
-    event.respondWith(networkFirst(request));
+  if (req.mode === 'navigate' || url.pathname.endsWith('.json')) {
+    event.respondWith(networkFirst(req));
     return;
   }
 
-  // Statis assets → Cache First (cepat)
-  event.respondWith(cacheFirst(request));
+  event.respondWith(cacheFirst(req));
 });
 
-
-// ─── Cache First ──────────────────────────────────────────────
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
+async function cacheFirst(req) {
+  const cached = await caches.match(req);
   if (cached) return cached;
-
   try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
+    const res = await fetch(req);
+    if (res.ok) {
+      const cache = await caches.open(CACHE);
+      cache.put(req, res.clone());
     }
-    return response;
-  } catch (error) {
-    return new Response('Offline', { status: 503 });
+    return res;
+  } catch (e) {
+    return new Response('Offline', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
   }
 }
 
-// ─── Network First ────────────────────────────────────────────
-async function networkFirst(request) {
+async function networkFirst(req) {
   try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
+    const res = await fetch(req);
+    if (res.ok) {
+      const cache = await caches.open(CACHE);
+      cache.put(req, res.clone());
     }
-    return response;
-  } catch (error) {
-    const cached = await caches.match(request);
+    return res;
+  } catch (e) {
+    const cached = await caches.match(req);
     if (cached) return cached;
-    return new Response(JSON.stringify({ error: 'Offline' }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const isJson = new URL(req.url).pathname.endsWith('.json');
+    return new Response(
+      isJson ? JSON.stringify({ error: 'offline' }) : 'Offline',
+      {
+        status: 503,
+        headers: { 'Content-Type': isJson ? 'application/json' : 'text/plain; charset=utf-8' }
+      }
+    );
   }
 }
