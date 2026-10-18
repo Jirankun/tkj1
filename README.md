@@ -106,6 +106,78 @@ Pastikan struktur JSON **valid**:
 
 ---
 
+## 📤 Sistem Upload Otomatis (halaman `/upload`)
+
+Alur baru — **tanpa WhatsApp, tanpa kontak admin**, semua otomatis:
+
+1. User **pilih foto** dari galeri.
+2. User isi **Nama Foto**, **Tanggal**, dan **Uploader** (nama dia sendiri).
+3. User klik **UPLOAD** → progress bar berjalan otomatis:
+   - Foto diunggah ke **ImgBB** (progress real-time).
+   - `DB/photos.json` terbaru dibaca langsung dari branch via **GitHub Contents API**.
+   - Entri baru ditambahkan + **di-commit balik ke repo** (langsung tampil di galeri web & aplikasi setelah deploy).
+
+Format entri baru di `DB/photos.json`:
+
+```json
+{
+  "name": "Kenangan kelas XI",
+  "type": "photo",
+  "url": "https://i.ibb.co.com/xxxx.jpg",
+  "date": "2026-10-19",
+  "gender": "all",
+  "uploader": "Nama Si Pengunggah"
+}
+```
+
+Field **`uploader`** ditampilkan oleh halaman `/photo` (footer) dan bisa dipakai aplikasi pendamping.
+
+### ⚙️ Konfigurasi (`upload/config.js`)
+
+| Key | Isi | Keterangan |
+|-----|-----|------------|
+| `IMGBB_API_KEY` | key ImgBB kamu | https://api.imgbb.com |
+| `GITHUB_REPO` | `"username/repo"` | repo tempat `DB/photos.json` berada |
+| `GITHUB_BRANCH` | `"main"` | branch tujuan commit |
+| `PHOTOS_PATH` | `"DB/photos.json"` | path file data |
+
+Aplikasi pendamping (WebView) boleh menyuntik config dinamis sebelum `script.js` jalan:
+
+```js
+webView.evaluateJavascript("window.__TJK_CONFIG__={IMGBB_API_KEY:'...',GITHUB_TOKEN:'...',GITHUB_REPO:'user/repo',GITHUB_BRANCH:'main'}");
+```
+
+Bridge yang dipertahankan: `window.FlutterUploadHandler.postMessage(payload)` (mode tanpa token → payload JSON siap-commit dikirim ke aplikasi), dan deep link URI `tkjone://photo/<nama>` dari halaman `/photo`.
+
+### 🔐 GitHub Secrets / ENV (untuk Actions)
+
+Simpan di **Settings → Secrets and variables → Actions**:
+
+| Nama Secret | Nilai |
+|-------------|-------|
+| `IMGBB_API_KEY` | API key ImgBB |
+| `GITHUB_TOKEN` | fine-grained PAT (Contents: Read & Write, satu repo saja) — atau `${{ secrets.GITHUB_TOKEN }}` bawaan Actions |
+| `GH_REPO` | `username/repo` |
+| `GH_BRANCH` | `main` |
+
+Lalu pada workflow deploy, sematkan nilainya ke `upload/config.js` (contoh step):
+
+```yaml
+- name: Inject secrets into upload config
+  env:
+    IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}   # <-- API KEY IMGEBB MASUK KE SINI
+    GH_REPO:       ${{ secrets.GH_REPO }}         # <-- "username/repo" MASUK KE SINI
+    GH_BRANCH:     ${{ secrets.GH_BRANCH }}       # <-- nama branch MASUK KE SINI
+  run: |
+    sed -i "s|IMGBB_API_KEY: \"[^\"]*\"|IMGBB_API_KEY: \"$IMGBB_API_KEY\"|" upload/config.js
+    sed -i "s|GITHUB_REPO:   \"[^\"]*\"|GITHUB_REPO:   \"$GH_REPO\"|"           upload/config.js
+    sed -i "s|GITHUB_BRANCH: \"[^\"]*\"|GITHUB_BRANCH: \"$GH_BRANCH\"|"         upload/config.js
+```
+
+> ⚠️ Halaman statis tidak bisa menyembunyikan rahasia. Token yang dipakai browser **harus** fine-grained PAT berumur pendek dengan akses *Contents: Read & Write* hanya ke repo ini. Untuk keamanan maksimal, suruh aplikasi pendamping yang menyuntik `window.__TJK_CONFIG__` (token tidak pernah tertulis di file publik).
+
+---
+
 ## 🌟 Fitur Website (TKJ OnE Edition)
 
 | Fitur                          | Deskripsi |
