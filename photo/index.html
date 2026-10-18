@@ -7,6 +7,7 @@
 <meta name="robots" content="noindex" />
 <title>Foto — TKJ OnE</title>
 <link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/fa/css/all.min.css" />
 <style>
   html, body {
     height: 100%;
@@ -38,9 +39,8 @@
     min-width: 38px;
   }
 
-  .topbar .icon-btn svg {
-    width: 19px;
-    height: 19px;
+  .topbar .icon-btn i {
+    font-size: 18px;
   }
 
   .top-title {
@@ -141,11 +141,11 @@
     line-height: 1.4;
   }
 
-  .detail-row svg {
+  .detail-row i {
     width: 14px;
-    height: 14px;
-    min-width: 14px;
-    fill: var(--blue-soft);
+    font-size: 13px;
+    color: var(--blue-soft);
+    text-align: center;
   }
 
   .detail-row .uploader {
@@ -154,6 +154,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .download-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(145deg, var(--blue), var(--blue-strong));
+    border-radius: 12px;
+    box-shadow: 0 6px 18px var(--blue-glow);
+  }
+
+  .download-cta i {
+    font-size: 15px;
   }
 
   .detail-note {
@@ -190,15 +210,15 @@
 
   <header class="topbar">
     <button class="icon-btn" id="backBtn" type="button" aria-label="Kembali">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20v-2Z"/></svg>
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
     </button>
     <span class="top-title" id="topTitle">TKJ OnE</span>
     <span class="top-counter" id="topCounter"></span>
     <button class="icon-btn" id="copyBtn" type="button" aria-label="Salin tautan">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H8V7h11v14Z"/></svg>
+      <i class="fa-solid fa-link" aria-hidden="true"></i>
     </button>
     <button class="icon-btn" id="appBtn" type="button" aria-label="Buka di aplikasi">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 1H7a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3Zm1 17H6V5h12v13Zm-6 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+      <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -214,13 +234,17 @@
       <span class="detail-badge" id="detailBadge">FOTO</span>
     </div>
     <div class="detail-row">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 16H5V10h14v10Z"/></svg>
+      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
       <span id="detailDate">—</span>
     </div>
     <div class="detail-row hidden" id="uploaderRow">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4Z"/></svg>
+      <i class="fa-solid fa-user" aria-hidden="true"></i>
       <span class="uploader" id="detailUploader"></span>
     </div>
+    <a class="download-cta" href="https://github.com/Jirankun/TKJ-One/releases/latest" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-download" aria-hidden="true"></i>
+      Download foto lewat aplikasi
+    </a>
     <p class="detail-note">Hak cipta konten ini ada pada pengambilnya.</p>
   </footer>
 
@@ -336,6 +360,8 @@ function show(i, push) {
     const v = document.createElement('video');
     v.src = item.url;
     v.controls = true;
+    v.setAttribute('controlsList', 'nodownload noremoteplayback');
+    v.setAttribute('disablePictureInPicture', '');
     v.playsInline = true;
     v.preload = 'metadata';
     v.setAttribute('playsinline', '');
@@ -494,5 +520,17 @@ window.addEventListener('popstate', () => {
 
 boot();
 </script>
+<script>
+/* Anti-copy / anti-save: foto hanya bisa diunduh lewat aplikasi. */
+(function () {
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) {
+    var k = (e.key || '').toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && (k === 's' || k === 'p')) e.preventDefault();
+  });
+})();
+</script>
+
 </body>
 </html>

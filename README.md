@@ -33,6 +33,7 @@ tkj1/
 │       ├── compressor.min.js   # compressorjs 1.4.0 (MIT)
 │       └── LICENSE.compressorjs
 ├── assets/theme.css            # Token warna, komponen, nav bawah, banner
+├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── DB/photos.json              # Sumber data galeri (array JSON)
 ├── sw.js                       # Service worker (cache v3)
 ├── _redirects                  # /photo/:name → /photo/?name=:name (301)
@@ -48,15 +49,26 @@ Aplikasi Android berada di repo terpisah (`Jirankun/TKJ-One`): `app/src/main/ass
 
 ## 3. Routing & URL
 
-| URL | Isi | Catatan |
-|---|---|---|
-| `/` | Galeri | Kartu menuju `/photo/?name=ID` |
-| `/photo/?name=<ID>` | Pratinjau foto/video | Bentuk **kanonik**, langsung tanpa lewat beranda |
-| `/photo/<ID>` | Redirect 301 ke bentuk kanonik | Link lama |
-| `/story/` | Cerita | `noindex` |
-| `/upload/` | Upload | `noindex`, tidak ditautkan dari web |
+| URL                 | Isi                            | Catatan                                          |
+| ------------------- | ------------------------------ | ------------------------------------------------ |
+| `/`                 | Galeri                         | Kartu menuju `/photo/?name=ID`                   |
+| `/photo/?name=<ID>` | Pratinjau foto/video           | Bentuk **kanonik**, langsung tanpa lewat beranda |
+| `/photo/<ID>`       | Redirect 301 ke bentuk kanonik | Link lama                                        |
+| `/story/`           | Cerita                         | `noindex`                                        |
+| `/upload/`          | Upload                         | `noindex`, tidak ditautkan dari web              |
 
 Nav bawah (`Galeri · Cerita`) tampil di galeri & cerita. Halaman pratinjau sengaja tanpa nav (gaya viewer aplikasi).
+
+### Anti-copy & anti-save
+
+- `contextmenu`, drag gambar, dan shortcut simpan/cetak (`Ctrl/Cmd+S`, `Ctrl/Cmd+P`) diblokir.
+- Gambar diberi `pointer-events: none` + `-webkit-touch-callout: none` agar long-press tidak memunculkan menu simpan.
+- Video memakai `controlsList="nodownload"` dan PiP dimatikan.
+- Untuk mengunduh foto, user diarahkan ke aplikasi: CTA di halaman pratinjau menuju `https://github.com/Jirankun/TKJ-One/releases/latest`, sama seperti banner di beranda.
+
+### Ikon
+
+Semua ikon web memakai **Font Awesome 7 Free** yang di-vendor di `assets/fa/` (tanpa CDN, tidak ada ikon rusak saat offline). Tidak ada lagi SVG inline.
 
 ---
 
@@ -66,20 +78,20 @@ Berupa **array**. Setiap entri:
 
 ```json
 {
-  "name": "17",
-  "type": "photo",
-  "url": "https://i.ibb.co.com/xxxx/foto.jpg",
-  "date": "2026-10-19",
-  "uploader": "admin"
+    "name": "17",
+    "type": "photo",
+    "url": "https://i.ibb.co.com/xxxx/foto.jpg",
+    "date": "2026-10-19",
+    "uploader": "admin"
 }
 ```
 
-| Field | Wajib | Keterangan |
-|---|---|---|
-| `name` | ya | ID unik (dipakai di URL). Duplikat ditolak |
-| `url` | ya | URL gambar/video (https) |
-| `type` | tidak | `photo` (default) atau `video` |
-| `date` | tidak | `YYYY-MM-DD` |
+| Field      | Wajib | Keterangan                                        |
+| ---------- | ----- | ------------------------------------------------- |
+| `name`     | ya    | ID unik (dipakai di URL). Duplikat ditolak        |
+| `url`      | ya    | URL gambar/video (https)                          |
+| `type`     | tidak | `photo` (default) atau `video`                    |
+| `date`     | tidak | `YYYY-MM-DD`                                      |
 | `uploader` | tidak | Nama pengunggah, ditampilkan di kartu & pratinjau |
 
 Data saat ini: **284 entri**, semuanya `uploader: "admin"`. File ditulis ulang dengan indentasi 2 spasi dan newline akhir.
@@ -92,39 +104,39 @@ Dibaca oleh galeri, cerita, pratinjau, dan aplikasi Android (`PHOTOS_JSON_URL`) 
 
 1. User memilih foto (JPG/PNG/WebP/GIF).
 2. Pratinjau tampil. Jika ukuran > **10 MB** dan bukan GIF, kompresi jalan otomatis di perangkat sambil user mengisi form:
-   - library `compressorjs`, output JPEG, empat tahap: 2560px/0.85 → 2048px/0.72 → 1600px/0.6 → 1280px/0.5;
-   - berhenti saat hasil ≤ 10 MB;
-   - pratinjau diganti blob hasil kompresi, status inline menunjukkan “18,4 MB → 2,9 MB”;
-   - GIF tidak dikompresi (agar animasi tetap); jika kompresi gagal, file asli tetap dipakai.
+    - library `compressorjs`, output JPEG, empat tahap: 2560px/0.85 → 2048px/0.72 → 1600px/0.6 → 1280px/0.5;
+    - berhenti saat hasil ≤ 10 MB;
+    - pratinjau diganti blob hasil kompresi, status inline menunjukkan “18,4 MB → 2,9 MB”;
+    - GIF tidak dikompresi (agar animasi tetap); jika kompresi gagal, file asli tetap dipakai.
 3. Form: **Nama Foto**, **Tanggal**, **Uploader** (nama user). Nama uploader disimpan di `localStorage` (`tjk_uploader`).
 4. Klik Upload → progress inline (bukan popup):
-   - `POST https://api.imgbb.com/1/upload` (form: `key`, `image`), progress 0–70%;
-   - `GET` GitHub Contents API untuk `DB/photos.json` + `sha`;
-   - cek duplikat `name` (case-insensitive);
-   - `PUT` GitHub Contents API untuk commit entri baru; jika 409 → baca ulang + coba sekali lagi;
-   - hasil menampilkan tautan langsung `/photo/?name=<ID>`.
-5. Tanpa `GITHUB_TOKEN`: data tidak di-commit; payload dikirim ke aplikasi lewat bridge.
+    - `POST https://api.imgbb.com/1/upload` (form: `key`, `image`), progress 0–70%;
+    - `GET` GitHub Contents API untuk `DB/photos.json` + `sha`;
+    - cek duplikat `name` (case-insensitive);
+    - `PUT` GitHub Contents API untuk commit entri baru; jika 409 → baca ulang + coba sekali lagi;
+    - hasil menampilkan tautan langsung `/photo/?name=<ID>`.
+5. Tanpa `G_TOKEN`: data tidak di-commit; payload dikirim ke aplikasi lewat bridge.
 
 ### Konfigurasi (wajib untuk produksi)
 
 `upload/config.js` hanya placeholder. Nilai dibaca dari `window.__TJK_CONFIG__` (prioritas) atau `window.TJK_DEFAULTS`:
 
-| Key | Isi |
-|---|---|
-| `IMGBB_API_KEY` | API key ImgBB |
-| `GITHUB_TOKEN` | fine-grained PAT, `Contents: Read & Write`, hanya repo web |
-| `GITHUB_REPO` | `Jirankun/tkj1` |
-| `GITHUB_BRANCH` | `main` |
-| `PHOTOS_PATH` | `DB/photos.json` |
+| Key             | Isi                                                        |
+| --------------- | ---------------------------------------------------------- |
+| `IMGBB_API_KEY` | API key ImgBB                                              |
+| `G_TOKEN`       | fine-grained PAT, `Contents: Read & Write`, hanya repo web |
+| `G_REPO`        | `Jirankun/tkj1`                                            |
+| `G_BRANCH`      | `main`                                                     |
+| `PHOTOS_PATH`   | `DB/photos.json`                                           |
 
 Jangan pernah commit nilai asli. `web-deploy.yml` mengisi file ini di runner sebelum deploy.
 
 ### Bridge aplikasi (jika tanpa token)
 
 ```js
-window.FlutterUploadHandler.postMessage(JSON.stringify(payload))
+window.FlutterUploadHandler.postMessage(JSON.stringify(payload));
 // atau
-window.AndroidInterface.savePhoto(JSON.stringify(payload))
+window.AndroidInterface.savePhoto(JSON.stringify(payload));
 ```
 
 Payload: `{ repo, branch, path, sha, entry: { name, type, url, date, uploader }, content }`.
@@ -137,10 +149,10 @@ Payload: `{ repo, branch, path, sha, entry: { name, type, url, date, uploader },
 
 ```json
 {
-  "message": "chore(gallery): add \"17\" by admin (2026-10-19)",
-  "content": "<base64 JSON baru>",
-  "branch": "main",
-  "sha": "<sha lama>"
+    "message": "chore(gallery): add \"17\" by admin (2026-10-19)",
+    "content": "<base64 JSON baru>",
+    "branch": "main",
+    "sha": "<sha lama>"
 }
 ```
 
@@ -151,14 +163,17 @@ Payload: `{ repo, branch, path, sha, entry: { name, type, url, date, uploader },
 - **Halaman upload**: `AppConfig.UPLOAD_URL` = `https://tkj1.pages.dev/upload`, dibuka lewat Custom Tab / in-app browser.
 - **Link foto** (share/copy): `https://tkj1.pages.dev/photo/?name=<ID>` (URL-encoded). Aplikasi juga menerima `tkjone://photo/<ID>`.
 - **AndroidManifest** (`UriViewerActivity`) menangkap:
-  - `https://tkj1.pages.dev/photo...` (`pathPrefix="/photo"`), dan
-  - skema `tkjone`.
+    - `https://tkj1.pages.dev/photo...` (`pathPrefix="/photo"`), dan
+    - skema `tkjone`.
 - **Ekstraksi ID** (`UriViewerActivity.extractPhotoName`) mendukung:
-  - `?name=ID` / `?id=ID`;
-  - `https://host/photo/<ID>`;
-  - `tkjone://photo/<ID>`;
-  - `tkjone://photo?name=<ID>`.
-- **Model** `Photo` punya `uploader`; detail foto (viewer & deep link) menampilkan “Diunggah oleh …”.
+    - `?name=ID` / `?id=ID`;
+    - `https://host/photo/<ID>`;
+    - `tkjone://photo/<ID>`;
+    - `tkjone://photo?name=<ID>`.
+- **Model** `Photo` punya `uploader`; kartu galeri dan detail foto (viewer & deep link) menampilkan “Diunggah oleh …”.
+- **Urutan data**: aplikasi mengurutkan `date` terbaru di atas lalu `name` numerik — sama seperti web. Berlaku untuk data jaringan maupun cache.
+- **Swipe**: viewer foto bisa digeser; player video juga mendukung swipe kiri/kanan untuk pindah media (video lain tetap di player, foto membuka viewer).
+- **Custom Tab** hanya dipakai untuk 3 link: upload, portofolio, dan GitHub. Link lain (termasuk link foto dari kartu) dibuka di browser/handler luar.
 - Data aplikasi diambil dari `PHOTOS_JSON_URL` (`.../DB/photos.json`).
 
 ---
@@ -257,3 +272,5 @@ Untuk mencoba upload lokal tanpa menyentuh rahasia, isi `upload/config.js` semen
 - Kompresi baru diuji dengan stub di jsdom; perlu dicek sekali di ponsel (terutama foto besar & GIF).
 - Halaman upload versi aset Android harus disinkronkan manual jika web berubah.
 - Pratinjau web sudah tanpa nav bawah (gaya aplikasi); jika ingin nav kembali khusus web, tambahkan di `photo/index.html`.
+- Anti-copy bersifat sisi klien (tidak bisa 100% mencegah screenshot/save dari browser modifikasi); tujuannya mencegah simpan/unduh biasa dan mengarahkan user ke aplikasi.
+- UI aplikasi memakai ripple + elevasi ringan (gaya Material 2) pada kartu galeri; belum ada uji visual di perangkat.

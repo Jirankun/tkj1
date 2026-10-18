@@ -100,6 +100,29 @@ button {
   display: none !important;
 }
 
+/* Anti-copy / anti-save */
+img,
+video {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+body {
+  -webkit-touch-callout: none;
+}
+
+.card-thumb img,
+.stage img,
+.frame img {
+  pointer-events: none;
+}
+
+.card-thumb i {
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.28);
+}
+
 /* ---------- Tombol ikon ---------- */
 .icon-btn {
   display: inline-flex;
@@ -120,10 +143,8 @@ button {
   background: rgba(41, 121, 255, 0.22);
 }
 
-.icon-btn svg {
-  width: 21px;
-  height: 21px;
-  fill: currentColor;
+.icon-btn i {
+  font-size: 18px;
 }
 
 /* ---------- Banner unduh aplikasi ---------- */
@@ -160,10 +181,9 @@ button {
   box-shadow: 0 6px 16px var(--blue-glow);
 }
 
-.dl-icon svg {
-  width: 22px;
-  height: 22px;
-  fill: #fff;
+.dl-icon i {
+  font-size: 21px;
+  color: #fff;
 }
 
 .dl-text {
@@ -207,10 +227,8 @@ button {
   box-shadow: 0 4px 12px var(--blue-glow);
 }
 
-.dl-btn svg {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
+.dl-btn i {
+  font-size: 13px;
 }
 
 /* ---------- Layout ---------- */
@@ -228,14 +246,13 @@ button {
   margin-bottom: 12px;
 }
 
-.search-wrap svg {
+.search-wrap i {
   position: absolute;
-  left: 14px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  fill: var(--dim);
+  font-size: 15px;
+  color: var(--dim);
   pointer-events: none;
 }
 
@@ -366,10 +383,8 @@ button {
   backdrop-filter: blur(6px);
 }
 
-.card-badge svg {
-  width: 11px;
-  height: 11px;
-  fill: currentColor;
+.card-badge i {
+  font-size: 10px;
 }
 
 .card-body {
@@ -407,11 +422,8 @@ button {
   white-space: nowrap;
 }
 
-.card-uploader svg {
-  width: 11px;
-  height: 11px;
-  min-width: 11px;
-  fill: currentColor;
+.card-uploader i {
+  font-size: 11px;
 }
 
 /* ---------- Bottom nav (selalu tampil) ---------- */
@@ -453,10 +465,8 @@ button {
   transition: color 0.15s ease, background 0.15s ease;
 }
 
-.tab svg {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
+.tab i {
+  font-size: 20px;
 }
 
 .tab[aria-current="page"] {
@@ -500,10 +510,8 @@ button {
   transform: none;
 }
 
-.btn svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
+.btn i {
+  font-size: 16px;
 }
 
 .btn-ghost {
@@ -602,10 +610,9 @@ button {
   color: var(--muted);
 }
 
-.state svg {
-  width: 48px;
-  height: 48px;
-  fill: var(--dim);
+.state i {
+  font-size: 44px;
+  color: var(--dim);
 }
 
 .state-title {

@@ -449,8 +449,8 @@
 
     resultIcon.classList.toggle('fail', !ok);
     resultIcon.innerHTML = ok
-      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12 3.4 13.4 9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>'
-      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2Zm1 15h-2v-2h2v2Zm0-4h-2V9h2v4Z"/></svg>';
+      ? '<i class="fa-solid fa-check" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>';
 
     resultTitle.textContent = title;
     resultDesc.textContent = desc;

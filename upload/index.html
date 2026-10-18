@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#0B1220" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Upload Foto — TKJ OnE</title>
+  <link rel="stylesheet" href="../assets/fa/css/all.min.css" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
@@ -13,9 +14,7 @@
   <!-- Langkah 1: pilih foto -->
   <main class="main-content" id="mainContent">
     <button class="main-upload-btn" id="triggerBtn" type="button" aria-label="Pilih foto dari galeri">
-      <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true">
-        <path fill="currentColor" d="M19 5v14H5V5h14m0-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-7 13l-3.5-4.5 2.05-2.6L12 12.5l2.45-3.1L17 14h-5Z"/>
-      </svg>
+      <i class="fa-solid fa-images" aria-hidden="true"></i>
     </button>
     <p class="upload-hint">
       Ketuk untuk memilih foto dari galeri.<br />
@@ -61,7 +60,7 @@
     </div>
 
     <button class="submit-btn disabled" id="submitBtn" type="button" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v5H5v-5H3v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-2ZM12 15l-4-4 1.4-1.4L11 11.2V3h2v8.2l1.6-1.6L16 11l-4 4Z"/></svg>
+      <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
       <span id="submitText">Upload Sekarang</span>
     </button>
     <p class="submit-hint" id="submitHint">Lengkapi nama foto, tanggal, dan uploader.</p>
@@ -70,7 +69,7 @@
   <!-- Langkah 3: hasil -->
   <section class="result-section hidden" id="resultSection" aria-hidden="true">
     <div class="result-icon" id="resultIcon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12 3.4 13.4 9 19 21 7l-1.4-1.4L9 16.2Z"/></svg>
+      <i class="fa-solid fa-check" aria-hidden="true"></i>
     </div>
     <h2 class="result-title" id="resultTitle">Upload berhasil</h2>
     <p class="result-desc" id="resultDesc"></p>
@@ -83,5 +82,17 @@
   <script src="./vendor/compressor.min.js"></script>
   <script src="./config.js"></script>
   <script src="./script.js"></script>
+<script>
+/* Anti-copy / anti-save: foto hanya bisa diunduh lewat aplikasi. */
+(function () {
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) {
+    var k = (e.key || '').toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && (k === 's' || k === 'p')) e.preventDefault();
+  });
+})();
+</script>
+
 </body>
 </html>
