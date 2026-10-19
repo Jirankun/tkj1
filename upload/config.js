@@ -9,7 +9,7 @@
 window.TJK_DEFAULTS = {
     IMGBB_API_KEY: "00a0b97d8975badedf112b50ce7f061c",
     GITHUB_TOKEN: "",
-    GITHUB_REPO: "",
+    GITHUB_REPO: "Jirankun/tkj1",
     GITHUB_BRANCH: "main",
-    PHOTOS_PATH: "DB/photos.json"
+    PHOTOS_PATH: "DB/photos.json",
 };
