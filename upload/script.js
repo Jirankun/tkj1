@@ -290,6 +290,25 @@
   }
 
   /* ---------------- ImgBB ---------------- */
+  function imgbbErrorMessage(res, status) {
+    const e = res && res.error;
+    if (e && typeof e.message === 'string' && e.message.trim()) return e.message.trim();
+    if (e && typeof e === 'object') {
+      if (typeof e.code === 'number') {
+        const extra = e.message ? ' (' + String(e.message).trim() + ')' : '';
+        return 'ImgBB error ' + e.code + extra;
+      }
+      if (e.message) return String(e.message).trim();
+    }
+    if (res && typeof res.status_txt === 'string' && res.status_txt.trim()) {
+      return res.status_txt.trim();
+    }
+    if (res && typeof res.status_code === 'number') {
+      return 'ImgBB error ' + res.status_code + (res.status_txt ? ' (' + res.status_txt + ')' : '');
+    }
+    return 'ImgBB menolak file (HTTP ' + status + ').';
+  }
+
   function uploadToImgBB() {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -304,18 +323,26 @@
       };
 
       xhr.onload = () => {
+        const status = xhr.status || 0;
         let res = null;
         try { res = JSON.parse(xhr.responseText); } catch (e) { /* di bawah */ }
+
         if (res && res.success && res.data && res.data.url) {
           resolve(String(res.data.url));
-        } else {
-          const msg = res && res.error && res.error.message;
-          reject(new Error(msg || 'ImgBB menolak file (HTTP ' + xhr.status + ').'));
+          return;
         }
+
+        reject(new Error(imgbbErrorMessage(res, status)));
       };
 
-      xhr.onerror = () => reject(new Error('Gagal terhubung ke ImgBB.'));
-      xhr.ontimeout = () => reject(new Error('Upload ke ImgBB melewati batas waktu.'));
+      xhr.onerror = () => {
+        console.warn('[upload] imgbb request failed, status:', xhr.status);
+        reject(new Error('Gagal terhubung ke ImgBB.'));
+      };
+      xhr.ontimeout = () => {
+        console.warn('[upload] imgbb request timeout');
+        reject(new Error('Upload ke ImgBB melewati batas waktu.'));
+      };
 
       xhr.open('POST', 'https://api.imgbb.com/1/upload');
       xhr.timeout = 60000;

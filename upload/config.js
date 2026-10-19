@@ -6,7 +6,7 @@
    ============================================================ */
 
 window.TJK_DEFAULTS = {
-  IMGBB_API_KEY: "0a202282d915d3289d5132ceec0f758a",
+  IMGBB_API_KEY: "00a0b97d8975badedf112b50ce7f061c",
   GITHUB_TOKEN: "",
   GITHUB_REPO: "",
   GITHUB_BRANCH: "main",

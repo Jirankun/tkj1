@@ -1,11 +1,10 @@
-name: Deploy web + inject upload config
+name: Deploy web
 
-# Injeksi rahasia upload ke upload/config.js HANYA di runner, lalu deploy
-# ke Cloudflare Pages. Tidak ada token yang ikut ter-commit.
+# Deploy ke Cloudflare Pages.
+# Upload config dan ImgBB API key sudah tertulis langsung di upload/config.js,
+# jadi tidak perlu inject secret lagi di sini.
 #
-# Secrets yang dibutuhkan (Settings -> Secrets and variables -> Actions):
-#   IMGBB_API_KEY            API key ImgBB
-#   G_UPLOAD_TOKEN          fine-grained PAT, Contents: Read & Write (repo ini)
+# Secrets yang dibutuhkan:
 #   CLOUDFLARE_API_TOKEN     token Cloudflare Pages:Edit
 #   CLOUDFLARE_ACCOUNT_ID    account id Cloudflare
 #   CLOUDFLARE_PROJECT_NAME  nama project Pages (mis. tkj1)
@@ -31,45 +30,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-
-            - name: Cek secrets wajib
-              env:
-                  IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
-                  G_UPLOAD_TOKEN: ${{ secrets.G_UPLOAD_TOKEN }}
-                  CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-                  CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-              run: |
-                  missing=""
-                  [ -z "$IMGBB_API_KEY" ] && missing="$missing IMGBB_API_KEY"
-                  [ -z "$G_UPLOAD_TOKEN" ] && missing="$missing G_UPLOAD_TOKEN"
-                  [ -z "$CF_TOKEN" ] && missing="$missing CLOUDFLARE_API_TOKEN"
-                  [ -z "$CF_ACCOUNT" ] && missing="$missing CLOUDFLARE_ACCOUNT_ID"
-                  if [ -n "$missing" ]; then
-                    echo "Secret belum diisi:$missing"
-                    exit 1
-                  fi
-
-            - name: Inject upload/config.js
-              env:
-                  IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
-                  G_UPLOAD_TOKEN: ${{ secrets.G_UPLOAD_TOKEN }}
-              run: |
-                  python3 - <<'PY'
-                  import json, os, pathlib
-                  p = pathlib.Path("upload/config.js")
-                  s = p.read_text(encoding="utf-8")
-                  values = {
-                      "IMGBB_API_KEY": os.environ["IMGBB_API_KEY"],
-                      "G_TOKEN": os.environ["G_UPLOAD_TOKEN"],
-                      "G_REPO": os.environ.get("GITHUB_REPOSITORY", ""),
-                      "G_BRANCH": os.environ.get("GITHUB_REF_NAME", "main"),
-                  }
-                  for key, val in values.items():
-                      if val:
-                          s = s.replace(f'{key}: ""', f'{key}: {json.dumps(val)}', 1)
-                  p.write_text(s, encoding="utf-8")
-                  print("config.js diinjeksi untuk deploy")
-                  PY
 
             - name: Deploy ke Cloudflare Pages
               uses: cloudflare/wrangler-action@v3
