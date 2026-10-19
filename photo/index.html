@@ -265,6 +265,7 @@
             let swipeStartX = 0;
             let swipeStartY = 0;
             let swipePointerId = null;
+            let swipePointerMoved = false;
 
             function showToast(msg) {
                 toast.textContent = msg;
@@ -532,28 +533,89 @@
                 else if (e.key === "Escape") location.href = "../index.html";
             });
 
-            stage.addEventListener("pointerdown", event => {
-                if (event.pointerType === "mouse" && event.button !== 0) return;
-                if (!mediaEl || mediaEl.tagName !== "IMG" || event.target !== mediaEl) return;
-                swipePointerId = event.pointerId;
-                swipeStartX = event.clientX;
-                swipeStartY = event.clientY;
-            });
+            function beginSwipe(target, x, y) {
+                if (!mediaEl || mediaEl.tagName !== "IMG" || target !== mediaEl) return false;
+                swipeStartX = x;
+                swipeStartY = y;
+                swipePointerMoved = false;
+                return true;
+            }
 
-            stage.addEventListener("pointerup", event => {
-                if (event.pointerId !== swipePointerId) return;
-                swipePointerId = null;
-                const dx = event.clientX - swipeStartX;
-                const dy = event.clientY - swipeStartY;
+            function endSwipe(x, y) {
+                const dx = x - swipeStartX;
+                const dy = y - swipeStartY;
                 const threshold = Math.min(72, Math.max(44, window.innerWidth * 0.12));
-                if (Math.abs(dx) >= threshold && Math.abs(dx) > Math.abs(dy) * 1.25) {
-                    step(dx < 0 ? 1 : -1);
-                }
-            });
+                const shouldStep = swipePointerMoved && Math.abs(dx) >= threshold && Math.abs(dx) > Math.abs(dy) * 1.25;
+                swipePointerMoved = false;
+                if (shouldStep) step(dx < 0 ? 1 : -1);
+            }
 
-            stage.addEventListener("pointercancel", () => {
-                swipePointerId = null;
-            });
+            if (window.PointerEvent) {
+                stage.addEventListener("pointerdown", event => {
+                    if (event.pointerType === "mouse" && event.button !== 0) return;
+                    if (!beginSwipe(event.target, event.clientX, event.clientY)) return;
+                    swipePointerId = event.pointerId;
+                    try {
+                        event.target.setPointerCapture(event.pointerId);
+                    } catch (_error) {}
+                });
+
+                stage.addEventListener("pointermove", event => {
+                    if (event.pointerId !== swipePointerId) return;
+                    const dx = event.clientX - swipeStartX;
+                    const dy = event.clientY - swipeStartY;
+                    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) swipePointerMoved = true;
+                });
+
+                stage.addEventListener("pointerup", event => {
+                    if (event.pointerId !== swipePointerId) return;
+                    swipePointerId = null;
+                    endSwipe(event.clientX, event.clientY);
+                });
+
+                stage.addEventListener("pointercancel", () => {
+                    swipePointerId = null;
+                    swipePointerMoved = false;
+                });
+            } else {
+                stage.addEventListener(
+                    "touchstart",
+                    event => {
+                        if (event.touches.length !== 1) return;
+                        const touch = event.touches[0];
+                        beginSwipe(event.target, touch.clientX, touch.clientY);
+                    },
+                    { passive: true },
+                );
+
+                stage.addEventListener(
+                    "touchmove",
+                    event => {
+                        if (event.touches.length !== 1 || !mediaEl || event.target !== mediaEl) return;
+                        const touch = event.touches[0];
+                        const dx = touch.clientX - swipeStartX;
+                        const dy = touch.clientY - swipeStartY;
+                        if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) swipePointerMoved = true;
+                    },
+                    { passive: true },
+                );
+
+                stage.addEventListener(
+                    "touchend",
+                    event => {
+                        const touch = event.changedTouches[0];
+                        if (touch) endSwipe(touch.clientX, touch.clientY);
+                    },
+                    { passive: true },
+                );
+                stage.addEventListener(
+                    "touchcancel",
+                    () => {
+                        swipePointerMoved = false;
+                    },
+                    { passive: true },
+                );
+            }
 
             window.addEventListener("popstate", () => {
                 const name = requestedName();
