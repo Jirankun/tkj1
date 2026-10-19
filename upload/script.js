@@ -61,6 +61,16 @@
   const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
   const UPLOADER_KEY = 'tjk_uploader';
 
+  function getSlugFromUrl() {
+    try {
+      const qs = new URLSearchParams(location.search);
+      return (qs.get('u') || qs.get('user') || qs.get('slug') || qs.get('username') || qs.get('uname') || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+  const urlSlug = getSlugFromUrl();
+
   // Foto di atas ambang ini dikompresi otomatis di perangkat user.
   const COMPRESS_LIMIT = 10 * 1024 * 1024;
   const COMPRESS_STEPS = [
@@ -208,6 +218,7 @@
   photoName.addEventListener('input', () => { showError(''); refreshSubmit(); });
   photoDate.addEventListener('change', () => { showError(''); refreshSubmit(); });
   uploaderName.addEventListener('input', () => {
+    if (uploaderName.readOnly) return;
     localStorage.setItem(UPLOADER_KEY, uploaderName.value.trim());
     showError('');
     refreshSubmit();
@@ -590,7 +601,15 @@
     uploadedImg.removeAttribute('src');
     photoName.value = '';
     photoDate.value = todayISO();
-    uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+    if (urlSlug) {
+      uploaderName.value = urlSlug;
+      uploaderName.readOnly = true;
+      uploaderName.classList.add('uploader-locked');
+    } else {
+      uploaderName.readOnly = false;
+      uploaderName.classList.remove('uploader-locked');
+      uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+    }
     showError('');
     setCompressNote('');
     setProgress(0, 'Menyiapkan…');
@@ -608,6 +627,14 @@
   /* ---------------- Init ---------------- */
   photoDate.value = todayISO();
   photoDate.max = todayISO();
-  uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+  if (urlSlug) {
+    uploaderName.value = urlSlug;
+    uploaderName.readOnly = true;
+    uploaderName.classList.add('uploader-locked');
+  } else {
+    uploaderName.readOnly = false;
+    uploaderName.classList.remove('uploader-locked');
+    uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+  }
   refreshSubmit();
 })();
