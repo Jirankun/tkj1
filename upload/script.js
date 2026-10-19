@@ -290,29 +290,13 @@
   }
 
   /* ---------------- ImgBB ---------------- */
-  function imgbbErrorMessage(res, status) {
-    const e = res && res.error;
-    if (e && typeof e.message === 'string' && e.message.trim()) return e.message.trim();
-    if (e && typeof e === 'object') {
-      if (typeof e.code === 'number') {
-        const extra = e.message ? ' (' + String(e.message).trim() + ')' : '';
-        return 'ImgBB error ' + e.code + extra;
-      }
-      if (e.message) return String(e.message).trim();
-    }
-    if (res && typeof res.status_txt === 'string' && res.status_txt.trim()) {
-      return res.status_txt.trim();
-    }
-    if (res && typeof res.status_code === 'number') {
-      return 'ImgBB error ' + res.status_code + (res.status_txt ? ' (' + res.status_txt + ')' : '');
-    }
-    return 'ImgBB menolak file (HTTP ' + status + ').';
-  }
-
   function uploadToImgBB() {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const body = new FormData();
+
+      // Kirim sesuai bentuk yang diterima ImgBB: key + file asli.
+      // Jangan ubah Content-Type / jangan konversi ke base64 manual.
       body.append('key', IMGBB_KEY);
       body.append('image', uploadFile || file);
 
@@ -332,7 +316,12 @@
           return;
         }
 
-        reject(new Error(imgbbErrorMessage(res, status)));
+        const msg = (
+          (res && res.error && res.error.message) ? res.error.message
+          : (res && typeof res.status_txt === 'string' && res.status_txt.trim()) ? res.status_txt.trim()
+          : ('ImgBB error HTTP ' + status)
+        );
+        reject(new Error(msg));
       };
 
       xhr.onerror = () => {
