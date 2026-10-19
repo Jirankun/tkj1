@@ -11,5 +11,5 @@ window.TJK_DEFAULTS = {
     GITHUB_TOKEN: "",
     GITHUB_REPO: "",
     GITHUB_BRANCH: "main",
-    PHOTOS_PATH: "DB/photos.json",
+    PHOTOS_PATH: "DB/photos.json"
 };

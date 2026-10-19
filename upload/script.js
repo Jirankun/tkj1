@@ -319,6 +319,7 @@
         const msg = (
           (res && res.error && res.error.message) ? res.error.message
           : (res && typeof res.status_txt === 'string' && res.status_txt.trim()) ? res.status_txt.trim()
+          : (res && typeof res.status_code === 'number') ? ('ImgBB error ' + res.status_code)
           : ('ImgBB error HTTP ' + status)
         );
         reject(new Error(msg));
