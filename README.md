@@ -134,8 +134,6 @@ ImgBB API key sudah disimpan di file config secara langsung, jadi tidak perlu se
 ### Bridge aplikasi (jika tanpa token)
 
 ```js
-window.FlutterUploadHandler.postMessage(JSON.stringify(payload));
-// atau
 window.AndroidInterface.savePhoto(JSON.stringify(payload));
 ```
 

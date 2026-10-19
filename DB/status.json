@@ -1,0 +1,220 @@
+{
+    "users": [
+        {
+            "name": "Abiyu Anugrah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Aktsar Hakim Nst",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Amalia Safitri",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Amir Hamzah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Asra Bilhuda",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Eli Zahara",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Ezyla Aziz Zeira",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Fadel Muhammad Rezki",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Faizul Adzimi",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Faldho Adzani",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Fitria Mulia",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Galang Luqmanul Hakim",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Hafif Mabrur",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Kasifa Rahmah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Keysa Putri Ramadani",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "M. Rafiki Rasli",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Muhammad Hibban Aulia",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Muhammad Yudha Pratama",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Najia Atika Sahira",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Najwa Asyifa",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Rafi Idham",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Ranti Amelia",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Rasima Handayani",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Reviansyah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Reza Ardiansyah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Sakinah Khanza",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Salimah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Salsa Bila",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Susi Saskia",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Syah Ratul Paiza",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Thalita Syafa Harahap",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Tonius Nduru",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Yennisa Mulia",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Yuda Setriawan",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Zhyllan Fyllah",
+            "status": true,
+            "suspend_reason": "",
+            "profile": "https://www.github.com/Jirankun.png"
+        },
+        {
+            "name": "Admin",
+            "status": false,
+            "suspend_reason": "ini akun admin,gunakan akun sendiri",
+            "profile": "https://www.github.com/Jirankun.png"
+        }
+    ]
+}

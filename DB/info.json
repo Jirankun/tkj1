@@ -1,0 +1,14 @@
+{
+  "info": [
+    {
+      "status": "false",
+      "category": "main",
+      "show": "Sistem sedang perbaikan,silahkan kunjungi sekitar 21 hari lagi..."
+    },
+    {
+      "status": "true",
+      "category": "info",
+      "show": "Dimohon jangan melakukan tindakan aneh dan pencurian data,karena server masih dalam perbaikan,tetapi,sudah dapat di akses dengan normal"
+    }
+  ]
+}
