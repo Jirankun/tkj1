@@ -59,7 +59,7 @@
   /* ---------------- State ---------------- */
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
   const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  const UPLOADER_KEY = 'tjk_uploader';
+  // Fitur ingat username uploader dihapus agar slug dari URL tidak terabaikan
 
   function getSlugFromUrl() {
     try {
@@ -219,7 +219,6 @@
   photoDate.addEventListener('change', () => { showError(''); refreshSubmit(); });
   uploaderName.addEventListener('input', () => {
     if (uploaderName.readOnly) return;
-    localStorage.setItem(UPLOADER_KEY, uploaderName.value.trim());
     showError('');
     refreshSubmit();
   });
@@ -608,7 +607,7 @@
     } else {
       uploaderName.readOnly = false;
       uploaderName.classList.remove('uploader-locked');
-      uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+      uploaderName.value = '';
     }
     showError('');
     setCompressNote('');
@@ -634,7 +633,7 @@
   } else {
     uploaderName.readOnly = false;
     uploaderName.classList.remove('uploader-locked');
-    uploaderName.value = localStorage.getItem(UPLOADER_KEY) || '';
+    uploaderName.value = '';
   }
   refreshSubmit();
 })();
