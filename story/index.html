@@ -365,18 +365,25 @@ function prettyDate(iso) {
 
 /* ---------- Bridge aplikasi ---------- */
 function closeStory() {
+  /* Aplikasi Android: tutup layar cerita lewat bridge — jangan navigasi
+     (index.html tidak ada di aset aplikasi). */
   try {
-    if (window.AndroidInterface && typeof window.AndroidInterface.closeStory === 'function') {
-      window.AndroidInterface.closeStory();
+    if (window.AndroidInterface) {
+      if (typeof window.AndroidInterface.closeStory === 'function') {
+        window.AndroidInterface.closeStory();
+        return;
+      }
+      if (typeof window.AndroidInterface.postMessage === 'function') {
+        window.AndroidInterface.postMessage(JSON.stringify({ command: 'closeStory' }));
+        return;
+      }
     }
   } catch (e) { /* diabaikan */ }
   try {
     window.parent.postMessage({ type: 'STORY_DONE' }, '*');
   } catch (e) { /* diabaikan */ }
-  if (!(window.AndroidInterface && window.AndroidInterface.closeStory)) {
-    if (history.length > 1) history.back();
-    else location.href = '../index.html';
-  }
+  if (history.length > 1) history.back();
+  else location.href = '../index.html';
 }
 
 /* Dipanggil aplikasi Android lewat evaluateJavascript("window.bootFromFlutter(...)") */

@@ -241,7 +241,7 @@
       <i class="fa-solid fa-user" aria-hidden="true"></i>
       <span class="uploader" id="detailUploader"></span>
     </div>
-    <a class="download-cta" href="https://github.com/Jirankun/TKJ-One/releases/latest" target="_blank" rel="noopener noreferrer">
+    <a class="download-cta" id="downloadCta" href="https://github.com/Jirankun/TKJ-One/releases/latest" target="_blank" rel="noopener noreferrer">
       <i class="fa-solid fa-download" aria-hidden="true"></i>
       Download foto lewat aplikasi
     </a>
@@ -478,6 +478,44 @@ $('appBtn').addEventListener('click', () => {
     frame.remove();
     showToast('Membuka TKJ OnE');
   }, 900);
+});
+
+/* Download: deteksi aplikasi — ada → buka aplikasi; tidak ada → langsung
+   ke halaman rilis APK di GitHub. */
+const RELEASE_URL = 'https://github.com/Jirankun/TKJ-One/releases/latest';
+let checkingApp = false;
+
+function openAppOrRelease() {
+  if (index < 0 || checkingApp) return;
+  checkingApp = true;
+
+  let appOpened = false;
+  const markOpened = () => { appOpened = true; };
+  document.addEventListener('visibilitychange', markOpened);
+  window.addEventListener('blur', markOpened);
+
+  const frame = document.createElement('iframe');
+  frame.style.display = 'none';
+  frame.src = appUri();
+  document.body.appendChild(frame);
+
+  setTimeout(() => {
+    document.removeEventListener('visibilitychange', markOpened);
+    window.removeEventListener('blur', markOpened);
+    frame.remove();
+    checkingApp = false;
+    if (appOpened) {
+      showToast('Membuka TKJ OnE');
+    } else {
+      // Aplikasi tidak terbuka → langsung ke rilis terbaru
+      window.location.href = RELEASE_URL;
+    }
+  }, 1300);
+}
+
+$('downloadCta').addEventListener('click', (e) => {
+  e.preventDefault();
+  openAppOrRelease();
 });
 
 $('zonePrev').addEventListener('click', () => step(-1));

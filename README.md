@@ -13,7 +13,7 @@ Repo web: `Jirankun/tkj1` · Situs: `https://tkj1.pages.dev`
 - Kompresi diuji: file > 10 MB dikompres, hasil kompresi yang diunggah; file kecil tidak disentuh; fallback ke file asli bila kompresi gagal.
 - Aplikasi Android (`Jirankun/TKJ-One`) berhasil `assembleDebug`.
 - **Belum diuji**: upload jaringan nyata (ImgBB + GitHub) dan tampilan di perangkat/emulator.
-- Upload di server **baru aktif setelah `upload/config.js` diinjeksi**. Tanpa injeksi, tombol upload sengaja nonaktif dan menampilkan pesan.
+- Upload di server **aktif setelah `upload/config.js` berisi `IMGBB_API_KEY`**. Sekarang nilai itu ditulis langsung di file config, bukan diinjeksi lewat secret.
 
 ---
 
@@ -35,7 +35,7 @@ tkj1/
 ├── assets/theme.css            # Token warna, komponen, nav bawah, banner
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── DB/photos.json              # Sumber data galeri (array JSON)
-├── sw.js                       # Service worker (cache v3)
+├── sw.js                       # Service worker (cache v5)
 ├── _redirects                  # /photo/:name → /photo/?name=:name (301)
 ├── robots.txt · sitemap.xml
 └── .github/workflows/
@@ -64,7 +64,7 @@ Nav bawah (`Galeri · Cerita`) tampil di galeri & cerita. Halaman pratinjau seng
 - `contextmenu`, drag gambar, dan shortcut simpan/cetak (`Ctrl/Cmd+S`, `Ctrl/Cmd+P`) diblokir.
 - Gambar diberi `pointer-events: none` + `-webkit-touch-callout: none` agar long-press tidak memunculkan menu simpan.
 - Video memakai `controlsList="nodownload"` dan PiP dimatikan.
-- Untuk mengunduh foto, user diarahkan ke aplikasi: CTA di halaman pratinjau menuju `https://github.com/Jirankun/TKJ-One/releases/latest`, sama seperti banner di beranda.
+- Untuk mengunduh foto, user diarahkan ke aplikasi: CTA di halaman pratinjau **mendeteksi apakah aplikasi terpasang** — skema `tkjone://photo/<ID>` dicoba lewat iframe tersembunyi; kalau tab kehilangan fokus dalam 1,3 detik, berarti aplikasi terbuka (toast "Membuka TKJ OnE"); kalau tidak, user **langsung diarahkan ke `https://github.com/Jirankun/TKJ-One/releases/latest`**. Banner di beranda tetap menuju halaman rilis itu langsung.
 
 ### Ikon
 
@@ -119,17 +119,17 @@ Dibaca oleh galeri, cerita, pratinjau, dan aplikasi Android (`PHOTOS_JSON_URL`) 
 
 ### Konfigurasi (wajib untuk produksi)
 
-`upload/config.js` hanya placeholder. Nilai dibaca dari `window.__TJK_CONFIG__` (prioritas) atau `window.TJK_DEFAULTS`:
+`upload/config.js` berisi nilai statis:
 
 | Key             | Isi                                                        |
 | --------------- | ---------------------------------------------------------- |
-| `IMGBB_API_KEY` | API key ImgBB                                              |
+| `IMGBB_API_KEY` | API key ImgBB (ditulis langsung di `upload/config.js`)     |
 | `G_TOKEN`       | fine-grained PAT, `Contents: Read & Write`, hanya repo web |
 | `G_REPO`        | `Jirankun/tkj1`                                            |
 | `G_BRANCH`      | `main`                                                     |
 | `PHOTOS_PATH`   | `DB/photos.json`                                           |
 
-Jangan pernah commit nilai asli. `web-deploy.yml` mengisi file ini di runner sebelum deploy.
+ImgBB API key sudah disimpan di file config secara langsung, jadi tidak perlu secret GitHub Actions untuk upload.
 
 ### Bridge aplikasi (jika tanpa token)
 
@@ -216,14 +216,11 @@ curl -X POST \
   }'
 ```
 
-### 8.2 `web-deploy.yml` — injeksi config + deploy
+### 8.2 `web-deploy.yml` — deploy Cloudflare Pages
 
 - Trigger: push ke `main` / manual.
-- Menolak jalan bila secret wajib kosong.
-- Mengisi `upload/config.js` **hanya di runner** (tidak di-commit), lalu `wrangler pages deploy`.
-- Secret: `IMGBB_API_KEY`, `GH_UPLOAD_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
-
-> Jika Cloudflare Pages sudah terhubung otomatis ke GitHub, workflow ini opsional — tetapi tanpa injeksi config, halaman upload tidak bisa dipakai.
+- Tanpa inject config; `upload/config.js` sudah berisi ImgBB API key secara langsung.
+- Secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
 
 ### 8.3 `android-ci.yml`
 
@@ -233,8 +230,8 @@ Berada di repo aplikasi (`Jirankun/TKJ-One`), bukan repo web. Menangani versi, b
 
 ## 9. Checklist sebelum push
 
-- [ ] `upload/config.js` tetap kosong (tanpa key/token).
-- [ ] Secret Actions sudah diisi (untuk `web-deploy.yml`).
+- [ ] `upload/config.js` berisi `IMGBB_API_KEY` yang benar.
+- [ ] Secret Actions sudah diisi (untuk `web-deploy.yml`, jika dipakai).
 - [ ] `_redirects` ikut ter-deploy (Cloudflare Pages).
 - [ ] `DB/photos.json` valid & nama unik.
 - [ ] File lama yang sudah dihapus (`spam/`, `reader.html`, `banner/`, dll.) memang tidak dipakai lagi.
@@ -253,14 +250,13 @@ node --check upload/script.js
 node --check sw.js
 ```
 
-Untuk mencoba upload lokal tanpa menyentuh rahasia, isi `upload/config.js` sementara atau set `window.__TJK_CONFIG__` lewat console, lalu **jangan commit** nilainya.
+Untuk mencoba upload lokal, isi `upload/config.js` dengan `IMGBB_API_KEY` yang benar.
 
 ---
 
 ## 11. Keamanan
 
 - Halaman statis tidak bisa menyembunyikan token. Token di browser wajib fine-grained, hanya repo ini, hanya `Contents: Read & Write`, masa aktif pendek.
-- API key ImgBB pernah ter-commit pada riwayat lama — **rotasi key tersebut**.
 - `/upload/` diberi `noindex, nofollow` dan `Disallow` di robots.
 - `DB/photos.json` sengaja `Disallow` untuk crawler, tetapi tetap dapat diakses langsung (dibutuhkan aplikasi).
 

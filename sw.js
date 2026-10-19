@@ -4,7 +4,7 @@
 // ============================================================
 'use strict';
 
-const CACHE = 'tkjone-v4';
+const CACHE = 'tkjone-v5';
 
 const PRECACHE = [
   '/',

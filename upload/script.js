@@ -10,25 +10,21 @@
         c. entri { name, type, url, date, uploader } ditambahkan
         d. commit ke repo lewat GitHub Contents API
 
-   Konfigurasi diambil dari window.__TJK_CONFIG__ (aplikasi) atau
-   window.TJK_DEFAULTS (config.js).
+   Konfigurasi berasal dari window.TJK_DEFAULTS di config.js.
    ============================================================ */
 'use strict';
 
 (function () {
   /* ---------------- Konfigurasi ---------------- */
-  const INJ = (window.__TJK_CONFIG__ && typeof window.__TJK_CONFIG__ === 'object')
-    ? window.__TJK_CONFIG__ : {};
-  const DEF = (window.TJK_DEFAULTS && typeof window.TJK_DEFAULTS === 'object')
-    ? window.TJK_DEFAULTS : {};
+  const DEF = window.TJK_DEFAULTS || {};
 
   const str = (v) => String(v == null ? '' : v).trim();
 
-  const IMGBB_KEY = str(INJ.IMGBB_API_KEY || DEF.IMGBB_API_KEY);
-  const TOKEN = str(INJ.GITHUB_TOKEN || DEF.GITHUB_TOKEN);
-  const REPO = str(INJ.GITHUB_REPO || DEF.GITHUB_REPO);
-  const BRANCH = str(INJ.GITHUB_BRANCH || DEF.GITHUB_BRANCH) || 'main';
-  const PHOTOS_PATH = str(INJ.PHOTOS_PATH || DEF.PHOTOS_PATH) || 'DB/photos.json';
+  const IMGBB_KEY = str(DEF.IMGBB_API_KEY);
+  const TOKEN = str(DEF.GITHUB_TOKEN);
+  const REPO = str(DEF.GITHUB_REPO);
+  const BRANCH = str(DEF.GITHUB_BRANCH) || 'main';
+  const PHOTOS_PATH = str(DEF.PHOTOS_PATH) || 'DB/photos.json';
 
   /* ---------------- Elemen ---------------- */
   const $ = (id) => document.getElementById(id);
@@ -151,15 +147,13 @@
 
   function refreshSubmit() {
     if (busy) return;
-    const ok = valid() && IMGBB_KEY.length > 0;
+    const ok = valid();
     submitBtn.disabled = !ok;
     submitBtn.classList.toggle('enabled', ok);
     submitBtn.classList.toggle('disabled', !ok);
 
     if (compressing) {
       submitHint.textContent = 'Menyiapkan foto… kamu tetap bisa mengisi data di bawah.';
-    } else if (!IMGBB_KEY) {
-      submitHint.textContent = 'Upload belum bisa dipakai: API key ImgBB belum diisi.';
     } else if (ok) {
       submitHint.textContent = 'Siap diunggah. Periksa data sebelum menekan tombol.';
     } else {
