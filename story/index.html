@@ -580,6 +580,10 @@
                     v.loop = true;
                     v.preload = "metadata";
                     v.setAttribute("playsinline", "");
+                    v.setAttribute("controlsList", "nodownload noremoteplayback");
+                    v.setAttribute("disablePictureInPicture", "");
+                    v.disableRemotePlayback = true;
+                    v.addEventListener("contextmenu", event => event.preventDefault());
                     v.addEventListener("error", () => {
                         node.innerHTML = '<p class="msg">Video tidak dapat dimuat.</p>';
                     });
