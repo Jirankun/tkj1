@@ -380,7 +380,11 @@
     const res = await fetch(url + '&t=' + Date.now(), { headers: ghHeaders(!!TOKEN) });
 
     if (res.status === 404) throw new Error('File ' + PHOTOS_PATH + ' tidak ditemukan di repo.');
-    if (!res.ok) throw new Error('Gagal membaca data galeri (HTTP ' + res.status + ').');
+    if (!res.ok) {
+      let msg = 'Gagal membaca data galeri (HTTP ' + res.status + ').';
+      try { const e = await res.json(); if (e && e.message) msg += ' ' + e.message; } catch (_) {}
+      throw new Error(msg);
+    }
 
     const meta = await res.json();
     if (!meta.content) throw new Error('Isi data galeri kosong.');
@@ -583,6 +587,7 @@
         photoLink(entry.name));
     } catch (err) {
       lockForm(false);
+      console.error('[upload] full error:', err);
       showResult(false, 'Upload gagal',
         err && err.message ? err.message : 'Terjadi kesalahan.',
         remoteUrl || null);
