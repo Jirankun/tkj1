@@ -83,10 +83,13 @@
                 background: #000;
             }
 
+            /* touch-action none: gesture horizontal tidak boleh dibatalkan browser
+               (penyebab utama swipe kiri/kanan gagal di beberapa perangkat). */
             .stage img {
-                touch-action: pan-y;
+                touch-action: none;
                 user-select: none;
                 -webkit-user-drag: none;
+                pointer-events: auto;
             }
 
             /* ---------- Info bawah (bukan overlay) ---------- */
@@ -352,6 +355,8 @@
                     mediaEl.remove();
                     mediaEl = null;
                 }
+                swipePointerId = null;
+                swipePointerMoved = false;
                 spinner.classList.remove("hidden");
             }
 
@@ -385,15 +390,34 @@
                     const img = document.createElement("img");
                     img.alt = "Foto " + item.name;
                     img.decoding = "async";
+                    img.draggable = false;
                     img.referrerPolicy = "no-referrer";
-                    img.addEventListener("load", () => spinner.classList.add("hidden"));
+
+                    let retried = false;
+                    const finishLoading = () => spinner.classList.add("hidden");
+
+                    // Listener dipasang SEBELUM src: kalau gambar sudah ada di cache,
+                    // event load bisa selesai sangat cepat dan handler yang dipasang
+                    // belakangan akan terlewat (foto tampak tidak muncul).
+                    img.addEventListener("load", () => {
+                        if (img.naturalWidth > 0) finishLoading();
+                    });
                     img.addEventListener("error", () => {
-                        spinner.classList.add("hidden");
+                        if (!retried) {
+                            retried = true;
+                            img.src = item.url;
+                            return;
+                        }
+                        finishLoading();
                         showToast("Gambar gagal dimuat");
                     });
-                    img.src = item.url;
+
                     mediaEl = img;
                     stage.insertBefore(img, spinner);
+                    img.src = item.url;
+
+                    // Fallback kalau event load sudah lewat sebelum handler terpasang.
+                    if (img.complete && img.naturalWidth > 0) finishLoading();
                 }
 
                 $("topTitle").textContent = "#" + item.name;
@@ -534,7 +558,9 @@
             });
 
             function beginSwipe(target, x, y) {
-                if (!mediaEl || mediaEl.tagName !== "IMG" || target !== mediaEl) return false;
+                // Jangan mulai swipe dari tombol/link (mis. tombol download).
+                if (!mediaEl || mediaEl.tagName !== "IMG") return false;
+                if (target && target.closest && target.closest("a,button")) return false;
                 swipeStartX = x;
                 swipeStartY = y;
                 swipePointerMoved = false;
@@ -591,7 +617,7 @@
                 stage.addEventListener(
                     "touchmove",
                     event => {
-                        if (event.touches.length !== 1 || !mediaEl || event.target !== mediaEl) return;
+                        if (event.touches.length !== 1 || !mediaEl) return;
                         const touch = event.touches[0];
                         const dx = touch.clientX - swipeStartX;
                         const dy = touch.clientY - swipeStartY;

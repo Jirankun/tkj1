@@ -113,9 +113,14 @@ body {
 }
 
 .card-thumb img,
-.stage img,
 .frame img {
   pointer-events: none;
+}
+
+/* Gambar di halaman detail HARUS menerima pointer event,
+   kalau tidak gesture swipe kiri/kanan tidak pernah mulai. */
+.stage img {
+  pointer-events: auto;
 }
 
 .card-thumb i {

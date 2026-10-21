@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#0B1220" />
         <meta name="description" content="Galeri foto dan video kelas." />
+        <meta name="google-adsense-account" content="ca-pub-6754329161781195" />
         <title>Galeri Foto & Video Kelas</title>
         <link rel="stylesheet" href="./assets/theme.css" />
         <link rel="stylesheet" href="./assets/fa/css/all.min.css" />
@@ -73,6 +74,12 @@
         </nav>
 
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
+            crossorigin="anonymous"
+        ></script>
 
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-KN1MTKR6YH"></script>
@@ -190,11 +197,22 @@
                 const img = document.createElement("img");
                 img.loading = "lazy";
                 img.decoding = "async";
+                img.draggable = false;
                 img.alt = "Foto " + item.name;
                 img.referrerPolicy = "no-referrer";
-                img.src = item.url;
-                img.addEventListener("load", () => img.classList.add("loaded"));
+
+                let retried = false;
+                // Listener dipasang sebelum src supaya event load dari cache tidak terlewat
+                // (penyebab kartu kadang kosong walau gambar sebenarnya berhasil dimuat).
+                img.addEventListener("load", () => {
+                    if (img.naturalWidth > 0) img.classList.add("loaded");
+                });
                 img.addEventListener("error", () => {
+                    if (!retried) {
+                        retried = true;
+                        img.src = item.url;
+                        return;
+                    }
                     img.remove();
                     thumb.style.display = "flex";
                     thumb.style.alignItems = "center";
@@ -202,6 +220,8 @@
                     thumb.innerHTML = '<i class="fa-solid fa-image" aria-hidden="true"></i>';
                 });
                 thumb.appendChild(img);
+                img.src = item.url;
+                if (img.complete && img.naturalWidth > 0) img.classList.add("loaded");
 
                 if (isVideo(item)) {
                     const badge = document.createElement("span");
