@@ -6,5 +6,11 @@ Disallow: /upload/
 Disallow: /photo/
 Disallow: /story/
 Disallow: /sw.js
+Disallow: /privacy/
+Disallow: assets/
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /terms/
+Disallow: /uploaders/
 
 Sitemap: https://tkj1.pages.dev/sitemap.xml
