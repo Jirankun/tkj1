@@ -61,6 +61,15 @@
     const ALLOWED_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
     // Fitur ingat username uploader dihapus agar slug dari URL tidak terabaikan
 
+    /* i.ibb.co (tanpa .com) memakai sertifikat TLS milik domain lain sehingga
+       browser menolaknya ("koneksi tidak aman") dan foto tidak pernah tampil.
+       Arahkan ke i.ibb.co.com yang resmi. */
+    function normalizeMediaUrl(u) {
+        return String(u == null ? "" : u)
+            .trim()
+            .replace(/^(https?:)?\/\/i\.ibb\.co\//i, "https://i.ibb.co.com/");
+    }
+
     function getSlugFromUrl() {
         try {
             const qs = new URLSearchParams(location.search);
@@ -172,7 +181,7 @@
         submitBtn.classList.toggle("disabled", !ok);
 
         if (compressing) {
-            submitHint.textContent = "Menyiapkan foto… kamu tetap bisa mengisi data di bawah.";
+            submitHint.textContent = "Menyiapkan foto…";
         } else if (ok) {
             submitHint.textContent = "Siap diunggah. Periksa data sebelum menekan tombol.";
         } else {
@@ -335,7 +344,7 @@
                 }
 
                 if (res && res.success && res.data && res.data.url) {
-                    resolve(String(res.data.url));
+                    resolve(normalizeMediaUrl(res.data.url));
                     return;
                 }
 

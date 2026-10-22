@@ -4,16 +4,21 @@
 // ============================================================
 'use strict';
 
-const CACHE = 'tkjone-v5';
+const CACHE = 'tkjone-v6';
 
 const PRECACHE = [
   '/',
   '/index.html',
   '/photo/',
   '/story/',
+  '/uploaders/',
   '/assets/theme.css',
   '/assets/fa/css/all.min.css',
   '/assets/fa/webfonts/fa-solid-900.woff2',
+  '/assets/plyr/plyr.css',
+  '/assets/plyr/plyr.js',
+  '/assets/plyr/assets/plyr.svg',
+  '/assets/plyr/assets/blank.mp4',
   '/DB/photos.json'
 ];
 

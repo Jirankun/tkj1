@@ -8,6 +8,7 @@
         <title>Cerita — TKJ OnE</title>
         <link rel="stylesheet" href="../assets/theme.css" />
         <link rel="stylesheet" href="../assets/fa/css/all.min.css" />
+        <link rel="stylesheet" href="../assets/plyr/plyr.css" />
         <style>
             html,
             body {
@@ -114,6 +115,28 @@
             /* ---------- Frame ---------- */
             .frame video {
                 pointer-events: none;
+            }
+
+            /* ---------- Plyr (player video, self-hosted) ---------- */
+            .item .plyr {
+                width: 100%;
+                height: 100%;
+                min-width: 0;
+                max-width: 100%;
+                max-height: 100%;
+                --plyr-color-main: var(--blue);
+                --plyr-video-background: #000;
+            }
+            .item .plyr__video-wrapper {
+                height: 100%;
+                width: 100%;
+            }
+            .item .plyr video {
+                object-fit: contain;
+            }
+            /* Cerita dikendalikan tap zona, jadi bilah kontrol disembunyikan. */
+            .item .plyr__controls {
+                display: none;
             }
 
             .frame {
@@ -341,6 +364,7 @@
             </a>
         </nav>
 
+        <script src="../assets/plyr/plyr.js"></script>
         <script>
             "use strict";
 
@@ -367,14 +391,19 @@
                 duration: IMAGE_MS,
                 paused: false,
                 video: null,
+                player: null,
                 current: null,
             };
 
             /* ---------- Normalisasi ---------- */
             function normUrl(u) {
-                return String(u || "")
+                let s = String(u || "")
                     .replace(/\s+/g, "")
                     .trim();
+                /* i.ibb.co (tanpa .com) memakai sertifikat TLS domain lain -> browser
+                   menolaknya dan foto tidak pernah tampil. Pakai i.ibb.co.com. */
+                s = s.replace(/^(https?:)?\/\/i\.ibb\.co\//i, "https://i.ibb.co.com/");
+                return s;
             }
 
             function isVideo(item) {
@@ -543,7 +572,8 @@
                 state.elapsed += Date.now() - state.startedAt;
                 pauseBtn.classList.add("is-paused");
                 pauseBtn.setAttribute("aria-label", "Lanjutkan");
-                if (state.video) state.video.pause();
+                if (state.player) state.player.pause();
+                else if (state.video) state.video.pause();
             }
 
             function resume() {
@@ -552,7 +582,23 @@
                 state.startedAt = Date.now();
                 pauseBtn.classList.remove("is-paused");
                 pauseBtn.setAttribute("aria-label", "Jeda");
-                if (state.video) state.video.play().catch(() => {});
+                const p = state.player ? state.player.play() : state.video ? state.video.play() : null;
+                if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+
+            /* Buang player video sebelumnya (kalau tidak, suara video lama
+               tetap berjalan di latar belakang saat cerita berganti). */
+            function destroyPlayer() {
+                if (!state.player) return;
+                const original = state.player.elements && state.player.elements.original;
+                try {
+                    state.player.destroy();
+                } catch (e) {
+                    /* diabaikan */
+                }
+                state.player = null;
+                state.video = null;
+                if (original && original.parentNode) original.parentNode.removeChild(original);
             }
 
             /* ---------- Render item ---------- */
@@ -560,43 +606,59 @@
                 const item = state.items[state.index];
                 if (!item) return;
 
+                destroyPlayer();
                 state.current = item;
                 state.paused = false;
-                state.video = null;
                 pauseBtn.classList.remove("is-paused");
 
                 const node = document.createElement("div");
                 node.className = "item enter";
+                let videoEl = null;
 
                 if (isVideo(item)) {
                     const v = document.createElement("video");
-                    v.src = item.url;
+                    v.src = normUrl(item.url);
                     v.playsInline = true;
                     v.muted = true;
                     v.autoplay = true;
                     v.loop = true;
                     v.preload = "metadata";
                     v.setAttribute("playsinline", "");
-                    v.setAttribute("controlsList", "nodownload noremoteplayback");
-                    v.setAttribute("disablePictureInPicture", "");
+                    v.setAttribute("muted", "");
+                    v.setAttribute("controlslist", "nodownload noremoteplayback");
+                    v.setAttribute("disablepictureinpicture", "");
                     v.disableRemotePlayback = true;
                     v.addEventListener("contextmenu", event => event.preventDefault());
                     v.addEventListener("error", () => {
                         node.innerHTML = '<p class="msg">Video tidak dapat dimuat.</p>';
                     });
+                    v.addEventListener("loadedmetadata", () => {
+                        const d = v.duration;
+                        if (Number.isFinite(d) && d > 0) {
+                            // Pakai durasi asli video (dibatasi 5-30 detik).
+                            state.duration = Math.min(Math.max(d + 500, IMAGE_MS), 30000);
+                        }
+                    });
                     node.appendChild(v);
-                    state.video = v;
+                    videoEl = v;
                     state.duration = VIDEO_MS;
-                    v.play().catch(() => {});
                 } else {
                     const img = new Image();
                     img.alt = "Foto " + item.name;
+                    img.draggable = false;
                     img.referrerPolicy = "no-referrer";
+                    let retried = false;
                     img.addEventListener("error", () => {
+                        if (!retried) {
+                            retried = true;
+                            // Coba lagi sekali (koneksi/CDN sempat gagal).
+                            img.src = normUrl(item.url);
+                            return;
+                        }
                         node.innerHTML = '<p class="msg">Gambar tidak dapat dimuat.</p>';
                     });
-                    img.src = item.url;
                     node.appendChild(img);
+                    img.src = normUrl(item.url);
                     state.duration = IMAGE_MS;
                 }
 
@@ -607,6 +669,27 @@
                     old.classList.add("exit");
                     setTimeout(() => old.remove(), 300);
                 });
+
+                /* Player video dibuat setelah video masuk DOM (Plyr butuh induk).
+                   Kalau Plyr tidak tersedia/gagal -> video native tetap berjalan. */
+                if (videoEl) {
+                    state.video = videoEl;
+                    if (typeof Plyr !== "undefined") {
+                        try {
+                            state.player = new Plyr(videoEl, {
+                                controls: [],
+                                invertTime: false,
+                                loadSprite: true,
+                                clickToPlay: false,
+                                keyboard: { focused: false, global: false },
+                                hideControls: true,
+                            });
+                        } catch (e) {
+                            state.player = null;
+                        }
+                    }
+                    videoEl.play().catch(() => {});
+                }
 
                 capName.textContent = "#" + item.name;
                 capMeta.innerHTML = "";
@@ -653,6 +736,9 @@
             }
 
             /* ---------- Interaksi ---------- */
+            let touchPaused = false;
+            let hiddenPaused = false;
+
             $("zoneNext").addEventListener("click", next);
             $("zonePrev").addEventListener("click", prev);
             pauseBtn.addEventListener("click", () => (state.paused ? resume() : pause()));
@@ -663,7 +749,12 @@
                     if (e.touches.length !== 1) return;
                     stage.dataset.startY = String(e.touches[0].clientY);
                     stage.dataset.startX = String(e.touches[0].clientX);
-                    pause();
+                    // Hanya jeda bila sedang berjalan; kalau pengguna sudah
+                    // menjeda manual, tap tidak boleh melanjutkannya.
+                    if (!state.paused) {
+                        touchPaused = true;
+                        pause();
+                    }
                 },
                 { passive: true },
             );
@@ -685,7 +776,10 @@
                         closeStory();
                         return;
                     }
-                    resume();
+                    if (touchPaused) {
+                        touchPaused = false;
+                        resume();
+                    }
                 },
                 { passive: true },
             );
@@ -701,7 +795,13 @@
             });
 
             document.addEventListener("visibilitychange", () => {
-                if (document.hidden) pause();
+                if (document.hidden) {
+                    hiddenPaused = !state.paused;
+                    pause();
+                } else if (hiddenPaused) {
+                    hiddenPaused = false;
+                    resume();
+                }
             });
 
             /* ---------- Boot ---------- */
@@ -716,18 +816,70 @@
             })();
         </script>
         <script>
-            /* Anti-copy / anti-save: foto hanya bisa diunduh lewat aplikasi. */
+            /* Anti-copy / anti-save: konten galeri hanya bisa diunduh lewat aplikasi. */
             (function () {
+                "use strict";
+
+                /* Isian milik user sendiri (form upload, pencarian) tetap boleh disalin. */
+                function isEditable(el) {
+                    if (!el || !el.tagName) return false;
+                    var tag = el.tagName.toLowerCase();
+                    if (tag === "input" || tag === "textarea" || tag === "select") return true;
+                    return !!el.isContentEditable;
+                }
+
+                /* Klik kanan: blokir menu simpan / salin / cetak. */
                 document.addEventListener("contextmenu", function (e) {
                     e.preventDefault();
                 });
+
+                /* Seret & lepas: blokir "save image as" dan drag ke disk. */
                 document.addEventListener("dragstart", function (e) {
                     e.preventDefault();
                 });
+                document.addEventListener("dragover", function (e) {
+                    e.preventDefault();
+                });
+                document.addEventListener("drop", function (e) {
+                    e.preventDefault();
+                });
+
+                /* Salin & potong teks: teks halaman tidak bisa disalin. */
+                document.addEventListener("copy", function (e) {
+                    if (isEditable(e.target) || isEditable(document.activeElement)) return;
+                    e.preventDefault();
+                });
+                document.addEventListener("cut", function (e) {
+                    if (isEditable(e.target) || isEditable(document.activeElement)) return;
+                    e.preventDefault();
+                });
+                document.addEventListener("selectstart", function (e) {
+                    if (isEditable(e.target)) return;
+                    e.preventDefault();
+                });
+
+                /* Pintasan keyboard: salin, potong, pilih semua, simpan, cetak, lihat sumber. */
                 document.addEventListener("keydown", function (e) {
                     var k = (e.key || "").toLowerCase();
-                    if ((e.ctrlKey || e.metaKey) && (k === "s" || k === "p")) e.preventDefault();
+                    if (!e.ctrlKey && !e.metaKey) return;
+                    if (k === "s" || k === "p" || k === "u") {
+                        e.preventDefault();
+                        return;
+                    }
+                    if ((k === "c" || k === "x" || k === "a") && !isEditable(e.target)) {
+                        e.preventDefault();
+                    }
                 });
+
+                /* Gaya anti-seleksi + anti long-press "simpan ke layar" (iOS/Android). */
+                var style = document.createElement("style");
+                style.textContent =
+                    "html,body,body *:not(input):not(textarea):not(select){" +
+                    "-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;" +
+                    "-webkit-touch-callout:none;}" +
+                    "input,textarea,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text;}" +
+                    "img,video{-webkit-user-drag:none;-webkit-touch-callout:none;}";
+                (document.head || document.documentElement).appendChild(style);
             })();
         </script>
     </body>

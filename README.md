@@ -24,6 +24,7 @@ tkj1/
 ├── index.html                  # Galeri: pencarian, filter, grid, banner unduh app
 ├── photo/index.html            # Pratinjau media (gaya aplikasi): bar atas + info bawah
 ├── story/index.html            # Cerita (media terbaru), progress bar, nav bawah
+├── uploaders/index.html        # Data uploader: tab Statistik + Detail User (aktif/suspend + fotonya)
 ├── upload/                     # Halaman upload (app-only, noindex)
 │   ├── index.html              # Pilih foto → form → progress inline → hasil
 │   ├── style.css               # Tema gelap + aksen biru, tanpa kartu popup
@@ -34,6 +35,8 @@ tkj1/
 │       └── LICENSE.compressorjs
 ├── assets/theme.css            # Token warna, komponen, nav bawah, banner
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
+├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
+│   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
 ├── DB/photos.json              # Sumber data galeri (array JSON)
 ├── sw.js                       # Service worker (cache v5)
 ├── _redirects                  # /photo/:name → /photo/?name=:name (301)
@@ -55,20 +58,34 @@ Aplikasi Android berada di repo terpisah (`Jirankun/TKJ-One`): `app/src/main/ass
 | `/photo/?name=<ID>` | Pratinjau foto/video           | Bentuk **kanonik**, langsung tanpa lewat beranda |
 | `/photo/<ID>`       | Redirect 301 ke bentuk kanonik | Link lama                                        |
 | `/story/`           | Cerita                         | `noindex`                                        |
+| `/uploaders/`       | Data uploader (Statistik + Detail User) | `noindex`, `Disallow` di robots          |
 | `/upload/`          | Upload                         | `noindex`, tidak ditautkan dari web              |
 
 Nav bawah (`Galeri · Cerita`) tampil di galeri & cerita. Halaman pratinjau sengaja tanpa nav (gaya viewer aplikasi).
 
 ### Anti-copy & anti-save
 
-- `contextmenu`, drag gambar, dan shortcut simpan/cetak (`Ctrl/Cmd+S`, `Ctrl/Cmd+P`) diblokir.
-- Gambar diberi `pointer-events: none` + `-webkit-touch-callout: none` agar long-press tidak memunculkan menu simpan.
+Blok proteksi yang sama (inline, identik di setiap halaman) dipasang di **semua halaman yang memuat data dari `DB/`**: `/`, `/photo/`, `/story/`, `/uploaders/`, dan `/upload/`.
+
+- **Klik kanan** diblokir (`contextmenu`) — menu simpan/salin/cetak tidak muncul.
+- **Teks halaman tidak bisa disalin/dipilih**: event `copy`, `cut`, dan `selectstart` diblokir, ditambah gaya `user-select: none` (kecuali `input`/`textarea`/`[contenteditable]`, supaya form upload dan kotak pencarian tetap normal).
+- **Seret & lepas** diblokir (`dragstart`, `dragover`, `drop`) — foto tidak bisa di-drag ke disk. Gambar juga diberi `draggable="false"`, `-webkit-user-drag: none`, dan `-webkit-touch-callout: none` agar long-press tidak memunculkan menu simpan.
+- **Shortcut** diblokir: salin/potong/pilih semua (`Ctrl/Cmd+C`, `X`, `A`), simpan/cetak/lihat sumber (`Ctrl/Cmd+S`, `P`, `U`).
 - Video memakai `controlsList="nodownload"` dan PiP dimatikan.
 - Untuk mengunduh foto, user diarahkan ke aplikasi: CTA di halaman pratinjau **mendeteksi apakah aplikasi terpasang** — skema `tkjone://photo/<ID>` dicoba lewat iframe tersembunyi; kalau tab kehilangan fokus dalam 1,3 detik, berarti aplikasi terbuka (toast "Membuka TKJ OnE"); kalau tidak, user **langsung diarahkan ke `https://github.com/Jirankun/TKJ-One/releases/latest`**. Banner di beranda tetap menuju halaman rilis itu langsung.
 
 ### Ikon
 
 Semua ikon web memakai **Font Awesome 7 Free** yang di-vendor di `assets/fa/` (tanpa CDN, tidak ada ikon rusak saat offline). Tidak ada lagi SVG inline.
+
+### Player video — Plyr self-hosted
+
+Semua player video (pratinjau `/photo/`, cerita `/story/`, pratinjau inline `/uploaders/`) memakai **Plyr 3.7.8** yang di-vendor penuh di `assets/plyr/`:
+
+- `assets/plyr/plyr.js` + `assets/plyr/plyr.css` — tanpa request ke `cdn.plyr.io`.
+- `assets/plyr/assets/plyr.svg` (sprite ikon) dan `assets/plyr/assets/blank.mp4` — aset default Plyr diambil dari folder lokal, bukan CDN.
+- Nilai default `iconUrl` / `blankVideo` di `plyr.js` sudah diarahkan ke path absolut `/assets/plyr/assets/...`, jadi aman dipakai dari halaman di subfolder (`/photo/`, `/story/`, `/uploaders/`).
+- Kalau `Plyr` gagal dimuat, video tetap berjalan dengan kontrol native (fallback).
 
 ---
 
@@ -94,9 +111,23 @@ Berupa **array**. Setiap entri:
 | `date`     | tidak | `YYYY-MM-DD`                                      |
 | `uploader` | tidak | Nama pengunggah, ditampilkan di kartu & pratinjau |
 
-Data saat ini: **284 entri**, semuanya `uploader: "admin"`. File ditulis ulang dengan indentasi 2 spasi dan newline akhir.
+Data saat ini: **303 entri** (301 foto + 2 video), dari 2 uploader (`admin` 297, `Zhyllan Fyllah` 6). File ditulis ulang dengan indentasi 2 spasi dan newline akhir.
 
 Dibaca oleh galeri, cerita, pratinjau, dan aplikasi Android (`PHOTOS_JSON_URL`) memakai cache-buster `?t=<timestamp>`.
+
+> **Host gambar:** `i.ibb.co` (tanpa `.com`) kini memakai sertifikat TLS milik domain lain (`internetbaik.telkomsel.com`), jadi browser menolaknya dan foto tidak pernah tampil meski link-nya kelihatan sehat. Semua entri sudah diubah ke `i.ibb.co.com`, dan setiap halaman juga menormalisasi URL saat runtime (`i.ibb.co/` → `i.ibb.co.com/`) supaya data lama/baru tetap aman. Alur upload (`upload/script.js`) dan workflow `add-photo.yml` menerapkan normalisasi yang sama sebelum menyimpan.
+
+### Halaman `/uploaders/` — data uploader
+
+Halaman statis (tanpa header) yang merangkum data `DB/photos.json` + `DB/status.json`:
+
+- **Tanpa header**, isi dikelompokkan lewat 2 tab: **Statistik** (6 kartu ringkasan: **Media / Foto / Video / Aktif / Suspend / User**, lalu grafik batang "Uploader") dan **Detail User** (daftar user **aktif** & **suspend** beserta fotonya).
+- **Pil Total mengambang** di pojok kanan bawah (`position: fixed`): `<jumlah> media` dengan rincian `<jumlah> video · <jumlah> foto` di bawahnya. Video ikut terhitung di semua angka (baris uploader, kartu statistik, progress bar, dan daftar media user).
+- Baris uploader: `avatar · nama · status · › · jumlah/persen di ujung kanan`, dengan **progress bar** porsi foto di bawahnya. Angka memakai `tabular-nums` dengan lebar kolom tetap, jadi semua baris lurus.
+- **Accordion**: hanya **1 user** yang boleh terbuka; membuka user lain otomatis menutup yang sebelumnya.
+- **Foto expand di dalam** (expand di dalam expand): mengetuk baris foto membuka pratinjau **di halaman ini** (bukan navigasi ke halaman lain); mengetuk lagi menutupnya. Hanya **1 foto** yang boleh terbuka. Baris video memakai **Plyr** (self-hosted) di dalam pratinjau yang sama.
+- Di dalam pratinjau ada link sekunder “Halaman foto” (`/photo/?name=<ID>`) untuk membuka viewer penuh.
+- `DB/status.json` dibaca dengan `cache: "no-store"`; bila gagal, halaman tetap jalan tanpa profil user.
 
 ---
 
@@ -266,5 +297,5 @@ Untuk mencoba upload lokal, isi `upload/config.js` dengan `IMGBB_API_KEY` yang b
 - Kompresi baru diuji dengan stub di jsdom; perlu dicek sekali di ponsel (terutama foto besar & GIF).
 - Halaman upload versi aset Android harus disinkronkan manual jika web berubah.
 - Pratinjau web sudah tanpa nav bawah (gaya aplikasi); jika ingin nav kembali khusus web, tambahkan di `photo/index.html`.
-- Anti-copy bersifat sisi klien (tidak bisa 100% mencegah screenshot/save dari browser modifikasi); tujuannya mencegah simpan/unduh biasa dan mengarahkan user ke aplikasi.
+- Anti-copy bersifat sisi klien (tidak bisa 100% mencegah screenshot/save dari browser modifikasi); tujuannya mencegah simpan/unduh biasa, menyalin teks halaman, dan mengarahkan user ke aplikasi.
 - UI aplikasi memakai ripple + elevasi ringan (gaya Material 2) pada kartu galeri; belum ada uji visual di perangkat.

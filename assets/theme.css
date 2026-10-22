@@ -245,6 +245,13 @@ body {
   flex: 1;
 }
 
+/* Iklan yang disisipkan script pihak ketiga (iframe lebar 468px) harus
+   ikut lebar halaman, kalau tidak earthly terpotong di layar sempit
+   dan bikin halaman bisa di-scroll horizontal. */
+.page > iframe {
+  max-width: 100%;
+}
+
 /* ---------- Search & filter ---------- */
 .search-wrap {
   position: relative;

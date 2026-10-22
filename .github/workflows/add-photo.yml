@@ -95,6 +95,11 @@ jobs:
           if not re.fullmatch(r"https?://\S+", url):
               print("url harus http(s) dan tanpa spasi")
               sys.exit(1)
+
+          # i.ibb.co (tanpa .com) memakai sertifikat TLS milik domain lain sehingga
+          # browser menolaknya dan media tidak pernah tampil. Normalkan ke
+          # i.ibb.co.com sebelum disimpan ke DB.
+          url = re.sub(r"^(https?:)?//i\.ibb\.co/", "https://i.ibb.co.com/", url, flags=re.I)
           if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
               print("date harus YYYY-MM-DD")
               sys.exit(1)
