@@ -50,7 +50,7 @@
                     <li><a href="#home" class="active">Home</a></li>
                     <li><a href="#tentang">About &amp; Teacher</a></li>
                     <li><a href="#tim">Team</a></li>
-                    <li><a href="#anggota">Members</a></li>
+                    <li><a href="#members">Members</a></li>
                     <li><a href="#faq">Faq</a></li>
                     <li><a href="#kontak">Social Media</a></li>
                 </ul>
@@ -110,17 +110,6 @@
                 </div>
             </section>
 
-            <!-- ===================== Members ===================== -->
-            <section class="section alt" id="anggota" hidden>
-                <div class="container">
-                    <div class="sec-head reveal">
-                        <h3>Members</h3>
-                        <p>Inilah anggota kelas TKJ 1 periode ini.</p>
-                    </div>
-                    <div class="card-grid" id="memberGrid"></div>
-                </div>
-            </section>
-
             <!-- ===================== Achievement ===================== -->
             <section class="section prestasi" id="prestasi" hidden>
                 <div class="container">
@@ -137,6 +126,20 @@
                             <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                         </button>
                         <div class="slider-dots" id="slideDots"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== Members (kelas) ===================== -->
+            <section class="section" id="members">
+                <div class="container">
+                    <div class="sec-head reveal">
+                        <h3>Members</h3>
+                        <p>Kenali lebih dekat anggota kelas TKJ 1 — kunjungi halaman daftar lengkapnya.</p>
+                    </div>
+                    <div class="members-teaser reveal" id="membersTeaser"></div>
+                    <div class="members-cta-wrap reveal">
+                        <a class="btn members-cta" href="./student/">Lihat Anggota Kelas &gt;</a>
                     </div>
                 </div>
             </section>
@@ -165,16 +168,6 @@
                             <div>
                                 <p>Instagram</p>
                                 <small id="ciIg">@tkj1.smknlm</small>
-                            </div>
-                            <span class="social-go"
-                                ><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i
-                            ></span>
-                        </a>
-                        <a class="social-card" id="socTt" href="#" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
-                            <div>
-                                <p>TikTok</p>
-                                <small id="ciTt">@tkj1.smknlm</small>
                             </div>
                             <span class="social-go"
                                 ><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i
@@ -223,8 +216,6 @@
                 siswa: { laki: 0, putri: 0 }, // isi jumlah asli
                 instagram: "@tkj1.smknlm", // akun IG kelas
                 instagramUrl: "https://www.instagram.com/tkj1.smknlm/",
-                tiktok: "@tkj1.smknlm", // akun TikTok kelas
-                tiktokUrl: "https://www.tiktok.com/@tkj1.smknlm",
 
                 /* KPI kelas (wali & pejabat) */
                 guru: [
@@ -305,9 +296,11 @@
                       'class="person-photo" loading="lazy" decoding="async" />'
                     : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
                 const label = name && name !== p.jabatan ? esc(name) : "<span>—</span>";
-                /* Layout konsisten: foto selalu di kiri, teks di kanan (sejajar) */
+                /* Baris bergantian (silang): genap foto-kiri, ganjil foto-kanan — foto lurus, tidak miring */
                 return (
-                    '<div class="person reveal">' +
+                    '<div class="person reveal' +
+                    (i % 2 ? " flip" : "") +
+                    '">' +
                     '<div class="person-media">' +
                     visual +
                     "</div>" +
@@ -328,26 +321,17 @@
                 $("chTahun").textContent = KELAS.tahunAjaran;
                 $("year").textContent = new Date().getFullYear();
 
-                /* Sosial media: Instagram & TikTok dapat diklik */
+                /* Sosial media: Instagram kelas dapat diklik */
                 const igHandle = String(KELAS.instagram || "").replace(/^@/, "");
-                const ttHandle = String(KELAS.tiktok || "").replace(/^@/, "");
                 const igLink = KELAS.instagramUrl || (igHandle ? "https://www.instagram.com/" + igHandle + "/" : "");
-                const ttLink = KELAS.tiktokUrl || (ttHandle ? "https://www.tiktok.com/@" + ttHandle : "");
 
                 $("ciIg").textContent = KELAS.instagram || "—";
-                $("ciTt").textContent = KELAS.tiktok || "—";
 
                 const socIg = $("socIg");
-                const socTt = $("socTt");
                 if (igLink) {
                     socIg.href = igLink;
                 } else {
                     socIg.classList.add("is-off");
-                }
-                if (ttLink) {
-                    socTt.href = ttLink;
-                } else {
-                    socTt.classList.add("is-off");
                 }
             }
 
@@ -357,9 +341,34 @@
                 $("teamGrid").innerHTML = (KELAS.tim || []).map(personCard).join("");
 
                 const anggota = KELAS.anggota || [];
-                if (anggota.length) {
-                    $("anggota").hidden = false;
-                    $("memberGrid").innerHTML = anggota.map(personCard).join("");
+
+                /* Teaser Members (section sebelum FAQ): 3 baris ke bawah */
+                const teaser = $("membersTeaser");
+                if (teaser) {
+                    if (!anggota.length) {
+                        teaser.closest("section").hidden = true;
+                    } else {
+                        teaser.innerHTML = anggota
+                            .slice(0, 3)
+                            .map(m => {
+                                const name = String(m.nama || "").trim();
+                                const visual = m.foto
+                                    ? '<img src="' +
+                                      esc(m.foto) +
+                                      '" alt="' +
+                                      esc(name || "Foto") +
+                                      '" loading="lazy" decoding="async" />'
+                                    : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
+                                return (
+                                    '<div class="member-teaser-item reveal">' +
+                                    visual +
+                                    '<span class="member-teaser-name">' +
+                                    esc(name || "—") +
+                                    "</span></div>"
+                                );
+                            })
+                            .join("");
+                    }
                 }
             }
 

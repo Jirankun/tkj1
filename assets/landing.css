@@ -382,6 +382,13 @@ body {
     box-shadow: none;
     text-align: left;
 }
+/* Baris ganjil: posisi berlawanan (silang) — teks di kiri, photo di kanan. Foto tetap lurus (tidak miring). */
+@media (min-width: 760px) {
+    .person.flip {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+}
 .person-media {
     flex: 0 0 auto;
     line-height: 0;
@@ -425,6 +432,100 @@ body {
     line-height: 1.5;
     color: var(--dim);
     overflow-wrap: anywhere;
+}
+
+/* --- Teaser Members (section sebelum FAQ): 3 baris ke bawah, foto + nama --- */
+.members-teaser {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+}
+.member-teaser-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.member-teaser-item img,
+.member-teaser-item .avatar {
+    width: clamp(88px, 24vw, 108px);
+    height: clamp(88px, 24vw, 108px);
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+.member-teaser-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue-soft);
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.members-cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 34px;
+}
+.members-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 999px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
+.members-cta:hover {
+    background: var(--blue-strong);
+    transform: translateY(-2px);
+}
+
+/* --- Halaman anggota kelas (/student/) — grid 3 kolom, foto + nama --- */
+.members-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px 16px;
+}
+.member-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.member-media {
+    line-height: 0;
+}
+.member-cell img,
+.member-cell .avatar {
+    width: clamp(76px, 22vw, 104px);
+    height: clamp(76px, 22vw, 104px);
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+.member-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--blue-soft);
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+a.member-name:hover {
+    color: var(--blue);
+    text-decoration: underline;
+}
+.members-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 0;
 }
 
 /* --- Prestasi slider (biru solid, tanpa gradien/pola AI) --- */
