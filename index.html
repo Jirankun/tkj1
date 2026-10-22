@@ -39,12 +39,11 @@
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="#home" class="active">Home</a></li>
                     <li><a href="#tentang">About &amp; Teacher</a></li>
-                    <li><a href="#galeri">Galery</a></li>
                     <li><a href="#tim">Team</a></li>
                     <li><a href="#anggota">Members</a></li>
                     <li><a href="#prestasi">Achievement</a></li>
                     <li><a href="#faq">Faq</a></li>
-                    <li><a href="#kontak">Contact</a></li>
+                    <li><a href="#kontak">Social Media</a></li>
                 </ul>
             </div>
         </nav>
@@ -53,7 +52,7 @@
             <!-- ===================== Banner ===================== -->
             <section class="banner" id="home">
                 <div class="container banner-inner">
-                    <div class="banner-text reveal">
+                    <div class="banner-text">
                         <h2>Welcome To Our Class</h2>
                         <span class="banner-tag">Berinovasi · Kreatif · Solidaritas Tanpa Batas</span>
                         <p id="bannerDesc">
@@ -63,23 +62,15 @@
                             menjadi profesional IT yang handal.
                         </p>
                         <div class="banner-chips">
-                            <span class="chip-stat"><b id="chL">0</b> Laki-laki</span>
-                            <span class="chip-stat"><b id="chP">0</b> Perempuan</span>
                             <span class="chip-stat"><b id="chTotal">0</b> Total Siswa</span>
                             <span class="chip-stat" id="chTahun">2026/2027</span>
                         </div>
-                    </div>
-                    <div class="banner-card reveal">
-                        <h4>TKJ 1</h4>
-                        <p>Teknik Komputer dan Jaringan</p>
-                        <p>SMKN 1 Lembah Melintang</p>
-                        <span class="card-badge" id="cardBadge">KELAS RESMI</span>
                     </div>
                 </div>
                 <span class="wave" aria-hidden="true">
                     <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
                         <path
-                            d="M0,64 C240,96 480,16 720,32 C960,48 1200,96 1440,56 L1440,90 L0,90 Z"
+                            d="M0,72 C240,84 480,60 720,68 C960,76 1200,84 1440,70 L1440,90 L0,90 Z"
                             fill="#0b1220"></path>
                     </svg>
                 </span>
@@ -123,21 +114,6 @@
                         allowfullscreen></iframe>
                 </div>
             </div>
-
-            <!-- ===================== Galeri ===================== -->
-            <section class="section alt" id="galeri">
-                <div class="container">
-                    <div class="sec-head reveal">
-                        <h3>Galery</h3>
-                        <span class="line"></span>
-                        <p>
-                            Inilah beberapa cuplikan foto kebersamaan kami — diambil langsung dari
-                            data galeri kelas.
-                        </p>
-                    </div>
-                    <div class="gal-grid" id="galGrid"></div>
-                </div>
-            </section>
 
             <!-- ===================== Team ===================== -->
             <section class="section team" id="tim">
@@ -196,70 +172,31 @@
                 </div>
             </section>
 
-            <!-- ===================== Contact ===================== -->
+            <!-- ===================== Social Media ===================== -->
             <section class="section alt" id="kontak">
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Contact us</h3>
+                        <h3>Follow Us</h3>
                         <span class="line"></span>
-                        <p>Senang rasanya jika anda juga mengikuti kami di semua sosial media.</p>
+                        <p>Senang rasanya jika anda juga mengikuti kami di sosial media resmi kelas.</p>
                     </div>
-                    <div class="contact-grid">
-                        <form id="contactForm" class="reveal" novalidate>
-                            <div class="form-row">
-                                <input
-                                    class="form-input"
-                                    id="cName"
-                                    type="text"
-                                    name="full-name"
-                                    placeholder="Full Name"
-                                    required />
-                                <input
-                                    class="form-input"
-                                    id="cEmail"
-                                    type="email"
-                                    name="email"
-                                    placeholder="Email"
-                                    required />
+                    <div class="social-grid">
+                        <a class="social-card" id="socIg" href="#" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                            <div>
+                                <p>Instagram</p>
+                                <small id="ciIg">@tkj1.smknlm</small>
                             </div>
-                            <input class="form-input" id="cSubject" type="text" name="subject" placeholder="Subject" />
-                            <textarea
-                                class="form-input"
-                                id="cMessage"
-                                name="message"
-                                placeholder="Message"></textarea>
-                            <button class="btn-grad" type="submit">Submit</button>
-                        </form>
-                        <div class="contact-info reveal">
-                            <div class="contact-item">
-                                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-                                <div>
-                                    <p>Instagram</p>
-                                    <small id="ciIg">—</small>
-                                </div>
+                            <span class="social-go"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+                        </a>
+                        <a class="social-card" id="socTt" href="#" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+                            <div>
+                                <p>TikTok</p>
+                                <small id="ciTt">@tkj1.smknlm</small>
                             </div>
-                            <div class="contact-item">
-                                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                                <div>
-                                    <p>Email</p>
-                                    <small id="ciMail">—</small>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i class="fa-solid fa-clock" aria-hidden="true"></i>
-                                <div>
-                                    <p>Jam Sekolah</p>
-                                    <small>Senin–Jumat, 07.00 – 15.00</small>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                                <div>
-                                    <p>Sekolah</p>
-                                    <small id="ciSchool">SMKN 1 Lembah Melintang</small>
-                                </div>
-                            </div>
-                        </div>
+                            <span class="social-go"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -299,8 +236,10 @@
                 jurusan: "Teknik Komputer dan Jaringan",
                 tahunAjaran: "2026/2027",
                 siswa: { laki: 0, putri: 0 }, // isi jumlah asli
-                instagram: "@tkj1.smknlm", // isi akun IG kelas (atau hapus isinya)
-                email: "tkj1.smknlm@gmail.com", // isi email kelas (atau hapus isinya)
+                instagram: "@tkj1.smknlm", // akun IG kelas; klik kartu Follow Us membuka Instagram
+                instagramUrl: "https://www.instagram.com/tkj1.smknlm/", // link lengkap IG (opsional)
+                tiktok: "@tkj1.smknlm", // akun TikTok kelas; klik kartu Follow Us membuka TikTok
+                tiktokUrl: "https://www.tiktok.com/@tkj1.smknlm", // link lengkap TikTok (opsional)
                 youtube: "", // isi link video kelas; kosong = bagian video disembunyikan
 
                 /* Wali kelas (kartu guru). Isi foto: URL gambar; kosong = pakai inisial. */
@@ -350,10 +289,6 @@
                         q: "Apakah kelas ini sering mengikuti lomba?",
                         a: "Kelas ini terbuka mengikuti lomba kreativitas, lomba jaringan, dan kegiatan ekstrakurikuler — lihat bagian Achievement untuk prestasi yang sudah diraih.",
                     },
-                    {
-                        q: "Bagaimana cara menghubungi kelas ini?",
-                        a: "Gunakan form Contact us di bawah, atau hubungi kami lewat akun Instagram dan email kelas yang tertera di halaman ini.",
-                    },
                 ],
             };
 
@@ -387,14 +322,31 @@
             /* ---------- Banner & identitas ---------- */
             function renderBanner() {
                 const total = KELAS.siswa.laki + KELAS.siswa.putri;
-                $("chL").textContent = KELAS.siswa.laki;
-                $("chP").textContent = KELAS.siswa.putri;
                 $("chTotal").textContent = total;
                 $("chTahun").textContent = KELAS.tahunAjaran;
                 $("year").textContent = new Date().getFullYear();
-                $("ciSchool").textContent = KELAS.sekolah;
+
+                /* Sosial media: Instagram & TikTok dapat diklik */
+                const igHandle = String(KELAS.instagram || "").replace(/^@/, "");
+                const ttHandle = String(KELAS.tiktok || "").replace(/^@/, "");
+                const igLink = KELAS.instagramUrl || (igHandle ? "https://www.instagram.com/" + igHandle + "/" : "");
+                const ttLink = KELAS.tiktokUrl || (ttHandle ? "https://www.tiktok.com/@" + ttHandle : "");
+
                 $("ciIg").textContent = KELAS.instagram || "—";
-                $("ciMail").textContent = KELAS.email || "—";
+                $("ciTt").textContent = KELAS.tiktok || "—";
+
+                const socIg = $("socIg");
+                const socTt = $("socTt");
+                if (igLink) {
+                    socIg.href = igLink;
+                } else {
+                    socIg.classList.add("is-off");
+                }
+                if (ttLink) {
+                    socTt.href = ttLink;
+                } else {
+                    socTt.classList.add("is-off");
+                }
             }
 
             /* ---------- Guru, tim, anggota ---------- */
@@ -407,51 +359,6 @@
                     $("anggota").hidden = false;
                     $("memberGrid").innerHTML = anggota.map(personCard).join("");
                 }
-            }
-
-            /* ---------- Galeri (dari DB/photos.json) ---------- */
-            async function renderGaleri() {
-                const grid = $("galGrid");
-                grid.innerHTML =
-                    '<p class="empty-note" style="grid-column:1/-1">Memuat galeri kelas…</p>';
-                try {
-                    const res = await fetch("/DB/photos.json?t=" + Date.now(), { cache: "no-store" });
-                    if (!res.ok) throw new Error("HTTP " + res.status);
-                    const raw = await res.json();
-                    const list = (Array.isArray(raw) ? raw : raw.photos || raw.data || [])
-                        .filter((p) => p && p.url)
-                        .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))
-                        .slice(0, 9);
-
-                    if (!list.length) throw new Error("kosong");
-
-                    grid.innerHTML = list
-                        .map((p) => {
-                            const url = String(p.url)
-                                .replace(/^\/\/i\.ibb\.co\//i, "https://i.ibb.co.com/");
-                            const meta = [p.date, p.uploader ? "oleh " + p.uploader : ""]
-                                .filter(Boolean)
-                                .join(" · ");
-                            return (
-                                '<div class="gal-item reveal">' +
-                                '<div class="gal-thumb">' +
-                                '<span class="ph"><i class="fa-solid fa-image"></i></span>' +
-                                '<img loading="lazy" decoding="async" draggable="false" ' +
-                                'alt="Foto ' + esc(p.name || "") + '" referrerpolicy="no-referrer" ' +
-                                'src="' + esc(url) + '" onload="this.classList.add(\'loaded\')" />' +
-                                "</div>" +
-                                "<h4>#" + esc(p.name || "tanpa-nama") + "</h4>" +
-                                "<p>" + esc(meta) + "</p>" +
-                                "</div>"
-                            );
-                        })
-                        .join("");
-                } catch (e) {
-                    grid.innerHTML =
-                        '<p class="empty-note" style="grid-column:1/-1">' +
-                        "Galeri belum tersedia. Buka galeri lengkap melalui aplikasi TKJ OnE.</p>";
-                }
-                bindReveal();
             }
 
             /* ---------- Prestasi (slider) ---------- */
@@ -569,24 +476,6 @@
                 });
             }
 
-            /* ---------- Form kontak ---------- */
-            function bindForm() {
-                $("contactForm").addEventListener("submit", (e) => {
-                    e.preventDefault();
-                    const name = $("cName").value.trim();
-                    const mail = $("cEmail").value.trim();
-                    const subject = $("cSubject").value.trim() || "Pesan dari halaman TKJ 1";
-                    const message = $("cMessage").value.trim();
-                    if (!name || !mail) return;
-                    const to = KELAS.email || "";
-                    const body = encodeURIComponent(message + "\n\n— " + name + " (" + mail + ")");
-                    window.location.href =
-                        "mailto:" + encodeURIComponent(to) +
-                        "?subject=" + encodeURIComponent(subject) +
-                        "&body=" + body;
-                });
-            }
-
             /* ---------- Animasi masuk ---------- */
             function bindReveal() {
                 const items = document.querySelectorAll(".reveal:not(.in)");
@@ -616,9 +505,7 @@
             bindSlider();
             bindNav();
             bindVideo();
-            bindForm();
             bindReveal();
-            renderGaleri();
 
             /* Service worker: sama seperti halaman lain */
             if ("serviceWorker" in navigator) {
