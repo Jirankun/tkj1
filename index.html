@@ -137,7 +137,6 @@
                         <h3>Members</h3>
                         <p>Kenali lebih dekat anggota kelas TKJ 1 — kunjungi halaman daftar lengkapnya.</p>
                     </div>
-                    <div class="members-teaser reveal" id="membersTeaser"></div>
                     <div class="members-cta-wrap reveal">
                         <a class="btn members-cta" href="./student/">Lihat Anggota Kelas &gt;</a>
                     </div>
@@ -234,8 +233,18 @@
                     { nama: "Peralatan", jabatan: "Peralatan", foto: "" },
                 ],
 
-                /* Daftar anggota (kosong = bagian Members disembunyikan) */
-                anggota: [],
+                /* Daftar anggota (data sumber untuk halaman /student/) */
+                anggota: [
+                    { nama: "Rizki Aditya", foto: "", instagram: "https://instagram.com/rizkiaditya" },
+                    { nama: "Andi Pratama", foto: "", instagram: "https://instagram.com/andipratama" },
+                    { nama: "Dimas Saputra", foto: "", instagram: "https://instagram.com/dimassptr" },
+                    { nama: "Fajar Nugroho", foto: "", instagram: "https://instagram.com/fajarngrh" },
+                    { nama: "Gilang Ramadhan", foto: "", instagram: "https://instagram.com/gilangrdhn" },
+                    { nama: "Hafiz Maulana", foto: "", instagram: "https://instagram.com/hafizmln" },
+                    { nama: "Iqbal Firmansyah", foto: "", instagram: "https://instagram.com/iqbalfrmsyh" },
+                    { nama: "Lutfi Hakim", foto: "", instagram: "https://instagram.com/lutfihkm" },
+                    { nama: "Naufal Azhar", foto: "", instagram: "https://instagram.com/naufalazhr" },
+                ],
 
                 /* Prestasi (kosong = bagian Achievement disembunyikan) */
                 prestasi: [],
@@ -335,41 +344,10 @@
                 }
             }
 
-            /* ---------- Guru, tim, anggota ---------- */
+            /* ---------- Guru, tim ---------- */
             function renderPeople() {
                 $("teacherGrid").innerHTML = (KELAS.guru || []).map(personCard).join("");
                 $("teamGrid").innerHTML = (KELAS.tim || []).map(personCard).join("");
-
-                const anggota = KELAS.anggota || [];
-
-                /* Teaser Members (section sebelum FAQ): 3 baris ke bawah */
-                const teaser = $("membersTeaser");
-                if (teaser) {
-                    if (!anggota.length) {
-                        teaser.closest("section").hidden = true;
-                    } else {
-                        teaser.innerHTML = anggota
-                            .slice(0, 3)
-                            .map(m => {
-                                const name = String(m.nama || "").trim();
-                                const visual = m.foto
-                                    ? '<img src="' +
-                                      esc(m.foto) +
-                                      '" alt="' +
-                                      esc(name || "Foto") +
-                                      '" loading="lazy" decoding="async" />'
-                                    : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
-                                return (
-                                    '<div class="member-teaser-item reveal">' +
-                                    visual +
-                                    '<span class="member-teaser-name">' +
-                                    esc(name || "—") +
-                                    "</span></div>"
-                                );
-                            })
-                            .join("");
-                    }
-                }
             }
 
             /* ---------- Prestasi (slider) ---------- */

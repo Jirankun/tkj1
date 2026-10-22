@@ -434,34 +434,7 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* --- Teaser Members (section sebelum FAQ): 3 baris ke bawah, foto + nama --- */
-.members-teaser {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 26px;
-}
-.member-teaser-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-.member-teaser-item img,
-.member-teaser-item .avatar {
-    width: clamp(88px, 24vw, 108px);
-    height: clamp(88px, 24vw, 108px);
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
-}
-.member-teaser-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--blue-soft);
-    text-align: center;
-    overflow-wrap: anywhere;
-}
+/* --- Tombol CTA Members (section sebelum FAQ) --- */
 .members-cta-wrap {
     display: flex;
     justify-content: center;
