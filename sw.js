@@ -4,11 +4,11 @@
 // ============================================================
 'use strict';
 
-const CACHE = 'tkjone-v6';
+const CACHE = 'tkjone-v7';
 
 const PRECACHE = [
   '/',
-  '/index.html',
+  '/galeri/',
   '/photo/',
   '/story/',
   '/uploaders/',

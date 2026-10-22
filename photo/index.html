@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=0.8" />
-        <link rel="icon" type="image/png" href="../assets/ic.png" />
+        <link rel="icon" type="image/png" href="../assets/ic.webp" />
         <meta name="theme-color" content="#060B14" />
         <meta name="robots" content="noindex, nofollow" />
         <title>Foto | TKJ OnE</title>
@@ -577,7 +577,7 @@
             /* ---------- Interaksi ---------- */
             $("backBtn").addEventListener("click", () => {
                 if (history.length > 1) history.back();
-                else location.href = "../index.html";
+                else location.href = "../galeri/";
             });
 
             async function copyShareUrl(url) {
@@ -664,7 +664,7 @@
                 if (e.target && e.target.closest && e.target.closest(".plyr")) return;
                 if (e.key === "ArrowLeft") step(-1);
                 else if (e.key === "ArrowRight") step(1);
-                else if (e.key === "Escape") location.href = "../index.html";
+                else if (e.key === "Escape") location.href = "../galeri/";
             });
 
             function beginSwipe(target, x, y) {

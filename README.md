@@ -21,7 +21,8 @@ Repo web: `Jirankun/tkj1` · Situs: `https://tkj1.pages.dev`
 
 ```
 tkj1/
-├── index.html                  # Galeri: pencarian, filter, grid, banner unduh app
+├── index.html                  # Landing root (layout gaya contoh TKJ-2OfficialWebsite): banner, About & Teacher, Galeri, Team, Members, Achievement, FAQ, Contact, Closing — mandiri, tanpa link ke halaman lain
+├── galeri/index.html           # Galeri: pencarian, filter, grid, banner unduh app
 ├── photo/index.html            # Pratinjau media (gaya aplikasi): bar atas + info bawah
 ├── story/index.html            # Cerita (media terbaru), progress bar, nav bawah
 ├── uploaders/index.html        # Data uploader: tab Statistik + Detail User (aktif/suspend + fotonya)
@@ -34,6 +35,7 @@ tkj1/
 │       ├── compressor.min.js   # compressorjs 1.4.0 (MIT)
 │       └── LICENSE.compressorjs
 ├── assets/theme.css            # Token warna, komponen, nav bawah, banner
+├── assets/landing.css          # Gaya khusus halaman landing root
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
 │   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
@@ -54,7 +56,8 @@ Aplikasi Android berada di repo terpisah (`Jirankun/TKJ-One`): `app/src/main/ass
 
 | URL                 | Isi                            | Catatan                                          |
 | ------------------- | ------------------------------ | ------------------------------------------------ |
-| `/`                 | Galeri                         | Kartu menuju `/photo/?name=ID`                   |
+| `/`                 | Landing TKJ 1 SMKN 1 Lembah Melintang (About & Teacher, Galeri, Team, FAQ, Contact) | Mandiri, tanpa link ke halaman lain; data diisi lewat objek `KELAS` di `index.html`; galeri mengambil 9 foto terbaru dari `DB/photos.json` |
+| `/galeri/`          | Galeri                         | Kartu menuju `/photo/?name=ID`                   |
 | `/photo/?name=<ID>` | Pratinjau foto/video           | Bentuk **kanonik**, langsung tanpa lewat beranda |
 | `/photo/<ID>`       | Redirect 301 ke bentuk kanonik | Link lama                                        |
 | `/story/`           | Cerita                         | `noindex`                                        |
@@ -65,7 +68,7 @@ Nav bawah (`Galeri · Cerita`) tampil di galeri & cerita. Halaman pratinjau seng
 
 ### Anti-copy & anti-save
 
-Blok proteksi yang sama (inline, identik di setiap halaman) dipasang di **semua halaman yang memuat data dari `DB/`**: `/`, `/photo/`, `/story/`, `/uploaders/`, dan `/upload/`.
+Blok proteksi yang sama (inline, identik di setiap halaman) dipasang di **semua halaman yang memuat data dari `DB/`**: `/galeri/`, `/photo/`, `/story/`, `/uploaders/`, dan `/upload/`.
 
 - **Klik kanan** diblokir (`contextmenu`) — menu simpan/salin/cetak tidak muncul.
 - **Teks halaman tidak bisa disalin/dipilih**: event `copy`, `cut`, dan `selectstart` diblokir, ditambah gaya `user-select: none` (kecuali `input`/`textarea`/`[contenteditable]`, supaya form upload dan kotak pencarian tetap normal).
@@ -209,7 +212,8 @@ Payload: `{ repo, branch, path, sha, entry: { name, type, url, date, uploader },
 
 ## 7. Service worker (`sw.js`)
 
-- Cache `tkjone-v3`; precache: `/`, `/index.html`, `/photo/`, `/story/`, `/assets/theme.css`, `/DB/photos.json`.
+- Cache `tkjone-v7`; precache: `/`, `/galeri/`, `/photo/`, `/story/`, `/uploaders/`, aset statis, `/DB/photos.json`.
+- Galeri pindah dari `/` ke `/galeri/`; link "beranda" di `/photo/` dan `/story/` (serta salinan aset aplikasi) menunjuk ke `/galeri/`.
 - Navigasi & file `.json` → **network-first** (data selalu segar).
 - Aset statis → cache-first.
 - Request ke origin lain (gambar ImgBB) tidak disentuh.
