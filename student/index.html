@@ -43,8 +43,8 @@
                     <i class="fa-solid fa-bars" aria-hidden="true"></i>
                 </button>
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="../">Home</a></li>
-                    <li><a href="./" class="active">Members</a></li>
+                    <li><a href="../">Kembali</a></li>
+                    <li><a href="./" class="active">Anggota</a></li>
                 </ul>
             </div>
         </nav>
@@ -112,7 +112,9 @@
                 return initials(n);
             };
             const igLink = handle => {
-                const h = String(handle || "").trim().replace(/^@/, "");
+                const h = String(handle || "")
+                    .trim()
+                    .replace(/^@/, "");
                 return h ? "https://www.instagram.com/" + h + "/" : "";
             };
 

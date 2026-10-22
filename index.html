@@ -43,16 +43,24 @@
                 <a class="nav-brand" href="#home"
                     ><img src="./assets/tkjlogo.png" width="143" height="40" alt="Logo TKJ 1"
                 /></a>
-                <button class="nav-toggler" id="navToggler" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="navMenu">
+                <button
+                    class="nav-toggler"
+                    id="navToggler"
+                    type="button"
+                    aria-label="Buka menu"
+                    aria-expanded="false"
+                    aria-controls="navMenu"
+                >
                     <i class="fa-solid fa-bars" aria-hidden="true"></i>
                 </button>
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="#home" class="active">Home</a></li>
-                    <li><a href="#tentang">About &amp; Teacher</a></li>
-                    <li><a href="#tim">Team</a></li>
-                    <li><a href="#members">Members</a></li>
-                    <li><a href="#faq">Faq</a></li>
-                    <li><a href="#kontak">Social Media</a></li>
+                    <li><a href="#home" class="active">Selamat Datang</a></li>
+                    <li><a href="#tentang">Tentang Kelas &amp; Wali Kelas</a></li>
+                    <li><a href="#tim">Pengurus</a></li>
+                    <li hidden><a href="#prestasi">Prestasi</a></li>
+                    <li><a href="#members">Anggota</a></li>
+                    <li><a href="#faq">Pertanyaan</a></li>
+                    <li><a href="#kontak">Ikuti Kami</a></li>
                 </ul>
             </div>
         </nav>
@@ -65,13 +73,13 @@
                         <h2>Welcome To Our Class</h2>
                         <span class="banner-tag">Berinovasi · Kreatif · Solidaritas</span>
                         <p id="bannerDesc">
-                            Kelas TKJ 1 adalah komunitas yang bersemangat dan berdedikasi dalam mempelajari teknologi
-                            informasi. Kami saling mendukung dalam belajar jaringan komputer, administrasi server, dan
-                            pemrograman — dengan tujuan menjadi profesional IT yang handal.
+                            Kelas TKJ 1 adalah kelas yang bersemangat dan berdedikasi. Kami saling mendukung dalam
+                            belajar jaringan komputer, administrasi server, dan pemrograman — dengan tujuan menjadi
+                            profesional di bidang jaringan.
                         </p>
                         <div class="banner-chips">
-                            <span class="chip-stat"><b id="chTotal">0</b> Total Siswa</span>
-                            <span class="chip-stat"><b id="chTahun">2026/2027</b></span>
+                            <span class="chip-stat"><b id="chTotal">0</b> Anggota</span>
+                            <span class="chip-stat"><b id="chTahun">2025/2027</b></span>
                         </div>
                     </div>
                 </div>
@@ -89,7 +97,7 @@
             <section class="section" id="tentang">
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>About &amp; Teacher</h3>
+                        <h3>Tentang Kelas &amp; Wali Kelas</h3>
                         <p id="aboutText">
                             Kelas TKJ 1 didominasi laki-laki dengan jumlah total yang terus bertumbuh setiap tahun
                             ajaran. Kelas ini dikenal memiliki banyak potensi: siswa dengan beragam keahlian — dari
@@ -103,7 +111,7 @@
             <section class="section team" id="tim">
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Our Team</h3>
+                        <h3>Pengurus</h3>
                         <p id="teamNote">Inilah orang-orang yang memegang jabatan kelas periode ini.</p>
                     </div>
                     <div class="card-grid" id="teamGrid"></div>
@@ -114,7 +122,7 @@
             <section class="section prestasi" id="prestasi" hidden>
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Achievement</h3>
+                        <h3>Prestasi</h3>
                         <p>Apa aja sih prestasi yang pernah diraih oleh anak kelas ini?</p>
                     </div>
                     <div class="slider reveal">
@@ -134,7 +142,7 @@
             <section class="section" id="members">
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Members</h3>
+                        <h3>Anggota</h3>
                         <p>Kenali lebih dekat anggota kelas TKJ 1 — kunjungi halaman daftar lengkapnya.</p>
                     </div>
                     <div class="members-cta-wrap reveal">
@@ -144,10 +152,10 @@
             </section>
 
             <!-- ===================== FAQ ===================== -->
-            <section class="section" id="faq">
+            <section class="section" id="faq" hidden>
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Frequently Asked Questions</h3>
+                        <h3>Pertanyaan yang Sering Diajukan</h3>
                         <p>Mau tau lebih lengkap tentang kelas kami? Baca pertanyaan berikut.</p>
                     </div>
                     <div class="faq-grid" id="faqGrid"></div>
@@ -158,7 +166,7 @@
             <section class="section alt" id="kontak">
                 <div class="container">
                     <div class="sec-head reveal">
-                        <h3>Follow Us</h3>
+                        <h3>Ikuti Kami</h3>
                         <p>Senang rasanya jika anda juga mengikuti kami di sosial media resmi kelas.</p>
                     </div>
                     <div class="social-grid">
@@ -179,7 +187,7 @@
             <!-- ===================== Closing ===================== -->
             <section class="closing">
                 <div class="container closing-inner reveal">
-                    <h3>Chill Close</h3>
+                    <h3>Akhir dari Kami</h3>
                     <div class="quote-wrap">
                         <i class="fa-solid fa-quote-left q-open" aria-hidden="true"></i>
                         <p>
@@ -195,8 +203,12 @@
 
             <footer class="footer-copy">
                 <p>
-                    <span id="year">2026</span> &copy; TKJ 1 · SMKN 1 Lembah Melintang.<br />Dikelola oleh siswa
-                    <b>TKJ 1</b>.
+                    <span id="year">2026</span> &copy; TKJ 1 · SMKN 1 Lembah Melintang.<br />Dikelola oleh
+                    <b
+                        ><a href="https://zhyllanfyllah.my.id" target="_blank" rel="noopener noreferrer"
+                            >Zhyllan Fyllah</a
+                        ></b
+                    >.
                 </p>
             </footer>
         </main>
@@ -211,16 +223,15 @@
                 nama: "TKJ 1",
                 sekolah: "SMKN 1 Lembah Melintang",
                 jurusan: "Teknik Komputer dan Jaringan",
-                tahunAjaran: "2026/2027",
-                siswa: { laki: 0, putri: 0 }, // isi jumlah asli
-                instagram: "@tkj1.smknlm", // akun IG kelas
-                instagramUrl: "https://www.instagram.com/tkj1.smknlm/",
+                tahunAjaran: "2025/2027",
+                siswa: { laki: 18, putri: 17 }, // isi jumlah asli
+                instagram: "@about.tjktsatuu", // akun IG kelas
+                instagramUrl: "https://www.instagram.com/about.tjktsatuu",
 
                 /* KPI kelas (wali & pejabat) */
                 guru: [
-                    { nama: "Wali Kelas X TKJ 1", jabatan: "Wali Kelas X", foto: "" },
-                    { nama: "Wali Kelas XI TKJ 1", jabatan: "Wali Kelas XI", foto: "" },
-                    { nama: "Wali Kelas XII TKJ 1", jabatan: "Wali Kelas XII", foto: "" },
+                    { nama: "Fatmawati, S. Pd", jabatan: "Wali Kelas X", foto: "" },
+                    { nama: "Liverdi Nanda, S. Pd", jabatan: "Wali Kelas XI", foto: "" },
                 ],
                 tim: [
                     { nama: "Ketua Kelas", jabatan: "Ketua", foto: "" },
