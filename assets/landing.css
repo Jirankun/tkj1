@@ -38,6 +38,11 @@ body {
     min-height: 100%;
     overflow-x: hidden;
 }
+html {
+    scroll-behavior: smooth;
+    /* kompensasi navbar fixed agar judul section tidak tertutup */
+    scroll-padding-top: 72px;
+}
 body {
     min-height: 100dvh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
@@ -45,6 +50,9 @@ body {
     line-height: 1.5;
     color: var(--text);
     background: var(--bg);
+}
+main.landing {
+    display: block; /* netralkan body { display:flex } dari theme.css */
 }
 img,
 video,
@@ -97,11 +105,20 @@ body {
     padding: 0 20px;
 }
 .section {
-    padding: 20px 0;
+    padding: 48px 0;
+}
+@media (max-width: 640px) {
+    .section {
+        padding: 36px 0;
+    }
 }
 .section.alt {
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
+}
+.sec-head {
+    max-width: 720px;
+    margin-bottom: 26px;
 }
 .sectioner-header {
     max-width: 640px;
@@ -247,9 +264,14 @@ body {
 }
 
 /* --- Banner / Hero (background: assets/landing.webp) --- */
+/* Banner: tinggi proporsional — tidak ada ruang kosong berlebihan di mobile */
 .banner {
     position: relative;
-    padding: 291px 0 64px;
+    min-height: 430px;
+    min-height: clamp(430px, 78svh, 640px);
+    display: flex;
+    align-items: center;
+    padding: 120px 0 96px;
     background-color: var(--bg-deep);
     /* Scrims SOLID (bukan gradien) di atas foto agar hero tampil GELAP */
     background-image: linear-gradient(rgba(6, 11, 20, 0.78), rgba(6, 11, 20, 0.78)), url("./landing.webp");
@@ -340,40 +362,60 @@ body {
 /* --- Card grid (guru, tim, anggota) --- */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 24px 20px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 28px 20px;
+}
+@media (min-width: 760px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    }
 }
 .person {
     text-align: center;
+    min-width: 0; /* cegah teks panjang merusak grid */
 }
 .avatar {
     display: grid;
     place-items: center;
-    width: 116px;
-    height: 116px;
+    width: clamp(88px, 24vw, 116px);
+    height: clamp(88px, 24vw, 116px);
     margin: 0 auto;
     border-radius: 50%;
-    font-size: 30px;
+    font-size: clamp(24px, 6vw, 30px);
     font-weight: 800;
     color: #fff;
     background: var(--blue-strong);
     box-shadow: 0 12px 28px var(--blue-glow);
 }
 .person h5 {
-    margin-top: 20px;
+    margin-top: 16px;
     font-size: 15px;
     font-weight: 700;
+    line-height: 1.35;
     color: var(--blue-soft);
+    overflow-wrap: anywhere;
+}
+.person .person-photo,
+.person img {
+    width: clamp(88px, 24vw, 116px);
+    height: clamp(88px, 24vw, 116px);
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 12px 28px var(--blue-glow);
 }
 .person p {
-    margin-top: 8px;
+    margin-top: 6px;
     font-size: 12.5px;
+    line-height: 1.5;
     color: var(--dim);
+    overflow-wrap: anywhere;
 }
 
 /* --- Prestasi slider (biru solid, tanpa gradien/pola AI) --- */
 .prestasi {
     position: relative;
+    padding: 56px 0 64px;
     background: var(--blue-strong);
 }
 .prestasi .container {
@@ -453,10 +495,18 @@ body {
     z-index: 2;
 }
 .slider-arrow.prev {
-    left: 0;
+    left: 4px;
 }
 .slider-arrow.next {
-    right: 0;
+    right: 4px;
+}
+@media (min-width: 960px) {
+    .slider-arrow.prev {
+        left: -56px;
+    }
+    .slider-arrow.next {
+        right: -56px;
+    }
 }
 .slider-dots {
     display: flex;
@@ -568,40 +618,49 @@ body {
     pointer-events: none;
 }
 
-/* Closing dengan tanda kutip di luar teks (kiri-atas & kanan-bawah) */
-.quote-wrap {
-    position: relative;
-    display: inline-block;
-    padding: 0 30px;
-    vertical-align: middle;
+/* --- Closing ("Chill Close") — biru solid, kutip di luar teks --- */
+.closing {
+    padding: 64px 0 72px;
+    text-align: center;
+    background: var(--blue-strong);
 }
-.quote-wrap h3 {
-    position: relative;
+.closing-inner {
+    max-width: 820px;
+}
+.closing h3 {
     display: inline-block;
     font-size: clamp(1.05rem, 2.6vw, 1.5rem);
     font-weight: 800;
     color: #fff;
 }
-.quote-wrap h3::after {
+.closing h3::after {
     content: "";
     display: block;
     width: 100%;
     height: 4px;
-    margin-top: 8px;
-    margin-bottom: 22px;
-    margin-left: 0;
+    margin: 8px 0 26px;
     background: #ffffff;
-    border: 1px solid #ffffff;
-    border-radius: 0 0 3px 3px;
-    box-sizing: border-box;
-    transform: none;
-    transform-origin: left center;
+    border-radius: 999px;
+}
+.quote-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 720px;
+    padding: 0 34px;
+    vertical-align: middle;
+}
+.quote-wrap p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.94);
+    text-align: left;
 }
 .quote-wrap .q-open {
     position: absolute;
     /* jarak dari teks: di luar, kiri-atas */
-    top: -22px;
-    left: -26px;
+    top: -18px;
+    left: -10px;
     font-size: 2rem;
     font-style: normal;
     color: rgba(255, 255, 255, 0.85);
@@ -611,8 +670,8 @@ body {
 .quote-wrap .q-close {
     position: absolute;
     /* jarak dari teks: di luar, kanan-bawah */
-    right: -26px;
-    bottom: -26px;
+    right: -10px;
+    bottom: -18px;
     font-size: 2rem;
     font-style: normal;
     color: rgba(255, 255, 255, 0.85);
@@ -621,30 +680,28 @@ body {
 }
 
 @media (max-width: 560px) {
+    .quote-wrap {
+        padding: 0 26px;
+    }
     .quote-wrap .q-open,
     .quote-wrap .q-close {
         font-size: 1.6rem;
-        top: -18px;
-        left: -20px;
+    }
+    .quote-wrap .q-open {
+        top: -14px;
+        left: -4px;
     }
     .quote-wrap .q-close {
-        right: -20px;
-        bottom: -20px;
+        right: -4px;
+        bottom: -14px;
     }
 }
-.quote-wrap p {
-    max-width: 720px;
-    margin: 0 auto;
-    font-size: 14px;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.94);
-}
 
-/* Footer: mulai baris baru dari teks "Dikelola..." agar rapi */
+/* Footer */
 .footer-copy {
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 11px;
+    padding: 18px 20px;
+    text-align: center;
+    font-size: 12px;
     color: var(--muted);
     background: var(--bg-deep);
 }
@@ -654,6 +711,11 @@ body {
 }
 .footer-copy b {
     color: var(--text);
+}
+@media (max-width: 560px) {
+    .footer-copy br {
+        display: none; /* satu blok rapi di layar kecil */
+    }
 }
 
 /* --- Animasi masuk (minimal, halus) --- */
