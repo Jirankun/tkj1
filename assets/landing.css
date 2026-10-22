@@ -50,15 +50,17 @@ body { -webkit-touch-callout: none; }
 .section { padding: 48px 0; }
 .section.alt { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .sectioner-header { max-width: 640px; margin: 0 auto 34px; text-align: center; }
-.sec-head h3 { font-size: 1.6rem; font-weight: 800; color: #fff; }
-.line { position: relative; display: block; width: 50px; height: 2px; margin: 16px auto; background: var(--blue); }
-.line::after { content: ""; position: absolute; left: 50%; width: 150px; height: 2px; margin-left: -75px; border-bottom: 2px dashed rgba(41, 121, 255, 0.55); }
-.sec-head p { font-size: 15px; line-height: 1.65; color: var(--muted); }
+/* Judul bagian: garis bawah biru rata KIRI, ujung membulat (bukan di tengah) */
+.sec-head { text-align: left; }
+.sec-head h3 { display: inline-block; font-size: clamp(1.05rem, 2.6vw, 1.6rem); font-weight: 800; color: #fff; }
+.sec-head h3::after { content: ""; display: block; width: 46px; height: 4px; margin-top: 8px; border-radius: 999px; background: var(--blue); }
+.line { display: none !important; } /* garis lama (tengah + putus-putus) dihapus total */
+.sec-head p { margin-top: 14px; font-size: 15px; line-height: 1.65; color: var(--muted); }
 .sec-head p a { color: var(--blue-soft); }
 
 /* --- Navbar fixed --- */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1030; transition: background 0.3s ease, box-shadow 0.3s ease; }
-.nav.scrolled { background: rgba(6, 11, 20, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 8px 3px rgba(0, 0, 0, 0.35); }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1030; background-color: var(--bg-deep); transition: background 0.3s ease, box-shadow 0.3s ease; }
+.nav.scrolled { background-color: rgba(6, 11, 20, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 8px 3px rgba(0, 0, 0, 0.35); }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1080px; margin: 0 auto; padding: 8px 16px; min-height: 56px; }
 .nav-brand { display: inline-flex; align-items: center; gap: 9px; color: #fff; font-size: 15px; font-weight: 800; letter-spacing: 0.3px; }
 .nav-brand img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line-strong); }
@@ -79,8 +81,10 @@ body { -webkit-touch-callout: none; }
   position: relative;
   padding: 130px 0 64px;
   background-color: var(--bg-deep);
-  /* Overlay gelap SOLID (bukan gradien) agar teks terbaca di atas foto */
-  background-image: url("./landing.webp");
+  /* Scrims SOLID (bukan gradien) di atas foto agar hero tampil GELAP */
+  background-image:
+    linear-gradient(rgba(6, 11, 20, 0.78), rgba(6, 11, 20, 0.78)),
+    url("./landing.webp");
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;
@@ -95,7 +99,7 @@ body { -webkit-touch-callout: none; }
 .chip-stat { display: inline-flex; align-items: baseline; gap: 6px; padding: 7px 13px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #fff; background: rgba(6, 11, 20, 0.5); border: 1px solid rgba(255, 255, 255, 0.28); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .chip-stat b { font-size: 15px; }
 
-/* --- Gelombang bawah — diturunkan, lebih landai & halus --- */
+/* --- Gelombang bawah hero (dipakai kembali, warna solid — bukan gradien) --- */
 .wave { position: absolute; left: 0; right: 0; bottom: -1px; line-height: 0; pointer-events: none; }
 .wave svg { display: block; width: 100%; height: 26px; }
 @media (min-width: 860px) { .wave svg { height: 34px; } }
@@ -160,9 +164,19 @@ body { -webkit-touch-callout: none; }
 
 /* --- Closing & footer --- */
 .closing { padding: 48px 0; text-align: center; background: var(--blue-strong); }
-.closing h3 { font-size: 1.5rem; font-weight: 800; color: #fff; }
-.closing p { max-width: 720px; margin: 26px auto 0; font-size: 14px; line-height: 1.8; color: rgba(255, 255, 255, 0.94); }
-.footer-copy { padding: 16px; text-align: center; font-size: 12px; color: var(--muted); background: var(--bg-deep); }
+.closing h3 { display: inline-block; font-size: clamp(1.05rem, 2.6vw, 1.5rem); font-weight: 800; color: #fff; }
+/* Pemisah "pill" baru: kapsul dengan tanda kutip buka & tutup */
+.quote-pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+  margin-top: 14px; padding: 9px 22px; border-radius: 999px;
+  background: rgba(6, 11, 20, 0.35); border: 1px solid rgba(255, 255, 255, 0.35);
+}
+.quote-pill i { font-size: 15px; color: #fff; }
+.quote-pill .q-end { transform: rotate(180deg); }
+.closing p { max-width: 720px; margin: 22px auto 0; font-size: 14px; line-height: 1.8; color: rgba(255, 255, 255, 0.94); }
+/* Footer ringkas: tetap 1 baris di mobile */
+.footer-copy { padding: 12px 16px; text-align: center; font-size: 11px; color: var(--muted); background: var(--bg-deep); }
+.footer-copy p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .footer-copy b { color: var(--text); }
 
 /* --- Animasi masuk (minimal, halus) --- */
