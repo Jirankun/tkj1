@@ -359,36 +359,55 @@ body {
     }
 }
 
-/* --- Card grid (guru, tim, anggota) --- */
+/* --- Card grid (guru, tim, anggota) — kartu kotak, sudut membulat, ada bayangan --- */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 28px 20px;
+    grid-template-columns: 1fr;
+    gap: 18px;
 }
 @media (min-width: 760px) {
     .card-grid {
-        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
     }
 }
 .person {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 18px;
     min-width: 0; /* cegah teks panjang merusak grid */
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+    text-align: left;
+}
+/* Baris ganjil: posisi ditukar — name & bagian di kiri, photo di kanan */
+.person.flip {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+.person-media {
+    flex: 0 0 auto;
+    line-height: 0;
+}
+.person-info {
+    min-width: 0;
 }
 .avatar {
     display: grid;
     place-items: center;
-    width: clamp(88px, 24vw, 116px);
-    height: clamp(88px, 24vw, 116px);
-    margin: 0 auto;
-    border-radius: 50%;
-    font-size: clamp(24px, 6vw, 30px);
+    width: clamp(76px, 22vw, 96px);
+    height: clamp(76px, 22vw, 96px);
+    border-radius: 16px;
+    font-size: clamp(22px, 5.5vw, 28px);
     font-weight: 800;
     color: #fff;
     background: var(--blue-strong);
-    box-shadow: 0 12px 28px var(--blue-glow);
+    box-shadow: 0 10px 24px var(--blue-glow);
 }
 .person h5 {
-    margin-top: 16px;
     font-size: 15px;
     font-weight: 700;
     line-height: 1.35;
@@ -397,15 +416,15 @@ body {
 }
 .person .person-photo,
 .person img {
-    width: clamp(88px, 24vw, 116px);
-    height: clamp(88px, 24vw, 116px);
-    margin: 0 auto;
-    border-radius: 50%;
+    display: block;
+    width: clamp(76px, 22vw, 96px);
+    height: clamp(76px, 22vw, 96px);
+    border-radius: 16px;
     object-fit: cover;
-    box-shadow: 0 12px 28px var(--blue-glow);
+    box-shadow: 0 10px 24px var(--blue-glow);
 }
 .person p {
-    margin-top: 6px;
+    margin-top: 4px;
     font-size: 12.5px;
     line-height: 1.5;
     color: var(--dim);

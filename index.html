@@ -294,7 +294,7 @@
                 if (!n || /[\s^][A-Za-z]$/.test(n)) return "•";
                 return initials(n);
             };
-            const personCard = p => {
+            const personCard = (p, i) => {
                 const name = String(p.nama || "").trim();
                 const visual = p.foto
                     ? '<img src="' +
@@ -305,15 +305,20 @@
                       'class="person-photo" loading="lazy" decoding="async" />'
                     : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
                 const label = name && name !== p.jabatan ? esc(name) : "<span>—</span>";
+                /* Baris bergantian: genap foto-kiri, ganjil foto-kanan */
                 return (
-                    '<div class="person reveal">' +
+                    '<div class="person reveal' +
+                    (i % 2 ? " flip" : "") +
+                    '">' +
+                    '<div class="person-media">' +
                     visual +
-                    "<h5>" +
+                    "</div>" +
+                    '<div class="person-info"><h5>' +
                     label +
                     "</h5>" +
                     "<p>" +
                     esc(p.jabatan || "") +
-                    "</p>" +
+                    "</p></div>" +
                     "</div>"
                 );
             };
