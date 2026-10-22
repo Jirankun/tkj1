@@ -359,7 +359,7 @@ body {
     }
 }
 
-/* --- Daftar orang (guru, tim, anggota) — TANPA kartu, hanya foto miring + teks --- */
+/* --- Daftar orang (guru, tim, anggota) — TANPA kartu, hanya foto + teks --- */
 .card-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -381,11 +381,6 @@ body {
     padding: 0;
     box-shadow: none;
     text-align: left;
-}
-/* Baris ganjil: posisi berlawanan — teks di kiri, photo di kanan */
-.person.flip {
-    flex-direction: row-reverse;
-    text-align: right;
 }
 .person-media {
     flex: 0 0 auto;
@@ -421,16 +416,8 @@ body {
     height: clamp(96px, 26vw, 124px);
     border-radius: 22px;
     object-fit: cover;
-    /* foto agak miring — arah bergantian mengikuti baris */
-    transform: rotate(-4deg);
     /* bayangan HANYA pada foto */
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
-}
-/* Foto pada baris berlawanan miring ke arah sebaliknya */
-.person.flip .person-photo,
-.person.flip img,
-.person.flip .avatar {
-    transform: rotate(4deg);
 }
 .person p {
     margin-top: 4px;

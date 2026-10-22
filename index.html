@@ -305,11 +305,9 @@
                       'class="person-photo" loading="lazy" decoding="async" />'
                     : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
                 const label = name && name !== p.jabatan ? esc(name) : "<span>—</span>";
-                /* Baris bergantian: genap foto-kiri, ganjil foto-kanan */
+                /* Layout konsisten: foto selalu di kiri, teks di kanan (sejajar) */
                 return (
-                    '<div class="person reveal' +
-                    (i % 2 ? " flip" : "") +
-                    '">' +
+                    '<div class="person reveal">' +
                     '<div class="person-media">' +
                     visual +
                     "</div>" +
