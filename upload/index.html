@@ -1,106 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0B1220" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Upload Foto | TKJ OnE</title>
-  <link rel="stylesheet" href="../assets/fa/css/all.min.css" />
-  <link rel="stylesheet" href="./style.css" />
-  <style>
-    .uploader-locked {
-      background: #1a2233 !important;
-      color: #9aa0c3 !important;
-      cursor: not-allowed !important;
-      opacity: 0.95;
-    }
-  </style>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+        <meta name="theme-color" content="#0B1220" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Upload Foto | TKJ OnE</title>
+        <link rel="stylesheet" href="../assets/fa/css/all.min.css" />
+        <link rel="stylesheet" href="./style.css" />
+        <style>
+            .uploader-locked {
+                background: #1a2233 !important;
+                color: #9aa0c3 !important;
+                cursor: not-allowed !important;
+                opacity: 0.95;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Langkah 1: pilih foto -->
+        <main class="main-content" id="mainContent">
+            <button class="main-upload-btn" id="triggerBtn" type="button" aria-label="Pilih foto dari galeri">
+                <i class="fa-solid fa-images" aria-hidden="true"></i>
+            </button>
+            <p class="upload-hint">
+                Ketuk untuk memilih foto dari galeri.<br />
+                JPG, PNG, WebP, atau GIF · foto besar otomatis dikompresi.
+            </p>
+        </main>
 
-  <!-- Langkah 1: pilih foto -->
-  <main class="main-content" id="mainContent">
-    <button class="main-upload-btn" id="triggerBtn" type="button" aria-label="Pilih foto dari galeri">
-      <i class="fa-solid fa-images" aria-hidden="true"></i>
-    </button>
-    <p class="upload-hint">
-      Ketuk untuk memilih foto dari galeri.<br />
-      JPG, PNG, WebP, atau GIF · foto besar otomatis dikompresi.
-    </p>
-  </main>
+        <!-- Langkah 2: detail -->
+        <section class="form-section hidden" id="formSection" aria-hidden="true">
+            <div class="preview-wrap">
+                <img class="uploaded-preview" id="uploadedImg" alt="Pratinjau foto" />
+                <button class="preview-change" id="changeBtn" type="button">Ganti foto</button>
+            </div>
+            <p class="compress-note hidden" id="compressNote" role="status" aria-live="polite"></p>
 
-  <!-- Langkah 2: detail -->
-  <section class="form-section hidden" id="formSection" aria-hidden="true">
-    <div class="preview-wrap">
-      <img class="uploaded-preview" id="uploadedImg" alt="Pratinjau foto" />
-      <button class="preview-change" id="changeBtn" type="button">Ganti foto</button>
-    </div>
-    <p class="compress-note hidden" id="compressNote" role="status" aria-live="polite"></p>
+            <div class="form-group">
+                <label for="photoName">Nama Foto <span class="req">wajib</span></label>
+                <input
+                    type="text"
+                    id="photoName"
+                    class="field"
+                    placeholder="Contoh: Kebersamaan kelas XI"
+                    maxlength="60"
+                    autocomplete="off"
+                />
+            </div>
 
-    <div class="form-group">
-      <label for="photoName">Nama Foto <span class="req">wajib</span></label>
-      <input type="text" id="photoName" class="field" placeholder="Contoh: Kebersamaan kelas XI" maxlength="60" autocomplete="off" />
-    </div>
+            <div class="form-group">
+                <label for="photoDate">Tanggal <span class="req">wajib</span></label>
+                <input type="date" id="photoDate" class="field" />
+            </div>
 
-    <div class="form-group">
-      <label for="photoDate">Tanggal <span class="req">wajib</span></label>
-      <input type="date" id="photoDate" class="field" />
-    </div>
+            <div class="form-group">
+                <label for="uploaderName">Uploader <span class="req">wajib</span></label>
+                <input
+                    type="text"
+                    id="uploaderName"
+                    class="field"
+                    placeholder="Tulis namamu sendiri"
+                    maxlength="50"
+                    autocomplete="name"
+                />
+                <p class="field-hint">Nama ini tampil di galeri sebagai pengunggah foto.</p>
+            </div>
 
-    <div class="form-group">
-      <label for="uploaderName">Uploader <span class="req">wajib</span></label>
-      <input type="text" id="uploaderName" class="field" placeholder="Tulis namamu sendiri" maxlength="50" autocomplete="name" />
-      <p class="field-hint">Nama ini tampil di galeri sebagai pengunggah foto.</p>
-    </div>
+            <p class="form-error hidden" id="formError" role="alert"></p>
 
-    <p class="form-error hidden" id="formError" role="alert"></p>
+            <!-- Progress inline (bukan popup) -->
+            <div class="progress-inline hidden" id="progressBox" role="status" aria-live="polite">
+                <div class="progress-head">
+                    <span id="progressStep">Menyiapkan…</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
 
-    <!-- Progress inline (bukan popup) -->
-    <div class="progress-inline hidden" id="progressBox" role="status" aria-live="polite">
-      <div class="progress-head">
-        <span id="progressStep">Menyiapkan…</span>
-        <span id="progressPercent">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </div>
+            <button class="submit-btn disabled" id="submitBtn" type="button" disabled>
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                <span id="submitText">Upload Sekarang</span>
+            </button>
+            <p class="submit-hint" id="submitHint">Lengkapi nama foto, tanggal, dan uploader.</p>
+        </section>
 
-    <button class="submit-btn disabled" id="submitBtn" type="button" disabled>
-      <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
-      <span id="submitText">Upload Sekarang</span>
-    </button>
-    <p class="submit-hint" id="submitHint">Lengkapi nama foto, tanggal, dan uploader.</p>
-  </section>
+        <!-- Langkah 3: hasil -->
+        <section class="result-section hidden" id="resultSection" aria-hidden="true">
+            <div class="result-icon" id="resultIcon" aria-hidden="true">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+            </div>
+            <h2 class="result-title" id="resultTitle">Upload berhasil</h2>
+            <p class="result-desc" id="resultDesc"></p>
+            <a class="result-link" id="resultLink" href="#" target="_blank" rel="noopener noreferrer">Buka foto</a>
+            <button class="submit-btn enabled" id="againBtn" type="button">Upload Lagi</button>
+        </section>
 
-  <!-- Langkah 3: hasil -->
-  <section class="result-section hidden" id="resultSection" aria-hidden="true">
-    <div class="result-icon" id="resultIcon" aria-hidden="true">
-      <i class="fa-solid fa-check" aria-hidden="true"></i>
-    </div>
-    <h2 class="result-title" id="resultTitle">Upload berhasil</h2>
-    <p class="result-desc" id="resultDesc"></p>
-    <a class="result-link" id="resultLink" href="#" target="_blank" rel="noopener noreferrer">Buka foto</a>
-    <button class="submit-btn enabled" id="againBtn" type="button">Upload Lagi</button>
-  </section>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
 
-  <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
-
-  <script src="./vendor/compressor.min.js"></script>
-  <script src="./config.js"></script>
-  <script src="./script.js"></script>
-<script>
-/* Anti-copy / anti-save: foto hanya bisa diunduh lewat aplikasi. */
-(function () {
-  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-  document.addEventListener('dragstart', function (e) { e.preventDefault(); });
-  document.addEventListener('keydown', function (e) {
-    var k = (e.key || '').toLowerCase();
-    if ((e.ctrlKey || e.metaKey) && (k === 's' || k === 'p')) e.preventDefault();
-  });
-})();
-</script>
-
-</body>
+        <script src="./vendor/compressor.min.js"></script>
+        <script src="./config.js"></script>
+        <script src="./script.js"></script>
+        <script>
+            /* Anti-copy / anti-save: foto hanya bisa diunduh lewat aplikasi. */
+            (function () {
+                document.addEventListener("contextmenu", function (e) {
+                    e.preventDefault();
+                });
+                document.addEventListener("dragstart", function (e) {
+                    e.preventDefault();
+                });
+                document.addEventListener("keydown", function (e) {
+                    var k = (e.key || "").toLowerCase();
+                    if ((e.ctrlKey || e.metaKey) && (k === "s" || k === "p")) e.preventDefault();
+                });
+            })();
+        </script>
+    </body>
 </html>

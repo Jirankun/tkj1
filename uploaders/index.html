@@ -1,13 +1,1304 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Uploaders | TKJ OnE</title>
+        <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+        <title>Uploader | TKJ OnE</title>
+        <style>
+            :root {
+                --bg: #0a0a0f;
+                --surface: #12121a;
+                --surface-2: #181822;
+                --border: #22222e;
+                --blue: #3b82f6;
+                --blue-bright: #60a5fa;
+                --blue-glow: rgba(59, 130, 246, 0.2);
+                --white: #f1f5f9;
+                --dim: #94a3b8;
+                --faint: #475569;
+                --radius: 14px;
+                --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                background: var(--bg);
+                color: var(--white);
+                font-family: var(--font);
+                -webkit-font-smoothing: antialiased;
+            }
+            body {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2.5rem 1.25rem 4rem;
+            }
+            .wrap {
+                width: 100%;
+                max-width: 720px;
+            }
+
+            /* ── HEADER ── */
+            .header {
+                text-align: center;
+                margin-bottom: 1.9rem;
+            }
+            .header h1 {
+                font-size: 1.75rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+            }
+            .header h1 span {
+                color: var(--blue);
+            }
+            .header p {
+                margin-top: 0.35rem;
+                font-size: 0.875rem;
+                color: var(--dim);
+            }
+            .total-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 0.9rem;
+                padding: 0.4rem 1rem;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 999px;
+                font-size: 0.8rem;
+                color: var(--dim);
+            }
+            .total-badge strong {
+                color: var(--white);
+                font-weight: 600;
+            }
+
+            /* ── UNKNOWN PANEL ── */
+            .unknown-panel {
+                display: grid;
+                grid-template-rows: 0fr;
+                transition:
+                    grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                    margin 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+                margin-bottom: 0;
+            }
+            .unknown-panel.open {
+                grid-template-rows: 1fr;
+                margin-bottom: 1.25rem;
+            }
+            .unknown-panel .panel-inner {
+                overflow: hidden;
+                min-height: 0;
+            }
+            .unknown-panel .panel-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 1.25rem 1.4rem;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            .unknown-panel.open .panel-card {
+                opacity: 1;
+            }
+
+            .panel-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            .panel-head h3 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: var(--white);
+            }
+            .panel-head p {
+                margin-top: 0.2rem;
+                font-size: 0.78rem;
+                color: var(--dim);
+            }
+            .panel-close {
+                background: var(--surface-2);
+                border: 1px solid var(--border);
+                color: var(--dim);
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s,
+                    color 0.2s;
+            }
+            .panel-close:hover {
+                background: var(--border);
+                border-color: var(--blue);
+                color: var(--white);
+            }
+
+            .panel-progress {
+                margin-bottom: 1.1rem;
+                padding-bottom: 1.1rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .panel-progress-label {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 0.5rem;
+                font-size: 0.8rem;
+                color: var(--dim);
+            }
+            .panel-progress-label span:last-child {
+                color: var(--blue);
+                font-weight: 600;
+                font-variant-numeric: tabular-nums;
+            }
+            .panel-progress-track {
+                height: 8px;
+                background: var(--surface-2);
+                border-radius: 999px;
+                overflow: hidden;
+            }
+            .panel-progress-fill {
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg, var(--blue), var(--blue-bright));
+                border-radius: 999px;
+                transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+
+            .panel-list {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+                max-height: 320px;
+                overflow-y: auto;
+                padding-right: 4px;
+            }
+            .panel-list::-webkit-scrollbar {
+                width: 5px;
+            }
+            .panel-list::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .panel-list::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 999px;
+            }
+
+            .unknown-item {
+                padding: 0.65rem 0.7rem;
+                margin: 0 -0.7rem;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .unknown-item:hover {
+                background: var(--surface-2);
+            }
+            .unknown-item .unknown-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 0.4rem;
+                font-size: 0.85rem;
+            }
+            .unknown-item .unknown-name {
+                color: var(--white);
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+            }
+            .unknown-item .unknown-name::after {
+                content: "›";
+                color: var(--faint);
+                font-weight: 500;
+                transition:
+                    color 0.15s,
+                    transform 0.15s;
+                display: inline-block;
+            }
+            .unknown-item:hover .unknown-name::after {
+                color: var(--blue);
+                transform: translateX(2px);
+            }
+            .unknown-item .unknown-meta {
+                color: var(--dim);
+                font-size: 0.78rem;
+                font-variant-numeric: tabular-nums;
+            }
+            .unknown-item .unknown-bar {
+                height: 4px;
+                background: var(--surface-2);
+                border-radius: 999px;
+                overflow: hidden;
+            }
+            .unknown-item .unknown-bar-fill {
+                height: 100%;
+                width: 0%;
+                background: var(--blue);
+                border-radius: 999px;
+                opacity: 0.8;
+                transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+
+            /* ── CHART ── */
+            .chart {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 1.1rem 1.4rem 1.3rem;
+            }
+            .chart-head {
+                display: flex;
+                justify-content: space-between;
+                padding: 0 0.2rem 0.9rem;
+                margin-bottom: 0.4rem;
+                border-bottom: 1px solid var(--border);
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.07em;
+                color: var(--faint);
+                font-weight: 500;
+            }
+            .chart-rows {
+                display: flex;
+                flex-direction: column;
+            }
+            .chart-row {
+                padding: 0.95rem 0.2rem 0.75rem;
+                border-radius: 8px;
+                border-bottom: 1px solid var(--border);
+                transition: background 0.2s;
+            }
+            .chart-row:last-child {
+                border-bottom: none;
+            }
+            .chart-row.user-row {
+                cursor: pointer;
+                padding-left: 0.6rem;
+                padding-right: 0.6rem;
+                margin: 0 -0.6rem;
+            }
+            .chart-row.user-row:hover {
+                background: var(--surface-2);
+            }
+            .chart-row.clickable {
+                cursor: pointer;
+                padding-left: 0.6rem;
+                padding-right: 0.6rem;
+                margin: 0 -0.6rem;
+            }
+            .chart-row.clickable:hover {
+                background: var(--surface-2);
+            }
+            .chart-row.active {
+                background: rgba(59, 130, 246, 0.08);
+            }
+
+            .row-head {
+                display: flex;
+                align-items: center;
+                gap: 0.7rem;
+                margin-bottom: 0.6rem;
+            }
+            .row-avatar {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                object-fit: cover;
+                background: var(--surface-2);
+                flex-shrink: 0;
+                border: 2px solid var(--border);
+            }
+            .row-avatar.fallback {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--faint);
+                font-size: 1rem;
+                font-weight: 600;
+            }
+            .row-avatar.unknown {
+                background: var(--surface-2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--blue);
+                border-color: rgba(59, 130, 246, 0.3);
+            }
+            .row-avatar.unknown svg {
+                width: 18px;
+                height: 18px;
+            }
+            .row-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .row-name {
+                font-size: 0.92rem;
+                font-weight: 500;
+                color: var(--white);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .chart-row.user-row .row-name {
+                padding-right: 0.9rem;
+            }
+            .chart-row.user-row .row-name::after {
+                content: "›";
+                margin-left: 0.15rem;
+                color: var(--faint);
+                font-weight: 500;
+                display: inline-block;
+                transition:
+                    color 0.15s,
+                    transform 0.15s;
+            }
+            .chart-row.user-row:hover .row-name::after {
+                color: var(--blue);
+                transform: translateX(2px);
+            }
+            .chart-row.clickable .row-name::after {
+                content: "›";
+                margin-left: 0.35rem;
+                color: var(--blue);
+                font-weight: 700;
+                display: inline-block;
+                transition: transform 0.25s;
+            }
+            .chart-row.active .row-name::after {
+                transform: rotate(90deg);
+            }
+            .row-sub {
+                font-size: 0.72rem;
+                color: var(--faint);
+                margin-top: 0.1rem;
+            }
+            .row-value {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.15rem;
+                flex-shrink: 0;
+            }
+            .row-count {
+                font-size: 0.92rem;
+                font-weight: 600;
+                color: var(--white);
+                font-variant-numeric: tabular-nums;
+            }
+            .row-pct {
+                font-size: 0.78rem;
+                font-weight: 500;
+                color: var(--blue);
+                font-variant-numeric: tabular-nums;
+            }
+            .row-bar {
+                height: 5px;
+                background: var(--surface-2);
+                border-radius: 999px;
+                overflow: hidden;
+            }
+            .row-bar-fill {
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(90deg, var(--blue), var(--blue-bright));
+                border-radius: 999px;
+                transition: width 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+            .row-bar-fill.unknown-fill {
+                background: linear-gradient(90deg, rgba(59, 130, 246, 0.5), rgba(96, 165, 250, 0.7));
+            }
+
+            /* ── STATE ── */
+            .state-msg {
+                text-align: center;
+                padding: 3rem 1rem;
+                color: var(--dim);
+                font-size: 0.9rem;
+            }
+            .spinner {
+                width: 26px;
+                height: 26px;
+                border: 3px solid var(--border);
+                border-top-color: var(--blue);
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                margin: 0 auto 1rem;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* ═══════════ DETAIL PAGE ═══════════ */
+            .detail-page {
+                position: fixed;
+                inset: 0;
+                background: var(--bg);
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+            }
+            .detail-page.closing {
+                animation: pageFadeOut 0.22s ease forwards;
+                pointer-events: none;
+            }
+            @keyframes pageFadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+
+            /* Cinematic keyframes */
+            @keyframes headerDown {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes profileIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px) scale(0.97);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            @keyframes listRise {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.985);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            @keyframes photoDrop {
+                from {
+                    opacity: 0;
+                    transform: translateY(-18px) scale(0.97);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .detail-topbar {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.9rem 1.1rem;
+                padding-top: max(0.9rem, env(safe-area-inset-top));
+                border-bottom: 1px solid var(--border);
+                background: var(--bg);
+                flex-shrink: 0;
+                opacity: 0;
+            }
+            .back-btn {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                color: var(--white);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s;
+                flex-shrink: 0;
+            }
+            .back-btn:hover {
+                background: var(--surface-2);
+                border-color: var(--blue);
+            }
+            .back-btn:active {
+                transform: scale(0.94);
+            }
+            .detail-title {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--white);
+            }
+
+            .detail-scroll {
+                flex: 1;
+                overflow-y: auto;
+                padding: 1.25rem 1.1rem;
+                padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .detail-profile {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 1.2rem;
+                margin-bottom: 1.35rem;
+                position: relative;
+                overflow: hidden;
+                opacity: 0;
+            }
+            .detail-profile::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, var(--blue), transparent);
+                opacity: 0.55;
+            }
+            .detail-avatar {
+                width: 72px;
+                height: 72px;
+                border-radius: 50%;
+                object-fit: cover;
+                background: var(--surface-2);
+                border: 2px solid var(--border);
+                flex-shrink: 0;
+            }
+            .detail-avatar.fallback {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: var(--blue);
+            }
+            .detail-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .detail-name {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: var(--white);
+                line-height: 1.3;
+            }
+            .detail-count {
+                margin-top: 0.3rem;
+                font-size: 0.88rem;
+                color: var(--dim);
+            }
+            .detail-count strong {
+                color: var(--white);
+                font-weight: 600;
+            }
+            .detail-pct {
+                margin-top: 0.15rem;
+                font-size: 0.82rem;
+                color: var(--blue);
+                font-weight: 600;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .detail-list-wrap {
+                opacity: 0;
+            }
+            .detail-list-title {
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.07em;
+                color: var(--faint);
+                font-weight: 500;
+                padding: 0 0.2rem 0.7rem;
+            }
+
+            .photo-item {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                margin-bottom: 0.55rem;
+                overflow: hidden;
+                transition: border-color 0.2s ease;
+                opacity: 0;
+            }
+            .photo-item.expanded {
+                border-color: rgba(59, 130, 246, 0.35);
+            }
+
+            .photo-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.85rem 1rem;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .photo-row:hover {
+                background: var(--surface-2);
+            }
+            .photo-name {
+                font-size: 0.88rem;
+                color: var(--white);
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+                min-width: 0;
+            }
+            .photo-date {
+                font-size: 0.74rem;
+                color: var(--dim);
+                flex-shrink: 0;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .photo-expand {
+                display: grid;
+                grid-template-rows: 0fr;
+                transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .photo-item.expanded .photo-expand {
+                grid-template-rows: 1fr;
+            }
+            .photo-expand-inner {
+                min-height: 0;
+                overflow: hidden;
+                background: var(--surface-2);
+            }
+
+            .photo-close-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.55rem 0.75rem;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                opacity: 0;
+                transform: translateY(-4px);
+                transition:
+                    opacity 0.25s ease 0.05s,
+                    transform 0.25s ease 0.05s;
+            }
+            .photo-item.expanded .photo-close-bar {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .photo-expand-label {
+                font-size: 0.7rem;
+                color: var(--faint);
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                font-weight: 500;
+            }
+            .photo-close {
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--dim);
+                padding: 0.32rem 0.7rem;
+                border-radius: 6px;
+                font-size: 0.72rem;
+                cursor: pointer;
+                font-family: inherit;
+                transition:
+                    color 0.2s,
+                    border-color 0.2s;
+            }
+            .photo-close:hover {
+                color: var(--white);
+                border-color: var(--blue);
+            }
+
+            .photo-img {
+                display: block;
+                width: 100%;
+                height: auto;
+                opacity: 0;
+                transform: translateY(-8px);
+                transition:
+                    opacity 0.35s ease,
+                    transform 0.35s ease;
+                background: var(--surface);
+            }
+            .photo-item.expanded .photo-img.loaded {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .photo-missing {
+                padding: 2rem 1rem;
+                text-align: center;
+                color: var(--faint);
+                font-size: 0.85rem;
+            }
+
+            /* Trigger animations when page opens */
+            .detail-page.open .detail-topbar {
+                animation: headerDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            .detail-page.open .detail-profile {
+                animation: profileIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+            }
+            .detail-page.open .detail-list-wrap {
+                animation: listRise 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+            }
+            .detail-page.open .photo-item {
+                animation: photoDrop 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+
+            /* Reduced motion fallback */
+            @media (prefers-reduced-motion: reduce) {
+                .detail-page.open .detail-topbar,
+                .detail-page.open .detail-profile,
+                .detail-page.open .detail-list-wrap,
+                .detail-page.open .photo-item {
+                    animation: none !important;
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
+                .photo-img {
+                    transition: none !important;
+                }
+                .photo-item.expanded .photo-img.loaded {
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
+            }
+
+            @media (max-width: 480px) {
+                body {
+                    padding: 1.5rem 0.9rem 3rem;
+                }
+                .header h1 {
+                    font-size: 1.4rem;
+                }
+                .chart {
+                    padding: 0.9rem 1rem;
+                }
+                .unknown-panel .panel-card {
+                    padding: 1rem;
+                }
+                .row-avatar {
+                    width: 34px;
+                    height: 34px;
+                }
+                .detail-avatar {
+                    width: 64px;
+                    height: 64px;
+                }
+            }
+        </style>
     </head>
     <body>
-        <h1>Comingson</h1>
-        <hr />
-        <p>Halaman ini masih dalam penyiapan.</p>
+        <div class="wrap">
+            <header class="header">
+                <h1>Statistik <span>Uploader</span></h1>
+                <p>Distribusi foto berdasarkan pengunggah</p>
+                <div class="total-badge" id="totalBadge" style="display: none">
+                    Total: <strong id="totalPhotos">—</strong> foto
+                </div>
+            </header>
+            <div id="app">
+                <div class="state-msg">
+                    <div class="spinner"></div>
+                    Memuat data…
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                "use strict";
+                const PHOTOS_URL = "https://tkj1.pages.dev/DB/photos.json";
+                const STATUS_URL = "https://tkj1.pages.dev/DB/status.json";
+                const APP = document.getElementById("app");
+                const TOTAL_BADGE = document.getElementById("totalBadge");
+                const TOTAL_PHOTOS_EL = document.getElementById("totalPhotos");
+
+                let ALL_PHOTOS = [];
+                let STATUS_MAP = {};
+                let TOTAL_COUNT = 0;
+
+                function esc(s) {
+                    const d = document.createElement("div");
+                    d.appendChild(document.createTextNode(String(s)));
+                    return d.innerHTML;
+                }
+                function animateNumber(el, target, duration = 1000) {
+                    const start = performance.now();
+                    function tick(now) {
+                        const p = Math.min((now - start) / duration, 1);
+                        const eased = 1 - Math.pow(1 - p, 3);
+                        el.textContent = Math.round(target * eased);
+                        if (p < 1) requestAnimationFrame(tick);
+                        else el.textContent = target;
+                    }
+                    requestAnimationFrame(tick);
+                }
+                function animatePercent(el, target, duration = 1000) {
+                    const start = performance.now();
+                    function tick(now) {
+                        const p = Math.min((now - start) / duration, 1);
+                        const eased = 1 - Math.pow(1 - p, 3);
+                        el.textContent = (target * eased).toFixed(1) + "%";
+                        if (p < 1) requestAnimationFrame(tick);
+                        else el.textContent = target.toFixed(1) + "%";
+                    }
+                    requestAnimationFrame(tick);
+                }
+                function getField(obj, keys) {
+                    for (let i = 0; i < keys.length; i++) {
+                        const v = obj[keys[i]];
+                        if (v !== undefined && v !== null && v !== "") return v;
+                    }
+                    return "";
+                }
+                function formatDate(d) {
+                    if (!d) return "—";
+                    let dt;
+                    if (typeof d === "number") {
+                        dt = new Date(d < 1e12 ? d * 1000 : d);
+                    } else {
+                        dt = new Date(d);
+                    }
+                    if (!isNaN(dt.getTime()) && dt.getFullYear() > 1970) {
+                        try {
+                            return dt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+                        } catch (e) {
+                            return String(d);
+                        }
+                    }
+                    return String(d);
+                }
+                function buildStatusMap(status) {
+                    const map = {};
+                    if (!status) return map;
+                    const users = status.users || (Array.isArray(status) ? status : []);
+                    users.forEach(u => {
+                        const n = (u.name || "").trim();
+                        if (n) map[n.toLowerCase()] = u;
+                    });
+                    return map;
+                }
+
+                function render(photos, status) {
+                    ALL_PHOTOS = photos;
+                    TOTAL_COUNT = photos.length;
+                    STATUS_MAP = buildStatusMap(status);
+
+                    const counts = {};
+                    photos.forEach(item => {
+                        const orig = (item.uploader || "Tidak diketahui").trim();
+                        const key = orig.toLowerCase();
+                        if (!counts[key]) {
+                            const user = STATUS_MAP[key] || null;
+                            counts[key] = { key, count: 0, user, displayName: user ? user.name || orig : orig };
+                        }
+                        counts[key].count++;
+                    });
+
+                    const total = photos.length;
+                    const knownArr = [],
+                        unknownArr = [];
+                    Object.keys(counts).forEach(k => {
+                        if (counts[k].user) knownArr.push(counts[k]);
+                        else unknownArr.push(counts[k]);
+                    });
+                    knownArr.sort((a, b) => b.count - a.count);
+                    unknownArr.sort((a, b) => b.count - a.count);
+
+                    const unknownTotal = unknownArr.reduce((s, u) => s + u.count, 0);
+                    const unknownPct = total ? (unknownTotal / total) * 100 : 0;
+
+                    TOTAL_PHOTOS_EL.textContent = total;
+                    TOTAL_BADGE.style.display = "inline-flex";
+
+                    let panelHTML = "";
+                    if (unknownArr.length) {
+                        const itemsHTML = unknownArr
+                            .map(u => {
+                                const p = total ? (u.count / total) * 100 : 0;
+                                return `
+          <div class="unknown-item" data-key="${esc(u.key)}">
+            <div class="unknown-row">
+              <span class="unknown-name">${esc(u.displayName)}</span>
+              <span class="unknown-meta">${u.count} foto · ${p.toFixed(1)}%</span>
+            </div>
+            <div class="unknown-bar"><div class="unknown-bar-fill" data-w="${p}"></div></div>
+          </div>`;
+                            })
+                            .join("");
+
+                        panelHTML = `
+        <div class="unknown-panel" id="unknownPanel">
+          <div class="panel-inner">
+            <div class="panel-card">
+              <div class="panel-head">
+                <div>
+                  <h3>Uploader Tidak Dikenal</h3>
+                  <p>${unknownArr.length} nama · ${unknownTotal} foto · ${unknownPct.toFixed(1)}% dari total</p>
+                </div>
+                <button class="panel-close" id="panelClose" aria-label="Tutup">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="panel-progress">
+                <div class="panel-progress-label">
+                  <span>Porsi tidak dikenal dari total</span>
+                  <span id="panelPct">0.0%</span>
+                </div>
+                <div class="panel-progress-track">
+                  <div class="panel-progress-fill" id="panelFill"></div>
+                </div>
+              </div>
+              <div class="panel-list">${itemsHTML}</div>
+            </div>
+          </div>
+        </div>`;
+                    }
+
+                    const knownRowsHTML = knownArr
+                        .map(u => {
+                            const pct = total ? (u.count / total) * 100 : 0;
+                            const profile = u.user && (u.user.profile || u.user.avatar || u.user.photo || u.user.image);
+                            const initial = (u.displayName || "?").charAt(0).toUpperCase();
+                            const avatarHtml = profile
+                                ? `<img class="row-avatar" src="${esc(profile)}" alt="${esc(u.displayName)}" loading="lazy">`
+                                : `<div class="row-avatar fallback">${esc(initial)}</div>`;
+                            return `
+        <div class="chart-row user-row" data-key="${esc(u.key)}">
+          <div class="row-head">
+            ${avatarHtml}
+            <div class="row-info">
+              <div class="row-name">${esc(u.displayName)}</div>
+              <div class="row-sub">terverifikasi</div>
+            </div>
+            <div class="row-value">
+              <span class="row-count" data-n="${u.count}">0</span>
+              <span class="row-pct" data-p="${pct}">0%</span>
+            </div>
+          </div>
+          <div class="row-bar"><div class="row-bar-fill" data-w="${pct}"></div></div>
+        </div>`;
+                        })
+                        .join("");
+
+                    let unknownRowHTML = "";
+                    if (unknownArr.length) {
+                        unknownRowHTML = `
+        <div class="chart-row clickable" id="unknownRow">
+          <div class="row-head">
+            <div class="row-avatar unknown">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </div>
+            <div class="row-info">
+              <div class="row-name">Lainnya <span style="color:var(--faint);font-weight:400;">(${unknownArr.length})</span></div>
+              <div class="row-sub">uploader tidak dikenal · klik untuk detail</div>
+            </div>
+            <div class="row-value">
+              <span class="row-count" data-n="${unknownTotal}">0</span>
+              <span class="row-pct" data-p="${unknownPct}">0%</span>
+            </div>
+          </div>
+          <div class="row-bar"><div class="row-bar-fill unknown-fill" data-w="${unknownPct}"></div></div>
+        </div>`;
+                    }
+
+                    const wrap = document.createElement("div");
+                    wrap.innerHTML = `
+      ${panelHTML}
+      <div class="chart">
+        <div class="chart-head"><span>Uploader</span><span>Distribusi</span></div>
+        <div class="chart-rows">
+          ${knownRowsHTML}
+          ${unknownRowHTML}
+        </div>
+      </div>`;
+                    APP.innerHTML = "";
+                    APP.appendChild(wrap);
+
+                    wrap.querySelectorAll("[data-n]").forEach(el => animateNumber(el, parseInt(el.dataset.n, 10)));
+                    wrap.querySelectorAll("[data-p]").forEach(el => animatePercent(el, parseFloat(el.dataset.p)));
+                    setTimeout(() => {
+                        wrap.querySelectorAll("[data-w]").forEach(el => {
+                            el.style.width = el.dataset.w + "%";
+                        });
+                    }, 150);
+
+                    wrap.querySelectorAll(".chart-row.user-row").forEach(row => {
+                        row.addEventListener("click", () => openDetail(row.dataset.key));
+                    });
+
+                    const unknownRow = document.getElementById("unknownRow");
+                    const panel = document.getElementById("unknownPanel");
+                    const panelClose = document.getElementById("panelClose");
+                    const panelFill = document.getElementById("panelFill");
+                    const panelPct = document.getElementById("panelPct");
+
+                    if (unknownRow && panel) {
+                        unknownRow.addEventListener("click", () => {
+                            panel.classList.contains("open") ? closePanel() : openPanel();
+                        });
+                        panelClose &&
+                            panelClose.addEventListener("click", e => {
+                                e.stopPropagation();
+                                closePanel();
+                            });
+
+                        function openPanel() {
+                            panel.classList.add("open");
+                            unknownRow.classList.add("active");
+                            setTimeout(() => {
+                                if (panelPct) animatePercent(panelPct, unknownPct, 900);
+                                if (panelFill) panelFill.style.width = unknownPct + "%";
+                                panel.querySelectorAll(".unknown-bar-fill").forEach(f => {
+                                    f.style.width = f.dataset.w + "%";
+                                });
+                            }, 100);
+                        }
+                        function closePanel() {
+                            panel.classList.remove("open");
+                            unknownRow.classList.remove("active");
+                            setTimeout(() => {
+                                if (panel.classList.contains("open")) return;
+                                if (panelFill) panelFill.style.width = "0%";
+                                if (panelPct) panelPct.textContent = "0.0%";
+                                panel.querySelectorAll(".unknown-bar-fill").forEach(f => {
+                                    f.style.width = "0%";
+                                });
+                            }, 500);
+                        }
+
+                        panel.querySelectorAll(".unknown-item").forEach(item => {
+                            item.addEventListener("click", e => {
+                                e.stopPropagation();
+                                const key = item.dataset.key;
+                                closePanel();
+                                setTimeout(() => openDetail(key), 180);
+                            });
+                        });
+                    }
+                }
+
+                function photosFor(key) {
+                    const k = key.toLowerCase();
+                    return ALL_PHOTOS.filter(p => (p.uploader || "Tidak diketahui").trim().toLowerCase() === k);
+                }
+
+                /* ═══════════ OPEN DETAIL PAGE — CINEMATIC ═══════════ */
+                function openDetail(uploaderKey) {
+                    const photos = photosFor(uploaderKey);
+                    if (!photos.length) return;
+
+                    const user = STATUS_MAP[uploaderKey.toLowerCase()] || null;
+                    const displayName = user
+                        ? user.name || photos[0].uploader
+                        : photos[0].uploader || "Tidak diketahui";
+                    const count = photos.length;
+                    const pct = TOTAL_COUNT ? (count / TOTAL_COUNT) * 100 : 0;
+
+                    const profileUrl = user && (user.profile || user.avatar || user.photo || user.image);
+                    const initial = (displayName || "?").charAt(0).toUpperCase();
+                    const avatarHtml = profileUrl
+                        ? `<img class="detail-avatar" src="${esc(profileUrl)}" alt="${esc(displayName)}">`
+                        : `<div class="detail-avatar fallback">${esc(initial)}</div>`;
+
+                    const photoListHTML = photos
+                        .map((p, i) => {
+                            const name =
+                                getField(p, ["name", "title", "filename", "file", "photo", "caption", "fileName"]) ||
+                                `Foto ${i + 1}`;
+                            const rawDate = getField(p, [
+                                "date",
+                                "timestamp",
+                                "created_at",
+                                "time",
+                                "uploaded_at",
+                                "createdAt",
+                                "uploadDate",
+                            ]);
+                            const url = getField(p, [
+                                "url",
+                                "src",
+                                "image",
+                                "link",
+                                "path",
+                                "file_url",
+                                "photoUrl",
+                                "imageUrl",
+                                "download_url",
+                            ]);
+                            const dateStr = formatDate(rawDate);
+
+                            // Stagger: cepat, cap 0.4s total supaya tidak kelamaan untuk list panjang
+                            const delay = 0.5 + Math.min(i * 0.025, 0.4);
+
+                            return `
+        <div class="photo-item" style="animation-delay:${delay}s">
+          <div class="photo-row">
+            <div class="photo-name">${esc(name)}</div>
+            <div class="photo-date">${esc(dateStr)}</div>
+          </div>
+          <div class="photo-expand">
+            <div class="photo-expand-inner">
+              <div class="photo-close-bar">
+                <span class="photo-expand-label">Preview</span>
+                <button class="photo-close" type="button">✕ Tutup</button>
+              </div>
+              ${
+                  url
+                      ? `<img class="photo-img" data-src="${esc(url)}" alt="${esc(name)}">`
+                      : `<div class="photo-missing">Gambar tidak tersedia</div>`
+              }
+            </div>
+          </div>
+        </div>`;
+                        })
+                        .join("");
+
+                    const detailPage = document.createElement("div");
+                    detailPage.className = "detail-page";
+                    detailPage.innerHTML = `
+      <header class="detail-topbar">
+        <button class="back-btn" aria-label="Kembali">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h2 class="detail-title">Detail Uploader</h2>
+      </header>
+      <div class="detail-scroll">
+        <div class="detail-profile">
+          ${avatarHtml}
+          <div class="detail-info">
+            <div class="detail-name">${esc(displayName)}</div>
+            <div class="detail-count"><strong>${count}</strong> foto</div>
+            <div class="detail-pct">${pct.toFixed(1)}% dari total</div>
+          </div>
+        </div>
+        <div class="detail-list-wrap">
+          <div class="detail-list-title">Daftar Foto (${count})</div>
+          <div class="detail-list">${photoListHTML}</div>
+        </div>
+      </div>
+    `;
+
+                    document.body.appendChild(detailPage);
+                    document.body.style.overflow = "hidden";
+
+                    // Double-rAF supaya browser sudah render base state (opacity 0) sebelum trigger animasi
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            detailPage.classList.add("open");
+                        });
+                    });
+
+                    // Back button → fade out lalu remove
+                    detailPage.querySelector(".back-btn").addEventListener("click", () => {
+                        detailPage.classList.add("closing");
+                        document.body.style.overflow = "";
+                        setTimeout(() => {
+                            if (detailPage.parentNode) detailPage.remove();
+                        }, 250);
+                    });
+
+                    // Photo expand / collapse
+                    const items = detailPage.querySelectorAll(".photo-item");
+                    items.forEach(item => {
+                        const row = item.querySelector(".photo-row");
+                        const img = item.querySelector(".photo-img");
+                        const closeBtn = item.querySelector(".photo-close");
+
+                        row.addEventListener("click", () => {
+                            if (item.classList.contains("expanded")) {
+                                item.classList.remove("expanded");
+                            } else {
+                                items.forEach(o => {
+                                    if (o !== item) o.classList.remove("expanded");
+                                });
+                                // Lazy load image NOW (bukan sebelumnya)
+                                if (img && !img.src && img.dataset.src) {
+                                    img.src = img.dataset.src;
+                                    if (img.complete && img.naturalWidth > 0) {
+                                        img.classList.add("loaded");
+                                    } else {
+                                        img.addEventListener("load", () => img.classList.add("loaded"), { once: true });
+                                        img.addEventListener("error", () => img.classList.add("loaded"), {
+                                            once: true,
+                                        });
+                                    }
+                                }
+                                item.classList.add("expanded");
+                            }
+                        });
+
+                        closeBtn &&
+                            closeBtn.addEventListener("click", e => {
+                                e.stopPropagation();
+                                item.classList.remove("expanded");
+                            });
+                    });
+                }
+
+                /* ── fetch ── */
+                Promise.all([
+                    fetch(PHOTOS_URL).then(r => {
+                        if (!r.ok) throw new Error("photos.json: HTTP " + r.status);
+                        return r.json();
+                    }),
+                    fetch(STATUS_URL)
+                        .then(r => {
+                            if (!r.ok) throw new Error("status.json: HTTP " + r.status);
+                            return r.json();
+                        })
+                        .catch(err => {
+                            console.warn("status.json gagal, lanjut tanpa profil:", err);
+                            return null;
+                        }),
+                ])
+                    .then(([photos, status]) => {
+                        if (!Array.isArray(photos) || photos.length === 0) {
+                            throw new Error("photos.json kosong atau bukan array");
+                        }
+                        render(photos, status);
+                    })
+                    .catch(err => {
+                        APP.innerHTML = `<div class="state-msg">
+        <p style="color:var(--blue);font-weight:600;margin-bottom:.5rem;">Gagal memuat data</p>
+        <p style="font-size:.82rem;color:var(--faint);">${esc(err.message)}</p>
+      </div>`;
+                    });
+            })();
+        </script>
     </body>
 </html>
