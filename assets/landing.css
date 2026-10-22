@@ -359,31 +359,30 @@ body {
     }
 }
 
-/* --- Card grid (guru, tim, anggota) — kartu kotak, sudut membulat, ada bayangan --- */
+/* --- Daftar orang (guru, tim, anggota) — TANPA kartu, hanya foto miring + teks --- */
 .card-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 34px 24px;
 }
 @media (min-width: 760px) {
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 22px;
+        gap: 40px 32px;
     }
 }
 .person {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     min-width: 0; /* cegah teks panjang merusak grid */
-    padding: 18px 20px;
-    border-radius: 18px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+    background: none;   /* tidak ada card */
+    border: 0;
+    padding: 0;
+    box-shadow: none;
     text-align: left;
 }
-/* Baris ganjil: posisi ditukar — name & bagian di kiri, photo di kanan */
+/* Baris ganjil: posisi berlawanan — teks di kiri, photo di kanan */
 .person.flip {
     flex-direction: row-reverse;
     text-align: right;
@@ -398,14 +397,15 @@ body {
 .avatar {
     display: grid;
     place-items: center;
-    width: clamp(76px, 22vw, 96px);
-    height: clamp(76px, 22vw, 96px);
-    border-radius: 16px;
-    font-size: clamp(22px, 5.5vw, 28px);
+    width: clamp(96px, 26vw, 124px);
+    height: clamp(96px, 26vw, 124px);
+    border-radius: 22px;
+    font-size: clamp(26px, 6.5vw, 34px);
     font-weight: 800;
     color: #fff;
     background: var(--blue-strong);
-    box-shadow: 0 10px 24px var(--blue-glow);
+    /* bayangan HANYA pada foto */
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
 }
 .person h5 {
     font-size: 15px;
@@ -417,11 +417,20 @@ body {
 .person .person-photo,
 .person img {
     display: block;
-    width: clamp(76px, 22vw, 96px);
-    height: clamp(76px, 22vw, 96px);
-    border-radius: 16px;
+    width: clamp(96px, 26vw, 124px);
+    height: clamp(96px, 26vw, 124px);
+    border-radius: 22px;
     object-fit: cover;
-    box-shadow: 0 10px 24px var(--blue-glow);
+    /* foto agak miring — arah bergantian mengikuti baris */
+    transform: rotate(-4deg);
+    /* bayangan HANYA pada foto */
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+/* Foto pada baris berlawanan miring ke arah sebaliknya */
+.person.flip .person-photo,
+.person.flip img,
+.person.flip .avatar {
+    transform: rotate(4deg);
 }
 .person p {
     margin-top: 4px;
