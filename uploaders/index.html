@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=0.8" />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="icon" type="image/png" href="./assets/ic.png" />
         <title>Uploader | TKJ OnE</title>
         <link rel="stylesheet" href="../assets/plyr/plyr.css" />
         <style>
@@ -877,11 +878,22 @@
 
                 /* ── Helper foto ── */
                 function photoName(p, i) {
-                    return getField(p, ["name", "title", "filename", "file", "photo", "caption", "fileName"]) || `Foto ${i + 1}`;
+                    return (
+                        getField(p, ["name", "title", "filename", "file", "photo", "caption", "fileName"]) ||
+                        `Foto ${i + 1}`
+                    );
                 }
                 function photoDate(p) {
                     return formatDate(
-                        getField(p, ["date", "timestamp", "created_at", "time", "uploaded_at", "createdAt", "uploadDate"]),
+                        getField(p, [
+                            "date",
+                            "timestamp",
+                            "created_at",
+                            "time",
+                            "uploaded_at",
+                            "createdAt",
+                            "uploadDate",
+                        ]),
                     );
                 }
                 function photoUrl(p) {
@@ -984,7 +996,9 @@
                     PANEL_STATS.querySelectorAll("[data-n]").forEach(el =>
                         animateNumber(el, parseInt(el.dataset.n, 10)),
                     );
-                    PANEL_STATS.querySelectorAll("[data-p]").forEach(el => animatePercent(el, parseFloat(el.dataset.p)));
+                    PANEL_STATS.querySelectorAll("[data-p]").forEach(el =>
+                        animatePercent(el, parseFloat(el.dataset.p)),
+                    );
                     setTimeout(applyBars, 150);
 
                     // Klik baris -> pindah ke tab Detail & buka user tsb.

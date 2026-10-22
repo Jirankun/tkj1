@@ -206,14 +206,14 @@
         },
         {
             "name": "Zhyllan Fyllah",
-            "status": true,
+            "status": false,
             "suspend_reason": "",
             "profile": "https://www.github.com/Jirankun.png"
         },
         {
             "name": "Admin",
             "status": false,
-            "suspend_reason": "ini akun admin,gunakan akun sendiri",
+            "suspend_reason": "akun admin",
             "profile": "https://www.github.com/Jirankun.png"
         }
     ]
