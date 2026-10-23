@@ -92,45 +92,10 @@
             "use strict";
 
             /* ==========================================================
-               DATA ANGGOTA — edit bagian ini untuk mengubah daftar siswa.
-               Tambahkan field "instagram" per siswa (username IG pribadi).
+               DATA ANGGOTA — ada di ../DB/student.json
+               (array objek: nama, foto, instagram, audio).
+               Halaman memuat data itu lewat fetch() saat dibuka.
                ========================================================== */
-            const ANGGOTA = [
-                { nama: "Abiyu Anugrah", foto: "", instagram: "" },
-                { nama: "Aktsar Hakim Nst", foto: "", instagram: "" },
-                { nama: "Amalia Safitri", foto: "", instagram: "" },
-                { nama: "Amir Hamzah", foto: "", instagram: "" },
-                { nama: "Asra Bilhuda", foto: "", instagram: "" },
-                { nama: "Eli Zahara", foto: "", instagram: "" },
-                { nama: "Fadel Muhammad Rezki", foto: "", instagram: "" },
-                { nama: "Faizul Adzimi", foto: "", instagram: "" },
-                { nama: "Faldho Adzani", foto: "", instagram: "" },
-                { nama: "Fitria Mulia", foto: "", instagram: "" },
-                { nama: "Galang Luqmanul Hakim", foto: "", instagram: "" },
-                { nama: "Hafif Mabrur", foto: "", instagram: "" },
-                { nama: "Kasifa Rahmah", foto: "", instagram: "" },
-                { nama: "Keysa Putri Ramadani", foto: "", instagram: "" },
-                { nama: "M. Rafiki Rasli", foto: "", instagram: "" },
-                { nama: "Muhammad Hibban Aulia", foto: "", instagram: "" },
-                { nama: "Muhammad Yudha Pratama", foto: "", instagram: "" },
-                { nama: "Najia Atika Sahira", foto: "", instagram: "" },
-                { nama: "Najwa Asyifa", foto: "", instagram: "" },
-                { nama: "Rafi Idham", foto: "", instagram: "" },
-                { nama: "Ranti Amelia", foto: "", instagram: "" },
-                { nama: "Rasima Handayani", foto: "", instagram: "" },
-                { nama: "Reviansyah", foto: "", instagram: "" },
-                { nama: "Reza Ardiansyah", foto: "", instagram: "" },
-                { nama: "Sakinah Khanza", foto: "", instagram: "" },
-                { nama: "Salimah", foto: "", instagram: "" },
-                { nama: "Salsa Bila", foto: "", instagram: "" },
-                { nama: "Susi Saskia", foto: "", instagram: "" },
-                { nama: "Syah Ratul Paiza", foto: "", instagram: "" },
-                { nama: "Thalita Syafa Harahap", foto: "", instagram: "" },
-                { nama: "Tonius Nduru", foto: "", instagram: "" },
-                { nama: "Yennisa Mulia", foto: "", instagram: "" },
-                { nama: "Yuda Setriawan", foto: "", instagram: "" },
-                { nama: "Zhyllan Fyllah", foto: "", instagram: "" },
-            ];
 
             /* ---------- Helper ---------- */
             const $ = id => document.getElementById(id);
@@ -151,20 +116,26 @@
                 if (!n || /[\s^][A-Za-z]$/.test(n)) return "•";
                 return initials(n);
             };
+            /* Data Instagram hanya berisi username (boleh diawali "@").
+               Link selalu dibentuk dari username, bukan disimpan di data. */
             const igLink = handle => {
                 const h = String(handle || "")
                     .trim()
-                    .replace(/^@/, "");
-                return h ? "https://www.instagram.com/" + h + "/" : "";
+                    .replace(/^https?:\/\/(?:www\.)?instagram\.com\//i, "")
+                    .replace(/^(?:www\.)?instagram\.com\//i, "")
+                    .replace(/^@+/, "")
+                    .replace(/[?#].*$/, "")
+                    .replace(/\/+$/, "");
+                return /^[A-Za-z0-9._]{1,30}$/.test(h) ? "https://www.instagram.com/" + h + "/" : "";
             };
 
             /* ---------- Render daftar anggota (3 kolom, 3 baris ke bawah, foto + nama) ---------- */
             /* Warna aksen bergilang supaya kartu anggota tidak monoton */
             const TONES = [195, 320, 265, 160, 15, 285, 205, 335, 240];
 
-            function renderMembers() {
+            function renderMembers(data) {
                 const list = $("membersList");
-                const items = Array.isArray(ANGGOTA) ? ANGGOTA.filter(a => a && String(a.nama || "").trim()) : [];
+                const items = Array.isArray(data) ? data.filter(a => a && String(a.nama || "").trim()) : [];
                 if (!items.length) {
                     $("membersEmpty").hidden = false;
                     return;
@@ -188,6 +159,29 @@
                               esc(name) +
                               "</a>"
                             : '<span class="member-name">' + esc(name) + "</span>";
+                        const audioSrc = String(m.audio || "").trim();
+                        const audioHtml =
+                            '<div class="member-audio' +
+                            (audioSrc ? "" : " is-empty") +
+                            '">' +
+                            '<button class="ma-btn" type="button" aria-label="' +
+                            (audioSrc ? "Putar audio " : "Audio belum tersedia untuk ") +
+                            esc(name) +
+                            '"' +
+                            (audioSrc ? "" : " disabled") +
+                            '><i class="fa-solid fa-play" aria-hidden="true"></i></button>' +
+                            '<div class="ma-line">' +
+                            '<input class="ma-range" type="range" min="0" max="1000" step="1" value="0" aria-label="Posisi audio ' +
+                            esc(name) +
+                            '"' +
+                            (audioSrc ? "" : " disabled") +
+                            "/>" +
+                            '<span class="ma-time" aria-hidden="true">--:--</span>' +
+                            "</div>" +
+                            '<audio preload="metadata"' +
+                            (audioSrc ? ' src="' + esc(audioSrc) + '"' : "") +
+                            "></audio>" +
+                            "</div>";
                         return (
                             '<div class="member-cell reveal" style="--tone: ' +
                             tone +
@@ -199,10 +193,91 @@
                             visual +
                             "</div>" +
                             nameHtml +
+                            audioHtml +
                             "</div>"
                         );
                     })
                     .join("");
+            }
+
+            /* ---------- Pemutar audio mini per kartu ---------- */
+            function bindAudio() {
+                const players = document.querySelectorAll("#membersList .member-audio");
+                players.forEach(row => {
+                    const audio = row.querySelector("audio");
+                    const btn = row.querySelector(".ma-btn");
+                    const range = row.querySelector(".ma-range");
+                    if (!audio || !btn || !range) return;
+                    const src = audio.getAttribute("src");
+                    if (!src) return;
+
+                    const icon = btn.querySelector("i");
+                    const timeEl = row.querySelector(".ma-time");
+                    const name = row.closest(".member-cell")?.querySelector(".member-name")?.textContent || "";
+                    const fmt = seconds => {
+                        if (!Number.isFinite(seconds) || seconds < 0) return "--:--";
+                        const m = Math.floor(seconds / 60);
+                        const s = Math.floor(seconds % 60);
+                        return m >= 60
+                            ? Math.floor(m / 60) +
+                                  ":" +
+                                  String(m % 60).padStart(2, "0") +
+                                  ":" +
+                                  String(s).padStart(2, "0")
+                            : m + ":" + String(s).padStart(2, "0");
+                    };
+                    const showDuration = () => {
+                        if (timeEl) timeEl.textContent = fmt(audio.duration);
+                    };
+                    const setProgress = () => {
+                        const dur = audio.duration;
+                        const pct = Number.isFinite(dur) && dur > 0 ? (audio.currentTime / dur) * 100 : 0;
+                        range.value = String(Math.round(pct * 10));
+                        range.style.setProperty("--p", pct.toFixed(2) + "%");
+                    };
+                    const sync = () => {
+                        const playing = !audio.paused && !audio.ended;
+                        icon.className = "fa-solid fa-" + (playing ? "pause" : "play");
+                        btn.classList.toggle("is-playing", playing);
+                        btn.setAttribute("aria-label", (playing ? "Jeda audio " : "Putar audio ") + name);
+                    };
+
+                    btn.addEventListener("click", () => {
+                        if (audio.paused) {
+                            const p = audio.play();
+                            if (p && typeof p.catch === "function") {
+                                p.catch(() => sync());
+                            }
+                        } else {
+                            audio.pause();
+                        }
+                    });
+                    range.addEventListener("input", () => {
+                        if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+                        audio.currentTime = (Number(range.value) / 1000) * audio.duration;
+                        setProgress();
+                    });
+                    audio.addEventListener("play", () => {
+                        document.querySelectorAll("#membersList audio").forEach(other => {
+                            if (other !== audio) other.pause();
+                        });
+                        sync();
+                    });
+                    audio.addEventListener("pause", sync);
+                    audio.addEventListener("timeupdate", setProgress);
+                    audio.addEventListener("loadedmetadata", () => {
+                        setProgress();
+                        showDuration();
+                    });
+                    audio.addEventListener("durationchange", showDuration);
+                    audio.addEventListener("ended", () => {
+                        audio.currentTime = 0;
+                        setProgress();
+                        sync();
+                    });
+                    setProgress();
+                    if (audio.readyState >= 1) showDuration();
+                });
             }
 
             /* ---------- Navbar & scroll ---------- */
@@ -271,12 +346,29 @@
                 }
             }
 
+            /* ---------- Muat data anggota dari DB/student.json ---------- */
+            async function loadMembers() {
+                const empty = $("membersEmpty");
+                try {
+                    const res = await fetch("../DB/student.json", { cache: "no-cache" });
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    const data = await res.json();
+                    renderMembers(data);
+                    bindAudio();
+                    bindReveal();
+                    if (smoothScroll) smoothScroll.resize();
+                } catch (err) {
+                    empty.textContent = "Daftar anggota gagal dimuat. Silakan muat ulang halaman.";
+                    empty.hidden = false;
+                }
+            }
+
             /* ---------- Mulai ---------- */
             $("year").textContent = new Date().getFullYear();
-            renderMembers();
             bindNav();
             bindReveal();
             initSmoothScroll();
+            loadMembers();
         </script>
     </body>
 </html>

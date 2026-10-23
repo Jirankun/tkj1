@@ -266,7 +266,7 @@
                 <div class="container">
                     <div class="sec-head reveal">
                         <h3>Ikuti Kami</h3>
-                        <p>Senang rasanya jika anda juga mengikuti kami di sosial media resmi kelas.</p>
+                        <p>Jangan lupa, ikuti akun sosial media kelas kami yaa~</p>
                     </div>
                     <div class="social-grid">
                         <a class="social-card" id="socIg" href="#" target="_blank" rel="noopener noreferrer">
@@ -325,11 +325,10 @@
                 jurusan: "Teknik Komputer dan Jaringan",
                 tahunAjaran: "2025/2027",
                 siswa: { laki: 18, putri: 17 }, // isi jumlah asli
-                instagram: "@about.tjktsatuu", // akun IG kelas
-                instagramUrl: "https://www.instagram.com/about.tjktsatuu",
+                instagram: "about.tjktsatuu", // username IG kelas (tanpa @)
 
                 /* KPI kelas (wali & pejabat)
-                   instagram: username tanpa "@" atau URL penuh.
+                   instagram: username saja — tanpa "@" dan tanpa link.
                    Ganti contoh "tkj1.*" dengan akun asli; kosongkan bila tidak ada
                    (tombol Instagram otomatis tidak ditampilkan). */
                 guru: [
@@ -337,14 +336,14 @@
                         nama: "Fatmawati, S. Pd",
                         jabatan: "Wali Kelas X",
                         foto: "assets/face/teacher/fatma.png",
-                        instagram: "https://instagram.com/fatma_45wati",
+                        instagram: "fatma_45wati",
                         icon: "fa-chalkboard-user",
                     },
                     {
                         nama: "Liverdi Nanda, S. Pd",
                         jabatan: "Wali Kelas XI",
                         foto: "assets/face/teacher/nanda.png",
-                        instagram: "https://instagram.com/nandaliverdi",
+                        instagram: "nandaliverdi",
                         icon: "fa-chalkboard-user",
                     },
                 ],
@@ -352,58 +351,30 @@
                     {
                         nama: "Faldho Adzani",
                         jabatan: "Ketua",
-                        foto: "",
-                        instagram: "tkj1.ketua",
+                        foto: "./assets/face/student/faldho.png",
+                        instagram: "faldho14",
                         icon: "fa-crown",
                     },
                     {
                         nama: "Tonius Nduru",
                         jabatan: "Wakil",
                         foto: "",
-                        instagram: "tkj1.wakil",
+                        instagram: "",
                         icon: "fa-user-tie",
                     },
                     {
-                        nama: "Sekretaris",
+                        nama: "Najwa Asyifa",
                         jabatan: "Sekretaris",
                         foto: "",
-                        instagram: "tkj1.sekretaris",
+                        instagram: "",
                         icon: "fa-pen-nib",
                     },
                     {
-                        nama: "Bendahara",
+                        nama: "Salimah",
                         jabatan: "Bendahara",
                         foto: "",
-                        instagram: "tkj1.bendahara",
+                        instagram: "",
                         icon: "fa-coins",
-                    },
-                    {
-                        nama: "Keamanan",
-                        jabatan: "Keamanan",
-                        foto: "",
-                        instagram: "tkj1.keamanan",
-                        icon: "fa-shield-halved",
-                    },
-                    {
-                        nama: "Kebersihan",
-                        jabatan: "Kebersihan",
-                        foto: "",
-                        instagram: "tkj1.kebersihan",
-                        icon: "fa-broom",
-                    },
-                    {
-                        nama: "Kesehatan",
-                        jabatan: "Kesehatan",
-                        foto: "",
-                        instagram: "tkj1.kesehatan",
-                        icon: "fa-heart-pulse",
-                    },
-                    {
-                        nama: "Peralatan",
-                        jabatan: "Peralatan",
-                        foto: "",
-                        instagram: "tkj1.peralatan",
-                        icon: "fa-screwdriver-wrench",
                     },
                 ],
 
@@ -455,12 +426,21 @@
                 if (!n || /[\s^][A-Za-z]$/.test(n)) return "•";
                 return initials(n);
             };
-            /* Terima username (@nama) maupun URL Instagram penuh */
+            /* Data Instagram hanya berisi username (boleh diawali "@").
+               Link selalu dibentuk dari username, bukan disimpan di data. */
+            const igUsername = handle => {
+                const h = String(handle || "")
+                    .trim()
+                    .replace(/^https?:\/\/(?:www\.)?instagram\.com\//i, "")
+                    .replace(/^(?:www\.)?instagram\.com\//i, "")
+                    .replace(/^@+/, "")
+                    .replace(/[?#].*$/, "")
+                    .replace(/\/+$/, "");
+                return /^[A-Za-z0-9._]{1,30}$/.test(h) ? h : "";
+            };
             const igHref = handle => {
-                const h = String(handle || "").trim();
-                if (!h) return "";
-                if (/^https?:\/\//i.test(h)) return h;
-                return "https://www.instagram.com/" + h.replace(/^@/, "").replace(/\/+$/, "") + "/";
+                const h = igUsername(handle);
+                return h ? "https://www.instagram.com/" + h + "/" : "";
             };
             /* Warna aksen bergilang supaya kartu tidak monoton */
             const TONES = [195, 280, 330, 155, 250, 15, 185, 305];
@@ -523,10 +503,10 @@
                 $("year").textContent = new Date().getFullYear();
 
                 /* Sosial media: Instagram kelas dapat diklik */
-                const igHandle = String(KELAS.instagram || "").replace(/^@/, "");
-                const igLink = KELAS.instagramUrl || (igHandle ? "https://www.instagram.com/" + igHandle + "/" : "");
+                const igHandle = igUsername(KELAS.instagram);
+                const igLink = igHref(igHandle);
 
-                $("ciIg").textContent = KELAS.instagram || "—";
+                $("ciIg").textContent = igHandle ? "@" + igHandle : "—";
 
                 const socIg = $("socIg");
                 if (igLink) {

@@ -1646,6 +1646,121 @@ a.member-name:focus-visible {
     text-shadow: 0 0 10px hsla(var(--tone, 200), 90%, 65%, 0.9);
 }
 
+/* --- Pemutar audio mini: hanya tombol play/pause + garis progres --- */
+.member-audio {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    max-width: 134px;
+    margin-top: 2px;
+}
+.ma-btn {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    background: hsla(var(--tone, 200), 85%, 58%, 0.24);
+    border: 1px solid hsla(var(--tone, 200), 90%, 72%, 0.52);
+    box-shadow: 0 0 12px hsla(var(--tone, 200), 90%, 60%, 0.2);
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
+.ma-btn i {
+    font-size: 10px;
+}
+.ma-btn:hover {
+    background: hsla(var(--tone, 200), 85%, 58%, 0.42);
+}
+.ma-btn:active {
+    transform: scale(0.92);
+}
+.ma-btn.is-playing {
+    background: hsl(var(--tone, 200), 88%, 58%);
+}
+.ma-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+}
+.ma-time {
+    flex: 0 0 auto;
+    min-width: 27px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.52);
+    text-align: right;
+}
+.ma-range {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: 14px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+}
+.ma-range::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+        90deg,
+        hsl(var(--tone, 200), 95%, 70%) var(--p, 0%),
+        rgba(255, 255, 255, 0.16) var(--p, 0%)
+    );
+}
+.ma-range::-moz-range-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.16);
+}
+.ma-range::-moz-range-progress {
+    height: 2px;
+    border-radius: 2px;
+    background: hsl(var(--tone, 200), 95%, 70%);
+}
+.ma-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: hsl(var(--tone, 200), 95%, 74%);
+    border: 1px solid rgba(6, 11, 20, 0.6);
+    box-shadow: 0 0 6px hsla(var(--tone, 200), 95%, 65%, 0.8);
+}
+.ma-range::-moz-range-thumb {
+    width: 9px;
+    height: 9px;
+    border: 1px solid rgba(6, 11, 20, 0.6);
+    border-radius: 50%;
+    background: hsl(var(--tone, 200), 95%, 74%);
+}
+/* Saat "audio" masih kosong: tetap tampil, tapi redup & tidak bisa diklik */
+.member-audio.is-empty {
+    opacity: 0.42;
+}
+.member-audio.is-empty .ma-btn,
+.member-audio.is-empty .ma-range {
+    cursor: default;
+    box-shadow: none;
+}
+.member-audio.is-empty .ma-range {
+    pointer-events: none;
+}
+
 /* --- Ponsel: kartu tetap 3 kolom tapi lebih rapat --- */
 @media (max-width: 480px) {
     .members-list {
@@ -1671,6 +1786,28 @@ a.member-name:focus-visible {
     }
     .member-cell::before {
         display: none;
+    }
+    .member-audio {
+        gap: 5px;
+        max-width: 100%;
+        margin-top: 1px;
+    }
+    .ma-btn {
+        width: 24px;
+        height: 24px;
+    }
+    .ma-btn i {
+        font-size: 9px;
+    }
+    .ma-range {
+        height: 12px;
+    }
+    .ma-line {
+        gap: 5px;
+    }
+    .ma-time {
+        min-width: 24px;
+        font-size: 8px;
     }
     .retro-strip {
         font-size: 10px;
