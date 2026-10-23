@@ -53,8 +53,14 @@
         <main class="landing landing-sub">
             <div class="retro-strip" aria-hidden="true">
                 <div class="retro-strip-track">
-                    <span>★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN ★</span>
-                    <span>★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN ★</span>
+                    <span
+                        >★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN
+                        ★</span
+                    >
+                    <span
+                        >★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN
+                        ★</span
+                    >
                 </div>
             </div>
 
@@ -90,16 +96,40 @@
                Tambahkan field "instagram" per siswa (username IG pribadi).
                ========================================================== */
             const ANGGOTA = [
-                { nama: "Rizki Aditya", foto: "", instagram: "rizkiaditya" },
-                { nama: "Andi Pratama", foto: "", instagram: "andipratama" },
-                { nama: "Dimas Saputra", foto: "", instagram: "dimassptr" },
-                { nama: "Fajar Nugroho", foto: "", instagram: "fajarngrh" },
-                { nama: "Gilang Ramadhan", foto: "", instagram: "gilangrdhn" },
-                { nama: "Hafiz Maulana", foto: "", instagram: "hafizmln" },
-                { nama: "Iqbal Firmansyah", foto: "", instagram: "iqbalfrmsyh" },
-                { nama: "Lutfi Hakim", foto: "", instagram: "lutfihkm" },
-                { nama: "Naufal Azhar", foto: "", instagram: "naufalazhr" },
-                // { nama: "Nama Siswa", foto: "../photo/nama.webp", instagram: "@username_ig" },
+                { nama: "Abiyu Anugrah", foto: "", instagram: "" },
+                { nama: "Aktsar Hakim Nst", foto: "", instagram: "" },
+                { nama: "Amalia Safitri", foto: "", instagram: "" },
+                { nama: "Amir Hamzah", foto: "", instagram: "" },
+                { nama: "Asra Bilhuda", foto: "", instagram: "" },
+                { nama: "Eli Zahara", foto: "", instagram: "" },
+                { nama: "Fadel Muhammad Rezki", foto: "", instagram: "" },
+                { nama: "Faizul Adzimi", foto: "", instagram: "" },
+                { nama: "Faldho Adzani", foto: "", instagram: "" },
+                { nama: "Fitria Mulia", foto: "", instagram: "" },
+                { nama: "Galang Luqmanul Hakim", foto: "", instagram: "" },
+                { nama: "Hafif Mabrur", foto: "", instagram: "" },
+                { nama: "Kasifa Rahmah", foto: "", instagram: "" },
+                { nama: "Keysa Putri Ramadani", foto: "", instagram: "" },
+                { nama: "M. Rafiki Rasli", foto: "", instagram: "" },
+                { nama: "Muhammad Hibban Aulia", foto: "", instagram: "" },
+                { nama: "Muhammad Yudha Pratama", foto: "", instagram: "" },
+                { nama: "Najia Atika Sahira", foto: "", instagram: "" },
+                { nama: "Najwa Asyifa", foto: "", instagram: "" },
+                { nama: "Rafi Idham", foto: "", instagram: "" },
+                { nama: "Ranti Amelia", foto: "", instagram: "" },
+                { nama: "Rasima Handayani", foto: "", instagram: "" },
+                { nama: "Reviansyah", foto: "", instagram: "" },
+                { nama: "Reza Ardiansyah", foto: "", instagram: "" },
+                { nama: "Sakinah Khanza", foto: "", instagram: "" },
+                { nama: "Salimah", foto: "", instagram: "" },
+                { nama: "Salsa Bila", foto: "", instagram: "" },
+                { nama: "Susi Saskia", foto: "", instagram: "" },
+                { nama: "Syah Ratul Paiza", foto: "", instagram: "" },
+                { nama: "Thalita Syafa Harahap", foto: "", instagram: "" },
+                { nama: "Tonius Nduru", foto: "", instagram: "" },
+                { nama: "Yennisa Mulia", foto: "", instagram: "" },
+                { nama: "Yuda Setriawan", foto: "", instagram: "" },
+                { nama: "Zhyllan Fyllah", foto: "", instagram: "" },
             ];
 
             /* ---------- Helper ---------- */
@@ -224,10 +254,7 @@
             let smoothScroll = null;
             function initSmoothScroll() {
                 if (!window.LocomotiveScroll) return;
-                if (
-                    window.matchMedia &&
-                    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                ) {
+                if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
                     return;
                 }
                 try {
