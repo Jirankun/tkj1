@@ -1,5 +1,11 @@
 # TKJ OnE — robots.txt
 User-agent: *
-Disallow: /
+Allow: /
 
+Disallow: /galeri/
+Disallow: /photo/
+Disallow: /story/
+Disallow: /upload/
+Disallow: /uploaders/
+Disallow: /DB/
 Sitemap: https://tkj1.pages.dev/sitemap.xml
