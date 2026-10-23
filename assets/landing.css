@@ -53,6 +53,11 @@ body {
 }
 main.landing {
     display: block; /* netralkan body { display:flex } dari theme.css */
+    flex: 1 0 auto; /* footer tetap menempel di bawah walau konten pendek */
+}
+/* Halaman anak (mis. /student/) tanpa banner: beri ruang untuk navbar fixed */
+main.landing.landing-sub {
+    padding-top: 56px;
 }
 img,
 video,
@@ -112,9 +117,13 @@ body {
         padding: 36px 0;
     }
 }
-.section.alt {
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+.section.team {
+    background: var(--bg-deep);
+}
+/* Garis pemisah tipis di antara section (bukan di bawah hero) */
+.landing > .section + .section,
+.landing > .section + .closing {
+    border-top: 1px solid var(--line-strong);
 }
 .sec-head {
     max-width: 720px;
@@ -267,11 +276,12 @@ body {
 /* Banner: tinggi proporsional — tidak ada ruang kosong berlebihan di mobile */
 .banner {
     position: relative;
-    min-height: 430px;
-    min-height: clamp(430px, 78svh, 640px);
+    /* Desktop: hero setinggi layar; mobile: dipaskan dengan isi */
+    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
-    padding: 120px 0 96px;
+    padding: 120px 0 120px;
     background-color: var(--bg-deep);
     /* Scrims SOLID (bukan gradien) di atas foto agar hero tampil GELAP */
     background-image: linear-gradient(rgba(6, 11, 20, 0.78), rgba(6, 11, 20, 0.78)), url("./landing.webp");
@@ -358,6 +368,13 @@ body {
         height: 34px;
     }
 }
+/* Mobile / tablet kecil: hero mengikuti tinggi isi, tidak dipaksa penuh layar */
+@media (max-width: 859px) {
+    .banner {
+        min-height: 0;
+        padding: 104px 0 76px;
+    }
+}
 
 /* --- Daftar orang (guru, tim, anggota) — TANPA kartu, hanya foto + teks --- */
 .card-grid {
@@ -433,6 +450,15 @@ body {
     color: var(--dim);
     overflow-wrap: anywhere;
 }
+/* Nama guru / pengurus: sama seperti tautan nama anggota (tanpa garis bawah) */
+.person-name {
+    color: inherit;
+}
+a.person-name:hover,
+a.person-name:focus-visible {
+    color: var(--blue);
+    text-decoration: none;
+}
 
 /* --- Tombol CTA Members (section sebelum FAQ) --- */
 .members-cta-wrap {
@@ -443,7 +469,9 @@ body {
 .members-cta {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    width: auto; /* jangan ikut .btn { width:100% } */
     padding: 13px 26px;
     border-radius: 999px;
     background: var(--blue);
@@ -463,7 +491,7 @@ body {
 /* --- Halaman anggota kelas (/student/) — grid 3 kolom, foto + nama --- */
 .members-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 30px 16px;
 }
 .member-cell {
@@ -485,15 +513,24 @@ body {
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
 }
 .member-name {
+    display: block;
+    min-height: 2.7em; /* samakan tinggi baris walau nama 1 atau 2 baris */
     font-size: 13.5px;
     font-weight: 700;
+    line-height: 1.35;
     color: var(--blue-soft);
     text-align: center;
     overflow-wrap: anywhere;
 }
-a.member-name:hover {
+@media (max-width: 380px) {
+    .members-list {
+        gap: 24px 10px;
+    }
+}
+a.member-name:hover,
+a.member-name:focus-visible {
     color: var(--blue);
-    text-decoration: underline;
+    text-decoration: none;
 }
 .members-empty {
     text-align: center;
@@ -620,7 +657,7 @@ a.member-name:hover {
     grid-template-columns: 1fr;
     gap: 18px;
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0; /* sejajar dengan judul section (rata kiri) */
 }
 @media (min-width: 760px) {
     .faq-grid {
@@ -649,14 +686,10 @@ a.member-name:hover {
 /* --- Sosial media (Follow Us) --- */
 .social-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 16px;
     max-width: 720px;
-    margin: 0 auto;
-}
-@media (min-width: 640px) {
-    .social-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+    margin: 0; /* sejajar dengan judul section (rata kiri) */
 }
 .social-card {
     display: flex;
@@ -830,5 +863,871 @@ a.member-name:hover {
     }
     html {
         scroll-behavior: auto;
+    }
+}
+
+/* ============================================================
+   LAPISAN SENI RETRO / OLD-WEB
+   Dekorasi untuk landing (/) dan halaman anggota (/student/).
+   Semua efek CSS, tanpa aset tambahan.
+   ============================================================ */
+
+:root {
+    --retro-cyan: #5ffbf1;
+    --retro-pink: #ff5fd2;
+    --retro-yellow: #ffd166;
+    --retro-violet: #8b5cf6;
+    --retro-ink: #06111f;
+}
+
+/* --- Latar bertabur bintang + grid tipis --- */
+html.lenis {
+    scroll-behavior: auto;
+}
+main.landing {
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at 12% 10%, rgba(255, 95, 210, 0.09), transparent 34%),
+        radial-gradient(circle at 88% 22%, rgba(95, 251, 241, 0.08), transparent 36%),
+        radial-gradient(circle at 50% 88%, rgba(139, 92, 246, 0.09), transparent 38%),
+        radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.6px),
+        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size:
+        auto,
+        auto,
+        auto,
+        72px 72px,
+        48px 48px,
+        48px 48px;
+}
+::selection {
+    background: var(--retro-pink);
+    color: var(--retro-ink);
+}
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--retro-cyan), var(--retro-pink));
+    border-radius: 999px;
+    border: 2px solid var(--bg-deep);
+}
+
+/* --- Navbar neon --- */
+.nav {
+    border-bottom: 1px solid rgba(95, 251, 241, 0.28);
+}
+.nav-brand {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.nav-brand img {
+    filter: drop-shadow(0 0 7px rgba(95, 251, 241, 0.4));
+}
+.nav-brand::after {
+    content: "✦";
+    position: absolute;
+    top: -3px;
+    right: -12px;
+    font-size: 12px;
+    color: var(--retro-yellow);
+    text-shadow: 0 0 8px rgba(255, 209, 102, 0.8);
+    animation: retro-twinkle 2.2s steps(2, end) infinite;
+    pointer-events: none;
+}
+@keyframes retro-twinkle {
+    50% {
+        opacity: 0.25;
+    }
+}
+.nav-menu a {
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 0.8px;
+}
+.nav-menu a.active {
+    color: #fff;
+    background: linear-gradient(100deg, rgba(95, 251, 241, 0.16), rgba(255, 95, 210, 0.16));
+    box-shadow: inset 0 -2px 0 var(--retro-cyan);
+}
+
+/* --- Hero: layar penuh, glow neon, scanline, stiker --- */
+.banner {
+    background-image:
+        linear-gradient(180deg, rgba(6, 11, 20, 0.55), rgba(6, 11, 20, 0.93)),
+        url("./landing.webp");
+}
+.banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 18% 28%, rgba(255, 95, 210, 0.3), transparent 42%),
+        radial-gradient(circle at 82% 20%, rgba(95, 251, 241, 0.26), transparent 44%),
+        radial-gradient(circle at 60% 92%, rgba(255, 209, 102, 0.16), transparent 38%);
+    mix-blend-mode: screen;
+}
+.banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.055) 0 1px, transparent 1px 4px);
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+}
+.banner-inner {
+    z-index: 2;
+}
+.banner .wave {
+    z-index: 3;
+}
+/* Gelombang hero menyatu dengan ticker kuning di bawahnya */
+.banner .wave svg path {
+    fill: var(--retro-yellow);
+}
+@font-face {
+    font-family: "Dancing Script";
+    src: url("./fonts/dancing-script-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+.banner-text h2 {
+    font-family: "Dancing Script", "Segoe Script", "Brush Script MT", "Lucida Handwriting", cursive;
+    font-size: clamp(2.6rem, 8vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--retro-cyan);
+    text-shadow: 3px 3px 0 rgba(255, 95, 210, 0.35);
+}
+.hero-title {
+    transition: opacity 0.25s ease;
+}
+/* Sembunyikan seluruh judul (termasuk efek gradien) sampai animasi menulis mulai */
+html.js .hero-title {
+    opacity: 0;
+}
+html.js .hero-title.typing,
+html.js .hero-title.done {
+    opacity: 1;
+}
+.hero-caret {
+    display: inline-block;
+    width: 3px;
+    height: 0.7em;
+    margin-left: 6px;
+    border-radius: 2px;
+    background: var(--retro-yellow);
+    box-shadow: 0 0 12px rgba(255, 209, 102, 0.9);
+    vertical-align: baseline;
+    opacity: 0;
+}
+.hero-title.typing .hero-caret {
+    opacity: 1;
+    animation: hero-caret-blink 0.85s steps(1, end) infinite;
+}
+.hero-title.done .hero-caret {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+@keyframes hero-caret-blink {
+    50% {
+        opacity: 0;
+    }
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    .banner-text h2 {
+        background-image: linear-gradient(
+            100deg,
+            #5ffbf1,
+            #ffffff 32%,
+            #ff9be5 60%,
+            #ffd166 85%,
+            #5ffbf1
+        );
+        background-size: 220% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        text-shadow: none;
+        filter: drop-shadow(0 0 18px rgba(95, 251, 241, 0.3));
+        animation: retro-chrome 10s linear infinite;
+    }
+}
+@keyframes retro-chrome {
+    to {
+        background-position: 220% center;
+    }
+}
+.banner-tag {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 16px;
+    padding: 6px 12px;
+    color: var(--retro-ink);
+    background: var(--retro-yellow);
+    border: 2px solid var(--retro-ink);
+    box-shadow: 4px 4px 0 rgba(255, 95, 210, 0.7);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10.5px;
+    letter-spacing: 1.4px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    transform: rotate(-1.5deg);
+}
+.banner-text p {
+    max-width: 56ch;
+    padding: 14px 16px;
+    background: rgba(6, 11, 20, 0.56);
+    border-left: 3px solid var(--retro-cyan);
+    border-radius: 0 12px 12px 0;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.chip-stat {
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    box-shadow: 3px 3px 0 rgba(95, 251, 241, 0.35);
+    font-family: "Courier New", Courier, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.chip-stat:nth-child(2) {
+    box-shadow: 3px 3px 0 rgba(255, 95, 210, 0.4);
+}
+
+/* Stiker bintang melayang di hero */
+.hero-sticker {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    font-size: 24px;
+    color: var(--retro-yellow);
+    text-shadow: 0 0 14px rgba(255, 209, 102, 0.85);
+    animation: retro-float 6s ease-in-out infinite;
+}
+.hero-sticker-a {
+    top: 22%;
+    right: 9%;
+    font-size: 38px;
+    color: var(--retro-cyan);
+    text-shadow: 0 0 18px rgba(95, 251, 241, 0.85);
+}
+.hero-sticker-b {
+    bottom: 24%;
+    right: 27%;
+    color: var(--retro-pink);
+    text-shadow: 0 0 16px rgba(255, 95, 210, 0.85);
+    animation-delay: -2s;
+}
+.hero-sticker-c {
+    top: 34%;
+    right: 34%;
+    font-size: 16px;
+    color: #fff;
+    animation-delay: -4s;
+}
+@keyframes retro-float {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-16px) rotate(8deg);
+    }
+}
+
+/* --- Ticker marquee ala web lama --- */
+.retro-strip {
+    position: relative;
+    z-index: 4;
+    overflow: hidden;
+    background: var(--retro-yellow);
+    border-top: 2px solid var(--retro-ink);
+    border-bottom: 2px solid var(--retro-ink);
+    color: var(--retro-ink);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.retro-strip-track {
+    display: flex;
+    width: max-content;
+    animation: retro-marquee 30s linear infinite;
+}
+.retro-strip-track span {
+    padding: 7px 52px 7px 0;
+}
+.retro-strip:hover .retro-strip-track {
+    animation-play-state: paused;
+}
+@keyframes retro-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* --- Pemisah section: garis putus-putus + bintang --- */
+.landing > .section + .section,
+.landing > .section + .closing {
+    border-top: 1px dashed rgba(95, 251, 241, 0.32);
+    position: relative;
+}
+.landing > .section + .section::before,
+.landing > .section + .closing::before {
+    content: "✦";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    line-height: 1;
+    color: var(--retro-yellow);
+    text-shadow: 0 0 10px rgba(255, 209, 102, 0.9);
+    pointer-events: none;
+}
+/* Closing memotong dekorasi di tepi, jadi bintang ditaruh di dalam */
+.landing > .section + .closing::before {
+    top: 6px;
+}
+
+/* --- Judul section --- */
+.sec-head h3 {
+    font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0 rgba(255, 95, 210, 0.35);
+}
+.sec-head h3::before {
+    content: "★";
+    margin-right: 8px;
+    color: var(--retro-yellow);
+    text-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+}
+.sec-head h3::after {
+    height: 5px;
+    background: linear-gradient(90deg, var(--retro-cyan), var(--retro-violet), var(--retro-pink), var(--retro-yellow));
+    box-shadow: 0 0 12px rgba(95, 251, 241, 0.35);
+}
+.retro-kicker {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 4px 10px;
+    color: var(--retro-yellow);
+    background: rgba(255, 209, 102, 0.08);
+    border: 1px dashed rgba(255, 209, 102, 0.45);
+    border-radius: 3px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transform: rotate(-1deg);
+}
+
+/* --- Section pengurus: titik-titik scrapbook --- */
+.section.team {
+    background-color: rgba(6, 11, 20, 0.82);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1.6px);
+    background-size: 20px 20px;
+}
+
+/* --- Kartu guru & pengurus: scrapbook, warna berbeda tiap kartu --- */
+.card-grid {
+    gap: 42px 28px;
+}
+.person {
+    position: relative;
+    overflow: hidden;
+    padding: 18px;
+    background:
+        linear-gradient(135deg, hsla(var(--tone, 200), 90%, 60%, 0.1), transparent 48%),
+        rgba(19, 28, 46, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 6px 20px 6px 20px;
+    box-shadow: 6px 6px 0 rgba(6, 11, 20, 0.7);
+    rotate: -0.5deg;
+    transition:
+        translate 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        rotate 0.2s ease;
+}
+@media (min-width: 760px) {
+    .person:nth-child(even) {
+        rotate: 0.5deg;
+    }
+}
+.person:hover {
+    translate: 0 -4px;
+    rotate: 0deg;
+    border-color: hsla(var(--tone, 200), 90%, 68%, 0.55);
+    box-shadow:
+        6px 10px 0 rgba(6, 11, 20, 0.75),
+        0 0 26px hsla(var(--tone, 200), 90%, 60%, 0.18);
+}
+.person::before {
+    content: "✦";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 12px;
+    color: hsl(var(--tone, 200), 95%, 72%);
+    opacity: 0.65;
+    pointer-events: none;
+}
+.person::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, hsl(var(--tone, 200), 90%, 64%), transparent 75%);
+    opacity: 0.8;
+    pointer-events: none;
+}
+.person-media {
+    position: relative;
+    transform: rotate(-2deg);
+    transition: transform 0.2s ease;
+    z-index: 1;
+}
+.person.flip .person-media {
+    transform: rotate(2deg);
+}
+.person:hover .person-media {
+    transform: rotate(0deg) scale(1.03);
+}
+.person-media::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    width: 50px;
+    height: 12px;
+    transform: translateX(-50%) rotate(-5deg);
+    background: hsla(var(--tone, 200), 95%, 70%, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+}
+.person .avatar {
+    background:
+        radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.45), transparent 44%),
+        linear-gradient(145deg, hsl(var(--tone, 200), 90%, 62%), hsl(calc(var(--tone, 200) + 42), 80%, 40%));
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+        0 0 0 4px rgba(6, 11, 20, 0.55),
+        0 14px 30px rgba(0, 0, 0, 0.45),
+        0 0 26px hsla(var(--tone, 200), 90%, 60%, 0.35);
+}
+.person:nth-child(3n + 1) .avatar,
+.person:nth-child(3n + 1) img.person-photo {
+    border-radius: 50% 22px 50% 22px;
+}
+.person:nth-child(3n + 2) .avatar,
+.person:nth-child(3n + 2) img.person-photo {
+    border-radius: 22px 50% 22px 50%;
+}
+.person:nth-child(3n) .avatar,
+.person:nth-child(3n) img.person-photo {
+    border-radius: 50%;
+}
+.person img.person-photo {
+    border: 3px solid rgba(236, 242, 255, 0.9);
+    box-shadow:
+        0 0 0 4px rgba(6, 11, 20, 0.5),
+        0 14px 30px rgba(0, 0, 0, 0.45),
+        0 0 24px hsla(var(--tone, 200), 90%, 60%, 0.3);
+}
+.avatar-badge {
+    position: absolute;
+    right: -8px;
+    bottom: -6px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    color: hsl(var(--tone, 200), 95%, 72%);
+    background: var(--retro-ink);
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 12px hsla(var(--tone, 200), 90%, 60%, 0.5);
+}
+.person p {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: hsl(var(--tone, 200), 70%, 74%);
+}
+a.person-name:hover,
+a.person-name:focus-visible {
+    color: #fff;
+    text-shadow: 0 0 10px hsla(var(--tone, 200), 90%, 65%, 0.9);
+}
+
+/* --- CTA anggota --- */
+.members-cta {
+    padding: 13px 24px;
+    color: var(--retro-ink);
+    background: linear-gradient(100deg, var(--retro-cyan), #82b1ff 45%, var(--retro-pink));
+    background-size: 180% auto;
+    border: 2px solid var(--retro-ink);
+    border-radius: 8px;
+    box-shadow:
+        5px 5px 0 var(--retro-yellow),
+        0 0 24px rgba(255, 95, 210, 0.25);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transform: rotate(-1deg);
+    transition:
+        translate 0.15s ease,
+        rotate 0.15s ease,
+        box-shadow 0.15s ease,
+        background-position 0.3s ease;
+}
+.members-cta:hover {
+    translate: -2px -2px;
+    rotate: 0deg;
+    background-position: right center;
+    box-shadow:
+        8px 8px 0 var(--retro-yellow),
+        0 0 34px rgba(95, 251, 241, 0.35);
+}
+.members-cta i {
+    color: var(--retro-ink);
+}
+
+/* --- FAQ sticker --- */
+.faq-grid {
+    gap: 22px;
+}
+.faq-item {
+    position: relative;
+    background: rgba(19, 28, 46, 0.68);
+    border: 1px dashed rgba(95, 251, 241, 0.28);
+    border-radius: 4px 18px 4px 18px;
+    box-shadow: 4px 4px 0 rgba(6, 11, 20, 0.55);
+    transition:
+        translate 0.15s ease,
+        border-color 0.15s ease;
+}
+.faq-item:nth-child(even) {
+    rotate: 0.3deg;
+}
+.faq-item:hover {
+    translate: 0 -3px;
+    border-color: rgba(255, 95, 210, 0.5);
+}
+.faq-item h4::before {
+    content: "★ ";
+    color: var(--retro-yellow);
+}
+
+/* --- Sosial media neon --- */
+.social-card {
+    background: linear-gradient(135deg, rgba(41, 121, 255, 0.22), rgba(255, 95, 210, 0.1));
+    border: 1px solid rgba(95, 251, 241, 0.4);
+    border-radius: 6px 18px 6px 18px;
+    box-shadow: 5px 5px 0 rgba(6, 11, 20, 0.6);
+}
+.social-card:hover {
+    border-color: var(--retro-cyan);
+    box-shadow:
+        7px 7px 0 rgba(255, 95, 210, 0.35),
+        0 0 24px rgba(95, 251, 241, 0.25);
+}
+.social-card > i {
+    color: var(--retro-cyan);
+    filter: drop-shadow(0 0 8px rgba(95, 251, 241, 0.7));
+}
+.social-card p {
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 1px;
+}
+.social-go {
+    color: var(--retro-yellow);
+}
+
+/* --- Closing gradien + ornamen --- */
+.closing {
+    overflow: hidden;
+    background: linear-gradient(135deg, #1565c0, #6d28d9 52%, #be185d);
+}
+.closing-inner {
+    position: relative;
+    z-index: 1;
+}
+.closing-inner::before,
+.closing-inner::after {
+    content: "★";
+    position: absolute;
+    z-index: -1;
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 120px;
+    line-height: 1;
+    pointer-events: none;
+}
+.closing-inner::before {
+    top: -40px;
+    left: -30px;
+    transform: rotate(-15deg);
+}
+.closing-inner::after {
+    right: -30px;
+    bottom: -50px;
+    transform: rotate(15deg);
+}
+.closing h3::after {
+    height: 5px;
+    background: var(--retro-yellow);
+}
+
+/* --- Footer --- */
+.footer-copy {
+    border-top: 1px dashed rgba(95, 251, 241, 0.24);
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 0.4px;
+}
+
+/* --- Halaman /student/: panel header + kartu anggota ala scrapbook --- */
+.landing-sub .sec-head {
+    max-width: 100%;
+    margin-bottom: 30px;
+    padding: 18px 20px 10px;
+    background: rgba(19, 28, 46, 0.62);
+    border: 1px solid rgba(95, 251, 241, 0.24);
+    border-left: 4px solid var(--retro-cyan);
+    border-radius: 4px 22px 4px 22px;
+    box-shadow: 6px 6px 0 rgba(6, 11, 20, 0.65);
+}
+.landing-sub .sec-head p {
+    margin-bottom: 10px;
+}
+.members-list {
+    gap: 26px 18px;
+}
+.member-cell {
+    position: relative;
+    overflow: hidden;
+    padding: 16px 8px 14px;
+    background:
+        linear-gradient(160deg, hsla(var(--tone, 200), 90%, 60%, 0.1), transparent 55%),
+        rgba(19, 28, 46, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px 18px 6px 18px;
+    box-shadow: 5px 5px 0 rgba(6, 11, 20, 0.55);
+    rotate: -0.6deg;
+    transition:
+        translate 0.2s ease,
+        rotate 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.member-cell:nth-child(even) {
+    rotate: 0.6deg;
+}
+.member-cell:hover {
+    translate: 0 -4px;
+    rotate: 0deg;
+    border-color: hsla(var(--tone, 200), 90%, 68%, 0.6);
+    box-shadow:
+        5px 9px 0 rgba(6, 11, 20, 0.6),
+        0 0 22px hsla(var(--tone, 200), 90%, 60%, 0.18);
+}
+.member-cell::before {
+    content: "✦";
+    position: absolute;
+    top: 6px;
+    right: 9px;
+    font-size: 10px;
+    color: hsl(var(--tone, 200), 95%, 72%);
+    opacity: 0.7;
+    pointer-events: none;
+}
+.member-cell::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, hsl(var(--tone, 200), 90%, 62%), transparent 78%);
+    opacity: 0.75;
+    pointer-events: none;
+}
+.member-no {
+    position: absolute;
+    top: 7px;
+    left: 9px;
+    z-index: 1;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: hsla(var(--tone, 200), 90%, 76%, 0.8);
+    pointer-events: none;
+}
+.member-media {
+    position: relative;
+    transform: rotate(-2deg);
+    transition: transform 0.2s ease;
+}
+.member-cell:nth-child(even) .member-media {
+    transform: rotate(2deg);
+}
+.member-cell:hover .member-media {
+    transform: rotate(0deg) scale(1.05);
+}
+.member-cell .avatar {
+    width: clamp(76px, 22vw, 124px);
+    height: clamp(76px, 22vw, 124px);
+    background:
+        radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.45), transparent 44%),
+        linear-gradient(145deg, hsl(var(--tone, 200), 90%, 65%), hsl(calc(var(--tone, 200) + 45), 80%, 42%));
+    border: 2px solid rgba(255, 255, 255, 0.62);
+    box-shadow:
+        0 0 0 3px rgba(6, 11, 20, 0.45),
+        0 12px 26px rgba(0, 0, 0, 0.45),
+        0 0 20px hsla(var(--tone, 200), 90%, 60%, 0.35);
+}
+.member-cell img {
+    width: clamp(76px, 22vw, 124px);
+    height: clamp(76px, 22vw, 124px);
+}
+.member-cell img {
+    border: 3px solid rgba(236, 242, 255, 0.9);
+    box-shadow:
+        0 0 0 3px rgba(6, 11, 20, 0.45),
+        0 12px 26px rgba(0, 0, 0, 0.45),
+        0 0 20px hsla(var(--tone, 200), 90%, 60%, 0.3);
+}
+.member-cell:nth-child(3n + 1) .avatar,
+.member-cell:nth-child(3n + 1) img {
+    border-radius: 50% 20px 50% 20px;
+}
+.member-cell:nth-child(3n + 2) .avatar,
+.member-cell:nth-child(3n + 2) img {
+    border-radius: 20px 50% 20px 50%;
+}
+.member-cell:nth-child(3n) .avatar,
+.member-cell:nth-child(3n) img {
+    border-radius: 50%;
+}
+.member-name {
+    position: relative;
+    z-index: 1;
+}
+a.member-name:hover,
+a.member-name:focus-visible {
+    color: #fff;
+    text-shadow: 0 0 10px hsla(var(--tone, 200), 90%, 65%, 0.9);
+}
+
+/* --- Ponsel: kartu tetap 3 kolom tapi lebih rapat --- */
+@media (max-width: 480px) {
+    .members-list {
+        gap: 18px 10px;
+    }
+    .member-cell {
+        padding: 12px 5px 10px;
+        border-radius: 4px 13px 4px 13px;
+        box-shadow: 3px 3px 0 rgba(6, 11, 20, 0.55);
+    }
+    .member-cell .avatar,
+    .member-cell img {
+        width: clamp(64px, 19vw, 104px);
+        height: clamp(64px, 19vw, 104px);
+    }
+    .member-cell .member-media {
+        transform: none;
+    }
+    .member-no {
+        top: 2px;
+        left: 5px;
+        font-size: 8px;
+    }
+    .member-cell::before {
+        display: none;
+    }
+    .retro-strip {
+        font-size: 10px;
+        letter-spacing: 1.2px;
+    }
+    .banner-tag {
+        font-size: 9px;
+        letter-spacing: 1px;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 700px) {
+    .hero-sticker {
+        display: none;
+    }
+}
+
+/* --- Hormati preferensi gerakan minimal --- */
+@media (prefers-reduced-motion: reduce) {
+    .retro-strip-track,
+    .banner-text h2,
+    .hero-sticker,
+    .nav-brand::after,
+    .hero-title.typing .hero-caret {
+        animation: none !important;
+    }
+    .hero-caret {
+        display: none;
+    }
+    .retro-strip {
+        white-space: normal;
+    }
+    .retro-strip-track {
+        width: auto;
+    }
+    .retro-strip-track span {
+        display: block;
+        padding: 7px 12px;
+    }
+    .retro-strip-track span:last-child {
+        display: none;
+    }
+    .person,
+    .member-cell,
+    .person-media,
+    .member-media,
+    .members-cta,
+    .faq-item {
+        transition: none !important;
+    }
+    .person:hover,
+    .member-cell:hover {
+        translate: none;
+    }
+    .person:hover .person-media,
+    .member-cell:hover .member-media {
+        transform: none;
     }
 }

@@ -30,17 +30,22 @@
         <link href="./assets/fa/css/all.min.css" rel="stylesheet" />
         <link href="./assets/theme.css" rel="stylesheet" />
         <link href="./assets/landing.css" rel="stylesheet" />
-        <link
-            rel="stylesheet"
-            href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
+        <link href="./assets/locomotive/locomotive-scroll.css" rel="stylesheet" />
+        <link rel="preload" href="./assets/fonts/dancing-script-700.woff2" as="font" type="font/woff2" crossorigin />
+        <script>
+            document.documentElement.classList.add("js");
+        </script>
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
             crossorigin="anonymous"
-        />
+        ></script>
     </head>
     <body>
         <!-- ===================== Navbar ===================== -->
         <nav class="nav" id="nav">
             <div class="nav-inner">
-                <a class="nav-brand" href="#home"
+                <a class="nav-brand" href="#home" data-scroll-to data-scroll-to-offset="-72"
                     ><img src="./assets/tkjlogo.png" width="143" height="40" alt="Logo TKJ 1"
                 /></a>
                 <button
@@ -54,13 +59,17 @@
                     <i class="fa-solid fa-bars" aria-hidden="true"></i>
                 </button>
                 <ul class="nav-menu" id="navMenu">
-                    <li><a href="#home" class="active">Selamat Datang</a></li>
-                    <li><a href="#tentang">Tentang Kelas &amp; Wali Kelas</a></li>
-                    <li><a href="#tim">Pengurus</a></li>
-                    <li hidden><a href="#prestasi">Prestasi</a></li>
-                    <li><a href="#members">Anggota</a></li>
-                    <li><a href="#faq">Pertanyaan</a></li>
-                    <li><a href="#kontak">Ikuti Kami</a></li>
+                    <li>
+                        <a href="#home" class="active" data-scroll-to data-scroll-to-offset="-72">Selamat Datang</a>
+                    </li>
+                    <li><a href="#tentang" data-scroll-to data-scroll-to-offset="-72">Tentang Kelas</a></li>
+                    <li><a href="#tim" data-scroll-to data-scroll-to-offset="-72">Pengurus</a></li>
+                    <li hidden>
+                        <a href="#prestasi" data-scroll-to data-scroll-to-offset="-72">Prestasi</a>
+                    </li>
+                    <li><a href="#members" data-scroll-to data-scroll-to-offset="-72">Anggota</a></li>
+                    <li><a href="#faq" data-scroll-to data-scroll-to-offset="-72">Pertanyaan</a></li>
+                    <li><a href="#kontak" data-scroll-to data-scroll-to-offset="-72">Ikuti Kami</a></li>
                 </ul>
             </div>
         </nav>
@@ -70,7 +79,16 @@
             <section class="banner" id="home">
                 <div class="container banner-inner">
                     <div class="banner-text">
-                        <h2>Welcome To Our Class</h2>
+                        <h2
+                            class="hero-title"
+                            id="heroTitle"
+                            data-text="Welcome To Our Class"
+                            aria-label="Welcome To Our Class"
+                        >
+                            <span class="hero-title-text" id="heroTitleText" aria-hidden="true"
+                                >Welcome To Our Class</span
+                            ><span class="hero-caret" id="heroCaret" aria-hidden="true"></span>
+                        </h2>
                         <span class="banner-tag">Berinovasi · Kreatif · Solidaritas</span>
                         <p id="bannerDesc">
                             Kelas TKJ 1 adalah kelas yang bersemangat dan berdedikasi. Kami saling mendukung dalam
@@ -83,6 +101,9 @@
                         </div>
                     </div>
                 </div>
+                <span class="hero-sticker hero-sticker-a" aria-hidden="true">✦</span>
+                <span class="hero-sticker hero-sticker-b" aria-hidden="true">★</span>
+                <span class="hero-sticker hero-sticker-c" aria-hidden="true">✧</span>
                 <span class="wave" aria-hidden="true">
                     <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
                         <path
@@ -93,6 +114,78 @@
                 </span>
             </section>
 
+            <script>
+                /* Efek menulis judul hero — berjalan sebelum sisa halaman selesai di-parse. */
+                (function () {
+                    var h2 = document.getElementById("heroTitle");
+                    var txt = document.getElementById("heroTitleText");
+                    var caret = document.getElementById("heroCaret");
+                    if (!h2 || !txt) return;
+
+                    var full = h2.getAttribute("data-text") || txt.textContent || "";
+                    var reduce = window.matchMedia
+                        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                        : false;
+
+                    if (reduce || !full) {
+                        h2.classList.add("done");
+                        return;
+                    }
+
+                    var started = false;
+                    var start = function () {
+                        if (started) return;
+                        started = true;
+                        try {
+                            var reserve = h2.offsetHeight;
+                            h2.style.minHeight = reserve + "px";
+                            txt.textContent = "";
+                            h2.classList.add("typing");
+                            var i = 0;
+                            var step = function () {
+                                i++;
+                                txt.textContent = full.slice(0, i);
+                                if (i < full.length) {
+                                    var ch = full.charAt(i - 1);
+                                    setTimeout(step, ch === " " ? 150 : 58 + (i % 4) * 12);
+                                    return;
+                                }
+                                setTimeout(function () {
+                                    h2.classList.remove("typing");
+                                    h2.classList.add("done");
+                                    h2.style.minHeight = "";
+                                    if (caret) caret.setAttribute("aria-hidden", "true");
+                                }, 1000);
+                            };
+                            setTimeout(step, 380);
+                        } catch (err) {
+                            h2.classList.add("done");
+                        }
+                    };
+
+                    if (document.fonts && document.fonts.load) {
+                        document.fonts.load('700 1em "Dancing Script"').then(start, start);
+                        setTimeout(start, 900);
+                    } else {
+                        setTimeout(start, 350);
+                    }
+                })();
+            </script>
+
+            <!-- ===================== Ticker gaya web lama ===================== -->
+            <div class="retro-strip" aria-hidden="true">
+                <div class="retro-strip-track">
+                    <span
+                        >★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ TEKNIK KOMPUTER &amp; JARINGAN ★ KREATIF · SOLID · BERKARYA
+                        ★</span
+                    >
+                    <span
+                        >★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ TEKNIK KOMPUTER &amp; JARINGAN ★ KREATIF · SOLID · BERKARYA
+                        ★</span
+                    >
+                </div>
+            </div>
+
             <!-- ===================== About & Teacher ===================== -->
             <section class="section" id="tentang">
                 <div class="container">
@@ -101,7 +194,8 @@
                         <p id="aboutText">
                             Kelas TKJ 1 didominasi laki-laki dengan jumlah total yang terus bertumbuh setiap tahun
                             ajaran. Kelas ini dikenal memiliki banyak potensi: siswa dengan beragam keahlian — dari
-                            jaringan, server, sampai desain dan pemrograman — yang saling melengkapi.
+                            jaringan, server, sampai desain dan pemrograman — yang saling melengkapi. Klik nama wali
+                            kelas untuk membuka Instagram.
                         </p>
                     </div>
                     <div class="card-grid" id="teacherGrid"></div>
@@ -112,7 +206,10 @@
                 <div class="container">
                     <div class="sec-head reveal">
                         <h3>Pengurus</h3>
-                        <p id="teamNote">Inilah orang-orang yang memegang jabatan kelas periode ini.</p>
+                        <p id="teamNote">
+                            Inilah orang-orang yang memegang jabatan kelas periode ini. Klik nama untuk membuka
+                            Instagram.
+                        </p>
                     </div>
                     <div class="card-grid" id="teamGrid"></div>
                 </div>
@@ -146,13 +243,15 @@
                         <p>Kenali lebih dekat anggota kelas TKJ 1 — kunjungi halaman daftar lengkapnya.</p>
                     </div>
                     <div class="members-cta-wrap reveal">
-                        <a class="btn members-cta" href="./student/">Lihat Anggota Kelas &gt;</a>
+                        <a class="btn members-cta" href="./student/"
+                            ><i class="fa-solid fa-star" aria-hidden="true"></i> Lihat Anggota Kelas</a
+                        >
                     </div>
                 </div>
             </section>
 
             <!-- ===================== FAQ ===================== -->
-            <section class="section" id="faq" hidden>
+            <section class="section" id="faq">
                 <div class="container">
                     <div class="sec-head reveal">
                         <h3>Pertanyaan yang Sering Diajukan</h3>
@@ -213,6 +312,7 @@
             </footer>
         </main>
 
+        <script src="./assets/locomotive/locomotive-scroll.min.js"></script>
         <script>
             "use strict";
 
@@ -228,33 +328,83 @@
                 instagram: "@about.tjktsatuu", // akun IG kelas
                 instagramUrl: "https://www.instagram.com/about.tjktsatuu",
 
-                /* KPI kelas (wali & pejabat) */
+                /* KPI kelas (wali & pejabat)
+                   instagram: username tanpa "@" atau URL penuh.
+                   Ganti contoh "tkj1.*" dengan akun asli; kosongkan bila tidak ada
+                   (tombol Instagram otomatis tidak ditampilkan). */
                 guru: [
-                    { nama: "Fatmawati, S. Pd", jabatan: "Wali Kelas X", foto: "" },
-                    { nama: "Liverdi Nanda, S. Pd", jabatan: "Wali Kelas XI", foto: "" },
+                    {
+                        nama: "Fatmawati, S. Pd",
+                        jabatan: "Wali Kelas X",
+                        foto: "assets/face/teacher/fatma.png",
+                        instagram: "https://instagram.com/fatma_45wati",
+                        icon: "fa-chalkboard-user",
+                    },
+                    {
+                        nama: "Liverdi Nanda, S. Pd",
+                        jabatan: "Wali Kelas XI",
+                        foto: "assets/face/teacher/nanda.png",
+                        instagram: "https://instagram.com/nandaliverdi",
+                        icon: "fa-chalkboard-user",
+                    },
                 ],
                 tim: [
-                    { nama: "Ketua Kelas", jabatan: "Ketua", foto: "" },
-                    { nama: "Wakil Ketua", jabatan: "Wakil", foto: "" },
-                    { nama: "Sekretaris", jabatan: "Sekretaris", foto: "" },
-                    { nama: "Bendahara", jabatan: "Bendahara", foto: "" },
-                    { nama: "Keamanan", jabatan: "Keamanan", foto: "" },
-                    { nama: "Kebersihan", jabatan: "Kebersihan", foto: "" },
-                    { nama: "Kesehatan", jabatan: "Kesehatan", foto: "" },
-                    { nama: "Peralatan", jabatan: "Peralatan", foto: "" },
-                ],
-
-                /* Daftar anggota (data sumber untuk halaman /student/) */
-                anggota: [
-                    { nama: "Rizki Aditya", foto: "", instagram: "https://instagram.com/rizkiaditya" },
-                    { nama: "Andi Pratama", foto: "", instagram: "https://instagram.com/andipratama" },
-                    { nama: "Dimas Saputra", foto: "", instagram: "https://instagram.com/dimassptr" },
-                    { nama: "Fajar Nugroho", foto: "", instagram: "https://instagram.com/fajarngrh" },
-                    { nama: "Gilang Ramadhan", foto: "", instagram: "https://instagram.com/gilangrdhn" },
-                    { nama: "Hafiz Maulana", foto: "", instagram: "https://instagram.com/hafizmln" },
-                    { nama: "Iqbal Firmansyah", foto: "", instagram: "https://instagram.com/iqbalfrmsyh" },
-                    { nama: "Lutfi Hakim", foto: "", instagram: "https://instagram.com/lutfihkm" },
-                    { nama: "Naufal Azhar", foto: "", instagram: "https://instagram.com/naufalazhr" },
+                    {
+                        nama: "Ketua Kelas",
+                        jabatan: "Ketua",
+                        foto: "",
+                        instagram: "tkj1.ketua",
+                        icon: "fa-crown",
+                    },
+                    {
+                        nama: "Wakil Ketua",
+                        jabatan: "Wakil",
+                        foto: "",
+                        instagram: "tkj1.wakil",
+                        icon: "fa-user-tie",
+                    },
+                    {
+                        nama: "Sekretaris",
+                        jabatan: "Sekretaris",
+                        foto: "",
+                        instagram: "tkj1.sekretaris",
+                        icon: "fa-pen-nib",
+                    },
+                    {
+                        nama: "Bendahara",
+                        jabatan: "Bendahara",
+                        foto: "",
+                        instagram: "tkj1.bendahara",
+                        icon: "fa-coins",
+                    },
+                    {
+                        nama: "Keamanan",
+                        jabatan: "Keamanan",
+                        foto: "",
+                        instagram: "tkj1.keamanan",
+                        icon: "fa-shield-halved",
+                    },
+                    {
+                        nama: "Kebersihan",
+                        jabatan: "Kebersihan",
+                        foto: "",
+                        instagram: "tkj1.kebersihan",
+                        icon: "fa-broom",
+                    },
+                    {
+                        nama: "Kesehatan",
+                        jabatan: "Kesehatan",
+                        foto: "",
+                        instagram: "tkj1.kesehatan",
+                        icon: "fa-heart-pulse",
+                    },
+                    {
+                        nama: "Peralatan",
+                        jabatan: "Peralatan",
+                        foto: "",
+                        instagram: "tkj1.peralatan",
+                        icon: "fa-screwdriver-wrench",
+                    },
                 ],
 
                 /* Prestasi (kosong = bagian Achievement disembunyikan) */
@@ -305,7 +455,17 @@
                 if (!n || /[\s^][A-Za-z]$/.test(n)) return "•";
                 return initials(n);
             };
+            /* Terima username (@nama) maupun URL Instagram penuh */
+            const igHref = handle => {
+                const h = String(handle || "").trim();
+                if (!h) return "";
+                if (/^https?:\/\//i.test(h)) return h;
+                return "https://www.instagram.com/" + h.replace(/^@/, "").replace(/\/+$/, "") + "/";
+            };
+            /* Warna aksen bergilang supaya kartu tidak monoton */
+            const TONES = [195, 280, 330, 155, 250, 15, 185, 305];
             const personCard = (p, i) => {
+                const tone = TONES[i % TONES.length];
                 const name = String(p.nama || "").trim();
                 const visual = p.foto
                     ? '<img src="' +
@@ -315,22 +475,43 @@
                       '" ' +
                       'class="person-photo" loading="lazy" decoding="async" />'
                     : '<div class="avatar">' + esc(avatarText(name)) + "</div>";
-                const label = name && name !== p.jabatan ? esc(name) : "<span>—</span>";
+                /* Saat nama masih placeholder (sama dengan jabatan), tampilkan
+                   jabatan sebagai judul — jangan tampilkan tanda "—". */
+                const hasName = Boolean(name) && name !== p.jabatan;
+                const headingText = hasName ? name : p.jabatan || "—";
+                const roleHtml = hasName && p.jabatan ? "<p>" + esc(p.jabatan) + "</p>" : "";
+                const ig = igHref(p.instagram);
+                /* Nama (bukan tombol) yang bisa diklik menuju Instagram */
+                const heading = ig
+                    ? '<a class="person-name" href="' +
+                      esc(ig) +
+                      '" target="_blank" rel="noopener noreferrer" title="Instagram ' +
+                      esc(headingText) +
+                      '">' +
+                      esc(headingText) +
+                      "</a>"
+                    : esc(headingText);
+                const badge = p.icon
+                    ? '<span class="avatar-badge" aria-hidden="true"><i class="fa-solid ' +
+                      esc(p.icon) +
+                      '"></i></span>'
+                    : "";
                 /* Baris bergantian (silang): genap foto-kiri, ganjil foto-kanan — foto lurus, tidak miring */
                 return (
                     '<div class="person reveal' +
                     (i % 2 ? " flip" : "") +
+                    '" style="--tone: ' +
+                    tone +
                     '">' +
                     '<div class="person-media">' +
                     visual +
+                    badge +
                     "</div>" +
                     '<div class="person-info"><h5>' +
-                    label +
+                    heading +
                     "</h5>" +
-                    "<p>" +
-                    esc(p.jabatan || "") +
-                    "</p></div>" +
-                    "</div>"
+                    roleHtml +
+                    "</div></div>"
                 );
             };
 
@@ -458,7 +639,8 @@
                 window.addEventListener("scroll", onScroll, { passive: true });
                 onScroll();
 
-                const links = Array.from(menu.querySelectorAll("a[href^='#']"));
+                /* Abaikan link yang sedang disembunyikan (mis. #prestasi kosong) */
+                const links = Array.from(menu.querySelectorAll("a[href^='#']")).filter(a => !a.closest("[hidden]"));
                 const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
                 if ("IntersectionObserver" in window && sections.length) {
                     const io = new IntersectionObserver(
@@ -497,6 +679,30 @@
                 items.forEach(el => io.observe(el));
             }
 
+            /* ---------- Smooth scroll Locomotive (desktop) ---------- */
+            let smoothScroll = null;
+            function initSmoothScroll() {
+                if (!window.LocomotiveScroll) return;
+                if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                    return;
+                }
+                try {
+                    smoothScroll = new LocomotiveScroll({
+                        lenisOptions: { lerp: 0.09, wheelMultiplier: 1 },
+                        scrollCallback: values => {
+                            const nav = document.getElementById("nav");
+                            if (nav) nav.classList.toggle("scrolled", values.scroll > 50);
+                        },
+                    });
+                    window.addEventListener("load", () => smoothScroll && smoothScroll.resize());
+                    if (document.fonts && document.fonts.ready) {
+                        document.fonts.ready.then(() => smoothScroll && smoothScroll.resize());
+                    }
+                } catch (err) {
+                    smoothScroll = null;
+                }
+            }
+
             /* ---------- Mulai ---------- */
             renderBanner();
             renderPeople();
@@ -505,6 +711,7 @@
             bindSlider();
             bindNav();
             bindReveal();
+            initSmoothScroll();
         </script>
     </body>
 </html>

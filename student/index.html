@@ -24,6 +24,7 @@
         <link href="../assets/fa/css/all.min.css" rel="stylesheet" />
         <link href="../assets/theme.css" rel="stylesheet" />
         <link href="../assets/landing.css" rel="stylesheet" />
+        <link href="../assets/locomotive/locomotive-scroll.css" rel="stylesheet" />
     </head>
     <body>
         <!-- ===================== Navbar ===================== -->
@@ -49,11 +50,19 @@
             </div>
         </nav>
 
-        <main class="landing">
+        <main class="landing landing-sub">
+            <div class="retro-strip" aria-hidden="true">
+                <div class="retro-strip-track">
+                    <span>★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN ★</span>
+                    <span>★ TKJ 1 ★ SMKN 1 LEMBAH MELINTANG ★ KLIK NAMA UNTUK INSTAGRAM ★ TEKNIK KOMPUTER &amp; JARINGAN ★</span>
+                </div>
+            </div>
+
             <!-- ===================== Header halaman ===================== -->
             <section class="section" id="daftar">
                 <div class="container">
                     <div class="sec-head reveal">
+                        <span class="retro-kicker">★ SMKN 1 Lembah Melintang ★</span>
                         <h3>Anggota Kelas</h3>
                         <p>Seluruh anggota kelas TKJ 1 periode ini. Klik nama untuk mengunjungi Instagram siswa.</p>
                     </div>
@@ -63,15 +72,16 @@
                     </p>
                 </div>
             </section>
-
-            <footer class="footer-copy">
-                <p>
-                    <span id="year">2026</span> &copy; TKJ 1 · SMKN 1 Lembah Melintang.<br />Dikelola oleh siswa
-                    <b>TKJ 1</b>.
-                </p>
-            </footer>
         </main>
 
+        <footer class="footer-copy">
+            <p>
+                <span id="year">2026</span> &copy; TKJ 1 · SMKN 1 Lembah Melintang.<br />Dikelola oleh siswa
+                <b>TKJ 1</b>.
+            </p>
+        </footer>
+
+        <script src="../assets/locomotive/locomotive-scroll.min.js"></script>
         <script>
             "use strict";
 
@@ -119,6 +129,9 @@
             };
 
             /* ---------- Render daftar anggota (3 kolom, 3 baris ke bawah, foto + nama) ---------- */
+            /* Warna aksen bergilang supaya kartu anggota tidak monoton */
+            const TONES = [195, 320, 265, 160, 15, 285, 205, 335, 240];
+
             function renderMembers() {
                 const list = $("membersList");
                 const items = Array.isArray(ANGGOTA) ? ANGGOTA.filter(a => a && String(a.nama || "").trim()) : [];
@@ -127,7 +140,8 @@
                     return;
                 }
                 list.innerHTML = items
-                    .map(m => {
+                    .map((m, i) => {
+                        const tone = TONES[i % TONES.length];
                         const name = String(m.nama || "").trim();
                         const visual = m.foto
                             ? '<img src="' +
@@ -145,7 +159,12 @@
                               "</a>"
                             : '<span class="member-name">' + esc(name) + "</span>";
                         return (
-                            '<div class="member-cell reveal">' +
+                            '<div class="member-cell reveal" style="--tone: ' +
+                            tone +
+                            '">' +
+                            '<span class="member-no" aria-hidden="true">' +
+                            String(i + 1).padStart(2, "0") +
+                            "</span>" +
                             '<div class="member-media">' +
                             visual +
                             "</div>" +
@@ -201,11 +220,36 @@
                 items.forEach(el => io.observe(el));
             }
 
+            /* ---------- Smooth scroll Locomotive ---------- */
+            let smoothScroll = null;
+            function initSmoothScroll() {
+                if (!window.LocomotiveScroll) return;
+                if (
+                    window.matchMedia &&
+                    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ) {
+                    return;
+                }
+                try {
+                    smoothScroll = new LocomotiveScroll({
+                        lenisOptions: { lerp: 0.09, wheelMultiplier: 1 },
+                        scrollCallback: values => {
+                            const nav = document.getElementById("nav");
+                            if (nav) nav.classList.toggle("scrolled", values.scroll > 50);
+                        },
+                    });
+                    window.addEventListener("load", () => smoothScroll && smoothScroll.resize());
+                } catch (err) {
+                    smoothScroll = null;
+                }
+            }
+
             /* ---------- Mulai ---------- */
             $("year").textContent = new Date().getFullYear();
             renderMembers();
             bindNav();
             bindReveal();
+            initSmoothScroll();
         </script>
     </body>
 </html>

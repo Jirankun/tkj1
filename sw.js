@@ -4,7 +4,7 @@
 // ============================================================
 'use strict';
 
-const CACHE = 'tkjone-v7';
+const CACHE = 'tkjone-v10';
 
 const PRECACHE = [
   '/',
@@ -13,6 +13,10 @@ const PRECACHE = [
   '/story/',
   '/uploaders/',
   '/assets/theme.css',
+  '/assets/landing.css',
+  '/assets/fonts/dancing-script-700.woff2',
+  '/assets/locomotive/locomotive-scroll.min.js',
+  '/assets/locomotive/locomotive-scroll.css',
   '/assets/fa/css/all.min.css',
   '/assets/fa/webfonts/fa-solid-900.woff2',
   '/assets/plyr/plyr.css',
