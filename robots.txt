@@ -1,11 +1,23 @@
 # TKJ OnE — robots.txt
 User-agent: *
 Allow: /
+Allow: /student/
+Allow: /privacy/
+Allow: /terms/
+Allow: /assets/face/
 
+Disallow: /assets/fa/
+Disallow: /assets/fonts/
+Disallow: /assets/locomotive/
+Disallow: /assets/plyr/
+Disallow: /app/
 Disallow: /galeri/
 Disallow: /photo/
 Disallow: /story/
 Disallow: /upload/
 Disallow: /uploaders/
-Disallow: /DB/
+Disallow: /DB/info.json
+Disallow: /DB/photos.json
+Disallow: /DB/status.json
+
 Sitemap: https://tkj1.pages.dev/sitemap.xml

@@ -95,7 +95,6 @@ button {
 img,
 video {
     -webkit-user-drag: none;
-    user-drag: none;
     -webkit-touch-callout: none;
 }
 body {
@@ -1868,5 +1867,238 @@ a.member-name:focus-visible {
     .person:hover .person-media,
     .member-cell:hover .member-media {
         transform: none;
+    }
+}
+
+/* ============================================================
+   Popup kartu anggota (/student/)
+   Kartu diklik → “lepas” dari grid dan membesar ke tengah layar.
+   ============================================================ */
+.member-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 130;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+}
+.member-modal[hidden] {
+    display: none;
+}
+.member-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 8, 16, 0.74);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+}
+.member-modal.is-open .member-modal-backdrop {
+    opacity: 1;
+}
+/* Pembungkus: kartu + tombol X (X berada DI LUAR kartu popup) */
+.member-modal-shell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    max-height: calc(100dvh - 32px);
+}
+.member-modal-card {
+    width: min(86vw, 360px);
+    max-height: calc(100dvh - 96px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 13px;
+    padding: 26px 22px 16px;
+    background:
+        radial-gradient(circle at 50% 0%, hsla(var(--tone, 200), 90%, 62%, 0.16), transparent 62%),
+        #101a2c;
+    border: 1px solid hsla(var(--tone, 200), 90%, 70%, 0.5);
+    border-radius: 12px 28px 12px 28px;
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.62),
+        0 0 42px hsla(var(--tone, 200), 90%, 60%, 0.2);
+    transform: none;
+    transition:
+        transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.3s ease;
+    will-change: transform, opacity;
+}
+.mm-photo,
+.mm-avatar {
+    flex: 0 0 auto;
+    width: clamp(112px, 32vw, 156px);
+    height: clamp(112px, 32vw, 156px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+.mm-avatar {
+    display: grid;
+    place-items: center;
+    font-size: clamp(32px, 9vw, 44px);
+    font-weight: 800;
+    color: #fff;
+    background:
+        radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.45), transparent 44%),
+        linear-gradient(145deg, hsl(var(--tone, 200), 90%, 65%), hsl(calc(var(--tone, 200) + 45), 80%, 42%));
+}
+.mm-name {
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.3;
+    color: #fff;
+    text-align: center;
+    text-wrap: balance;
+}
+a.mm-name {
+    color: var(--blue-soft);
+}
+a.mm-name:hover,
+a.mm-name:focus-visible {
+    color: #fff;
+}
+.mm-player {
+    width: 100%;
+    max-width: 286px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 11px;
+}
+.mm-player.is-empty {
+    opacity: 0.5;
+}
+.mm-line {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+}
+.mm-time {
+    flex: 0 0 auto;
+    min-width: 34px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
+    color: rgba(255, 255, 255, 0.62);
+}
+.mm-time:first-child {
+    text-align: right;
+}
+.mm-range.ma-range {
+    height: 20px;
+}
+.mm-range::-webkit-slider-runnable-track {
+    height: 3px;
+}
+.mm-range::-webkit-slider-thumb {
+    width: 13px;
+    height: 13px;
+    margin-top: -5px;
+}
+.mm-range::-moz-range-track,
+.mm-range::-moz-range-progress {
+    height: 3px;
+}
+.mm-range::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+}
+.mm-play {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #fff;
+    background: hsla(var(--tone, 200), 85%, 58%, 0.26);
+    border: 1px solid hsla(var(--tone, 200), 90%, 74%, 0.6);
+    box-shadow: 0 0 16px hsla(var(--tone, 200), 90%, 60%, 0.28);
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
+.mm-play i {
+    font-size: 14px;
+}
+.mm-play:hover {
+    background: hsla(var(--tone, 200), 85%, 58%, 0.45);
+}
+.mm-play:active {
+    transform: scale(0.94);
+}
+.mm-play.is-playing {
+    background: hsl(var(--tone, 200), 88%, 58%);
+}
+.mm-play:disabled {
+    cursor: default;
+    opacity: 0.45;
+    box-shadow: none;
+}
+.mm-close {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(15, 24, 40, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    font-size: 13px;
+    line-height: 1;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        opacity 0.28s ease;
+}
+.mm-close:hover,
+.mm-close:focus-visible {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+}
+.member-modal .mm-close {
+    opacity: 0;
+}
+.member-modal.is-open .mm-close {
+    opacity: 1;
+}
+
+/* Kartu bisa diklik; kartu sumber meredup saat popup terbuka */
+.members-list .member-cell {
+    cursor: pointer;
+}
+.member-cell.is-open {
+    opacity: 0.35;
+}
+.member-cell:focus-visible {
+    outline: 2px solid var(--blue-soft);
+    outline-offset: 5px;
+}
+/* Area pemutar kosong tetap meneruskan klik ke kartu */
+.member-audio.is-empty {
+    pointer-events: none;
+}
+html.mm-open,
+body.mm-open {
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .member-modal-backdrop,
+    .member-modal-card,
+    .mm-play,
+    .mm-close {
+        transition: none;
     }
 }
