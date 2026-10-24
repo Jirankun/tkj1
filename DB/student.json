@@ -11,7 +11,7 @@
         "nama": "Faldho Adzani",
         "foto": "../assets/face/student/faldho.png",
         "instagram": "faldho14",
-        "audio": ""
+        "audio": "../assets/audio/iqro.mp3"
     },
     { "nama": "Fitria Mulia", "foto": "", "instagram": "", "audio": "" },
     { "nama": "Galang Luqmanul Hakim", "foto": "", "instagram": "", "audio": "" },
@@ -28,8 +28,8 @@
     {
         "nama": "Rasima Handayani",
         "foto": "../assets/face/student/rasima.png",
-        "instagram": "i_amrasima01",
-        "audio": ""
+        "instagram": "i_amrasma01",
+        "audio": "../assets/audio/aku_milikmu-dewa-19.mp3"
     },
     { "nama": "Reviansyah", "foto": "", "instagram": "", "audio": "" },
     { "nama": "Reza Ardiansyah", "foto": "", "instagram": "", "audio": "" },
@@ -46,10 +46,10 @@
         "nama": "Syah Ratul Paiza",
         "foto": "../assets/face/student/faiza.png",
         "instagram": "faiza_cuddle",
-        "audio": ""
+        "audio": "../assets/audio/maafkan.mp3"
     },
-    { "nama": "Thalita Syafa Harahap", "foto": "", "instagram": "", "audio": "" },
-    { "nama": "Tonius Nduru", "foto": "", "instagram": "", "audio": "" },
+    { "nama": "Thalita Syafa Harahap", "foto": "../assets/face/student/talita.png", "instagram": "", "audio": "" },
+    { "nama": "Tonius Nduru", "foto": "", "instagram": "", "audio": "../assets/audio/malungun_tu_umak.mp3" },
     { "nama": "Yennisa Mulia", "foto": "", "instagram": "", "audio": "" },
     { "nama": "Yuda Setriawan", "foto": "", "instagram": "", "audio": "" },
     {
