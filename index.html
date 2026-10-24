@@ -11,10 +11,7 @@
             name="description"
             content="Website kelas TKJ 1 SMKN 1 Lembah Melintang: profil kelas, wali kelas, pengurus, daftar anggota, prestasi, FAQ, dan kontak. Kompetensi Keahlian Teknik Komputer dan Jaringan."
         />
-        <meta
-            name="robots"
-            content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-        />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <link rel="canonical" href="https://tkj1.pages.dev/" />
         <meta name="google-adsense-account" content="ca-pub-6754329161781195" />
 
@@ -41,7 +38,14 @@
         <link href="./assets/theme.css" rel="stylesheet" />
         <link href="./assets/landing.css" rel="stylesheet" />
         <link href="./assets/locomotive/locomotive-scroll.css" rel="stylesheet" />
-        <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+        <noscript
+            ><style>
+                .reveal {
+                    opacity: 1;
+                    transform: none;
+                }
+            </style></noscript
+        >
         <link rel="preload" href="./assets/fonts/dancing-script-700.woff2" as="font" type="font/woff2" crossorigin />
         <link
             rel="preload"
@@ -202,7 +206,12 @@
                     {
                         "@type": "BreadcrumbList",
                         "itemListElement": [
-                            { "@type": "ListItem", "position": 1, "name": "TKJ 1 SMKN 1 Lembah Melintang", "item": "https://tkj1.pages.dev/" }
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "TKJ 1 SMKN 1 Lembah Melintang",
+                                "item": "https://tkj1.pages.dev/"
+                            }
                         ]
                     }
                 ]
@@ -381,7 +390,9 @@
                                     loading="lazy"
                                     decoding="async"
                                 />
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-chalkboard-user"></i></span>
+                                <span class="avatar-badge" aria-hidden="true"
+                                    ><i class="fa-solid fa-chalkboard-user"></i
+                                ></span>
                             </div>
                             <div class="person-info">
                                 <h5>
@@ -407,7 +418,9 @@
                                     loading="lazy"
                                     decoding="async"
                                 />
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-chalkboard-user"></i></span>
+                                <span class="avatar-badge" aria-hidden="true"
+                                    ><i class="fa-solid fa-chalkboard-user"></i
+                                ></span>
                             </div>
                             <div class="person-info">
                                 <h5>
@@ -466,7 +479,9 @@
                         <div class="person flip" style="--tone: 280">
                             <div class="person-media">
                                 <div class="avatar">TN</div>
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-user-tie"></i></span>
+                                <span class="avatar-badge" aria-hidden="true"
+                                    ><i class="fa-solid fa-user-tie"></i
+                                ></span>
                             </div>
                             <div class="person-info">
                                 <h5>Tonius Nduru</h5>
@@ -634,7 +649,7 @@
                         <h3>Pesan &amp; Kesan</h3>
                         <p>
                             Tulis pesan buat kelas TKJ 1 — nama boleh dikosongkan, nanti tampil sebagai
-                            <b>Anonim</b>. Pesan tampil permanen setelah tersimpan (±10–30 detik).
+                            <b>Anonim</b>.
                         </p>
                     </div>
 
@@ -657,13 +672,15 @@
 
                             <div class="komentar-tools" role="toolbar" aria-label="Format pesan">
                                 <button type="button" data-cmd="bold" aria-label="Tebal" title="Tebal"><b>B</b></button>
-                                <button type="button" data-cmd="italic" aria-label="Miring" title="Miring"><i>I</i></button>
-                                <button type="button" data-cmd="underline" aria-label="Garis bawah" title="Garis bawah"
-                                    ><u>U</u></button
-                                >
-                                <button type="button" data-cmd="strikeThrough" aria-label="Coret" title="Coret"
-                                    ><s>S</s></button
-                                >
+                                <button type="button" data-cmd="italic" aria-label="Miring" title="Miring">
+                                    <i>I</i>
+                                </button>
+                                <button type="button" data-cmd="underline" aria-label="Garis bawah" title="Garis bawah">
+                                    <u>U</u>
+                                </button>
+                                <button type="button" data-cmd="strikeThrough" aria-label="Coret" title="Coret">
+                                    <s>S</s>
+                                </button>
                                 <span class="komentar-colors" aria-label="Warna teks">
                                     <button
                                         type="button"
@@ -727,7 +744,9 @@
 
                             <!-- Honeypot: harus tetap kosong (disembunyikan lewat CSS). -->
                             <div class="komentar-hp" aria-hidden="true">
-                                <label>Website<input type="text" id="komentarWebsite" tabindex="-1" autocomplete="off" /></label>
+                                <label
+                                    >Website<input type="text" id="komentarWebsite" tabindex="-1" autocomplete="off"
+                                /></label>
                             </div>
 
                             <div class="komentar-send">
@@ -737,7 +756,8 @@
                             </div>
 
                             <p class="komentar-note" id="komentarNote" role="status">
-                                Boleh tebal, miring, garis bawah, coret, dan warna. Gambar &amp; tautan tidak didukung.
+                                Harap patuhi semua aturan dan etika saat menulis pesan. | Semua tindakan dan ketikan
+                                anda ada dalam pantauan kami.
                             </p>
                         </form>
                     </div>
@@ -811,7 +831,14 @@
                 $("prestasi").hidden = false;
                 slides[0].classList.add("active");
                 dotsWrap.innerHTML = Array.from(slides)
-                    .map((_, i) => '<button type="button" data-i="' + i + '"' + (i === 0 ? ' class="active"' : "") + "></button>")
+                    .map(
+                        (_, i) =>
+                            '<button type="button" data-i="' +
+                            i +
+                            '"' +
+                            (i === 0 ? ' class="active"' : "") +
+                            "></button>",
+                    )
                     .join("");
 
                 $("slidePrev").addEventListener("click", () => goSlide(slideIndex - 1));
