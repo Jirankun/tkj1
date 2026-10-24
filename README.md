@@ -39,12 +39,15 @@ tkj1/
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
 │   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
+├── student/index.html          # Halaman anggota kelas (/student/) — template, isinya disuntik dari data/
+├── data/                       # Sumber suntikan halaman student/: ld.json + memberlist.html
 ├── DB/photos.json              # Sumber data galeri (array JSON)
 ├── sw.js                       # Service worker (cache v5)
 ├── _redirects                  # /photo/:name → /photo/?name=:name (301)
 ├── robots.txt · sitemap.xml
 └── .github/workflows/
     ├── add-photo.yml           # Tambah entri ke DB/photos.json (ubuntu-latest + python3)
+    ├── inject-ld-and-memberlist.yml  # Suntik data/ld.json + data/memberlist.html ke student/index.html
     └── web-deploy.yml          # Injeksi config + deploy Cloudflare Pages
 ```
 
@@ -255,7 +258,21 @@ curl -X POST \
 - Tanpa inject config; `upload/config.js` sudah berisi ImgBB API key secara langsung.
 - Secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
 
-### 8.3 `android-ci.yml`
+### 8.3 `inject-ld-and-memberlist.yml` — mengisi halaman `/student/`
+
+Halaman `/student/` adalah **template**. Dua komentar di dalam `student/index.html` menandai titik suntikan, dan isinya selalu diambil dari folder `data/`:
+
+- `data/ld.json` → isi `<script type="application/ld+json">` di `<head>` (CollectionPage + ItemList anggota, untuk SEO/Google).
+- `data/memberlist.html` → blok kartu anggota di dalam `.container` `section#daftar`, dibungkus penanda `<!-- memberlist:start -->` … `<!-- memberlist:end -->`.
+
+- Trigger: push ke `main` yang mengubah `data/**`, atau manual lewat Actions → "Inject LD & memberlist" → Run workflow. `student/**` sengaja tidak ikut agar commit hasil suntikan tidak memicu run kedua; kalau `student/index.html` diedit manual, jalankan workflow sekali dari tab Actions.
+- Aksi: validasi `ld.json` (JSON valid, tanpa `</script`), validasi `memberlist.html` memuat `id="membersList"`, indentasi 12 spasi untuk JSON-LD dan 20 spasi untuk blok memberlist, lalu tulis `student/index.html` hanya bila isinya berubah (**idempoten** — tanpa perubahan tidak ada commit).
+- Commit: bot `tkjone-bot` (`chore(seo): suntik JSON-LD dan memberlist ke student/index.html`), `git pull --rebase` lalu push memakai `G_UPLOAD_TOKEN` (fallback `github.token`).
+- Workflow ini hanya menyentuh `student/index.html`: tidak mengubah galeri/`DB/photos.json` dan tidak menambah tautan navigasi di beranda. Alur upload foto (`add-photo.yml`) tidak memicunya karena `DB/**` di luar `paths`.
+- Catatan token: commit dengan `github.token` bawaan tidak memicu workflow lain, jadi isi secret `G_UPLOAD_TOKEN` agar `web-deploy.yml` ikut jalan setelah suntikan.
+- Cara mengubah daftar anggota: edit `data/memberlist.html` (dan `data/ld.json` bila perlu). Jangan edit blok hasil suntikan di `student/index.html` karena akan ditimpa pada run berikutnya.
+
+### 8.4 `android-ci.yml`
 
 Berada di repo aplikasi (`Jirankun/TKJ-One`), bukan repo web. Menangani versi, build APK, dan release.
 

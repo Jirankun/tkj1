@@ -1,0 +1,463 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "CollectionPage",
+            "@id": "https://tkj1.pages.dev/student/#page",
+            "url": "https://tkj1.pages.dev/student/",
+            "name": "Daftar Anggota Kelas TKJ 1 SMKN 1 Lembah Melintang",
+            "description": "Daftar lengkap 34 anggota kelas TKJ 1 SMKN 1 Lembah Melintang, Kompetensi Keahlian Teknik Komputer dan Jaringan.",
+            "inLanguage": "id-ID",
+            "isPartOf": {
+                "@type": "WebSite",
+                "@id": "https://tkj1.pages.dev/#website",
+                "url": "https://tkj1.pages.dev/",
+                "name": "TKJ 1 — SMKN 1 Lembah Melintang"
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "name": "Anggota Kelas TKJ 1 SMKN 1 Lembah Melintang",
+                "numberOfItems": 34,
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Abiyu Anugrah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Aktsar Hakim Nst",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Amalia Safitri",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 4,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Amir Hamzah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 5,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Asra Bilhuda",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 6,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Eli Zahara",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 7,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Fadel Muhammad Rezki",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 8,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Faizul Adzimi",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 9,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Faldho Adzani",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/faldho.png",
+                            "sameAs": ["https://www.instagram.com/faldho14/"]
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 10,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Fitria Mulia",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 11,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Galang Luqmanul Hakim",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 12,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Hafif Mabrur",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 13,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Kasifa Rahmah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 14,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Keysa Putri Ramadani",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 15,
+                        "item": {
+                            "@type": "Person",
+                            "name": "M. Rafiki Rasli",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 16,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Muhammad Hibban Aulia",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 17,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Muhammad Yudha Pratama",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 18,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Najia Atika Sahira",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 19,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Najwa Asyifa",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 20,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Rafi Idham",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 21,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Ranti Amelia",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 22,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Rasima Handayani",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/rasima.png",
+                            "sameAs": ["https://www.instagram.com/i_amrasma01/"]
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 23,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Reviansyah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 24,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Reza Ardiansyah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 25,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Sakinah Khanza",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/kinah.png",
+                            "sameAs": ["https://www.instagram.com/pelinceskinah_kesayangan_azel/"]
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 26,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Salimah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 27,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Salsa Bila",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 28,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Susi Saskia",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 29,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Syah Ratul Paiza",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/faiza.png",
+                            "sameAs": ["https://www.instagram.com/faiza_cuddle/"]
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 30,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Thalita Syafa Harahap",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/talita.png",
+                            "sameAs": ["https://www.instagram.com/thacutipie/"]
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 31,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Tonius Nduru",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 32,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Yennisa Mulia",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 33,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Yuda Setriawan",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            }
+                        }
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 34,
+                        "item": {
+                            "@type": "Person",
+                            "name": "Zhyllan Fyllah",
+                            "affiliation": {
+                                "@type": "EducationalOrganization",
+                                "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/zhyllan.jpg",
+                            "sameAs": ["https://www.instagram.com/jirankun_dev/"]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "TKJ 1 SMKN 1 Lembah Melintang",
+                    "item": "https://tkj1.pages.dev/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Anggota Kelas",
+                    "item": "https://tkj1.pages.dev/student/"
+                }
+            ]
+        }
+    ]
+}
