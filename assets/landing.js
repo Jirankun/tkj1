@@ -420,10 +420,11 @@ function bindReveal() {
 /* ---------- Smooth scroll Locomotive ---------- */
 let smoothScroll = null;
 function initSmoothScroll() {
-    if (!window.LocomotiveScroll) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-    }
+    if (!window.LocomotiveScroll || !window.matchMedia) return;
+    if (prefersReduced()) return;
+    /* Scroll halus hanya desktop + pointer presisi; ponsel pakai scroll native. */
+    if (!window.matchMedia("(min-width: 992px)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     try {
         smoothScroll = new LocomotiveScroll({
             lenisOptions: { lerp: 0.09, wheelMultiplier: 1 },

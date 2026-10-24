@@ -180,9 +180,9 @@ body {
         box-shadow 0.3s ease;
 }
 .nav.scrolled {
-    background-color: rgba(6, 11, 20, 0.92);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    /* Tanpa backdrop-filter: latar sudah hampir opak, dan blur pada elemen
+       fixed terbaca lebih mahal saat scroll di ponsel. */
+    background-color: rgba(6, 11, 20, 0.96);
     box-shadow: 0 1px 8px 3px rgba(0, 0, 0, 0.35);
 }
 .nav-inner {
@@ -266,7 +266,7 @@ body {
         -webkit-backdrop-filter: none;
     }
     .nav-menu a {
-        padding: 8px 11px;
+        padding: 8px 14px;
         font-size: 12px;
     }
 }
@@ -2099,6 +2099,383 @@ body.mm-open {
     .member-modal-card,
     .mm-play,
     .mm-close {
+        transition: none;
+    }
+}
+
+/* ============================================================
+   Optimasi scroll di layar kecil:
+   animasi gradien teks hero dan blur panel dimatikan agar tidak
+   memaksa repaint tiap frame saat halaman digulir.
+   ============================================================ */
+@media (max-width: 767px) {
+    /* Hero 960px (166 KB) menggantikan 1280px (472 KB) di ponsel. */
+    .banner {
+        background-image:
+            linear-gradient(180deg, rgba(6, 11, 20, 0.55), rgba(6, 11, 20, 0.93)),
+            url("./landing-mobile.webp");
+    }
+    .banner-text h2,
+    .banner-text .hero-title {
+        animation: none;
+        background-position: center;
+    }
+    .chip-stat,
+    .banner-text p {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+/* ============================================================
+   PESAN & KESAN — kotak chat retro di landing (/)
+   Isi bubble dari DB/komentar.json; editor & render di assets/komentar.js.
+   ============================================================ */
+.komentar-shell {
+    position: relative;
+    display: grid;
+    gap: 16px;
+    padding: 18px 16px 16px;
+    border: 2px solid rgba(95, 251, 241, 0.45);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(95, 251, 241, 0.06), transparent 42%),
+        rgba(11, 18, 32, 0.9);
+    box-shadow:
+        6px 6px 0 rgba(95, 251, 241, 0.22),
+        12px 12px 0 rgba(255, 95, 210, 0.12);
+}
+.komentar-shell::before {
+    content: "★ GUESTBOOK ★";
+    position: absolute;
+    top: -11px;
+    left: 16px;
+    padding: 2px 8px;
+    color: var(--retro-ink);
+    background: var(--retro-yellow);
+    border: 2px solid var(--retro-ink);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    transform: rotate(-2deg);
+}
+.komentar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 430px;
+    margin: 0;
+    padding: 4px 6px 4px 0;
+    overflow-y: auto;
+    list-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--retro-cyan) transparent;
+}
+.komentar-bubble {
+    max-width: min(560px, 92%);
+    padding: 10px 14px 12px;
+    border: 1.5px solid rgba(95, 251, 241, 0.4);
+    border-radius: 14px 14px 14px 4px;
+    background: var(--surface-2);
+    box-shadow: 3px 3px 0 rgba(95, 251, 241, 0.16);
+}
+.komentar-bubble:nth-child(even) {
+    align-self: flex-end;
+    border-color: rgba(255, 95, 210, 0.4);
+    border-radius: 14px 14px 4px 14px;
+    box-shadow: 3px 3px 0 rgba(255, 95, 210, 0.16);
+}
+.komentar-bubble.is-pending {
+    border-style: dashed;
+    opacity: 0.88;
+}
+.komentar-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+.komentar-author {
+    color: var(--retro-yellow);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+.komentar-time {
+    margin-left: auto;
+    color: var(--dim);
+    font-size: 10.5px;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+}
+.komentar-state {
+    color: var(--retro-cyan);
+    letter-spacing: 0;
+    text-transform: none;
+}
+.komentar-text {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.9);
+    overflow-wrap: anywhere;
+}
+.komentar-text b,
+.komentar-text strong {
+    color: #fff;
+}
+.komentar-empty {
+    padding: 22px 8px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+}
+.komentar-form {
+    display: grid;
+    gap: 10px;
+}
+.komentar-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.komentar-tools button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1;
+    transition:
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+.komentar-tools button:hover {
+    border-color: var(--retro-cyan);
+    transform: translateY(-1px);
+}
+.komentar-tools button.is-active {
+    background: var(--retro-cyan);
+    border-color: var(--retro-ink);
+    color: var(--retro-ink);
+}
+.komentar-colors {
+    display: flex;
+    gap: 6px;
+    margin-left: 4px;
+    padding-left: 8px;
+    border-left: 1px dashed rgba(255, 255, 255, 0.18);
+}
+/* Swatch warna: redup saat belum dipilih, makin cerah saat dipilih. */
+.komentar-tools .komentar-color {
+    background: var(--c);
+    border: 2px solid var(--retro-ink);
+    box-shadow: 2px 2px 0 rgba(255, 255, 255, 0.18);
+    filter: brightness(0.6) saturate(0.8);
+    transition:
+        filter 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.komentar-tools .komentar-color:hover {
+    border-color: var(--retro-ink);
+    filter: brightness(0.85) saturate(0.95);
+    transform: translateY(-2px);
+}
+.komentar-tools .komentar-color.is-active {
+    background: var(--c);
+    border-color: var(--retro-ink);
+    filter: brightness(1.2) saturate(1.15);
+    box-shadow:
+        0 0 10px var(--c),
+        2px 2px 0 rgba(255, 255, 255, 0.25);
+}
+.komentar-count {
+    margin-left: auto;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11px;
+    color: var(--dim);
+}
+.komentar-count.over {
+    color: var(--err);
+}
+.komentar-mode {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: -2px 0 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+.komentar-mode-dot {
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid var(--dim);
+    border-radius: 50%;
+    background: transparent;
+}
+.komentar-mode .mode-on {
+    display: none;
+}
+.komentar-shell:focus-within .komentar-mode {
+    color: var(--retro-cyan);
+}
+.komentar-shell:focus-within .komentar-mode .mode-off {
+    display: none;
+}
+.komentar-shell:focus-within .komentar-mode .mode-on {
+    display: inline;
+}
+.komentar-shell:focus-within .komentar-mode-dot {
+    border-color: var(--retro-cyan);
+    background: var(--retro-cyan);
+    box-shadow: 0 0 8px var(--retro-cyan);
+}
+.komentar-shell:focus-within {
+    border-color: var(--retro-cyan);
+    box-shadow:
+        0 0 0 3px rgba(95, 251, 241, 0.18),
+        6px 6px 0 rgba(95, 251, 241, 0.28),
+        12px 12px 0 rgba(255, 95, 210, 0.16);
+}
+.komentar-editor {
+    min-height: 92px;
+    max-height: 220px;
+    padding: 12px 14px;
+    overflow-y: auto;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 12px;
+    background: var(--bg-deep);
+    font-size: 14.5px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.komentar-editor:focus {
+    outline: none;
+    border-color: var(--retro-cyan);
+    box-shadow: 0 0 0 3px rgba(95, 251, 241, 0.14);
+}
+.komentar-editor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--dim);
+    pointer-events: none;
+}
+.komentar-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+.komentar-send {
+    display: flex;
+}
+.komentar-name {
+    display: grid;
+    width: 100%;
+    gap: 4px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.komentar-name input {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--surface);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.komentar-name input:focus {
+    outline: none;
+    border-color: var(--retro-pink);
+}
+.komentar-submit {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 2px solid var(--retro-ink);
+    border-radius: 10px;
+    background: var(--retro-yellow);
+    color: var(--retro-ink);
+    font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 rgba(255, 95, 210, 0.55);
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        opacity 0.12s ease;
+}
+.komentar-submit:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 rgba(255, 95, 210, 0.7);
+}
+.komentar-submit:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(255, 95, 210, 0.55);
+}
+.komentar-submit[disabled] {
+    opacity: 0.55;
+    pointer-events: none;
+}
+.komentar-note {
+    min-height: 18px;
+    font-size: 12px;
+    color: var(--dim);
+}
+.komentar-note.is-error {
+    color: var(--err);
+}
+.komentar-note.is-ok {
+    color: var(--retro-cyan);
+}
+
+@media (max-width: 560px) {
+    .komentar-shell {
+        padding: 14px;
+        box-shadow:
+            4px 4px 0 rgba(95, 251, 241, 0.2),
+            8px 8px 0 rgba(255, 95, 210, 0.12);
+    }
+    .komentar-list {
+        max-height: 52vh;
+    }
+    .komentar-bubble {
+        max-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .komentar-tools button,
+    .komentar-submit {
         transition: none;
     }
 }

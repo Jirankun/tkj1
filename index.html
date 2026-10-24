@@ -43,6 +43,22 @@
         <link href="./assets/locomotive/locomotive-scroll.css" rel="stylesheet" />
         <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
         <link rel="preload" href="./assets/fonts/dancing-script-700.woff2" as="font" type="font/woff2" crossorigin />
+        <link
+            rel="preload"
+            href="./assets/landing-mobile.webp"
+            as="image"
+            type="image/webp"
+            media="(max-width: 767px)"
+            fetchpriority="high"
+        />
+        <link
+            rel="preload"
+            href="./assets/landing.webp"
+            as="image"
+            type="image/webp"
+            media="(min-width: 768px)"
+            fetchpriority="high"
+        />
         <script>
             document.documentElement.classList.add("js");
         </script>
@@ -359,6 +375,8 @@
                                 <img
                                     src="./assets/face/teacher/fatma.png"
                                     alt="Fatmawati, S. Pd — Wali Kelas X TKJ 1 SMKN 1 Lembah Melintang"
+                                    width="150"
+                                    height="150"
                                     class="person-photo"
                                     loading="lazy"
                                     decoding="async"
@@ -383,6 +401,8 @@
                                 <img
                                     src="./assets/face/teacher/nanda.png"
                                     alt="Liverdi Nanda, S. Pd — Wali Kelas XI TKJ 1 SMKN 1 Lembah Melintang"
+                                    width="200"
+                                    height="200"
                                     class="person-photo"
                                     loading="lazy"
                                     decoding="async"
@@ -422,6 +442,8 @@
                                 <img
                                     src="./assets/face/student/faldho.png"
                                     alt="Faldho Adzani — Ketua Kelas TKJ 1 SMKN 1 Lembah Melintang"
+                                    width="150"
+                                    height="150"
                                     class="person-photo"
                                     loading="lazy"
                                     decoding="async"
@@ -442,27 +464,33 @@
                             </div>
                         </div>
                         <div class="person flip" style="--tone: 280">
-                            <div class="person-media"><div class="avatar">TN</div></div>
+                            <div class="person-media">
+                                <div class="avatar">TN</div>
+                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-user-tie"></i></span>
+                            </div>
                             <div class="person-info">
                                 <h5>Tonius Nduru</h5>
                                 <p>Wakil</p>
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-user-tie"></i></span>
                             </div>
                         </div>
                         <div class="person" style="--tone: 330">
-                            <div class="person-media"><div class="avatar">NA</div></div>
+                            <div class="person-media">
+                                <div class="avatar">NA</div>
+                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-pen-nib"></i></span>
+                            </div>
                             <div class="person-info">
                                 <h5>Najwa Asyifa</h5>
                                 <p>Sekretaris</p>
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-pen-nib"></i></span>
                             </div>
                         </div>
                         <div class="person flip" style="--tone: 155">
-                            <div class="person-media"><div class="avatar">S</div></div>
+                            <div class="person-media">
+                                <div class="avatar">S</div>
+                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-coins"></i></span>
+                            </div>
                             <div class="person-info">
                                 <h5>Salimah</h5>
                                 <p>Bendahara</p>
-                                <span class="avatar-badge" aria-hidden="true"><i class="fa-solid fa-coins"></i></span>
                             </div>
                         </div>
                     </div>
@@ -596,6 +624,126 @@
                 </div>
             </section>
 
+            <!-- ===================== Pesan & Kesan (komentar) =====================
+                 Sumber data: DB/komentar.json. Entri ditambah oleh workflow
+                 add-comment.yml lewat endpoint functions/api/komentar.js.
+                 Render + editor ada di assets/komentar.js. -->
+            <section class="section" id="komentar">
+                <div class="container">
+                    <div class="sec-head reveal">
+                        <h3>Pesan &amp; Kesan</h3>
+                        <p>
+                            Tulis pesan buat kelas TKJ 1 — nama boleh dikosongkan, nanti tampil sebagai
+                            <b>Anonim</b>. Pesan tampil permanen setelah tersimpan (±10–30 detik).
+                        </p>
+                    </div>
+
+                    <div class="komentar-shell reveal">
+                        <ul class="komentar-list" id="komentarList" aria-live="polite" aria-busy="true">
+                            <li class="komentar-empty" id="komentarEmpty">Memuat pesan…</li>
+                        </ul>
+
+                        <form class="komentar-form" id="komentarForm" novalidate>
+                            <label class="komentar-name">
+                                <span>Nama (opsional)</span>
+                                <input
+                                    id="komentarName"
+                                    type="text"
+                                    maxlength="40"
+                                    autocomplete="nickname"
+                                    placeholder="Anonim"
+                                />
+                            </label>
+
+                            <div class="komentar-tools" role="toolbar" aria-label="Format pesan">
+                                <button type="button" data-cmd="bold" aria-label="Tebal" title="Tebal"><b>B</b></button>
+                                <button type="button" data-cmd="italic" aria-label="Miring" title="Miring"><i>I</i></button>
+                                <button type="button" data-cmd="underline" aria-label="Garis bawah" title="Garis bawah"
+                                    ><u>U</u></button
+                                >
+                                <button type="button" data-cmd="strikeThrough" aria-label="Coret" title="Coret"
+                                    ><s>S</s></button
+                                >
+                                <span class="komentar-colors" aria-label="Warna teks">
+                                    <button
+                                        type="button"
+                                        class="komentar-color"
+                                        data-color="#5ffbf1"
+                                        style="--c: #5ffbf1"
+                                        aria-label="Warna cyan"
+                                        title="Cyan"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="komentar-color"
+                                        data-color="#ff5fd2"
+                                        style="--c: #ff5fd2"
+                                        aria-label="Warna pink"
+                                        title="Pink"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="komentar-color"
+                                        data-color="#ffd166"
+                                        style="--c: #ffd166"
+                                        aria-label="Warna kuning"
+                                        title="Kuning"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="komentar-color"
+                                        data-color="#8b5cf6"
+                                        style="--c: #8b5cf6"
+                                        aria-label="Warna ungu"
+                                        title="Ungu"
+                                    ></button>
+                                    <button
+                                        type="button"
+                                        class="komentar-color"
+                                        data-color="#ffffff"
+                                        style="--c: #ffffff"
+                                        aria-label="Warna putih"
+                                        title="Putih"
+                                    ></button>
+                                </span>
+                                <span class="komentar-count" id="komentarCount">0/500</span>
+                            </div>
+
+                            <p class="komentar-mode" aria-hidden="true">
+                                <span class="komentar-mode-dot"></span>
+                                <span class="mode-off">Mode tulis — klik kotak di bawah</span>
+                                <span class="mode-on">Mode tulis aktif</span>
+                            </p>
+
+                            <div
+                                class="komentar-editor"
+                                id="komentarEditor"
+                                contenteditable="true"
+                                role="textbox"
+                                aria-multiline="true"
+                                aria-label="Tulis pesan"
+                                data-placeholder="Tulis pesanmu di sini…"
+                            ></div>
+
+                            <!-- Honeypot: harus tetap kosong (disembunyikan lewat CSS). -->
+                            <div class="komentar-hp" aria-hidden="true">
+                                <label>Website<input type="text" id="komentarWebsite" tabindex="-1" autocomplete="off" /></label>
+                            </div>
+
+                            <div class="komentar-send">
+                                <button class="komentar-submit" id="komentarSubmit" type="submit">
+                                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Kirim
+                                </button>
+                            </div>
+
+                            <p class="komentar-note" id="komentarNote" role="status">
+                                Boleh tebal, miring, garis bawah, coret, dan warna. Gambar &amp; tautan tidak didukung.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
             <!-- ===================== Closing ===================== -->
             <section class="closing">
                 <div class="container closing-inner reveal">
@@ -637,6 +785,8 @@
                ========================================================== */
             /* ---------- Helper ---------- */
             const $ = id => document.getElementById(id);
+            const prefersReduced = () =>
+                Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
             /* ---------- Prestasi (slider) ---------- */
             let slideIndex = 0;
             let slideTimer = null;
@@ -685,40 +835,97 @@
                 const nav = $("nav");
                 const menu = $("navMenu");
                 const toggler = $("navToggler");
+                if (!nav || !menu || !toggler) return;
+
+                const closeMenu = () => {
+                    menu.classList.remove("open");
+                    toggler.setAttribute("aria-expanded", "false");
+                    toggler.querySelector("i")?.classList.remove("fa-xmark");
+                    toggler.querySelector("i")?.classList.add("fa-bars");
+                };
+
                 toggler.addEventListener("click", () => {
                     const open = menu.classList.toggle("open");
                     toggler.setAttribute("aria-expanded", open ? "true" : "false");
                     toggler.querySelector("i")?.classList.toggle("fa-xmark", open);
                     toggler.querySelector("i")?.classList.toggle("fa-bars", !open);
                 });
-                menu.addEventListener("click", e => {
-                    if (e.target.closest("a")) {
-                        menu.classList.remove("open");
-                        toggler.setAttribute("aria-expanded", "false");
-                        toggler.querySelector("i")?.classList.remove("fa-xmark");
-                        toggler.querySelector("i")?.classList.add("fa-bars");
-                    }
-                });
-                const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 50);
-                window.addEventListener("scroll", onScroll, { passive: true });
-                onScroll();
 
+                const navHeight = () => Math.round(nav.getBoundingClientRect().height) || 56;
                 /* Abaikan link yang sedang disembunyikan (mis. #prestasi kosong) */
-                const links = Array.from(menu.querySelectorAll("a[href^='#']")).filter(a => !a.closest("[hidden]"));
-                const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
-                if ("IntersectionObserver" in window && sections.length) {
-                    const io = new IntersectionObserver(
-                        entries => {
-                            entries.forEach(en => {
-                                if (!en.isIntersecting) return;
-                                links.forEach(a =>
-                                    a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id),
-                                );
-                            });
-                        },
-                        { rootMargin: "-45% 0px -50% 0px" },
-                    );
-                    sections.forEach(s => io.observe(s));
+                const menuLinks = Array.from(menu.querySelectorAll("a[href^='#']")).filter(a => !a.closest("[hidden]"));
+                const scrollLinks = Array.from(nav.querySelectorAll("[data-scroll-to][href^='#']"));
+                const items = menuLinks
+                    .map(link => ({ link, section: document.querySelector(link.getAttribute("href")) }))
+                    .filter(item => item.section);
+
+                const setActive = link => menuLinks.forEach(a => a.classList.toggle("active", a === link));
+                const offsetFor = link => {
+                    const raw = Number(link.dataset.scrollToOffset);
+                    return Number.isFinite(raw) ? raw : -(navHeight() + 8);
+                };
+
+                /* Scroll tepat ke judul section, memakai tinggi navbar yang sebenarnya. */
+                const scrollToLink = (link, smooth) => {
+                    const section = document.querySelector(link.getAttribute("href"));
+                    if (!section) return;
+                    const offset = offsetFor(link);
+                    if (smoothScroll && typeof smoothScroll.scrollTo === "function") {
+                        smoothScroll.scrollTo(section, { offset, duration: 0.9 });
+                    } else {
+                        window.scrollTo({
+                            top: Math.max(0, section.getBoundingClientRect().top + window.scrollY + offset),
+                            behavior: smooth && !prefersReduced() ? "smooth" : "auto",
+                        });
+                    }
+                    if (link.closest("#navMenu")) setActive(link);
+                    if (history.replaceState) history.replaceState(null, "", link.getAttribute("href"));
+                };
+
+                nav.addEventListener("click", event => {
+                    const link = event.target.closest("[data-scroll-to][href^='#']");
+                    if (!link || !document.querySelector(link.getAttribute("href"))) return;
+                    event.preventDefault();
+                    closeMenu();
+                    scrollToLink(link, true);
+                });
+
+                /* Penanda menu aktif dihitung dari posisi scroll, bukan pita tengah layar,
+                   supaya section pendek (mis. Anggota) tetap benar setelah diklik. */
+                const spy = () => {
+                    if (!items.length) return;
+                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+                        setActive(items[items.length - 1].link);
+                        return;
+                    }
+                    const line = window.scrollY + navHeight() + 24;
+                    let current = items[0];
+                    items.forEach(item => {
+                        if (item.section.getBoundingClientRect().top + window.scrollY <= line) current = item;
+                    });
+                    setActive(current.link);
+                };
+
+                let ticking = false;
+                const onScroll = () => {
+                    nav.classList.toggle("scrolled", window.scrollY > 50);
+                    if (!ticking) {
+                        ticking = true;
+                        requestAnimationFrame(() => {
+                            ticking = false;
+                            spy();
+                        });
+                    }
+                };
+                window.addEventListener("scroll", onScroll, { passive: true });
+                window.addEventListener("resize", spy);
+                onScroll();
+                spy();
+
+                /* Link yang dibuka langsung dengan #hash tetap dikoreksi offset-nya. */
+                if (location.hash) {
+                    const link = scrollLinks.find(a => a.getAttribute("href") === location.hash);
+                    if (link) requestAnimationFrame(() => scrollToLink(link, false));
                 }
             }
 
@@ -746,10 +953,12 @@
             /* ---------- Smooth scroll Locomotive (desktop) ---------- */
             let smoothScroll = null;
             function initSmoothScroll() {
-                if (!window.LocomotiveScroll) return;
-                if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-                    return;
-                }
+                if (!window.LocomotiveScroll || !window.matchMedia) return;
+                if (prefersReduced()) return;
+                /* Scroll halus hanya untuk desktop + pointer presisi. Di ponsel
+                   pakai scroll native supaya tidak menambah kerja per frame. */
+                if (!window.matchMedia("(min-width: 992px)").matches) return;
+                if (window.matchMedia("(pointer: coarse)").matches) return;
                 try {
                     smoothScroll = new LocomotiveScroll({
                         lenisOptions: { lerp: 0.09, wheelMultiplier: 1 },
@@ -774,5 +983,6 @@
             bindReveal();
             initSmoothScroll();
         </script>
+        <script src="./assets/komentar.js"></script>
     </body>
 </html>

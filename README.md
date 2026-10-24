@@ -39,14 +39,18 @@ tkj1/
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
 │   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
+├── assets/komentar.js          # Pesan & Kesan: render bubble, editor format, kirim
+├── functions/api/komentar.js   # POST /api/komentar (Pages Function, token di server)
 ├── student/index.html          # Halaman anggota kelas (/student/) — template, isinya disuntik dari data/
 ├── data/                       # Sumber suntikan halaman student/: ld.json + memberlist.html
 ├── DB/photos.json              # Sumber data galeri (array JSON)
+├── DB/komentar.json            # Sumber data Pesan & Kesan (array JSON)
 ├── sw.js                       # Service worker (cache v5)
 ├── _redirects                  # /photo/:name → /photo/?name=:name (301)
 ├── robots.txt · sitemap.xml
 └── .github/workflows/
     ├── add-photo.yml           # Tambah entri ke DB/photos.json (ubuntu-latest + python3)
+    ├── add-comment.yml         # Bersihkan & append komentar ke DB/komentar.json
     ├── inject-ld-and-memberlist.yml  # Suntik data/ld.json + data/memberlist.html ke student/index.html
     └── web-deploy.yml          # Injeksi config + deploy Cloudflare Pages
 ```
@@ -275,6 +279,33 @@ Halaman `/student/` adalah **template**. Dua komentar di dalam `student/index.ht
 ### 8.4 `android-ci.yml`
 
 Berada di repo aplikasi (`Jirankun/TKJ-One`), bukan repo web. Menangani versi, build APK, dan release.
+
+### 8.5 `add-comment.yml` — Pesan & Kesan
+
+Komentar dikirim dari landing (section **Pesan & Kesan**, di bawah "Ikuti Kami") lewat `POST /api/komentar`, bukan langsung dari browser ke GitHub:
+
+1. `functions/api/komentar.js` memeriksa ukuran/tipe body, honeypot, asal request, dan panjang pesan, lalu memanggil `repository_dispatch` tipe `add-comment` memakai `G_UPLOAD_TOKEN` dari env Cloudflare Pages. Token tidak pernah dikirim ke browser.
+2. `add-comment.yml` membersihkan HTML (allowlist `b/strong/i/em/u/s/strike/del/br`; `span`/`font` hanya atribut warna), membatasi 500 karakter, lalu **append** entri ke `DB/komentar.json`.
+3. Push bot memicu `web-deploy.yml`, jadi entri baru tampil setelah deploy (biasanya 10–30 detik). Selama menunggu, pesan sendiri tampil sebagai bubble "mengirim…" dari state di halaman.
+
+Bentuk entri:
+
+```json
+{
+    "id": "a1b2c3d4e5f6",
+    "name": "Zhyllan",
+    "comment": "Halo <b>semua</b>!<br>Semangat TKJ 1",
+    "status": true,
+    "time": "2026-10-24T18:30:00Z"
+}
+```
+
+- `name` boleh kosong → tampil sebagai **Anonim**.
+- `status`: `true` tampil, `false` disembunyikan. Tidak ada jalur hapus dari web; admin mengubah status atau menghapus entri manual di repo.
+- Gambar dan tautan tidak didukung (tag `img`/`a` dan tag berbahaya dibuang). Pembersihan dilakukan dua kali: di workflow dan lagi saat render (`assets/komentar.js`).
+- Env Cloudflare Pages: **`G_UPLOAD_TOKEN`** (wajib, PAT fine-grained `Contents: Read and write` untuk repo ini) dan **`KOMENTAR_KV`** (opsional, binding KV untuk batas 1 pesan / 60 detik per IP).
+- Tanpa captcha: hanya honeypot, batas panjang, validasi asal request, dan (bila KV aktif) throttle per IP. Aktifkan KV kalau mulai ada spam.
+- Service worker di-*bump* (`tkjone-v15`) setiap ada perubahan CSS/JS landing agar pengunjung lama tidak memakai cache lama.
 
 ---
 
