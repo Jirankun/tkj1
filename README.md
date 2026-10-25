@@ -42,8 +42,9 @@ tkj1/
 ├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
 │   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
 ├── functions/api/komentar.js   # POST /api/komentar (Pages Function, token di server)
-├── student/index.html          # Halaman anggota kelas (/student/) — template, isinya disuntik dari data/
-├── data/                       # Sumber suntikan halaman student/: ld.json + memberlist.html
+├── student/index.html          # Halaman anggota kelas (/student/) — template, isinya dibangun dari data/
+├── scripts/build-student.py    # Build student/index.html dari data/*.json (dipakai workflow)
+├── data/                       # Sumber JSON halaman student/: ld.json + memberlist.json
 ├── DB/photos.json              # Sumber data galeri (array JSON)
 ├── DB/komentar.json            # Sumber data Pesan & Kesan (array JSON)
 ├── sw.js                       # Service worker (cache v5)
@@ -52,7 +53,7 @@ tkj1/
 └── .github/workflows/
     ├── add-photo.yml           # Tambah entri ke DB/photos.json (ubuntu-latest + python3)
     ├── add-comment.yml         # Bersihkan & append komentar ke DB/komentar.json
-    ├── inject-ld-and-memberlist.yml  # Suntik data/ld.json + data/memberlist.html ke student/index.html
+    ├── inject-ld-and-memberlist.yml  # Build data/*.json → student/index.html
     └── web-deploy.yml          # Injeksi config + deploy Cloudflare Pages
 ```
 
@@ -265,17 +266,49 @@ curl -X POST \
 
 ### 8.3 `inject-ld-and-memberlist.yml` — mengisi halaman `/student/`
 
-Halaman `/student/` adalah **template**. Dua komentar di dalam `student/index.html` menandai titik suntikan, dan isinya selalu diambil dari folder `data/`:
+Halaman `/student/` adalah **template**. Dua komentar di dalam `student/index.html` menandai titik suntikan, dan isinya selalu dibangun dari folder `data/` yang **seluruhnya JSON**:
 
 - `data/ld.json` → isi `<script type="application/ld+json">` di `<head>` (CollectionPage + ItemList anggota, untuk SEO/Google).
-- `data/memberlist.html` → blok kartu anggota di dalam `.container` `section#daftar`, dibungkus penanda `<!-- memberlist:start -->` … `<!-- memberlist:end -->`.
+- `data/memberlist.json` → data anggota. Skemanya **seragam**: setiap anggota selalu punya kelima key `name`, `tone`, `photo`, `instagram`, `audio`, dan nilai `""` berarti bagian itu tidak dibuatkan tag HTML-nya. Build menghasilkan blok kartu HTML di dalam `.container` `section#daftar`, dibungkus penanda `<!-- memberlist:start -->` … `<!-- memberlist:end -->`.
 
-- Trigger: push ke `main` yang mengubah `data/**`, atau manual lewat Actions → "Inject LD & memberlist" → Run workflow. `student/**` sengaja tidak ikut agar commit hasil suntikan tidak memicu run kedua; kalau `student/index.html` diedit manual, jalankan workflow sekali dari tab Actions.
-- Aksi: validasi `ld.json` (JSON valid, tanpa `</script`), validasi `memberlist.html` memuat `id="membersList"`, indentasi 12 spasi untuk JSON-LD dan 20 spasi untuk blok memberlist, lalu tulis `student/index.html` hanya bila isinya berubah (**idempoten** — tanpa perubahan tidak ada commit).
-- Commit: bot `tkjone-bot` (`chore(seo): suntik JSON-LD dan memberlist ke student/index.html`), `git pull --rebase` lalu push memakai `G_UPLOAD_TOKEN` (fallback `github.token`).
+```json
+{
+    "members": [
+        {
+            "name": "Faldho Adzani",
+            "tone": 240,
+            "photo": "assets/face/student/faldho.png",
+            "instagram": "https://www.instagram.com/faldho14/",
+            "audio": "assets/audio/iqro.mp3"
+        },
+        {
+            "name": "Abiyu Anugrah",
+            "tone": 195,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        }
+    ]
+}
+```
+
+| Key | Isi | Bila `""` |
+| --- | --- | --- |
+| `name` | nama anggota (wajib, unik) | — (wajib diisi) |
+| `tone` | warna kartu 0–360 | — (wajib diisi) |
+| `photo` | path/URL foto | kartu memakai inisial otomatis dari `name` (mis. "M. Rafiki Rasli" → `MR`) |
+| `instagram` | URL profil | nama tampil sebagai `<span>` tanpa tautan |
+| `audio` | path/URL audio | pemutar tampil nonaktif, tanpa tag `<audio>` |
+
+Inisial tidak perlu ditulis di JSON — dihitung otomatis dari `name` saat `photo` kosong.
+
+- Trigger: push ke `main` yang mengubah `data/**` atau `scripts/build-student.py`, atau manual lewat Actions → "Inject LD & memberlist" → Run workflow. `student/**` sengaja tidak ikut agar commit hasil build tidak memicu run kedua; kalau `student/index.html` diedit manual, jalankan workflow sekali dari tab Actions.
+- Aksi: menjalankan `python3 scripts/build-student.py` (bisa juga dijalankan lokal). Skrip memvalidasi `ld.json` (JSON valid, tanpa `</script`) dan `memberlist.json` (array `members`, semua key wajib ada, key asing ditolak agar salah tulis cepat ketahuan, `name` wajib & unik, `tone` 0–360, berkas `photo`/`audio` harus ada bila memakai path repo), memakai indentasi 12 spasi untuk JSON-LD dan 20 spasi untuk blok memberlist, lalu menulis `student/index.html` hanya bila isinya berubah (**idempoten** — tanpa perubahan tidak ada commit).
+- Build juga mengisi `width`/`height` gambar dari berkas aslinya, dan menandai kartu `is-empty` hanya bila anggota belum punya `audio`.
+- Commit: bot `tkjone-bot` (`chore(seo): bangun ulang JSON-LD dan memberlist di student/index.html dari data/*.json`), `git pull --rebase` lalu push memakai `G_UPLOAD_TOKEN` (fallback `github.token`).
 - Workflow ini hanya menyentuh `student/index.html`: tidak mengubah galeri/`DB/photos.json` dan tidak menambah tautan navigasi di beranda. Alur upload foto (`add-photo.yml`) tidak memicunya karena `DB/**` di luar `paths`.
-- Catatan token: commit dengan `github.token` bawaan tidak memicu workflow lain, jadi isi secret `G_UPLOAD_TOKEN` agar `web-deploy.yml` ikut jalan setelah suntikan.
-- Cara mengubah daftar anggota: edit `data/memberlist.html` (dan `data/ld.json` bila perlu). Jangan edit blok hasil suntikan di `student/index.html` karena akan ditimpa pada run berikutnya.
+- Catatan token: commit dengan `github.token` bawaan tidak memicu workflow lain, jadi isi secret `G_UPLOAD_TOKEN` agar `web-deploy.yml` ikut jalan setelah build.
+- Cara mengubah daftar anggota: edit `data/memberlist.json` (dan `data/ld.json` bila perlu), lalu jalankan `python3 scripts/build-student.py` atau tunggu workflow. Jangan edit blok hasil build di `student/index.html` karena akan ditimpa pada run berikutnya.
 
 ### 8.4 `android-ci.yml`
 

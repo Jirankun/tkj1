@@ -40,7 +40,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/hakim.png",
+                            "sameAs": ["https://www.instagram.com/hskim/"]
                         }
                     },
                     {
@@ -88,7 +90,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/zahara.png",
+                            "sameAs": ["https://www.instagram.com/elizahara64/"]
                         }
                     },
                     {
@@ -112,7 +116,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/faizul.png",
+                            "sameAs": ["https://www.instagram.com/faizuladzimi/"]
                         }
                     },
                     {
@@ -150,7 +156,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/galang.png",
+                            "sameAs": ["https://www.instagram.com/galang.l.h/"]
                         }
                     },
                     {
@@ -162,7 +170,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/hafif.png",
+                            "sameAs": ["https://www.instagram.com/h_afif/"]
                         }
                     },
                     {
@@ -174,7 +184,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/kasifa.png",
+                            "sameAs": ["https://www.instagram.com/kasifa_rahmah/"]
                         }
                     },
                     {
@@ -194,11 +206,13 @@
                         "position": 15,
                         "item": {
                             "@type": "Person",
-                            "name": "M. Rafiki Rasli",
+                            "name": "M. Rafiki Rasil",
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/rasil.png",
+                            "sameAs": ["https://www.instagram.com/mrafikirasil/"]
                         }
                     },
                     {
@@ -210,7 +224,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/hibban.png",
+                            "sameAs": ["https://www.instagram.com/mhbban_4uliaa/"]
                         }
                     },
                     {
@@ -222,7 +238,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/m-yuda.png",
+                            "sameAs": ["https://www.instagram.com/yudaaaaa_26/"]
                         }
                     },
                     {
@@ -234,7 +252,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/tika.png",
+                            "sameAs": ["https://www.instagram.com/Its.Atika_11/"]
                         }
                     },
                     {
@@ -258,7 +278,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/rafi.png",
+                            "sameAs": [""]
                         }
                     },
                     {
@@ -334,7 +356,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/salimah.png",
+                            "sameAs": ["https://www.instagram.com/salim_ah1211/"]
                         }
                     },
                     {
@@ -422,7 +446,9 @@
                             "affiliation": {
                                 "@type": "EducationalOrganization",
                                 "name": "Kelas TKJ 1 SMKN 1 Lembah Melintang"
-                            }
+                            },
+                            "image": "https://tkj1.pages.dev/assets/face/student/yuda-s.png",
+                            "sameAs": ["https://www.instagram.com/yudaaa.yy/"]
                         }
                     },
                     {

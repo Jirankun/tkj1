@@ -1,0 +1,242 @@
+{
+    "members": [
+        {
+            "name": "Abiyu Anugrah",
+            "tone": 195,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Aktsar Hakim Nst",
+            "tone": 320,
+            "photo": "assets/face/student/hakim.png",
+            "instagram": "https://www.instagram.com/hskim/",
+            "audio": "assets/audio/about-you.mp3"
+        },
+        {
+            "name": "Amalia Safitri",
+            "tone": 265,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Amir Hamzah",
+            "tone": 160,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Asra Bilhuda",
+            "tone": 15,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Eli Zahara",
+            "tone": 285,
+            "photo": "assets/face/student/zahara.png",
+            "instagram": "https://www.instagram.com/elizahara64/",
+            "audio": "assets/audio/tak-pernah-ternilai.mp3"
+        },
+        {
+            "name": "Fadel Muhammad Rezki",
+            "tone": 205,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Faizul Adzimi",
+            "tone": 335,
+            "photo": "assets/face/student/faizul.png",
+            "instagram": "https://www.instagram.com/faizuladzimi/",
+            "audio": "assets/audio/aku-jatuh-cinta.mp3"
+        },
+        {
+            "name": "Faldho Adzani",
+            "tone": 240,
+            "photo": "assets/face/student/faldho.png",
+            "instagram": "https://www.instagram.com/faldho14/",
+            "audio": "assets/audio/iqro.mp3"
+        },
+        {
+            "name": "Fitria Mulia",
+            "tone": 195,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Galang Luqmanul Hakim",
+            "tone": 320,
+            "photo": "assets/face/student/galang.png",
+            "instagram": "https://www.instagram.com/galang.l.h/",
+            "audio": "assets/audio/asamalibrasi.mp3"
+        },
+        {
+            "name": "Hafif Mabrur",
+            "tone": 265,
+            "photo": "assets/face/student/hafif.png",
+            "instagram": "https://www.instagram.com/h_afif",
+            "audio": "assets/audio/anak-medan.mp3"
+        },
+        {
+            "name": "Kasifa Rahmah",
+            "tone": 160,
+            "photo": "assets/face/student/kasifa.png",
+            "instagram": "https://www.instagram.com/kasifa_rahmah/",
+            "audio": "assets/audio/bersenja-gurau.mp3"
+        },
+        {
+            "name": "Keysa Putri Ramadani",
+            "tone": 15,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "M. Rafiki Rasil",
+            "tone": 285,
+            "photo": "assets/face/student/rasil.png",
+            "instagram": "https://www.instagram.com/mrafikirasil/",
+            "audio": ""
+        },
+        {
+            "name": "Muhammad Hibban Aulia",
+            "tone": 205,
+            "photo": "assets/face/student/hibban.png",
+            "instagram": "https://www.instagram.com/mhbban_4uliaa/",
+            "audio": "assets/audio/somebody-pleasure.mp3"
+        },
+        {
+            "name": "Muhammad Yudha Pratama",
+            "tone": 335,
+            "photo": "assets/face/student/m-yuda.png",
+            "instagram": "https://www.instagram.com/yudaaaaa_26/",
+            "audio": "assets/audio/sweet-car.mp3"
+        },
+        {
+            "name": "Najia Atika Sahira",
+            "tone": 240,
+            "photo": "assets/face/student/tika.png",
+            "instagram": "https://www.instagram.com/Its.Atika_11/",
+            "audio": "assets/audio/all-night.mp3"
+        },
+        {
+            "name": "Najwa Asyifa",
+            "tone": 195,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Rafi Idham",
+            "tone": 320,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Ranti Amelia",
+            "tone": 265,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Rasima Handayani",
+            "tone": 160,
+            "photo": "assets/face/student/rasima.png",
+            "instagram": "https://www.instagram.com/i_amrasima01/",
+            "audio": "assets/audio/aku_milikmu-dewa-19.mp3"
+        },
+        {
+            "name": "Reviansyah",
+            "tone": 15,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Reza Ardiansyah",
+            "tone": 285,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Sakinah Khanza",
+            "tone": 205,
+            "photo": "assets/face/student/kinah.png",
+            "instagram": "https://www.instagram.com/pelinceskinah_kesayangan_azel/",
+            "audio": "assets/audio/miguel-coffe.mp3"
+        },
+        {
+            "name": "Salimah",
+            "tone": 335,
+            "photo": "assets/face/student/salimah.png",
+            "instagram": "https://www.instagram.com/salim_ah1211/",
+            "audio": "assets/audio/sial.mp3"
+        },
+        {
+            "name": "Salsa Bila",
+            "tone": 240,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Susi Saskia",
+            "tone": 195,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Syah Ratul Paiza",
+            "tone": 320,
+            "photo": "assets/face/student/faiza.png",
+            "instagram": "https://www.instagram.com/faiza_cuddle/",
+            "audio": "assets/audio/maafkan.mp3"
+        },
+        {
+            "name": "Thalita Syafa Harahap",
+            "tone": 265,
+            "photo": "assets/face/student/talita.png",
+            "instagram": "https://www.instagram.com/thacutipie/",
+            "audio": "assets/audio/cinderella-macmiller.mp3"
+        },
+        {
+            "name": "Tonius Nduru",
+            "tone": 160,
+            "photo": "",
+            "instagram": "",
+            "audio": "assets/audio/malungun_tu_umak.mp3"
+        },
+        {
+            "name": "Yennisa Mulia",
+            "tone": 15,
+            "photo": "",
+            "instagram": "",
+            "audio": ""
+        },
+        {
+            "name": "Yuda Setriawan",
+            "tone": 285,
+            "photo": "assets/face/student/yuda-s.png",
+            "instagram": "https://www.instagram.com/yudaaa.yy/",
+            "audio": "assets/audio/jika-itu-yang-terbaik.mp3"
+        },
+        {
+            "name": "Zhyllan Fyllah",
+            "tone": 205,
+            "photo": "assets/face/student/zhyllan.jpg",
+            "instagram": "https://zhyllanfyllah.my.id",
+            "audio": "https://nu.vgmtreasurechest.com/soundtracks/cross-world-character-collection-4-melone-marsch/hdtjqzza/02%20Twinkling%20Serenade.mp3"
+        }
+    ]
+}

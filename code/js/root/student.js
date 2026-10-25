@@ -1,9 +1,10 @@
 "use strict";
 
 /* ==========================================================
-               DATA ANGGOTA — 100% statis di HTML di atas (#membersList).
-               Satu sumber data: tambah/ubah kartu langsung di markup.
-               JavaScript di bawah hanya menambah interaksi (pemutar audio).
+               DATA ANGGOTA — dibangun dari data/memberlist.json menjadi markup
+               statis #membersList (lihat scripts/build-student.py). Ubah anggota
+               di JSON itu, bukan di HTML. JavaScript di bawah hanya menambah
+               interaksi (pemutar audio).
                ========================================================== */
 
 /* ---------- Helper ---------- */

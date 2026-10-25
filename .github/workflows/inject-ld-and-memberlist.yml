@@ -1,21 +1,22 @@
 name: Inject LD & memberlist
 
-# Mengisi student/index.html dari dua sumber di folder data/:
+# Membangun student/index.html dari sumber JSON di folder data/:
 #   data/ld.json         -> isi <script type="application/ld+json"> di <head>
-#   data/memberlist.html -> blok daftar anggota di dalam .container section#daftar
+#   data/memberlist.json -> blok kartu anggota di dalam .container section#daftar
 #
+# Semua data ada di JSON; HTML kartu anggota dibuat oleh scripts/build-student.py.
 # Halaman student/ adalah template: komentar di dalamnya menandai tempat suntikan.
 # Workflow ini idempoten — kalau student/index.html sudah sesuai data/, tidak ada commit.
 #
-# Catatan token: push memakai G_UPLOAD_TOKEN (PAT) supaya commit hasil suntikan
+# Catatan token: push memakai G_UPLOAD_TOKEN (PAT) supaya commit hasil build
 # ikut memicu web-deploy.yml. Push dengan GITHUB_TOKEN bawaan tidak memicu
 # workflow lain, jadi situs tidak akan ter-deploy otomatis (fallback tetap dipakai
 # bila secret belum diisi).
 
-# Trigger: push ke main yang menyentuh data/** saja (berkas baru maupun yang diubah),
-# atau dijalankan manual dari tab Actions. student/** sengaja tidak ikut supaya commit
-# hasil suntikan tidak memicu run kedua. Kalau student/index.html diedit manual,
-# jalankan workflow ini sekali dari tab Actions agar bloknya disuntik ulang.
+# Trigger: push ke main yang menyentuh data/** atau scripts/build-student.py,
+# atau dijalankan manual dari tab Actions. student/** sengaja tidak ikut supaya
+# commit hasil build tidak memicu run kedua. Kalau student/index.html diedit
+# manual, jalankan workflow ini sekali dari tab Actions agar bloknya dibangun ulang.
 # Upload galeri TIDAK memicu workflow ini: alur foto menulis DB/photos.json lewat
 # add-photo.yml / GitHub Contents API, dan berkas itu sengaja tidak ada di paths.
 
@@ -24,6 +25,8 @@ on:
     branches: [main]
     paths:
       - "data/**"
+      - "scripts/build-student.py"
+      - ".github/workflows/inject-ld-and-memberlist.yml"
   workflow_dispatch:
 
 permissions:
@@ -43,94 +46,8 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.G_UPLOAD_TOKEN || github.token }}
 
-      - name: Suntik data ke student/index.html
-        run: |
-          python3 - <<'PY'
-          import json, pathlib, re, sys
-
-          PAGE = pathlib.Path("student/index.html")
-          LD = pathlib.Path("data/ld.json")
-          MEMBERS = pathlib.Path("data/memberlist.html")
-
-          try:
-              original = PAGE.read_text(encoding="utf-8")
-          except OSError as exc:
-              print(f"Tidak bisa membaca {PAGE}: {exc}")
-              sys.exit(1)
-          page = original
-
-          # ---------- 1. JSON-LD -> isi <script type="application/ld+json"> ----------
-          try:
-              raw_ld = LD.read_text(encoding="utf-8")
-              json.loads(raw_ld)
-          except (OSError, json.JSONDecodeError) as exc:
-              print(f"data/ld.json tidak valid: {exc}")
-              sys.exit(1)
-
-          ld_block = "\n".join(
-              ("            " + line) if line.strip() else "" for line in raw_ld.strip().splitlines()
-          )
-          if "</script" in ld_block.lower():
-              print("data/ld.json memuat '</script', tidak bisa disuntik apa adanya")
-              sys.exit(1)
-
-          script_re = re.compile(
-              r'(<script\s+type="application/ld\+json"[^>]*>)(.*?)(</script>)', re.S
-          )
-          if not script_re.search(page):
-              print('student/index.html harus punya <script type="application/ld+json"></script> di <head>')
-              sys.exit(1)
-          page = script_re.sub(
-              lambda m: f"{m.group(1)}\n{ld_block}\n        {m.group(3)}", page, count=1
-          )
-
-          # ---------- 2. Memberlist -> blok di dalam .container ----------
-          try:
-              members = MEMBERS.read_text(encoding="utf-8").strip()
-          except OSError as exc:
-              print(f"Tidak bisa membaca {MEMBERS}: {exc}")
-              sys.exit(1)
-          if 'id="membersList"' not in members:
-              print('data/memberlist.html harus memuat elemen id="membersList"')
-              sys.exit(1)
-
-          indent = " " * 20
-          body = "\n".join(
-              (indent + line) if line.strip() else "" for line in members.splitlines()
-          )
-          start_marker = f"{indent}<!-- memberlist:start (otomatis dari data/memberlist.html oleh inject-ld-and-memberlist.yml) -->"
-          end_marker = f"{indent}<!-- memberlist:end -->"
-          block = f"{start_marker}\n{body}\n{end_marker}"
-
-          region_re = re.compile(
-              r"[ \t]*<!--\s*memberlist:start(?:(?!-->).)*?-->.*?<!--\s*memberlist:end\s*-->", re.S
-          )
-          if region_re.search(page):
-              # Suntikan sebelumnya: cukup ganti isi antara dua penanda.
-              page = region_re.sub(lambda m: block, page, count=1)
-          else:
-              # Pertama kali: taruh blok tepat setelah komentar penjelas di halaman.
-              needle = "memberlist ada di data/memberlist.html"
-              anchor = page.find(needle)
-              if anchor == -1:
-                  print("Penanda memberlist tidak ditemukan di student/index.html")
-                  print('Butuh blok <!-- memberlist:start --> / <!-- memberlist:end --> atau komentar')
-                  print(f'"{needle}".')
-                  sys.exit(1)
-              close = page.find("-->", anchor)
-              if close == -1:
-                  print("Komentar penanda memberlist tidak ditutup dengan '-->'")
-                  sys.exit(1)
-              insert_at = close + 3
-              page = page[:insert_at] + "\n" + block + page[insert_at:]
-
-          # ---------- 3. Tulis hanya bila berubah ----------
-          if page == original:
-              print("student/index.html sudah sinkron dengan data/, tidak ada perubahan")
-          else:
-              PAGE.write_text(page, encoding="utf-8")
-              print("student/index.html diperbarui dari data/ld.json dan data/memberlist.html")
-          PY
+      - name: Build student/index.html dari data/*.json
+        run: python3 scripts/build-student.py
 
       - name: Commit perubahan
         run: |
@@ -141,6 +58,6 @@ jobs:
             exit 0
           fi
           git add student/index.html
-          git commit -m "chore(seo): suntik JSON-LD dan memberlist ke student/index.html"
+          git commit -m "chore(seo): bangun ulang JSON-LD dan memberlist di student/index.html dari data/*.json"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
