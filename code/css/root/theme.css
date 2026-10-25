@@ -1,0 +1,149 @@
+/* ============================================================
+   TKJ OnE — TEMA INDUK HALAMAN ROOT (index / student)
+   Dipakai oleh: / (index.html) dan /student/
+   Dimuat SEBELUM landing.css.
+   ------------------------------------------------------------
+   Versi retro: palet neon di atas tinta gelap, font monospace
+   untuk teks dan font display tebal untuk judul, sudut tajam.
+   Tema galeri punya salinan sendiri di code/css/gallery/theme.css
+   (komponen app-like) — jangan menyilang folder.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    /* --- Warna dasar (sama dengan tema galeri) --- */
+    --blue: #2979ff;
+    --blue-strong: #1565c0;
+    --blue-soft: #82b1ff;
+    --blue-glow: rgba(41, 121, 255, 0.32);
+
+    --bg: #0b1220;
+    --bg-deep: #060b14;
+    --surface: #131c2e;
+    --surface-2: #182338;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
+
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.62);
+    --dim: rgba(255, 255, 255, 0.4);
+
+    --ok: #22c55e;
+    --err: #ff5252;
+
+    /* --- Palet retro --- */
+    --retro-cyan: #5ffbf1;
+    --retro-pink: #ff5fd2;
+    --retro-yellow: #ffd166;
+    --retro-violet: #8b5cf6;
+    --retro-ink: #06111f;
+
+    /* --- Font retro: monospace untuk teks, display untuk judul --- */
+    --font-mono: "Courier New", Courier, monospace;
+    --font-display: "Arial Black", Impact, "Trebuchet MS", sans-serif;
+    --font-script: "Dancing Script", "Segoe Script", "Brush Script MT", "Lucida Handwriting", cursive;
+
+    /* --- Bayangan keras (tanpa blur) --- */
+    --hard-xs: 2px 2px 0 var(--retro-ink);
+    --hard-sm: 3px 3px 0 var(--retro-ink);
+    --hard-md: 5px 5px 0 var(--retro-ink);
+    --hard-lg: 7px 7px 0 var(--retro-ink);
+    --edge: 2px solid var(--retro-ink);
+
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+html,
+body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 16px;
+    line-height: 1.55;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+img,
+video,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: var(--retro-cyan);
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+:focus-visible {
+    outline: 3px solid var(--retro-yellow);
+    outline-offset: 2px;
+    border-radius: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Anti-copy / anti-save: gambar tidak bisa diseret atau disimpan cepat. */
+img,
+video {
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-touch-callout: none;
+}
+
+/* Hormati preferensi gerakan minimal di seluruh halaman root. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}

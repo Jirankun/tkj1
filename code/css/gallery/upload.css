@@ -383,3 +383,11 @@ body {
     height: 78px;
   }
 }
+
+/* ---------- Field uploader yang dikunci (dari inline style upload/index.html) ---------- */
+.uploader-locked {
+  background: #1a2233 !important;
+  color: #9aa0c3 !important;
+  cursor: not-allowed !important;
+  opacity: 0.95;
+}

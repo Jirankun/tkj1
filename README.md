@@ -13,7 +13,7 @@ Repo web: `Jirankun/tkj1` · Situs: `https://tkj1.pages.dev`
 - Kompresi diuji: file > 10 MB dikompres, hasil kompresi yang diunggah; file kecil tidak disentuh; fallback ke file asli bila kompresi gagal.
 - Aplikasi Android (`Jirankun/TKJ-One`) berhasil `assembleDebug`.
 - **Belum diuji**: upload jaringan nyata (ImgBB + GitHub) dan tampilan di perangkat/emulator.
-- Upload di server **aktif setelah `upload/config.js` berisi `IMGBB_API_KEY`**. Sekarang nilai itu ditulis langsung di file config, bukan diinjeksi lewat secret.
+- Upload di server **aktif setelah `code/js/gallery/upload-config.js` berisi `IMGBB_API_KEY`**. Sekarang nilai itu ditulis langsung di file config, bukan diinjeksi lewat secret.
 
 ---
 
@@ -26,20 +26,21 @@ tkj1/
 ├── photo/index.html            # Pratinjau media (gaya aplikasi): bar atas + info bawah
 ├── story/index.html            # Cerita (media terbaru), progress bar, nav bawah
 ├── uploaders/index.html        # Data uploader: tab Statistik + Detail User (aktif/suspend + fotonya)
-├── upload/                     # Halaman upload (app-only, noindex)
-│   ├── index.html              # Pilih foto → form → progress inline → hasil
-│   ├── style.css               # Tema gelap + aksen biru, tanpa kartu popup
-│   ├── script.js               # Kompresi, ImgBB, GitHub Contents API, bridge
-│   ├── config.js               # Placeholder; diisi lewat injeksi/env
-│   └── vendor/
-│       ├── compressor.min.js   # compressorjs 1.4.0 (MIT)
-│       └── LICENSE.compressorjs
-├── assets/theme.css            # Token warna, komponen, nav bawah, banner
-├── assets/landing.css          # Gaya khusus halaman landing root
+├── upload/index.html           # Halaman upload (app-only, noindex): pilih foto → form → progress inline → hasil
+├── code/                       # SEMUA CSS & JS halaman (dipisah per grup)
+│   ├── css/root/               # Grup root: / dan /student/
+│   │   ├── theme.css           # Tema induk root: token, reset, tipografi retro
+│   │   └── landing.css         # UI retro penuh landing + student (hard shadow)
+│   ├── css/gallery/            # Grup galeri: /galeri, /photo, /story, /uploaders, /upload
+│   │   ├── theme.css           # Tema induk galeri (salinan, app-like)
+│   │   ├── photo.css · story.css · uploaders.css · upload.css
+│   ├── js/root/                # home.js, student.js, hero-title.js, js-flag.js, komentar.js
+│   └── js/gallery/             # galeri.js, photo.js, story.js, uploaders.js, anti-copy.js,
+│       │                       # upload.js, upload-config.js
+│       └── vendor/             # compressor.min.js (compressorjs 1.4.0, MIT) + lisensi
 ├── assets/fa/                  # Font Awesome 7 (CSS + webfonts, lokal)
 ├── assets/plyr/                # Plyr 3.7.8 (self-hosted: plyr.js, plyr.css)
 │   └── assets/                 # Sprite ikon (plyr.svg) + blank.mp4 — tanpa CDN
-├── assets/komentar.js          # Pesan & Kesan: render bubble, editor format, kirim
 ├── functions/api/komentar.js   # POST /api/komentar (Pages Function, token di server)
 ├── student/index.html          # Halaman anggota kelas (/student/) — template, isinya disuntik dari data/
 ├── data/                       # Sumber suntikan halaman student/: ld.json + memberlist.html
@@ -125,7 +126,7 @@ Data saat ini: **303 entri** (301 foto + 2 video), dari 2 uploader (`admin` 297,
 
 Dibaca oleh galeri, cerita, pratinjau, dan aplikasi Android (`PHOTOS_JSON_URL`) memakai cache-buster `?t=<timestamp>`.
 
-> **Host gambar:** `i.ibb.co` (tanpa `.com`) kini memakai sertifikat TLS milik domain lain (`internetbaik.telkomsel.com`), jadi browser menolaknya dan foto tidak pernah tampil meski link-nya kelihatan sehat. Semua entri sudah diubah ke `i.ibb.co.com`, dan setiap halaman juga menormalisasi URL saat runtime (`i.ibb.co/` → `i.ibb.co.com/`) supaya data lama/baru tetap aman. Alur upload (`upload/script.js`) dan workflow `add-photo.yml` menerapkan normalisasi yang sama sebelum menyimpan.
+> **Host gambar:** `i.ibb.co` (tanpa `.com`) kini memakai sertifikat TLS milik domain lain (`internetbaik.telkomsel.com`), jadi browser menolaknya dan foto tidak pernah tampil meski link-nya kelihatan sehat. Semua entri sudah diubah ke `i.ibb.co.com`, dan setiap halaman juga menormalisasi URL saat runtime (`i.ibb.co/` → `i.ibb.co.com/`) supaya data lama/baru tetap aman. Alur upload (`code/js/gallery/upload.js`) dan workflow `add-photo.yml` menerapkan normalisasi yang sama sebelum menyimpan.
 
 ### Halaman `/uploaders/` — data uploader
 
@@ -160,11 +161,11 @@ Halaman statis (tanpa header) yang merangkum data `DB/photos.json` + `DB/status.
 
 ### Konfigurasi (wajib untuk produksi)
 
-`upload/config.js` berisi nilai statis:
+`code/js/gallery/upload-config.js` berisi nilai statis:
 
 | Key             | Isi                                                        |
 | --------------- | ---------------------------------------------------------- |
-| `IMGBB_API_KEY` | API key ImgBB (ditulis langsung di `upload/config.js`)     |
+| `IMGBB_API_KEY` | API key ImgBB (ditulis langsung di `code/js/gallery/upload-config.js`) |
 | `G_TOKEN`       | fine-grained PAT, `Contents: Read & Write`, hanya repo web |
 | `G_REPO`        | `Jirankun/tkj1`                                            |
 | `G_BRANCH`      | `main`                                                     |
@@ -259,7 +260,7 @@ curl -X POST \
 ### 8.2 `web-deploy.yml` — deploy Cloudflare Pages
 
 - Trigger: push ke `main` / manual.
-- Tanpa inject config; `upload/config.js` sudah berisi ImgBB API key secara langsung.
+- Inject `G_UPLOAD_TOKEN` ke `code/js/gallery/upload-config.js`, lalu deploy.
 - Secret: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
 
 ### 8.3 `inject-ld-and-memberlist.yml` — mengisi halaman `/student/`
@@ -302,7 +303,7 @@ Bentuk entri:
 
 - `name` boleh kosong → tampil sebagai **Anonim**.
 - `status`: `true` tampil, `false` disembunyikan. Tidak ada jalur hapus dari web; admin mengubah status atau menghapus entri manual di repo.
-- Gambar dan tautan tidak didukung (tag `img`/`a` dan tag berbahaya dibuang). Pembersihan dilakukan dua kali: di workflow dan lagi saat render (`assets/komentar.js`).
+- Gambar dan tautan tidak didukung (tag `img`/`a` dan tag berbahaya dibuang). Pembersihan dilakukan dua kali: di workflow dan lagi saat render (`code/js/root/komentar.js`).
 - Env Cloudflare Pages: **`G_UPLOAD_TOKEN`** (wajib, PAT fine-grained `Contents: Read and write` untuk repo ini) dan **`KOMENTAR_KV`** (opsional, binding KV untuk batas 1 pesan / 60 detik per IP).
 - Tanpa captcha: hanya honeypot, batas panjang, validasi asal request, dan (bila KV aktif) throttle per IP. Aktifkan KV kalau mulai ada spam.
 - Service worker di-*bump* (`tkjone-v15`) setiap ada perubahan CSS/JS landing agar pengunjung lama tidak memakai cache lama.
@@ -311,7 +312,7 @@ Bentuk entri:
 
 ## 9. Checklist sebelum push
 
-- [ ] `upload/config.js` berisi `IMGBB_API_KEY` yang benar.
+- [ ] `code/js/gallery/upload-config.js` berisi `IMGBB_API_KEY` yang benar.
 - [ ] Secret Actions sudah diisi (untuk `web-deploy.yml`, jika dipakai).
 - [ ] `_redirects` ikut ter-deploy (Cloudflare Pages).
 - [ ] `DB/photos.json` valid & nama unik.
@@ -327,11 +328,12 @@ Bentuk entri:
 python3 -m http.server 8123
 
 # cek sintaks
-node --check upload/script.js
+node --check code/js/gallery/upload.js
+node --check code/js/root/home.js
 node --check sw.js
 ```
 
-Untuk mencoba upload lokal, isi `upload/config.js` dengan `IMGBB_API_KEY` yang benar.
+Untuk mencoba upload lokal, isi `code/js/gallery/upload-config.js` dengan `IMGBB_API_KEY` yang benar.
 
 ---
 

@@ -10,7 +10,7 @@
         c. entri { name, type, url, date, uploader } ditambahkan
         d. commit ke repo lewat GitHub Contents API
 
-   Konfigurasi berasal dari window.TJK_DEFAULTS di config.js.
+   Konfigurasi berasal dari window.TJK_DEFAULTS di code/js/gallery/upload-config.js.
    ============================================================ */
 "use strict";
 

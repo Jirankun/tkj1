@@ -1,7 +1,7 @@
 name: Deploy web
 
 # Deploy ke Cloudflare Pages.
-# Upload config dan ImgBB API key sudah tertulis langsung di upload/config.js,
+# Upload config dan ImgBB API key sudah tertulis langsung di code/js/gallery/upload-config.js,
 # jadi tidak perlu inject secret lagi di sini.
 #
 # Secrets yang dibutuhkan:
@@ -31,13 +31,13 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Inject secrets ke upload/config.js
+            - name: Inject secrets ke upload-config.js
               env:
                   G_UPLOAD_TOKEN: ${{ secrets.G_UPLOAD_TOKEN }}
               run: |
                   python3 - <<'PY'
                   import os, re, sys
-                  path = 'upload/config.js'
+                  path = 'code/js/gallery/upload-config.js'
                   text = open(path, encoding='utf-8').read()
                   token = os.environ.get('G_UPLOAD_TOKEN', '')
                   # Ganti GITHUB_TOKEN: "..." dengan token dari secret
@@ -46,9 +46,9 @@ jobs:
                       text2 = re.sub(pattern, r'\1' + token.replace('\\', '\\\\').replace('"', '\\"') + r'\2', text)
                       if text2 != text:
                           open(path, 'w', encoding='utf-8').write(text2)
-                          print('Injected G_UPLOAD_TOKEN into upload/config.js')
+                          print('Injected G_UPLOAD_TOKEN into code/js/gallery/upload-config.js')
                           sys.exit(0)
-                  print('Failed to inject token into upload/config.js', file=sys.stderr)
+                  print('Failed to inject token into code/js/gallery/upload-config.js', file=sys.stderr)
                   sys.exit(1)
                   PY
 

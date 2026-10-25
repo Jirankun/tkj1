@@ -1,0 +1,304 @@
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-deep);
+    touch-action: pan-y;
+}
+
+.stage {
+    position: relative;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(120% 60% at 50% 0%, #122243 0%, #0b1220 45%, #060b14 100%);
+}
+
+/* ---------- Progress ---------- */
+.bars {
+    position: absolute;
+    top: calc(var(--safe-top) + 10px);
+    left: 10px;
+    right: 10px;
+    z-index: 30;
+    display: flex;
+    gap: 4px;
+}
+
+.bar {
+    position: relative;
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.16);
+    overflow: hidden;
+}
+
+.bar > i {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--blue-soft));
+}
+
+.bar.done > i {
+    width: 100%;
+}
+.bar.active > i {
+    box-shadow: 0 0 10px var(--blue-glow);
+}
+
+/* ---------- Header ---------- */
+.head {
+    position: absolute;
+    top: calc(var(--safe-top) + 24px);
+    left: 12px;
+    right: 12px;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(145deg, var(--blue), var(--blue-strong));
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.avatar i {
+    font-size: 18px;
+}
+
+.head-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.head-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.head-sub {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* ---------- Frame ---------- */
+.frame video {
+    pointer-events: none;
+}
+
+/* ---------- Plyr (player video, self-hosted) ---------- */
+.item .plyr {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    max-height: 100%;
+    --plyr-color-main: var(--blue);
+    --plyr-video-background: #000;
+}
+.item .plyr__video-wrapper {
+    height: 100%;
+    width: 100%;
+}
+.item .plyr video {
+    object-fit: contain;
+}
+/* Cerita dikendalikan tap zona, jadi bilah kontrol disembunyikan. */
+.item .plyr__controls {
+    display: none;
+}
+
+.frame {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.item {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 92px 16px 124px;
+}
+
+.item img,
+.item video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    background: #000;
+}
+
+.item.enter {
+    animation: fadeIn 0.32s ease both;
+}
+.item.exit {
+    animation: fadeOut 0.28s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(1.04);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+}
+
+.msg {
+    padding: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ---------- Caption ---------- */
+.caption {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: calc(78px + var(--safe-bottom));
+    z-index: 25;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(11, 18, 32, 0.86);
+    border: 1px solid var(--line-strong);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.caption-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.caption-meta {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.caption-meta span {
+    color: var(--blue-soft);
+    font-weight: 600;
+}
+
+.zones {
+    position: absolute;
+    inset: 88px 0 172px;
+    display: flex;
+    z-index: 15;
+}
+
+.zone {
+    flex: 1;
+}
+.zone.prev {
+    flex: 0 0 32%;
+}
+
+.pause {
+    position: absolute;
+    right: 16px;
+    bottom: calc(146px + var(--safe-bottom));
+    z-index: 26;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(19, 28, 46, 0.9);
+    border: 1px solid var(--line-strong);
+    backdrop-filter: blur(8px);
+}
+
+.pause i {
+    font-size: 17px;
+}
+.pause .play-ico {
+    display: none;
+}
+.pause.is-paused .pause-ico {
+    display: none;
+}
+.pause.is-paused .play-ico {
+    display: block;
+}
+
+/* ---------- Loader ---------- */
+.loader {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: var(--bg-deep);
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    border-top-color: var(--blue-soft);
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

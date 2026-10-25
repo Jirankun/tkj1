@@ -19,5 +19,6 @@ Disallow: /uploaders/
 Disallow: /DB/info.json
 Disallow: /DB/photos.json
 Disallow: /DB/status.json
+Disallow: 404.html
 
 Sitemap: https://tkj1.pages.dev/sitemap.xml

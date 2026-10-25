@@ -36,17 +36,9 @@
         <meta name="twitter:image" content="https://tkj1.pages.dev/assets/og.jpg" />
 
         <link href="./assets/fa/css/all.min.css" rel="stylesheet" />
-        <link href="./assets/theme.css" rel="stylesheet" />
-        <link href="./assets/landing.css" rel="stylesheet" />
+        <link href="./code/css/root/theme.css" rel="stylesheet" />
+        <link href="./code/css/root/landing.css" rel="stylesheet" />
         <link href="./assets/locomotive/locomotive-scroll.css" rel="stylesheet" />
-        <noscript
-            ><style>
-                .reveal {
-                    opacity: 1;
-                    transform: none;
-                }
-            </style></noscript
-        >
         <link rel="preload" href="./assets/fonts/dancing-script-700.woff2" as="font" type="font/woff2" crossorigin />
         <link
             rel="preload"
@@ -64,9 +56,7 @@
             media="(min-width: 768px)"
             fetchpriority="high"
         />
-        <script>
-            document.documentElement.classList.add("js");
-        </script>
+        <script src="./code/js/root/js-flag.js"></script>
         <script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754329161781195"
@@ -268,6 +258,24 @@
                                 >Welcome To Tkj 1 Class</span
                             ><span class="hero-caret" id="heroCaret" aria-hidden="true"></span>
                         </h2>
+                        <!-- Foto kelas: polaroid diselotip, di bawah judul (mobile) / kanan layar (desktop) -->
+                        <figure class="hero-photo">
+                            <picture>
+                                <source
+                                    media="(max-width: 767px)"
+                                    srcset="./assets/landing-mobile.webp"
+                                    type="image/webp"
+                                />
+                                <img
+                                    src="./assets/landing.webp"
+                                    alt="Foto bersama anggota kelas TKJ 1 di halaman SMKN 1 Lembah Melintang"
+                                    width="1280"
+                                    height="960"
+                                    decoding="async"
+                                    fetchpriority="high"
+                                />
+                            </picture>
+                        </figure>
                         <span class="banner-tag">Berinovasi · Kreatif · Solidaritas</span>
                         <p id="bannerDesc">
                             Kelas TKJ 1 adalah kelas yang bersemangat dan berdedikasi. Kami saling mendukung dalam
@@ -281,7 +289,6 @@
                     </div>
                 </div>
                 <span class="hero-sticker hero-sticker-a" aria-hidden="true">✦</span>
-                <span class="hero-sticker hero-sticker-b" aria-hidden="true">★</span>
                 <span class="hero-sticker hero-sticker-c" aria-hidden="true">✧</span>
                 <span class="wave" aria-hidden="true">
                     <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
@@ -293,63 +300,7 @@
                 </span>
             </section>
 
-            <script>
-                /* Efek menulis judul hero — berjalan sebelum sisa halaman selesai di-parse. */
-                (function () {
-                    var h2 = document.getElementById("heroTitle");
-                    var txt = document.getElementById("heroTitleText");
-                    var caret = document.getElementById("heroCaret");
-                    if (!h2 || !txt) return;
-
-                    var full = h2.getAttribute("data-text") || txt.textContent || "";
-                    var reduce = window.matchMedia
-                        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                        : false;
-
-                    if (reduce || !full) {
-                        h2.classList.add("done");
-                        return;
-                    }
-
-                    var started = false;
-                    var start = function () {
-                        if (started) return;
-                        started = true;
-                        try {
-                            var reserve = h2.offsetHeight;
-                            h2.style.minHeight = reserve + "px";
-                            txt.textContent = "";
-                            h2.classList.add("typing");
-                            var i = 0;
-                            var step = function () {
-                                i++;
-                                txt.textContent = full.slice(0, i);
-                                if (i < full.length) {
-                                    var ch = full.charAt(i - 1);
-                                    setTimeout(step, ch === " " ? 150 : 58 + (i % 4) * 12);
-                                    return;
-                                }
-                                setTimeout(function () {
-                                    h2.classList.remove("typing");
-                                    h2.classList.add("done");
-                                    h2.style.minHeight = "";
-                                    if (caret) caret.setAttribute("aria-hidden", "true");
-                                }, 1000);
-                            };
-                            setTimeout(step, 380);
-                        } catch (err) {
-                            h2.classList.add("done");
-                        }
-                    };
-
-                    if (document.fonts && document.fonts.load) {
-                        document.fonts.load('700 1em "Dancing Script"').then(start, start);
-                        setTimeout(start, 900);
-                    } else {
-                        setTimeout(start, 350);
-                    }
-                })();
-            </script>
+            <script src="./code/js/root/hero-title.js"></script>
 
             <!-- ===================== Ticker gaya web lama ===================== -->
             <div class="retro-strip" aria-hidden="true">
@@ -643,7 +594,7 @@
             <!-- ===================== Pesan & Kesan (komentar) =====================
                  Sumber data: DB/komentar.json. Entri ditambah oleh workflow
                  add-comment.yml lewat endpoint functions/api/komentar.js.
-                 Render + editor ada di assets/komentar.js. -->
+                 Render + editor ada di code/js/root/komentar.js. -->
             <section class="section" id="komentar">
                 <div class="container">
                     <div class="sec-head reveal">
@@ -729,7 +680,7 @@
 
                             <p class="komentar-mode" aria-hidden="true">
                                 <span class="komentar-mode-dot"></span>
-                                <span class="mode-off">Mode tulis — klik kotak di bawah</span>
+                                <span class="mode-off">Mode tulis</span>
                                 <span class="mode-on">Mode tulis aktif</span>
                             </p>
 
@@ -794,223 +745,37 @@
             </footer>
         </main>
 
+        <!-- ===================== Musik latar (index utama) =====================
+             Tidak berbunyi sebelum user berinteraksi; bisa dijeda lewat tombol. -->
+        <audio id="bgm" loop preload="none" src="./assets/audio/iqro.mp3"></audio>
+        <button class="bgm-btn" id="bgmToggle" type="button" aria-pressed="false" aria-label="Putar musik latar">
+            <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+        </button>
+
+        <!-- ===================== Popup foto hero =====================
+             Pola sama dengan popup kartu anggota di /student/:
+             foto terangkat ke tengah layar, Esc / backdrop untuk menutup. -->
+        <div class="hero-stage" id="heroPhotoStage" hidden>
+            <div class="hero-stage-backdrop" data-hero-close></div>
+            <div
+                class="hero-stage-shell"
+                id="heroPhotoShell"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Foto kelas TKJ 1"
+            >
+                <div class="hero-stage-card" id="heroPhotoCard"></div>
+                <button class="mm-close" id="heroPhotoClose" type="button" aria-label="Tutup">
+                    <span aria-hidden="true">✕</span>
+                </button>
+            </div>
+        </div>
+
         <script src="./assets/locomotive/locomotive-scroll.min.js"></script>
-        <script>
-            "use strict";
-
-            /* ==========================================================
-               SEMUA ISI HALAMAN ADA LANGSUNG DI HTML DI ATAS.
-               Tidak ada data ganda di JavaScript/JSON — sunting markup
-               (wali kelas, pengurus, anggota, FAQ) langsung di HTML.
-               JavaScript di bawah hanya untuk interaksi.
-               ========================================================== */
-            /* ---------- Helper ---------- */
-            const $ = id => document.getElementById(id);
-            const prefersReduced = () =>
-                Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-            /* ---------- Prestasi (slider) ---------- */
-            let slideIndex = 0;
-            let slideTimer = null;
-
-            function goSlide(i) {
-                const slides = document.querySelectorAll("#slideTrack .slide");
-                const dots = document.querySelectorAll("#slideDots button");
-                if (!slides.length) return;
-                slideIndex = (i + slides.length) % slides.length;
-                slides.forEach((s, n) => s.classList.toggle("active", n === slideIndex));
-                dots.forEach((d, n) => d.classList.toggle("active", n === slideIndex));
-            }
-
-            function bindSlider() {
-                const track = $("slideTrack");
-                const dotsWrap = $("slideDots");
-                if (!track || !dotsWrap) return;
-                const slides = track.querySelectorAll(".slide");
-                if (!slides.length) return; // belum ada prestasi → bagian tetap tersembunyi
-
-                /* Slide ditulis langsung di HTML; dot dibuat dari jumlah slide. */
-                $("prestasi").hidden = false;
-                slides[0].classList.add("active");
-                dotsWrap.innerHTML = Array.from(slides)
-                    .map(
-                        (_, i) =>
-                            '<button type="button" data-i="' +
-                            i +
-                            '"' +
-                            (i === 0 ? ' class="active"' : "") +
-                            "></button>",
-                    )
-                    .join("");
-
-                $("slidePrev").addEventListener("click", () => goSlide(slideIndex - 1));
-                $("slideNext").addEventListener("click", () => goSlide(slideIndex + 1));
-                dotsWrap.addEventListener("click", e => {
-                    const b = e.target.closest("button[data-i]");
-                    if (b) goSlide(Number(b.dataset.i));
-                });
-                const start = () => {
-                    clearInterval(slideTimer);
-                    slideTimer = setInterval(() => goSlide(slideIndex + 1), 6000);
-                };
-                const stop = () => clearInterval(slideTimer);
-                document.querySelector(".slider")?.addEventListener("mouseenter", stop);
-                document.querySelector(".slider")?.addEventListener("mouseleave", start);
-                start();
-            }
-
-            /* ---------- Navbar & scroll ---------- */
-            function bindNav() {
-                const nav = $("nav");
-                const menu = $("navMenu");
-                const toggler = $("navToggler");
-                if (!nav || !menu || !toggler) return;
-
-                const closeMenu = () => {
-                    menu.classList.remove("open");
-                    toggler.setAttribute("aria-expanded", "false");
-                    toggler.querySelector("i")?.classList.remove("fa-xmark");
-                    toggler.querySelector("i")?.classList.add("fa-bars");
-                };
-
-                toggler.addEventListener("click", () => {
-                    const open = menu.classList.toggle("open");
-                    toggler.setAttribute("aria-expanded", open ? "true" : "false");
-                    toggler.querySelector("i")?.classList.toggle("fa-xmark", open);
-                    toggler.querySelector("i")?.classList.toggle("fa-bars", !open);
-                });
-
-                const navHeight = () => Math.round(nav.getBoundingClientRect().height) || 56;
-                /* Abaikan link yang sedang disembunyikan (mis. #prestasi kosong) */
-                const menuLinks = Array.from(menu.querySelectorAll("a[href^='#']")).filter(a => !a.closest("[hidden]"));
-                const scrollLinks = Array.from(nav.querySelectorAll("[data-scroll-to][href^='#']"));
-                const items = menuLinks
-                    .map(link => ({ link, section: document.querySelector(link.getAttribute("href")) }))
-                    .filter(item => item.section);
-
-                const setActive = link => menuLinks.forEach(a => a.classList.toggle("active", a === link));
-                const offsetFor = link => {
-                    const raw = Number(link.dataset.scrollToOffset);
-                    return Number.isFinite(raw) ? raw : -(navHeight() + 8);
-                };
-
-                /* Scroll tepat ke judul section, memakai tinggi navbar yang sebenarnya. */
-                const scrollToLink = (link, smooth) => {
-                    const section = document.querySelector(link.getAttribute("href"));
-                    if (!section) return;
-                    const offset = offsetFor(link);
-                    if (smoothScroll && typeof smoothScroll.scrollTo === "function") {
-                        smoothScroll.scrollTo(section, { offset, duration: 0.9 });
-                    } else {
-                        window.scrollTo({
-                            top: Math.max(0, section.getBoundingClientRect().top + window.scrollY + offset),
-                            behavior: smooth && !prefersReduced() ? "smooth" : "auto",
-                        });
-                    }
-                    if (link.closest("#navMenu")) setActive(link);
-                    if (history.replaceState) history.replaceState(null, "", link.getAttribute("href"));
-                };
-
-                nav.addEventListener("click", event => {
-                    const link = event.target.closest("[data-scroll-to][href^='#']");
-                    if (!link || !document.querySelector(link.getAttribute("href"))) return;
-                    event.preventDefault();
-                    closeMenu();
-                    scrollToLink(link, true);
-                });
-
-                /* Penanda menu aktif dihitung dari posisi scroll, bukan pita tengah layar,
-                   supaya section pendek (mis. Anggota) tetap benar setelah diklik. */
-                const spy = () => {
-                    if (!items.length) return;
-                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
-                        setActive(items[items.length - 1].link);
-                        return;
-                    }
-                    const line = window.scrollY + navHeight() + 24;
-                    let current = items[0];
-                    items.forEach(item => {
-                        if (item.section.getBoundingClientRect().top + window.scrollY <= line) current = item;
-                    });
-                    setActive(current.link);
-                };
-
-                let ticking = false;
-                const onScroll = () => {
-                    nav.classList.toggle("scrolled", window.scrollY > 50);
-                    if (!ticking) {
-                        ticking = true;
-                        requestAnimationFrame(() => {
-                            ticking = false;
-                            spy();
-                        });
-                    }
-                };
-                window.addEventListener("scroll", onScroll, { passive: true });
-                window.addEventListener("resize", spy);
-                onScroll();
-                spy();
-
-                /* Link yang dibuka langsung dengan #hash tetap dikoreksi offset-nya. */
-                if (location.hash) {
-                    const link = scrollLinks.find(a => a.getAttribute("href") === location.hash);
-                    if (link) requestAnimationFrame(() => scrollToLink(link, false));
-                }
-            }
-
-            /* ---------- Animasi masuk ---------- */
-            function bindReveal() {
-                const items = document.querySelectorAll(".reveal:not(.in)");
-                if (!("IntersectionObserver" in window)) {
-                    items.forEach(el => el.classList.add("in"));
-                    return;
-                }
-                const io = new IntersectionObserver(
-                    entries => {
-                        entries.forEach(en => {
-                            if (en.isIntersecting) {
-                                en.target.classList.add("in");
-                                io.unobserve(en.target);
-                            }
-                        });
-                    },
-                    { threshold: 0.12 },
-                );
-                items.forEach(el => io.observe(el));
-            }
-
-            /* ---------- Smooth scroll Locomotive (desktop) ---------- */
-            let smoothScroll = null;
-            function initSmoothScroll() {
-                if (!window.LocomotiveScroll || !window.matchMedia) return;
-                if (prefersReduced()) return;
-                /* Scroll halus hanya untuk desktop + pointer presisi. Di ponsel
-                   pakai scroll native supaya tidak menambah kerja per frame. */
-                if (!window.matchMedia("(min-width: 992px)").matches) return;
-                if (window.matchMedia("(pointer: coarse)").matches) return;
-                try {
-                    smoothScroll = new LocomotiveScroll({
-                        lenisOptions: { lerp: 0.09, wheelMultiplier: 1 },
-                        scrollCallback: values => {
-                            const nav = document.getElementById("nav");
-                            if (nav) nav.classList.toggle("scrolled", values.scroll > 50);
-                        },
-                    });
-                    window.addEventListener("load", () => smoothScroll && smoothScroll.resize());
-                    if (document.fonts && document.fonts.ready) {
-                        document.fonts.ready.then(() => smoothScroll && smoothScroll.resize());
-                    }
-                } catch (err) {
-                    smoothScroll = null;
-                }
-            }
-
-            /* ---------- Mulai ---------- */
-            $("year").textContent = new Date().getFullYear();
-            bindSlider();
-            bindNav();
-            bindReveal();
-            initSmoothScroll();
-        </script>
-        <script src="./assets/komentar.js"></script>
+        <script src="./code/js/root/home.js"></script>
+        <script src="./code/js/root/komentar.js"></script>
+        <script src="./code/js/root/sparkle.js"></script>
+        <script src="./code/js/root/hero-photo.js"></script>
+        <script src="./code/js/root/bgm.js"></script>
     </body>
 </html>

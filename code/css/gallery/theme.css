@@ -1,6 +1,10 @@
 /* ============================================================
-   TKJ OnE — Tema Bersama (aksen biru, mobile-first)
-   Dipakai oleh: /, /photo, /story
+   TKJ OnE — TEMA INDUK HALAMAN GALERI (aksen biru, mobile-first)
+   Dipakai oleh: /galeri, /photo, /story, /uploaders, /upload
+   ------------------------------------------------------------
+   Salinan tema untuk grup galeri. Halaman root (index/student)
+   memakai salinan sendiri di code/css/root/theme.css dengan UI
+   retro — jangan menyilang folder supaya tiap grup aman diubah.
    ============================================================ */
 
 *,
