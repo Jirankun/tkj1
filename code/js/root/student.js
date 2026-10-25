@@ -11,6 +11,13 @@ const $ = id => document.getElementById(id);
 const prefersReduced = () =>
     Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 /* Format detik → m:ss atau h:mm:ss ("--:--" bila belum diketahui) */
+/* Ikon kecil di ujung nama yang punya tautan (tanda nama bisa diklik) */
+const linkIcon = () => {
+    const icon = document.createElement("i");
+    icon.className = "fa-sharp fa-solid fa-up-right-from-square";
+    icon.setAttribute("aria-hidden", "true");
+    return icon;
+};
 const fmtTime = seconds => {
     if (!Number.isFinite(seconds) || seconds < 0) return "--:--";
     const m = Math.floor(seconds / 60);
@@ -155,6 +162,7 @@ function openMemberModal(cell) {
         nameNode.href = nameLink.getAttribute("href") || "";
         nameNode.target = "_blank";
         nameNode.rel = "noopener noreferrer";
+        nameNode.appendChild(linkIcon());
     }
     memberModalCard.appendChild(nameNode);
 
@@ -340,6 +348,18 @@ function closeMemberModal() {
     }
 }
 
+/* ---------- Penanda nama yang punya tautan ----------
+   Nama di daftar bisa berupa <span> (tanpa link) atau <a> (mis. Instagram).
+   Untuk yang <a>, tambahkan ikon panah di ujung nama supaya jelas bisa diklik.
+   Dilakukan di sini, bukan di markup, agar tetap muncul walau daftar disuntik
+   ulang oleh workflow inject-ld-and-memberlist.yml. */
+function bindNameLinks() {
+    document.querySelectorAll("#membersList a.member-name[href]").forEach(link => {
+        if (link.querySelector(".fa-up-right-from-square")) return;
+        link.appendChild(linkIcon());
+    });
+}
+
 function bindMemberCards() {
     document.querySelectorAll("#membersList .member-cell").forEach(cell => {
         const name = (cell.querySelector(".member-name")?.textContent || "").trim();
@@ -443,6 +463,7 @@ function initSmoothScroll() {
 $("year").textContent = new Date().getFullYear();
 bindNav();
 bindAudio();
+bindNameLinks();
 bindMemberCards();
 bindMemberModal();
 bindReveal();

@@ -42,7 +42,7 @@
         <link rel="preload" href="./assets/fonts/dancing-script-700.woff2" as="font" type="font/woff2" crossorigin />
         <link
             rel="preload"
-            href="./assets/landing-mobile.webp"
+            href="./assets/hero/landing-mobile.webp"
             as="image"
             type="image/webp"
             media="(max-width: 767px)"
@@ -50,7 +50,7 @@
         />
         <link
             rel="preload"
-            href="./assets/landing.webp"
+            href="./assets/hero/landing.webp"
             as="image"
             type="image/webp"
             media="(min-width: 768px)"
@@ -89,7 +89,11 @@
                         "alternateName": ["TKJ 1 SMKN 1 Lembah Melintang", "Kelas TKJ 1", "TKJ 1 SMKNLM"],
                         "url": "https://tkj1.pages.dev/",
                         "logo": "./assets/tkj-smkn1-lm.png",
-                        "image": "https://tkj1.pages.dev/assets/og.jpg",
+                        "image": [
+                            "https://tkj1.pages.dev/assets/og.jpg",
+                            "https://tkj1.pages.dev/assets/hero/landing.webp",
+                            "https://tkj1.pages.dev/assets/hero/landing-mobile.webp"
+                        ],
                         "description": "Kelas TKJ 1 adalah rombongan belajar Kompetensi Keahlian Teknik Komputer dan Jaringan di SMKN 1 Lembah Melintang.",
                         "address": {
                             "@type": "PostalAddress",
@@ -263,11 +267,11 @@
                             <picture>
                                 <source
                                     media="(max-width: 767px)"
-                                    srcset="./assets/landing-mobile.webp"
+                                    srcset="./assets/hero/landing-mobile.webp"
                                     type="image/webp"
                                 />
                                 <img
-                                    src="./assets/landing.webp"
+                                    src="./assets/hero/landing.webp"
                                     alt="Foto bersama anggota kelas TKJ 1 di halaman SMKN 1 Lembah Melintang"
                                     width="1280"
                                     height="960"
@@ -276,6 +280,25 @@
                                 />
                             </picture>
                         </figure>
+                        <!-- Sumber galeri popup foto (geser kiri/kanan, tanpa indikator).
+                             Menambah foto: taruh berkasnya di assets/hero/, lalu salin satu blok
+                             <figure class="hero-slide"> di bawah dan ganti src/srcset/alt.
+                             Foto hero di atas otomatis jadi slide pertama, jadi blok ini untuk
+                             foto ke-2 dan seterusnya. Jangan lupa menambahkan URL-nya ke
+                             "image" di JSON-LD <head> (EducationalOrganization). -->
+                        <div class="hero-gallery" id="heroGallery" hidden>
+                            <!--
+                            <figure class="hero-slide">
+                                <picture>
+                                    <source media="(max-width: 767px)"
+                                        srcset="./assets/hero/foto-2-mobile.webp" type="image/webp" />
+                                    <img src="./assets/hero/foto-2.webp"
+                                        alt="Keterangan foto kedua" width="1280" height="960"
+                                        loading="lazy" decoding="async" />
+                                </picture>
+                            </figure>
+                            -->
+                        </div>
                         <span class="banner-tag">Berinovasi · Kreatif · Solidaritas</span>
                         <p id="bannerDesc">
                             Kelas TKJ 1 adalah kelas yang bersemangat dan berdedikasi. Kami saling mendukung dalam
@@ -762,7 +785,7 @@
                 id="heroPhotoShell"
                 role="dialog"
                 aria-modal="true"
-                aria-label="Foto kelas TKJ 1"
+                aria-label="Galeri foto kelas TKJ 1 — geser kiri atau kanan"
             >
                 <div class="hero-stage-card" id="heroPhotoCard"></div>
                 <button class="mm-close" id="heroPhotoClose" type="button" aria-label="Tutup">

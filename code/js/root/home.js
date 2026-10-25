@@ -152,6 +152,19 @@ function bindNav() {
     }
 }
 
+/* ---------- Penanda nama yang punya tautan ----------
+   Nama wali kelas / pengurus hanya diberi ikon panah bila namanya berupa
+   tautan (a.person-name). Nama tanpa link dibiarkan apa adanya. */
+function bindNameLinks() {
+    document.querySelectorAll("a.person-name[href]").forEach((link) => {
+        if (link.querySelector(".fa-up-right-from-square")) return;
+        const icon = document.createElement("i");
+        icon.className = "fa-sharp fa-solid fa-up-right-from-square";
+        icon.setAttribute("aria-hidden", "true");
+        link.appendChild(icon);
+    });
+}
+
 /* ---------- Animasi masuk ---------- */
 function bindReveal() {
     const items = document.querySelectorAll(".reveal:not(.in)");
@@ -203,5 +216,6 @@ function initSmoothScroll() {
 $("year").textContent = new Date().getFullYear();
 bindSlider();
 bindNav();
+bindNameLinks();
 bindReveal();
 initSmoothScroll();

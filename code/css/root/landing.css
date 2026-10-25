@@ -895,6 +895,45 @@ a.member-name:focus-visible {
     text-decoration-style: dashed;
     text-underline-offset: 3px;
 }
+/* Ikon di ujung nama yang punya tautan.
+   Dipasang oleh code/js/root/student.js (daftar & popup anggota) dan
+   code/js/root/home.js (wali kelas/pengurus di halaman utama). */
+.member-name .fa-up-right-from-square,
+.person-name .fa-up-right-from-square,
+.mm-name .fa-up-right-from-square {
+    margin-left: 0.35em;
+    font-size: 0.72em;
+    line-height: 1;
+    color: var(--retro-cyan);
+    vertical-align: 0.18em;
+    opacity: 0.85;
+    transition:
+        transform 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
+}
+/* Nama di kartu halaman utama lebih kecil, ikonnya ikut disesuaikan */
+.person-name .fa-up-right-from-square {
+    font-size: 0.9em;
+    vertical-align: 0.12em;
+}
+a.member-name:hover .fa-up-right-from-square,
+a.member-name:focus-visible .fa-up-right-from-square,
+a.person-name:hover .fa-up-right-from-square,
+a.person-name:focus-visible .fa-up-right-from-square,
+a.mm-name:hover .fa-up-right-from-square,
+a.mm-name:focus-visible .fa-up-right-from-square {
+    color: var(--retro-yellow);
+    opacity: 1;
+    transform: translate(1px, -1px);
+}
+@media (prefers-reduced-motion: reduce) {
+    .member-name .fa-up-right-from-square,
+    .person-name .fa-up-right-from-square,
+    .mm-name .fa-up-right-from-square {
+        transition: none;
+    }
+}
 .members-empty {
     padding: 24px 0;
     text-align: center;
@@ -1420,6 +1459,13 @@ html:not(.js) .reveal {
         opacity: 0.35;
     }
 }
+/* Di ponsel tombol dinaikkan supaya tidak menutupi teks footer
+   (tinggi footer ± 80px; 88px memberi jarak aman). */
+@media (max-width: 560px) {
+    .bgm-btn {
+        bottom: 88px;
+    }
+}
 
 /* ---------- Efek binar: partikel mengikuti pointer / jari ---------- */
 .sparkle-layer {
@@ -1437,20 +1483,27 @@ html:not(.js) .reveal {
     color: #fff;
     text-shadow: 2px 2px 0 rgba(6, 17, 31, 0.85);
     transform: translate(-50%, -50%);
-    animation: sparkle-pop 600ms ease-out forwards;
+    animation: sparkle-fall 600ms linear forwards;
 }
-@keyframes sparkle-pop {
+/* Muncul cepat, lalu melayang searah geseran dan JATUH ke bawah (gravitasi),
+   memudar saat menyentuh bagian bawah layar. Tidak menguap ke atas lagi. */
+@keyframes sparkle-fall {
     0% {
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.2) rotate(0deg);
     }
-    35% {
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(1) rotate(45deg);
+    10% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(40deg);
+    }
+    50% {
+        opacity: 0.85;
+        transform: translate(calc(-50% + var(--dx, 0px) * 0.3), calc(-50% + var(--dy, 30px) * 0.28))
+            scale(0.8) rotate(95deg);
     }
     100% {
         opacity: 0;
-        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -20px))) scale(0.5) rotate(140deg);
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 30px))) scale(0.5) rotate(160deg);
     }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1766,6 +1819,53 @@ body.mm-open {
         10px 10px 0 var(--retro-ink),
         16px 16px 0 var(--retro-pink);
 }
+/* ---------- Galeri geser di popup foto hero ---------- */
+.hero-gallery {
+    display: none; /* hanya sumber markup; tidak pernah tampil di halaman */
+}
+.hero-swipe {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: var(--retro-ink);
+    border: 2px solid var(--retro-ink);
+    touch-action: none;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.hero-swipe.is-dragging {
+    cursor: grabbing;
+}
+.hero-track {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+.hero-track.no-anim {
+    transition: none;
+}
+.hero-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* Rasio tetap 4:3 supaya bingkai polaroid tidak berubah antar foto. */
+.hero-slide img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 0;
+    pointer-events: none;
+}
+.hero-stage-card .hero-swipe img {
+    border: 0;
+}
 .hero-stage .mm-close {
     opacity: 0;
 }
@@ -1778,7 +1878,8 @@ body.mm-open {
     }
     .hero-stage-backdrop,
     .hero-stage-card,
-    .hero-stage .mm-close {
+    .hero-stage .mm-close,
+    .hero-track {
         transition: none;
     }
 }
@@ -1913,14 +2014,21 @@ body.mm-open {
     color: #fff;
     background: var(--surface);
     border: 2px solid rgba(255, 255, 255, 0.32);
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        filter 0.15s ease;
 }
+/* Hover: tidak bergeser, hanya lebih terang. Tanpa aksen biru/cyan. */
 .komentar-tools button:hover {
-    border-color: var(--retro-cyan);
+    border-color: rgba(255, 255, 255, 0.85);
+    filter: brightness(1.22);
 }
 .komentar-tools button.is-active {
     color: var(--retro-ink);
-    background: var(--retro-cyan);
-    border-color: var(--retro-ink);
+    background: #fff;
+    border-color: #fff;
+    filter: none;
 }
 .komentar-colors {
     display: flex;
@@ -1930,25 +2038,27 @@ body.mm-open {
     padding-left: 8px;
     border-left: 2px dashed rgba(255, 255, 255, 0.2);
 }
-/* Swatch memakai warna aslinya (tanpa filter), pilihan ditandai cincin putih. */
+/* Swatch memakai warna aslinya. Yang tidak aktif diredupkan, yang dipilih
+   tampil terang (warna asli) dan ditandai cincin putih. */
 .komentar-tools .komentar-color {
     background: var(--c);
-    border: 2px solid rgba(255, 255, 255, 0.65);
+    border: 2px solid rgba(255, 255, 255, 0.5);
     box-shadow: var(--hard-xs);
-    filter: none;
+    filter: brightness(0.6) saturate(0.9);
 }
+/* Hover: tidak bergeser, hanya sedikit lebih terang (belum sepenuh warna asli). */
 .komentar-tools .komentar-color:hover {
-    filter: none;
-    border-color: #fff;
-    transform: translateY(-2px);
+    filter: brightness(0.85) saturate(0.95);
+    border-color: rgba(255, 255, 255, 0.85);
 }
+/* Warna yang sedang dipakai: warna asli, terang, dengan cincin putih. */
 .komentar-tools .komentar-color.is-active {
+    background: var(--c);
     filter: none;
     border-color: #fff;
     box-shadow:
         0 0 0 2px var(--retro-ink),
-        0 0 0 4px var(--c);
-    transform: translateY(-2px);
+        0 0 0 4px #fff;
 }
 .komentar-count {
     flex: 0 0 auto;
